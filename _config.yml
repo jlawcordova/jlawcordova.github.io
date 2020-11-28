@@ -6,7 +6,7 @@ title:               Poole
 tagline:             The Jekyll Butler
 url:                 http://getpoole.com
 paginate:            1
-baseurl:             https://jlawcordova.github.io/
+# baseurl:             https://jlawcordova.github.io/
 
 # Assets
 #
@@ -27,6 +27,6 @@ github:
   repo:              https://github.com/poole/poole
 
 # Gems
-gems:
-  - jekyll-paginate
-  - jekyll-gist
+gems: [jekyll-paginate, jekyll-gist]
+
+plugins: [jekyll-paginate, jekyll-gist]
