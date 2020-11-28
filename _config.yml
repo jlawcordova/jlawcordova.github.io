@@ -2,11 +2,11 @@
 permalink:           pretty
 
 # Setup
-title:               Poole
-tagline:             The Jekyll Butler
-url:                 http://getpoole.com
+title:               jlawcordova
+tagline:             Code and Create
+url:                 https://jlawcordova.github.io
 paginate:            1
-# baseurl:             https://jlawcordova.github.io/
+baseurl:             https://jlawcordova.github.io
 
 # Assets
 #
@@ -24,7 +24,7 @@ author:
 # Custom vars
 version:             2.0.0
 github:
-  repo:              https://github.com/poole/poole
+  repo:              https://github.com/jlawcordova
 
 # Gems
 gems: [jekyll-paginate, jekyll-gist]
