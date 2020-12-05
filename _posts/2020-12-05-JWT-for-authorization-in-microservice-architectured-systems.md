@@ -7,19 +7,19 @@ categories: security
 
 ## Authorization in Monolithic Systems
 
-Authorization is normally persisted using sessions in monolithic systems. Once a user has completed authentication, a session is stored in the server persistent storage and succeeding calls would simply provide the session ID for authorization.
+Authorization is normally persisted using **sessions** in monolithic systems. Once a user has completed authentication, a session is stored in the server persistent storage and succeeding calls would simply provide the _session ID_ for authorization.
 
 ![Monolithic Session Authorization](/public/2020-12-05-monolithic-authorization.png "Monolithic Session Authorization")
 
 The use of sessions in monolithic systems is sufficient. However, when transitioning into a microservice-architectured system, we will find that it does not perform well because of how stateful it is.
 
-For microservices, authentication is normally placed in a different service (Identity Service) from where the resources are actually retrieved or handled (Resource Service). If sessions would be used in this scenario, the resource service would need to verify with the identity service if the session ID is actually valid. This increases the load on the identity service for every resource service that would need to verify with it - making the architecture less scalable.
+For microservices, authentication is normally placed in a different service (_Identity Service_) from where the resources are actually retrieved or handled (_Resource Service_). If sessions would be used in this scenario, the resource service would need to verify with the identity service if the session ID is actually valid. This increases the load on the identity service for every resource service that would need to verify with it - making the architecture less scalable.
 
 ![Microservice Session Authorization](/public/2020-12-05-sessions-in-microservices.png "Microservice Session Authorization")
 
 ## Stateless Authorization using JWT
 
-We might want to use [JSON web tokens (JWT)](https://jwt.io/introduction/) for microservice authorization instead. A JWT is a token which normally contains a header (information on encryption algorithm) and a payload (information on the authorization and its expiry), signed with the identity service secret (HMAC) or private key (RSA). 
+We might want to use [JSON web tokens (JWT)](https://jwt.io/introduction/) for microservice authorization instead. A **JWT** is a token which normally contains a header (information on encryption algorithm) and a payload (information on the authorization and its expiry), signed with the identity service secret ([_HMAC_](https://en.wikipedia.org/wiki/HMAC)) or private key ([_RSA_](https://en.wikipedia.org/wiki/RSA_(cryptosystem))). 
 
 Since the state of authorization is already passed via JWT, the resource service would no longer need to call the identity service. The resource service would just need to validate the integrity of the JWT by making sure the signature matches the encrypted `header + payload` (using the HMAC secret or the RSA public key).
 
