@@ -11,7 +11,7 @@ Application metric is an important data point when it comes to working with prod
 
 ELK stack is short for Elasticsearch, Logstash and Kibana stack.
 
-**[Logstash](https://www.elastic.co/logstash)** is responsible for extracting and transforming logs or metrics from the application. It is often used in conjuction with [Beats](https://www.elastic.co/beats/) which comes in many flavors. We specifically want to work with **[Filebeat](https://www.elastic.co/beats/filebeat)** in this case since it can be used to harvest and ship any application logs. All of these metrics are loaded into **[Elasticsearch](https://www.elastic.co/elasticsearch/)** for centralized storage and optimized data queries. **[Kibana](https://www.elastic.co/kibana)** is then served up as the user-facing interface for Elasticsearch in order to seamlessly navigate and visualize all of the metrics.
+**[Logstash](https://www.elastic.co/logstash)** is responsible for extracting and transforming logs from the application. It is often used in conjuction with [Beats](https://www.elastic.co/beats/) which comes in many flavors. We specifically want to work with **[Filebeat](https://www.elastic.co/beats/filebeat)** in this case since it can be used to harvest and ship any application logs. All of these metrics are loaded into **[Elasticsearch](https://www.elastic.co/elasticsearch/)** for centralized storage and optimized data queries. **[Kibana](https://www.elastic.co/kibana)** is then served up as the user-facing interface for Elasticsearch to seamlessly navigate and visualize all of the metrics.
 
 ![ELK Stack](/public/2020-12-12-elk-stack.png "ELK Stack")
 
@@ -111,7 +111,7 @@ output {
 }
 {% endhighlight %}
 
-This bit of configuration is essentially telling Logstash to listen to port `5044` where Filebeats is shipping the data (_input_). All the data then goes into a [grok](https://www.elastic.co/guide/en/logstash/current/plugins-filters-grok.html) and a [date](https://www.elastic.co/guide/en/logstash/current/plugins-filters-date.html) _filter_. **Grok** parses the logs into a structured format - from a string, the HomeBrew log is parsed into structured data composed of timestamps, eventids, namespaces, etc. Since Logstash uses the time when the log was processed as the event timestamp, we use the **Date** filter so that the timestamp in the HomeBrew log is used instead. All the filtered data is then loaded into Elasticsearch which is served in `localhost:9200` (_output_).
+This bit of configuration is essentially telling Logstash to listen to port `5044` where Filebeats is shipping the logs (_input_). The logs then go into a [grok](https://www.elastic.co/guide/en/logstash/current/plugins-filters-grok.html) and a [date](https://www.elastic.co/guide/en/logstash/current/plugins-filters-date.html) _filter_. **Grok** parses the logs into a structured format - from a string, the HomeBrew log is parsed into structured data composed of timestamps, eventids, namespaces, etc. Since Logstash uses the time when the log was processed as the event timestamp, we use the **Date** filter so that the timestamp in the HomeBrew log is used instead. All the filtered data is then loaded into Elasticsearch which is served in `localhost:9200` (_output_).
 
 Test the configuration by running:
 
