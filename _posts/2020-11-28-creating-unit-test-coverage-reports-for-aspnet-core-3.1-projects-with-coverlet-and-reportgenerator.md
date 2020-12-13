@@ -2,7 +2,7 @@
 layout: post
 title: Creating Unit Test Coverage Reports for ASP.NET Core 3.1 Projects with Coverlet and ReportGenerator
 tags: asp.net report
-categories: test
+categories: testing
 ---
 
 Unit testing is an essential part of software development to ensure code quality and refactorability. In Agile projects, code can change rapidly, and thus it is often necessary to keep the unit tests and it's coverage in check. It would be a good idea for reports to be generated to easily monitor the status of unit tests.
