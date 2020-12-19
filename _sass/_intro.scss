@@ -1,0 +1,52 @@
+.intro-container {
+  display: grid;
+  grid-column-gap: 16px;
+  grid-template-columns: repeat(12, 1fr);
+  height: 100vh;
+  align-items: flex-end;
+  padding-bottom: 112px;
+  background-image: url("/public/graph-background.png");
+
+  .intro {
+    grid-column: 2 / 8;
+
+    header {
+      font-size: 28px;
+      margin-bottom: 36px;
+
+      .pretitle {
+        font-size: 36px;
+        font-family: $header-font-family;
+        margin-bottom: 2px;
+      }
+
+      h1 {
+        font-size: 64px;
+        font-family: $header-font-family;
+        margin-top: 0;
+        color: $body-color;
+        margin-bottom: 4px;
+      }
+
+      p {
+        .skill {
+          font-weight: 500;
+          color: $primary-color;
+        }
+      }
+    }
+
+    .subheader {
+      margin-right: 48px;
+      margin-bottom: 0;
+    }
+  }
+
+  #cogs {
+    border: none;
+    border-radius: 0;
+    width: 468px;
+    grid-column: 8 / 12;
+    margin: 0;
+  }
+}
