@@ -2,21 +2,36 @@
 <html lang="en">
 
 {% include head.html %}
+<script src="/scripts/home.js" defer></script>
 
 <body>
-  <div class="intro-container content">
+  {% include navigation.html %}
+  <section class="intro-container content">
     <div class="intro">
       <header>
         <p class="pretitle">Hi I'm</p>
-        <h1>J. Law. Cordova</h1>
-        <p>and I make <span class="skill">Enterprise Applications.</span></p>
+        <h1>J. Law. Cordova.</h1>
+        <p>I make <span class="highlighted-skill"><span class="skill shown">Enterprise Applications</span><span class="skill hidden">Backend Systems</span><span class="skill hidden">Automated Pipelines</span></span>.
+        </p>
       </header>
       <p class="subheader">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris risus eros, pharetra in
         aliquet at, dignissim
         at enim.</span></p>
     </div>
     <img id="cogs" src="/public/jlawcordova-cogs.svg" alt="animated cogs">
-  </div>
+  </section>
+
+  <section class="bio-container">
+    <img src="/public/home/jlawcordova-profile.png" alt="">
+    <div class="bio-content-container">
+      <h2>Code <span class="heading-highlight">+</span> Create</h2>
+      <p>Phasellus a fringilla est. Donec in mauris tincidunt,
+        mollis nisi non, tempor purus. Phasellus commodo, erat
+        in dictum aliquam, nunc lorem luctus lorem, sit amet sollicitudin
+        libero diam eget augue. Nulla vehicula sem id vestibulum
+        consectetur.</p>
+    </div>
+  </section>
 </body>
 
 </html>

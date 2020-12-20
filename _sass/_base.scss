@@ -48,6 +48,11 @@ a {
   }
 }
 
+p {
+  font-size: 24px;
+  font-family: $root-font-family;
+}
+
 img {
   display: block;
   max-width: 100%;

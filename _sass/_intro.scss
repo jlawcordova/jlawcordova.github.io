@@ -1,52 +1,122 @@
 .intro-container {
   display: grid;
   grid-column-gap: 16px;
-  grid-template-columns: repeat(12, 1fr);
-  height: 100vh;
-  align-items: flex-end;
-  padding-bottom: 112px;
+  grid-template-columns: repeat(4, 1fr);
   background-image: url("/public/graph-background.png");
+  background-position: bottom;
+  background-size: initial;
+  background-repeat: no-repeat;
+  text-align: center;
+  padding: 0 16px;
+  padding-bottom: 72px;
 
   .intro {
-    grid-column: 2 / 8;
+    grid-column: 1 / 5;
+    grid-row: 2 / 3;
+  }
 
-    header {
-      font-size: 28px;
-      margin-bottom: 36px;
+  header {
+    font-size: 24px;
+    margin-bottom: 36px;
 
-      .pretitle {
-        font-size: 36px;
-        font-family: $header-font-family;
-        margin-bottom: 2px;
-      }
+    .pretitle {
+      font-size: 32px;
+      font-family: $header-font-family;
+      margin-bottom: 0;
+      color: $body-color;
+    }
 
-      h1 {
-        font-size: 64px;
-        font-family: $header-font-family;
-        margin-top: 0;
-        color: $body-color;
-        margin-bottom: 4px;
-      }
+    h1 {
+      font-size: 64px;
+      font-family: $header-font-family;
+      margin-top: 0;
+      color: $body-color;
+      margin-bottom: 4px;
+    }
 
-      p {
+    p {
+      font-size: 24px;
+
+      span {
+        display: inline-block;
+        position: relative;
+        white-space: nowrap;
+
         .skill {
           font-weight: 500;
           color: $primary-color;
+          display: inline-block;
+          transition: opacity cubic-bezier(0.4, 0.0, 0.2, 1) 0.4s, transform cubic-bezier(0.4, 0.0, 0.2, 1) 0.4s;
+        }
+
+        .shown {
+          position: relative;
+          opacity: 1;
+          transition: opacity cubic-bezier(0.4, 0.0, 0.2, 1) 0.4s;
+        }
+
+        .hidden {
+          position: absolute;
+          opacity: 0;
+          transform: translateY(120%);
+          top: 0;
+          left: 0;
         }
       }
-    }
-
-    .subheader {
-      margin-right: 48px;
-      margin-bottom: 0;
     }
   }
 
   #cogs {
     border: none;
     border-radius: 0;
-    width: 468px;
-    grid-column: 8 / 12;
-    margin: 0;
+    grid-column: 1 / 5;
+    grid-row: 1 / 2;
+    margin: 64px 28px 36px 28px
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .intro-container {
+    grid-column-gap: 16px;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    height: 672px;
+    background-size: cover;
+    text-align: left;
+
+    .intro {
+      grid-column: 2 / 8;
+      grid-row: 2 / 6;
+
+      header {
+        text-align: left;
+        font-size: 28px;
+        margin-bottom: 36px;
+
+        .pretitle {
+          font-family: $header-font-family;
+        }
+
+        h1 {
+          font-size: 64px;
+          margin-top: 0;
+          margin-bottom: 8px;
+        }
+      }
+
+      .subheader {
+        font-size: 24px;
+        margin-right: 48px;
+        margin-bottom: 0;
+      }
+    }
+
+    #cogs {
+      border: none;
+      border-radius: 0;
+      grid-column: 8 / 12;
+      grid-row: 5 / 6;
+      margin: 0;
+    }
   }
 }
