@@ -3,6 +3,8 @@ layout: default
 title: Home
 ---
 
+<script src="/scripts/home.js" defer></script>
+
 <section class="intro-container content">
   <div class="intro">
     <header>
@@ -22,7 +24,7 @@ title: Home
   <img src="/public/home/jlawcordova-profile.png" alt="">
   <div class="bio-content-container">
     <h2>Code <span class="heading-highlight">+</span> Create</h2>
-    <p>Phasellus a fringilla est. Donec in mauris tincidunt,
+    <p class="bio-content">Phasellus a fringilla est. Donec in mauris tincidunt,
       mollis nisi non, tempor purus. Phasellus commodo, erat
       in dictum aliquam, nunc lorem luctus lorem, sit amet sollicitudin
       libero diam eget augue. Nulla vehicula sem id vestibulum
@@ -30,19 +32,21 @@ title: Home
   </div>
 </section>
 
+{% if site.posts != empty %}
 <section class="recent-blogs-section-container">
   <div class="recent-blogs-section-wrapper">
     <h2 class="recent-blogs-heading">
       Recent Blog Posts
     </h2>
-    <div class="recent-blogs-container">
+    <ol class="recent-blogs-container">
       {% for post in site.posts limit:3 %}
-      <div class="recent-blog-container">
+      <li class="recent-blog-container">
         <p class="category-pre-heading">{{ post.categories[0] }}</p>
         <h3 class="blog-heading"><a href="{{ post.url }}">{{ post.title }}</a></h3>
         <time class="blog-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date_to_string }}</time>
-      </div>
+      </li>
       {% endfor %}
-    </div>
+    </ol>
   </div>
 </section>
+{% endif %}

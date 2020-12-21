@@ -1,6 +1,5 @@
 var currentSkillIndex = 1;
 var skills = document.querySelectorAll(".skill");
-console.log(skills);
 
 setInterval(f => {
   for (let i = skills.length - 1; i >= 0; i--) {
@@ -15,8 +14,3 @@ setInterval(f => {
     currentSkillIndex = 0;
   }
 }, 2600);
-
-function collapseNavigation() {
-  var navigation = document.querySelector("nav");
-  navigation.classList.toggle("collapsed");
-}
