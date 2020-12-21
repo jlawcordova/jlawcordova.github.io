@@ -46,7 +46,7 @@
 
 // Related posts
 .recent-blog-container {
-  margin-bottom: 32px;
+  margin-bottom: 2rem;
 
   .category-pre-heading {
     font-family: $root-font-family;
@@ -54,7 +54,7 @@
     font-weight: 500;
     font-size: 1rem;
     line-height: 150%;
-    margin-bottom: 4px;
+    margin-bottom: 0.25rem;
     margin-top: 1rem;
 
     font-variant: small-caps;
@@ -66,10 +66,10 @@
     font-family: $root-font-family;
     font-style: normal;
     font-weight: 500;
-    font-size: 1.10rem;
+    font-size: 1.125rem;
     line-height: 150%;
     margin: 0;
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
@@ -99,8 +99,8 @@
 
 
 .related {
-  padding-top: 2rem;
-  margin-bottom: 2rem;
+  padding: 42px 0;
+  margin-bottom: 0;
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
 }
@@ -108,7 +108,7 @@
 .related-posts {
   padding-left: 0;
   list-style: none;
-  margin-top: 1.25rem;
+  margin-bottom: 1.1875rem;
 
   h3 {
     margin-top: 0;
@@ -117,11 +117,8 @@
 
 
 @media only screen and (min-width: 768px) {
-  .related {
-    margin-bottom: 1rem;
-  }
-
   .related-posts {
+    margin: 0;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 48px;

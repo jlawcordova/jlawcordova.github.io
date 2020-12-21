@@ -12,7 +12,7 @@ footer {
     align-items: center;
 
     .external-sites {
-      margin-bottom: 24px;
+      margin-bottom: 0.6875rem;
 
       display: flex;
 
@@ -21,10 +21,10 @@ footer {
 
         i {
           color: $primary-color;
-          font-size: 24px;
+          font-size: 1.5rem;
         }
 
-        margin-right: 24px;
+        margin-right: 1.625rem;
       }
 
       a:last-child {
@@ -34,10 +34,10 @@ footer {
 
     .footer-content {
       p {
-        font-family: Roboto;
+        font-family: $root-font-family;
         font-style: normal;
         font-weight: 300;
-        font-size: 16px;
+        font-size: 0.6875rem;
         line-height: 150%;
         text-align: center;
         color: rgba(255, 255, 255, 0.5);
@@ -73,10 +73,10 @@ footer {
   
           i {
             color: $primary-color;
-            font-size: 28px;
+            font-size: 1.25rem;
           }
   
-          margin-right: 36px;
+          margin-right: 1.5rem;
         }
   
         a:last-child {

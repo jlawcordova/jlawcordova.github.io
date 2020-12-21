@@ -16,26 +16,26 @@
   }
 
   header {
-    font-size: 24px;
-    margin-bottom: 36px;
+    font-size: 1.125rem;
+    margin-bottom: 2rem;
 
     .pretitle {
-      font-size: 32px;
+      font-size: 1.5rem;
       font-family: $header-font-family;
       margin-bottom: 0;
       color: $body-color;
     }
 
     h1 {
-      font-size: 64px;
+      font-size: 2.5rem;
       font-family: $header-font-family;
       margin-top: 0;
       color: $body-color;
-      margin-bottom: 4px;
+      margin-bottom: 0.25rem;
     }
 
     p {
-      font-size: 24px;
+      font-size: 1.125rem;
 
       span {
         display: inline-block;
@@ -67,7 +67,7 @@
   }
 
   .subheader {
-    font-size: 24px;
+    font-size: 1.125rem;
   }
 
   #cogs {
@@ -75,7 +75,7 @@
     border-radius: 0;
     grid-column: 1 / 5;
     grid-row: 1 / 2;
-    margin: 64px 28px 36px 28px
+    margin: 64px 28px 36px 28px;
   }
 }
 
@@ -94,22 +94,23 @@
 
       header {
         text-align: left;
-        font-size: 28px;
-        margin-bottom: 36px;
+        font-size: 1.125rem;
+        margin-bottom: 1.875rem;
 
         .pretitle {
           font-family: $header-font-family;
+          margin-bottom: -0.6rem;;
         }
 
         h1 {
-          font-size: 64px;
+          font-size: 3rem;
           margin-top: 0;
-          margin-bottom: 8px;
+          margin-bottom: 0;
         }
       }
 
       .subheader {
-        font-size: 24px;
+        font-size: 1.125rem;
         margin-right: 48px;
         margin-bottom: 0;
       }
