@@ -14,4 +14,9 @@ setInterval(f => {
   if (currentSkillIndex >= skills.length) {
     currentSkillIndex = 0;
   }
-}, 2600)
+}, 2600);
+
+function collapseNavigation() {
+  var navigation = document.querySelector("nav");
+  navigation.classList.toggle("collapsed");
+}

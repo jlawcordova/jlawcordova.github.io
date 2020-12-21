@@ -1,9 +1,14 @@
 <header class="navigation-header">
   <div class="navigation-container">
-    <a href="{{ site.baseurl }}/" title="Home">
-      <img id="logo" src="/public/logo.png" alt="jlawcordova-logo">
-    </a>
-    <nav>
+    <div class="subnavigation-container">
+      <a href="{{ site.baseurl }}/" title="Home">
+        <img id="logo" src="/public/logo.png" alt="jlawcordova-logo">
+      </a>
+      <button class="navigation-drawer" onclick="collapseNavigation()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+    <nav class="collapsed">
       <ul>
         <li>
           <a href="">

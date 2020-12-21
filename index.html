@@ -3,31 +3,46 @@ layout: default
 title: Home
 ---
 
-<div class="posts">
-  {% for post in paginator.posts %}
-  <article class="post">
-    <h1 class="post-title">
-      <a href="{{ site.baseurl }}{{ post.url }}">
-        {{ post.title }}
-      </a>
-    </h1>
+<section class="intro-container content">
+  <div class="intro">
+    <header>
+      <p class="pretitle">Hi I'm</p>
+      <h1>J. Law. Cordova.</h1>
+      <p>I make <span class="highlighted-skill"><span class="skill shown">Enterprise Applications</span><span class="skill hidden">Backend Systems</span><span class="skill hidden">Automated Pipelines</span></span>.
+      </p>
+    </header>
+    <p class="subheader">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris risus eros, pharetra in
+      aliquet at, dignissim
+      at enim.</span></p>
+  </div>
+  <img id="cogs" src="/public/jlawcordova-cogs.svg" alt="animated cogs">
+</section>
 
-    <time datetime="{{ post.date | date_to_xmlschema }}" class="post-date">{{ post.date | date_to_string }}</time>
+<section class="bio-container">
+  <img src="/public/home/jlawcordova-profile.png" alt="">
+  <div class="bio-content-container">
+    <h2>Code <span class="heading-highlight">+</span> Create</h2>
+    <p>Phasellus a fringilla est. Donec in mauris tincidunt,
+      mollis nisi non, tempor purus. Phasellus commodo, erat
+      in dictum aliquam, nunc lorem luctus lorem, sit amet sollicitudin
+      libero diam eget augue. Nulla vehicula sem id vestibulum
+      consectetur.</p>
+  </div>
+</section>
 
-    {{ post.content }}
-  </article>
-  {% endfor %}
-</div>
-
-<div class="pagination">
-  {% if paginator.next_page %}
-    <a class="pagination-item older" href="{{ paginator.next_page_path | prepend: site.baseurl }}">Older</a>
-  {% else %}
-    <span class="pagination-item older">Older</span>
-  {% endif %}
-  {% if paginator.previous_page %}
-    <a class="pagination-item newer" href="{{ paginator.previous_page_path | prepend: site.baseurl }}">Newer</a>
-  {% else %}
-    <span class="pagination-item newer">Newer</span>
-  {% endif %}
-</div>
+<section class="recent-blogs-section-container">
+  <div class="recent-blogs-section-wrapper">
+    <h2 class="recent-blogs-heading">
+      Recent Blog Posts
+    </h2>
+    <div class="recent-blogs-container">
+      {% for post in site.posts limit:3 %}
+      <div class="recent-blog-container">
+        <p class="category-pre-heading">{{ post.categories[0] }}</p>
+        <h3 class="blog-heading"><a href="{{ post.url }}">{{ post.title }}</a></h3>
+        <time class="blog-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date_to_string }}</time>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>

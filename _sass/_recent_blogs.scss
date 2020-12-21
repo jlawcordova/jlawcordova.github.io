@@ -1,0 +1,101 @@
+.recent-blogs-section-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 16px;
+  padding: 0 16px;
+  margin: 72px 0;
+
+  .recent-blogs-section-wrapper {
+    grid-column: 1 / 5;
+
+    .recent-blogs-heading {
+      color: $body-color;
+      font-family: Merriweather;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 48px;
+      line-height: 60px;
+      letter-spacing: 0.02em;
+      margin-top: 0;
+      margin-bottom: 42px;
+      text-align: center;
+
+      .heading-highlight {
+        color: $primary-color;
+      }
+    }
+
+    .recent-blogs-container {
+      display: flex;
+      flex-direction: column;
+
+      .recent-blog-container {
+        margin-bottom: 32px;
+
+        .category-pre-heading {
+          font-family: $root-font-family;
+          font-style: normal;
+          font-weight: 500;
+          font-size: 20px;
+          line-height: 150%;
+          margin-bottom: 4px;
+
+          font-variant: small-caps;
+          font-variant-caps: all-small-caps;
+        }
+
+        .blog-heading {
+          color: $primary-color;
+          font-family: $root-font-family;
+          font-style: normal;
+          font-weight: 500;
+          font-size: 24px;
+          line-height: 150%;
+          margin: 0;
+          margin-bottom: 8px;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+
+          a {
+            color: $primary-color;
+          }
+
+          a:hover {
+            text-decoration: none;
+          }
+        }
+
+        .blog-date {
+          font-family: $root-font-family;
+          font-style: normal;
+          font-weight: 300;
+          font-size: 20px;
+          line-height: 150%;
+        }
+      }
+
+      .recent-blog-container:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .recent-blogs-section-container {
+    grid-template-columns: repeat(12, 1fr);
+    margin: 96px 0;
+
+    .recent-blogs-section-wrapper {
+      grid-column: 2/ 12;
+
+      .recent-blogs-container {
+        display: grid;
+        grid-template-columns: repeat(3, 5fr);
+        grid-gap: 56px;
+      }
+    }
+  }
+}
