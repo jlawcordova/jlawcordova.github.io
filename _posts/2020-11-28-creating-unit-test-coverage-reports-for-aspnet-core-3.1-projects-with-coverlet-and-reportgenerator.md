@@ -3,7 +3,7 @@ layout: post
 title: Creating Unit Test Coverage Reports for ASP.NET Core 3.1 Projects with Coverlet and ReportGenerator
 tags: asp.net report
 categories: testing
-featured-image: /public/2020-11-28-coverlet-featured-image.png
+featured-image: /public/2020-11-28/2020-11-28-coverlet-featured-image.png
 featured-image-alt: coverlet abstract feature
 description: Using Coverlet to generate ASP.NET Core project coverage.
 ---
@@ -15,7 +15,7 @@ We are going to work with a simple project to demonstrate unit test reporting.
 
 We have an ASP.NET Core 3.1 Web API Project called **HomeBrew**. For simplicity, it has a single `BeerController` which only contains API endpoints for retrieving currently available (in-memory-stored) beer varieties. These endpoints also have some tests already set up in `HomeBrew.Tests > Controllers > BeerController` - making sure that all beer varieties are actually retrieved and single beer retrieval actually works.
 
-![HomeBrew Project Structure](/public/2020-11-28-homebrew-project-structure.png "HomeBrew Project Structure")
+![HomeBrew Project Structure](/public/2020-11-28/2020-11-28-homebrew-project-structure.png "HomeBrew Project Structure")
 
 Our goal is to be able to generate HTML reports for the HomeBrew project's available unit tests.
 
@@ -55,7 +55,7 @@ dotnet test --collect:"XPlat Code Coverage"
 
 This will run the unit tests and automatically generate a Cobertura-format XML file containing the coverage results in a `TestResults` directory.
 
-![Coverlet Cobertura TestResults XML File](/public/2020-11-28-coverlet-cobertura-file.png "Coverlet Cobertura TestResults XML File")
+![Coverlet Cobertura TestResults XML File](/public/2020-11-28/2020-11-28-coverlet-cobertura-file.png "Coverlet Cobertura TestResults XML File")
 
 The XML file is then fed into ReportGenerator:
 
@@ -65,7 +65,7 @@ reportgenerator -reports:D:./TestResults/*/*.xml -targetdir:./Reports
 
 This converts the Cobertura XML file into an HTML report of the unit test coverage in the specified directory `Reports`. Opening the index.html would show the coverage of our unit tests and allow line-per-line code exploration for us to see that the `BeerController` endpoints are fully covered.
 
-![ReportGenerator HTML Report](/public/2020-11-28-report-generator-code-explore.png "ReportGenerator HTML Report")
+![ReportGenerator HTML Report](/public/2020-11-28/2020-11-28-report-generator-code-explore.png "ReportGenerator HTML Report")
 
 ## Conclusion
 

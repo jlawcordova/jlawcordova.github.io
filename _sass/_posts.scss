@@ -96,11 +96,11 @@
     overflow: hidden;
 
     a {
-      color: $primary-color;
+      color: $body-color;
     }
 
     a:hover {
-      text-decoration: none;
+      text-decoration: underline;
     }
   }
 
