@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: default-post
 ---
 
 <div class="article-container">
@@ -16,9 +16,14 @@ layout: default
       <ul class="related-posts">
         {% for post in site.related_posts limit:2 %}
         <li class="recent-blog-container">
-          <p class="category-pre-heading">{{ post.categories[0] }}</p>
-          <h3 class="blog-heading"><a href="{{ post.url }}">{{ post.title }}</a></h3>
-          <time class="blog-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date_to_string }}</time>
+          <a href="{{ post.url }}">
+            <img class="featured-blog-image" src="{{ post.featured-image }}" alt="{{ post.featured-image-alt }}">
+          </a>
+          <div class="blog-content-container">
+            <p class="category-pre-heading">{{ post.categories[0] }}</p>
+            <h3 class="blog-heading"><a href="{{ post.url }}">{{ post.title }}</a></h3>
+            <time class="blog-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date_to_string }}</time>
+          </div>
         </li>
         {% endfor %}
       </ul>

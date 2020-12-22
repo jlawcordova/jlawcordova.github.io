@@ -3,6 +3,9 @@ layout: post
 title: Documenting ASP.NET Core 3.1 API Projects using Code-First Approach with NSwag
 tags: asp.net nswag swagger openapi
 categories: documentation
+featured-image: /public/2020-12-19-aspnet-nswag-featured-image.png
+featured-image-alt: asp.net nswag abstract feature
+description: How to setup NSWag to generate Swagger UI and OpenAPI documentation.
 ---
 
 API documentation is necessary if the API is to be used by other developers in a team or in public (for external APIs). For large and complex projects, documentation can be written before the API is actually implemented (design-first). Platforms such as [Swaggerhub](https://swagger.io/tools/swaggerhub/) are available for collaboration on creating these API documents which conform to the [OpenAPI specification](http://spec.openapis.org/oas/v3.0.3).

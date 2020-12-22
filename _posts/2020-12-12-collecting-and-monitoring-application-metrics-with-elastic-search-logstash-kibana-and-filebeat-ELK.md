@@ -3,6 +3,9 @@ layout: post
 title: Collecting and Monitoring Application Metrics with Elasticsearch, Logstash, Kibana and Filebeat (ELK Stack)
 tags: elasticsearch logstash kibana ELK
 categories: monitoring
+featured-image: /public/2020-12-12-elk-featured-image.png
+featured-image-alt: elk abstract feature
+description: Application metric is an important data point when it comes to working with production software. The ELK stack should help us efficiently collect these application metrics.
 ---
 
 Application metric is an important data point when it comes to working with production software. Application metrics (along with system metrics) help us determine the health of our application and even provide business-level information such as popular application features and trends. A lot of tools are available for effectively collecting and monitoring application metrics. One such tool is the ELK stack.
