@@ -22,7 +22,6 @@ layout: default-post
           <div class="blog-content-container">
             <p class="category-pre-heading">{{ post.categories[0] }}</p>
             <h3 class="blog-heading"><a href="{{ post.url }}">{{ post.title }}</a></h3>
-            <time class="blog-date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date_to_string }}</time>
           </div>
         </li>
         {% endfor %}
