@@ -17,86 +17,10 @@
       line-height: 60px;
       letter-spacing: 0.02em;
       margin-top: 0;
-      margin-bottom: 1.5rem;
       text-align: center;
 
       .heading-highlight {
         color: $primary-color;
-      }
-    }
-
-    .recent-blogs-container {
-      display: flex;
-      flex-direction: column;
-      list-style: none;
-      margin-bottom: 0;
-      padding: 0;
-
-      .recent-blog-container {
-        margin-bottom: 1rem;
-        display: flex;
-        flex-direction: row-reverse;
-        align-items: flex-start;
-
-        .featured-blog-image {
-          max-width: 120px;
-          height: 63px;
-          border: none;
-          border-radius: 0;
-          object-fit: contain;
-          margin-top: 1rem;
-        }
-
-        .blog-content-container {
-          margin-right: 1rem;
-        }
-
-        .category-pre-heading {
-          font-family: $root-font-family;
-          font-style: normal;
-          font-weight: 500;
-          font-size: 1rem;
-          line-height: 150%;
-          margin-bottom: 0.25rem;
-
-          font-variant: small-caps;
-          font-variant-caps: all-small-caps;
-        }
-
-        .blog-heading {
-          color: $body-color;
-          font-family: $root-font-family;
-          font-style: normal;
-          font-weight: 500;
-          font-size: 1.125rem;
-          line-height: 1.5;
-          margin: 0;
-          margin-bottom: 0.5rem;
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-
-          a {
-            color: $body-color;
-          }
-
-          a:hover {
-            text-decoration: underline;
-          }
-        }
-
-        .blog-date {
-          font-family: $root-font-family;
-          font-style: normal;
-          font-weight: 300;
-          font-size: 1rem;
-          line-height: 150%;
-        }
-      }
-
-      .recent-blog-container:last-child {
-        margin-bottom: 0;
       }
     }
   }
@@ -109,19 +33,6 @@
 
     .recent-blogs-section-wrapper {
       grid-column: 2/ 12;
-
-      .recent-blogs-container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0 6rem;
-
-        .recent-blog-container {
-          .featured-blog-image {
-            max-width: 160px;
-            height: 84px;
-          }
-        }
-      }
     }
   }
 }
