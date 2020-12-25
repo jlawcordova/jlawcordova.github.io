@@ -16,7 +16,7 @@
   }
 
   header {
-    font-size: 1.125rem;
+    font-size: $body-font-size;
     margin-bottom: 2rem;
 
     .pretitle {
@@ -35,7 +35,7 @@
     }
 
     p {
-      font-size: 1.125rem;
+      font-size: $body-font-size;
 
       span {
         display: inline-block;
@@ -67,7 +67,7 @@
   }
 
   .subheader {
-    font-size: 1.125rem;
+    font-size: $body-font-size;
   }
 
   #cogs {
@@ -94,7 +94,7 @@
 
       header {
         text-align: left;
-        font-size: 1.125rem;
+        font-size: $body-font-size;
         margin-bottom: 1.875rem;
 
         .pretitle {
@@ -110,7 +110,7 @@
       }
 
       .subheader {
-        font-size: 1.125rem;
+        font-size: $body-font-size;
         margin-right: 48px;
         margin-bottom: 0;
       }

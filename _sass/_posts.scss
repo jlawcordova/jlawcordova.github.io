@@ -28,7 +28,7 @@
 .page-title,
 .post-title,
 .post-title a {
-  color: #303030;
+  color: $body-color;
 }
 .page-title,
 .post-title {
@@ -86,7 +86,7 @@
     font-family: $root-font-family;
     font-style: normal;
     font-weight: 500;
-    font-size: 1.125rem;
+    font-size: $body-font-size;
     line-height: 150%;
     margin: 0;
     margin-bottom: 0.5rem;
