@@ -23,6 +23,31 @@
         color: $primary-color;
       }
     }
+
+    .view-all-container {
+      display: block;
+      text-align: end;
+      margin-top: 1.5rem;
+
+      .view-all {
+        font-variant: small-caps;
+        font-variant-caps: all-small-caps;
+        font-family: $root-font-family;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 1.125rem;
+        letter-spacing: 0.08em;
+      }
+
+      .view-all:hover {
+        text-decoration: none;
+      }
+
+      .view-all:focus {
+        text-decoration: none;
+      }
+    }
+    
   }
 }
 

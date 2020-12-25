@@ -1,16 +1,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="{{ page.description }}"></head>
   <meta property="og:url" content="{{ site.baseurl }}{{ page.url }}" />
   <meta property="og:type" content="article" />
   <meta property="og:title" content="{{ page.title }}" />
   <meta property="og:description" content="{{ page.description }}" />
   <meta property="og:image" content="{{ site.baseurl }}{{ page.featured-image }}" />
-  <meta name="twitter:card" content="summary_large_image">
-
   <meta property="og:site_name" content="{{ site.title }}">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image:alt" content="{{ page.featured-image-alt }}">
+  <meta name="description" content="{{ page.description }}"></head>
 
   <title>{% if page.title == "Home" %}{{ site.title }}{% else %}{{ page.title }} - {{ site.title }}{% endif %}</title>
 
