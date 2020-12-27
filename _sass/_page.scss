@@ -1,0 +1,23 @@
+.page-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0 16px;
+  padding: 0 16px;
+  min-height: 70vh;
+
+  .page-wrapper {
+    grid-column: 1 / 5;
+
+    margin-top: 56px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .page-container {
+    grid-template-columns: repeat(12, 1fr);
+
+    .page-wrapper {
+      grid-column: 2 / 12;
+    }
+  }
+}
