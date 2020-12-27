@@ -1,18 +1,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta property="og:url" content="{{ site.baseurl }}" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="{{ site.title }}" />
-  <meta property="og:description" content="{{ site.description }}" />
-  <meta property="og:image" content="{{ site.baseurl }}/public/jlawcordova-image.png" />
+  <meta property="og:url" content="{{ site.baseurl }}{{ page.url }}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="{{ page.title }}" />
+  <meta property="og:description" content="{{ page.description }}" />
+  <meta property="og:image" content="{{ site.baseurl }}{{ page.featured-image }}" />
+  <meta property="og:site_name" content="{{ site.title }}">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image:alt" content="jlawcordova.com banner">
-  <meta name="description" content="{{ site.description }}"></head>
+  <meta name="twitter:image:alt" content="{{ page.featured-image-alt }}">
+  <meta name="description" content="{{ page.description }}"></head>
 
   <title>{% if page.title == "Home" %}{{ site.title }}{% else %}{{ page.title }} - {{ site.title }}{% endif %}</title>
 
-  <script src="https://kit.fontawesome.com/85f88dfe1e.js" crossorigin="anonymous" async></script>
+  <script src="https://kit.fontawesome.com/85f88dfe1e.js" crossorigin="anonymous"></script>
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Roboto:wght@300;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ site.baseurl }}/styles.css">

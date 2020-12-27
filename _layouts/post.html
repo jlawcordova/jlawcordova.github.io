@@ -1,25 +1,32 @@
 ---
-layout: default
+layout: default-post
 ---
 
-<article class="post">
-  <h1 class="post-title">{{ page.title }}</h1>
-  <time datetime="{{ page.date | date_to_xmlschema }}" class="post-date">{{ page.date | date_to_string }}</time>
-  {{ content }}
-</article>
+<div class="article-container">
+  <div class="article-wrapper">
+    <article class="post">
+      <h1 class="post-title">{{ page.title }}</h1>
+      <time datetime="{{ page.date | date_to_xmlschema }}" class="post-date">{{ page.date | date_to_string }}</time>
+      {{ content }}
+    </article>
 
-{% if site.related_posts != empty %}
-<aside class="related">
-  <h3>Related posts</h3>
-  <ul class="related-posts">
-    {% for post in site.related_posts limit:3 %}
-      <li>
-        <a href="{{ site.baseurl }}{{ post.url }}">
-          {{ post.title }}
-          <small><time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date_to_string }}</time></small>
-        </a>
-      </li>
-    {% endfor %}
-  </ul>
-</aside>
-{% endif %}
+    {% if site.related_posts != empty %}
+    <aside class="related">
+      <h3>Related posts</h3>
+      <ul class="related-posts">
+        {% for post in site.related_posts limit:2 %}
+        <li class="recent-blog-container">
+          <a href="{{ post.url }}">
+            <img class="featured-blog-image" src="{{ post.featured-image }}" alt="{{ post.featured-image-alt }}">
+          </a>
+          <div class="blog-content-container">
+            <p class="category-pre-heading">{{ post.categories[0] }}</p>
+            <h3 class="blog-heading"><a href="{{ post.url }}">{{ post.title }}</a></h3>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </aside>
+    {% endif %}
+  </div>
+</div>

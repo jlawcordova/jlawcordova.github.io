@@ -3,6 +3,8 @@ layout: post
 title: REST in a Nutshell
 tags: REST architecture
 categories: architecture
+featured-image: /public/2019-04-28/2019-04-28-rest-featured-image.png
+featured-image-alt: rest abstract feature
 ---
 
 Years ago, the world wide web was simply a publishing platform where we were able to read and share documents through browsers. The web we now know has grown into something more than that. We can now search for information, book flights, make payments, and even automate our homes - basically any process we can think of. In other words, the web has grown into the largest application platform we've ever known.

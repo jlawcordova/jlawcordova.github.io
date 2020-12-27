@@ -3,9 +3,10 @@ layout: post
 title: JWT for Authorization in Microservice-Architectured Systems
 tags: microservice JWT
 categories: security
+featured-image: /public/2020-12-05-jwt-featured-image.png
+featured-image-alt: jwt abstract feature
+description: JWT's stateless nature provides a scalable authentication method.
 ---
-
-## Authorization in Monolithic Systems
 
 Authorization is normally persisted using **sessions** in monolithic systems. Once a user has completed authentication, a session is stored in the server persistent storage and succeeding calls would simply provide the _session ID_ for authorization.
 

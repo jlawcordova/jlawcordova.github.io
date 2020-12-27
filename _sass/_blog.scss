@@ -1,0 +1,147 @@
+.blog-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0 16px;
+  padding: 0 16px;
+  min-height: 60vh;
+
+  .overall-posts-container {
+    grid-column: 1 / 5;
+    margin-top: 56px;
+
+    .posts-container {
+      padding-bottom: 3rem;
+    }
+  }
+
+  .highlight-posts-container {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    margin-bottom: 0;
+    padding: 0;
+    padding-bottom: 42px;
+    border-bottom: 1px solid $border-color;
+
+    .highlight-featured-post-image {
+      max-width: 100%;
+      border: none;
+      border-radius: 0;
+      object-fit: contain;
+      margin-top: 1rem;
+    }
+
+    .highlight-post-content-container {
+      display: flex;
+      flex-direction: column;
+
+      .highlight-post-heading {
+        font-size: 1.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+
+        a {
+          color: $body-color;
+        }
+      }
+
+      .highlight-post-description {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        margin-bottom: 0.3125rem;
+      }
+    }
+  }
+
+  .posts-container {
+    grid-column: 1 / 5;
+  }
+}
+
+.page-info {
+  margin-top: 42px;
+}
+
+.blog-pagination-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0 16px;
+  padding: 0 16px;
+  justify-content: center;
+  margin-bottom: 56px;
+
+  .blog-pagination-wrapper {
+    grid-column: 1 / 5;
+    display: flex;
+    justify-content: center;
+
+    .blog-pagination {
+      display: flex;
+      line-height: 1.7;
+      font-weight: 500;
+
+      .pagination-item {
+        margin: 0 16px;
+        color: $body-color;
+      }
+
+      .current-page {
+        width: 1.625rem;
+        height: 1.625rem;
+        text-align: center;
+        background-color: $primary-color;
+        color: $white;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .blog-container {
+    grid-template-columns: repeat(12, 1fr);
+
+    .overall-posts-container {
+      grid-column: 2 / 12;
+    }
+
+    .highlight-posts-container {
+      .highlight-post-container {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 0 16px;
+
+        a {
+          grid-column: 1 / 6;
+
+          .highlight-featured-post-image {
+            margin: 0;
+            padding-right: 40px;
+          }
+        }
+
+        .highlight-post-content-container {
+          grid-column: 6 / 11;
+
+          .highlight-post-heading {
+            font-size: 2rem;
+          }
+        }
+      }
+    }
+    .posts-container {
+      grid-column: 2 / 12;
+    }
+  }
+
+  .blog-pagination-container {
+    grid-template-columns: repeat(12, 1fr);
+
+    .blog-pagination-wrapper {
+      grid-column: 2 / 12;
+    }
+  }
+}

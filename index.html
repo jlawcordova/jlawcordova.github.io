@@ -3,31 +3,59 @@ layout: default
 title: Home
 ---
 
-<div class="posts">
-  {% for post in paginator.posts %}
-  <article class="post">
-    <h1 class="post-title">
-      <a href="{{ site.baseurl }}{{ post.url }}">
-        {{ post.title }}
-      </a>
-    </h1>
+<script src="/scripts/home.js" defer></script>
 
-    <time datetime="{{ post.date | date_to_xmlschema }}" class="post-date">{{ post.date | date_to_string }}</time>
+<section class="intro-container content">
+  <div class="intro">
+    <header>
+      <p class="pretitle">Hi I'm</p>
+      <h1>J. Law. Cordova.</h1>
+      <p>I make <span class="highlighted-skill"><span class="skill shown">Enterprise Applications</span><span class="skill hidden">Backend Systems</span><span class="skill hidden">Automated Pipelines</span></span>.
+      </p>
+    </header>
+    <p class="subheader">Software design and development is my craft. I make it a mission to deliver valuable and well-architected systems in the web.</span></p>
+  </div>
+  <img id="cogs" src="/public/jlawcordova-cogs.svg" alt="animated cogs">
+</section>
 
-    {{ post.content }}
-  </article>
-  {% endfor %}
-</div>
+<section class="bio-container">
+  <img src="/public/home/jlawcordova-profile.webp" alt="">
+  <div class="bio-content-container">
+    <h2>Code <span class="heading-highlight">+</span> Create</h2>
+    <p class="bio-content">As a computer engineer who likes to solve problems, I found passion in writing code and continuously
+      learning in a fast-paced field. This has allowed me to create useful software in various
+      industries.
+    </p>
+    <br />
+    <p class="bio-content">
+      Nowadays, I mostly work on backend systems, aiming to create engaging user and developer experiences
+      through clear documentation, automated workflows and well-designed architectures.
+    </p>
+  </div>
+</section>
 
-<div class="pagination">
-  {% if paginator.next_page %}
-    <a class="pagination-item older" href="{{ paginator.next_page_path | prepend: site.baseurl }}">Older</a>
-  {% else %}
-    <span class="pagination-item older">Older</span>
-  {% endif %}
-  {% if paginator.previous_page %}
-    <a class="pagination-item newer" href="{{ paginator.previous_page_path | prepend: site.baseurl }}">Newer</a>
-  {% else %}
-    <span class="pagination-item newer">Newer</span>
-  {% endif %}
-</div>
+{% if site.posts != empty %}
+<section class="recent-blogs-section-container">
+  <div class="recent-blogs-section-wrapper">
+    <h2 class="recent-blogs-heading">
+      Recent Blog Posts
+    </h2>
+    <ol class="posts-container">
+      {% for post in site.posts limit:4 %}
+      <li class="post-container">
+        <a href="{{ post.url }}">
+          <img class="featured-post-image" src="{{ post.featured-image }}" alt="{{ post.featured-image-alt }}">
+        </a>
+        <div class="post-content-container">
+          <p class="category-pre-heading">{{ post.categories[0] }}</p>
+          <h3 class="post-heading"><a href="{{ post.url }}">{{ post.title }}</a></h3>
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+    <div class="view-all-container">
+      <a href="/blog" class="view-all">View all</a>
+    </div>
+  </div>
+</section>
+{% endif %}

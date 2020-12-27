@@ -16,6 +16,7 @@ body {
 
 html {
   font-family: $root-font-family;
+  font-weight: $root-font-weight;
   font-size: $root-font-size;
   line-height: $root-line-height;
 
@@ -45,6 +46,11 @@ a {
   strong {
     color: inherit;
   }
+}
+
+p {
+  font-size: 24px;
+  font-family: $root-font-family;
 }
 
 img {

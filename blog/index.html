@@ -1,0 +1,80 @@
+---
+layout: default
+title: Blog
+---
+
+{% if paginator.previous_page %}
+
+<div class="blog-container">
+  <ol class="posts-container">
+    {% for post in paginator.posts %}
+    <li class="post-container">
+      <a href="{{ post.url }}">
+        <img class="featured-post-image" src="{{ post.featured-image }}" alt="{{ post.featured-image-alt }}">
+      </a>
+      <div class="post-content-container">
+        <p class="category-pre-heading">{{ post.categories[0] }}</p>
+        <h3 class="post-heading"><a href="{{ post.url }}">{{ post.title }}</a></h3>
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+</div>
+
+{% else %}
+
+<div class="blog-container">
+  <div class="overall-posts-container">
+    <ol class="highlight-posts-container">
+      {% for post in paginator.posts limit:1 %}
+      <li class="highlight-post-container">
+        <a href="{{ post.url }}">
+          <img class="highlight-featured-post-image" src="{{ post.featured-image }}"
+            alt="{{ post.featured-image-alt }}">
+        </a>
+        <div class="highlight-post-content-container">
+          <p class="category-pre-heading">{{ post.categories[0] }}</p>
+          <h3 class="highlight-post-heading"><a href="{{ post.url }}">{{ post.title }}</a></h3>
+          <p class="highlight-post-description">{{ post.description }}</p>
+          <a class="read-more" href="{{ post.url }}">Read more</a>
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+    <p class="page-info">{{ paginator.total_posts }} blog posts &middot; Page {{ paginator.page }} of {{
+      paginator.total_pages }}</p>
+    <ol class="posts-container">
+      {% for post in paginator.posts offset: 1%}
+      <li class="post-container">
+        <a href="{{ post.url }}">
+          <img class="featured-post-image" src="{{ post.featured-image }}" alt="{{ post.featured-image-alt }}">
+        </a>
+        <div class="post-content-container">
+          <p class="category-pre-heading">{{ post.categories[0] }}</p>
+          <h3 class="post-heading"><a href="{{ post.url }}">{{ post.title }}</a></h3>
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</div>
+
+{% endif %}
+
+<div class="blog-pagination-container">
+  <div class="blog-pagination-wrapper">
+    <div class="blog-pagination">
+      {% if paginator.previous_page %}
+      <a class="pagination-item pagination-previous" href="{{ paginator.previous_page_path | prepend: site.baseurl }}">prev</a>
+      <a class="pagination-item pagination-previous" href="{{ paginator.previous_page_path | prepend: site.baseurl }}">{{ paginator.previous_page }}</a>
+      {% endif %}
+
+      <p class="pagination-item current-page">{{ paginator.page }}</p>
+
+      {% if paginator.next_page %}
+      <a class="pagination-item pagination-next" href="{{ paginator.next_page_path | prepend: site.baseurl }}">{{ paginator.next_page }}</a>
+      <a class="pagination-item pagination-next" href="{{ paginator.next_page_path | prepend: site.baseurl }}">next</a>
+      {% endif %}
+    </div>
+  </div>
+</div>

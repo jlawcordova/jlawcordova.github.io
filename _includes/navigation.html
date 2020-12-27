@@ -1,0 +1,39 @@
+<script src="/scripts/navigation.js" defer></script>
+
+<header class="navigation-header">
+  <div class="navigation-container">
+    <div class="subnavigation-container">
+      <a href="{{ site.baseurl }}/" title="Home">
+        <img id="logo" src="/public/logo.svg" alt="jlawcordova-logo">
+      </a>
+      <button class="navigation-drawer" onclick="collapseNavigation()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+    <nav class="collapsed">
+      <ul>
+        <li>
+          <a href="/">
+              Home
+          </a>
+        </li>
+        <li>
+          <a href="/blog">
+              Blog
+          </a>
+        </li>
+        <li>
+          <a href="/public/CORDOVA-JUNEL-LAWRENCE-RESUME.pdf" target="_blank">
+              Resume
+          </a>
+        </li>
+        <!-- TODO: Create Contact me section. -->
+        <!-- <li>
+          <button>
+            Contact
+          </button>
+        </li> -->
+      </ul>
+    </nav>
+  </div>
+</header>
