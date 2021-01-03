@@ -8,7 +8,7 @@ featured-image-alt: coverlet abstract feature
 description: Using Coverlet to generate ASP.NET Core project coverage.
 ---
 
-Unit testing is an essential part of software development to ensure code quality and refactorability. In Agile projects, code can change rapidly, and thus it is often necessary to keep the unit tests and it's coverage in check. It would be a good idea for reports to be generated to easily monitor the status of unit tests.
+Unit testing is an essential part of software development to ensure code quality and refactorability. In Agile projects, code can change rapidly, and thus it is often necessary to keep the unit tests and its coverage in check. It would be a good idea for reports to be generated to easily monitor the status of unit tests.
 
 ## The HomeBrew Project
 We are going to work with a simple project to demonstrate unit test reporting.
@@ -60,7 +60,7 @@ This will run the unit tests and automatically generate a Cobertura-format XML f
 The XML file is then fed into ReportGenerator:
 
 {% highlight sh %}
-reportgenerator -reports:D:./TestResults/*/*.xml -targetdir:./Reports
+reportgenerator -reports:./TestResults/\*/\*.xml -targetdir:./Reports
 {% endhighlight %}
 
 This converts the Cobertura XML file into an HTML report of the unit test coverage in the specified directory `Reports`. Opening the index.html would show the coverage of our unit tests and allow line-per-line code exploration for us to see that the `BeerController` endpoints are fully covered.
