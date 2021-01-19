@@ -41,11 +41,8 @@ title: Home
       Recent Blog Posts
     </h2>
     <ol class="posts-container">
-      {% for post in site.posts limit:4 %}
+      {% for post in site.posts limit:3 %}
       <li class="post-container">
-        <a href="{{ post.url }}">
-          <img class="featured-post-image" src="{{ post.featured-image }}" alt="{{ post.featured-image-alt }}">
-        </a>
         <div class="post-content-container">
           <p class="category-pre-heading">{{ post.categories[0] }}</p>
           <h3 class="post-heading"><a href="{{ post.url }}">{{ post.title }}</a></h3>

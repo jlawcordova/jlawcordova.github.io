@@ -8,7 +8,6 @@
   .post-container {
     margin-top: 1.5rem;
     display: flex;
-    flex-direction: row-reverse;
     align-items: flex-start;
     justify-content: space-between;
 
@@ -66,7 +65,7 @@
   .posts-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0 6rem;
+    gap: 0rem 6rem;
 
     .post-container {
       .featured-post-image {
@@ -94,8 +93,8 @@
 @media only screen and (min-width: 950px) {
   .posts-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0 6rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem 6rem;
 
     .post-container {
       .featured-post-image {

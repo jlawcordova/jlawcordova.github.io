@@ -5,7 +5,7 @@ permalink:           pretty
 title:               J. Law. Cordova
 description:         Create enterprise applications, backend systems, and automated pipelines with software developer J. Law. Cordova (jlawcordova).
 url:                 https://jlawcordova.com
-paginate:            8
+paginate:            9
 paginate_path:       "/blog/page:num/"
 baseurl:             https://jlawcordova.com
 

@@ -49,6 +49,17 @@
     grid-template-columns: repeat(12, 1fr);
     text-align: left;
 
+    .bio-content-container {
+      grid-column: 2/12;
+    }
+  }
+}
+
+@media only screen and (min-width: 950px) {
+  .bio-container {
+    grid-template-columns: repeat(12, 1fr);
+    text-align: left;
+
     img {
       display: inline;
       grid-column: 1/6;
