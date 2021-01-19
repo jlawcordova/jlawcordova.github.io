@@ -1,11 +1,11 @@
 ---
 layout: post
-title: Docker
+title: Running an ASP.NET Core API Project in a Docker Container
 tags: docker
 categories: containerization
-# featured-image: /public/2021-01-02/2021-01-09-github-actions-featured-image.png
+featured-image: /public/2021-01-09/2021-01-09-docker-featured-image.png
 featured-image-alt: docker abstract feature
-description: 
+description: Containerize your ASP.NET Core API project using Docker.
 ---
 
 Web applications nowadays are commonly making use of the cloud native computing architectural style to deliver highly scalable services. One element in cloud native computing is the use of containers.
