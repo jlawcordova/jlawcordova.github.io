@@ -22,7 +22,7 @@
     .pretitle {
       font-size: 1.5rem;
       font-family: $header-font-family;
-      margin-bottom: 0;
+      margin-bottom: 0rem;
       color: $body-color;
     }
 
@@ -31,7 +31,8 @@
       font-family: $header-font-family;
       margin-top: 0;
       color: $body-color;
-      margin-bottom: 0.25rem;
+      margin-bottom: 1rem;
+      line-height: 1;
     }
 
     p {
@@ -99,13 +100,13 @@
 
         .pretitle {
           font-family: $header-font-family;
-          margin-bottom: -0.6rem;;
+          margin-bottom: 0rem;;
         }
 
         h1 {
           font-size: 3rem;
           margin-top: 0;
-          margin-bottom: 0;
+          margin-bottom: 1rem;
         }
       }
 
