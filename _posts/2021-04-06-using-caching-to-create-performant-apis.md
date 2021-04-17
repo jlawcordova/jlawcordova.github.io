@@ -46,7 +46,7 @@ These validators are used by the client in performing **conditional GET** reques
 ![Conditional GET](/public/2021-04-17/2021-04-17-conditional-GET.png "Conditional GET")
 
 ## Conclusion
-Caching provides multiple benefits for an API system – reduced bandwidth, reduced server load, higher throughput, and lower latency. Caching does add a bit more complexity in your system. As the saying goes,
+Caching provides multiple benefits for an API system – reduced bandwidth, reduced server load, higher throughput, and lower latency. Caching does add a bit more complexity in your system. As the joke goes,
 
 > There are only two hard things in Computer Science: cache invalidation and naming things.
 
