@@ -8,7 +8,7 @@ featured-image-alt: uml abstract feature
 description: Create performant systems by utilizing caches into your architecture.
 ---
 
-One of the most common way of making APIs performant is by using caches. Caching provides the benefit of accessing data in a faster store. At the same time, it makes[] the data _closer_ to the end user. For backend systems, the developer and customer experiences becomes better with the faster response times that caching gives.
+One of the most common way of making APIs performant is by using caches. Caching provides the benefit of accessing data in a faster store. At the same time, it makes the data _closer_ to the end user. For backend systems, the developer and customer experiences becomes better with the faster response times that caching gives.
 
 ## Caching for APIs using In-Memory Datastores
 The most common way to implement caching is by using the RAM already available in the machine the system is running on. **In-memory datastores** have much higher throughput compared to data stores in the disk. This can drastically improve system performance. Instead of performing expensive queries directly on a database, systems can instead use an in-memory store to access the same data. For bigger, more complex systems, it would be beneficial to use a [managed in-memory store](https://aws.amazon.com/elasticache/) instead.
