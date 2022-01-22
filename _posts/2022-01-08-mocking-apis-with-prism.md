@@ -10,9 +10,9 @@ description: Quickly mock APIs using OpenAPI and Prism.
 
 Creating APIs can have two different approaches of development - [code-first approach and design-first approach](https://swagger.io/blog/api-design/design-first-or-code-first-api-development).
 
-In the **code-first approach**, developers immediate get started on working on the API code once requirements are defined. As a result, the API build and its specification become available after coding the API. If issues are found by API clients or users, the code changes are made by the API developers and another build and documents would be generation. This can become cumbersome if a lot of revisions occur in this approach and could lead to lag times for the clients while they wait for a build to be created.
+In the **code-first approach**, developers immediately get started on working on the API code once requirements are defined. As a result, the API build and its specification become available after coding the API. If issues are found by API clients or users, the code changes are made by the API developers and another build and documents would be generated. This can become cumbersome if a lot of revisions occur in this approach and could lead to lag times for the clients while they wait for a build to be created.
 
-In the **design-first approach**, the API specification (usually using [OpenAPI specification](https://swagger.io/specification/)) is created first before implementing the API. The API specification goes through a review and is verified first before proceeding with actual API development. This way, issues can be detected early in the development phase.
+In the **design-first approach**, the API specification (usually using [OpenAPI specification](https://swagger.io/specification/)) is created first before implementing the API. The API specification goes through reviews and verifications first before proceeding with actual API development. This way, issues can be detected early in the development phase.
 
 With the design-first approach, some tooling will help so that API clients can immediately try the API out even with only just the specification implemented. One such tool is **Prism**.
 
@@ -84,12 +84,12 @@ Then in the directory where the yml specification file is placed, create a mock 
 prism mock foodkoala.yml
 {% endhighlight %}
 
-The command above should serve up the mock server at localhost:4200 by defaut. Opening `localhost:4200/food/{restaurantId}` in the browser would return the following response:
+The command above should serve up the mock server at `localhost:4200` by defaut. Opening `localhost:4200/food/{restaurantId}` in the browser would return the following response:
 
 {% highlight json %}
 [{
   "name": "string",
-  "price": "0.0",
+  "price": "0",
   "imageUrl": "string",
 }]
 {% endhighlight %}
@@ -123,18 +123,23 @@ Rerun the Prism with a `-d` parameter.
 prism mock -d foodkoala.yml
 {% endhighlight %}
 
-Opening `localhost:4200/food/{restaurantId}` in the browser would now return with better dynamic responses which may look like:
+Opening `localhost:4200/food/{restaurantId}` in the browser would now return better dynamic responses which may look like:
 
 {% highlight json %}
 [{
   "name": "Cheeseburger",
-  "price": "50.00",
+  "price": "50",
   "imageUrl": "/image/663553",
 }]
 {% endhighlight %}
 
 ## Other Use Cases
+Prism's ability to mock APIs opens it up to a range of use cases. Aside from using it for early integration purposes, Prism can also be used for automated integration testing. A real-life example is the [SendGrid C# client SDK](https://github.com/sendgrid/sendgrid-csharp). The Twilio team working on the SendGrid C# client SDK used Prism to mock the Twilio API. This way, they can perform integration testing with the mock API server instead of the actual Twilio servers. And because mock servers are cheap and readily available, they can run the integration tests with every code push for continuous integration.
 
 ## Alternatives
+Some aternatives to Prism are **Postman** and **Swaggerhub**. Postman offers team collaboration on API design, mocking and development. Swaggerhub offers instant setup of mock servers in the cloud. To find out more about these alternative options, check out each of [Postman](https://www.postman.com/) and [Swaggerhubs](https://swagger.io/tools/swaggerhub/) respective websites.
 
 ## Conclusion
+Design-first is a good approach to creating APIs especially in large cross-functional teams. Tools such as Prism helps in making API development in the design-first approach seamless and fast.
+
+This article is based on the DevCon Summit lightning talk I did for the Davao chapter last December 2021. Check out the short Prism demo on my [Github Repository](https://github.com/jlawcordova/prism-demo).
