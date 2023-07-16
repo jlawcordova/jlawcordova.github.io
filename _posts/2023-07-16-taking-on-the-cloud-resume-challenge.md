@@ -154,3 +154,5 @@ The last part of the challenge is to write this blog. Making the whole website f
 I just want to say that this challenge was a pretty fun experience. I had some instances where I was scratching my head for hours trying to fix bugs that occur. Still, the head scratching was worth it. The end result was pretty satisfying  - and I'd do it all over again. I'm now excited and more confident to make more projects in the cloud. Wish me luck on the AWS Solutions Architect certification exam!
 
 The full source code for this challenge is available on my [Github account](https://github.com/jlawcordova/cloudresumechallenge).
+
+Checkout the resume at [resume.jlawcordova.com](https://resume.jlawcordova.com).
