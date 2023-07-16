@@ -29,6 +29,11 @@ pre code {
   background-color: transparent;
 }
 
+figcaption {
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
 // Pygments via Jekyll
 .highlight {
   padding: 1rem;
