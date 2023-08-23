@@ -7,10 +7,6 @@
   padding: 0 16px;
   text-align: center;
 
-  img {
-    display: none;
-  }
-
   .bio-content-container {
     grid-column: 1/5;
     display: flex;
@@ -59,19 +55,5 @@
   .bio-container {
     grid-template-columns: repeat(12, 1fr);
     text-align: left;
-
-    img {
-      display: inline;
-      grid-column: 1/6;
-      margin: 0;
-      margin-left: -16px;
-      border: 0;
-      border-radius: 0;
-    }
-
-    .bio-content-container {
-      grid-column: 6/12;
-      margin: 0;
-    }
   }
 }
