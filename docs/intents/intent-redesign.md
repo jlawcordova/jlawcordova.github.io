@@ -117,7 +117,7 @@ All of it is stepped (`steps()` / `step-end`) so it feels like sprite animation,
 3. **Range** (`#range`, forest background):
    - Left: a frosted panel holding the isogrid stage, with a nameplate showing the current class, previous and next pixel-arrow buttons, the character sprite on its island, and five pager dots.
    - Classes, in order: **Front-end, Infrastructure, UX Design, Data Engineering, Project Management**. Each one recolors the sprite's outfit and headgear (palette and row overrides in the mock's `CL` table).
-   - The classes should line up with the profile's [disciplines](../references/profile.md#disciplines). **UX Design** is backed by the Figma work for a Fortune 500 client's retail planning tool. **Security & Governance**, one of the profile's strongest areas, has no class. See [Decisions](#decisions) #7.
+   - The classes should line up with the profile's [disciplines](../references/profile.md#disciplines). **UX Design** is backed by the Figma UI design work for a client's internal retail planning tool. **Security & Governance**, one of the profile's strongest areas, has no class. See [Decisions](#decisions) #7.
    - Right: H2 "Many hats. *One craftsman.*" (second clause in gold), then the paragraph about working every stage of shipping software.
 4. **Footer.** Dark brown bar in Silkscreen: "© {year} J. LAW. CORDOVA" with links **GITHUB · LINKEDIN · X · BLOG**. Keep the year computed at build time as the current footer does.
 
