@@ -4,19 +4,14 @@ import { site } from '../site';
 const builtAt = new Date();
 ---
 
-<footer>
-  <div class="footer-container">
-    <div class="footer-content">
-      <p>
-        &copy; <time datetime={builtAt.toISOString()}>{builtAt.getUTCFullYear()}</time> J. Law. Cordova.
-        <br />
-        All rights reserved.
-      </p>
-    </div>
-    <div class="external-sites">
-      <a href={site.author.github} aria-label="GitHub"><i class="fab fa-github"></i></a>
-      <a href={site.author.linkedin} aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-      <a href={site.author.twitter} aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-    </div>
-  </div>
+<footer class="site-footer">
+  <p class="site-footer__copy">
+    &copy; <time datetime={builtAt.toISOString()}>{builtAt.getUTCFullYear()}</time> J. LAW. CORDOVA
+  </p>
+  <nav class="site-footer__links" aria-label="Elsewhere">
+    <a href={site.author.github}>GITHUB</a>
+    <a href={site.author.linkedin}>LINKEDIN</a>
+    <a href={site.author.twitter}>X</a>
+    <a href="/blog/">BLOG</a>
+  </nav>
 </footer>

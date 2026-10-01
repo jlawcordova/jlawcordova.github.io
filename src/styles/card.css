@@ -1,0 +1,12 @@
+/* Frosted surface for blog lists and related posts. */
+.card {
+  border-radius: var(--radius-card);
+  padding: 14px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+a.card:hover {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-ghost);
+}

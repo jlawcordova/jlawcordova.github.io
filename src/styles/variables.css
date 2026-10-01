@@ -1,37 +1,56 @@
-/* Design tokens. Media queries can't read custom properties, so the 38em
-   breakpoint (formerly $large-breakpoint) is written inline where it's used. */
 :root {
-  --white: #ffffff;
-  --gray-1: #f9f9f9;
-  --gray-2: #ccc;
-  --gray-3: #767676;
-  --gray-4: #515151;
-  --gray-5: #313131;
+  /* Ground */
+  --color-page: #F4EDE0;
+  --color-hero: #EADFC8;
+  --color-card: #E9DCC6;
+  --color-surface: rgba(250, 245, 235, 0.55);   /* frosted cards */
+  --color-surface-strong: rgba(250, 245, 235, 0.62); /* nav */
+  --color-surface-ghost: rgba(250, 245, 235, 0.6);   /* ghost button */
 
-  --red: #ac4142;
-  --orange: #d28445;
-  --yellow: #f4bf75;
-  --green: #90a959;
-  --cyan: #75b5aa;
-  --blue: #268bd2;
-  --brown: #8f5536;
+  /* Ink */
+  --color-ink: #2E2418;
+  --color-ink-muted: #5C4B39;
+  --color-earth: #5A3E2B;
+  --color-border: rgba(90, 62, 43, 0.16);
+  --color-border-strong: rgba(90, 62, 43, 0.22);
+  --color-grid: rgba(90, 62, 43, 0.06);
 
-  --primary-color: #EC407A;
+  /* Brand */
+  --color-accent: #3F6B45;
+  --color-accent-hover: #2E4F33;
+  --color-on-accent: #F6F0E3;
+  --color-gold: #D8B66A;
 
-  --root-font-family: 'Roboto', sans-serif;
-  --root-font-size: 16px;
-  --root-font-weight: 300;
-  --root-line-height: 1.5;
-  --header-font-family: 'Merriweather', serif;
-  --body-font-size: 1rem;
-  --body-color: #1B1B1B;
-  --body-bg: #fff;
-  --link-color: var(--blue);
+  /* Dark sections */
+  --color-forest: #2F4632;
+  --color-on-forest: #F4EDE0;
+  --color-on-forest-muted: #D9CFBB;
+  --color-on-forest-surface: rgba(244, 237, 224, 0.08);
+  --color-on-forest-border: rgba(244, 237, 224, 0.2);
+  --color-footer: #3F2B1E;
+  --color-on-footer: #E9DCC6;
 
-  --border-color: rgba(27, 27, 27, 0.12);
+  /* Type */
+  --font-text: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  --font-pixel: 'Silkscreen', ui-monospace, monospace;
+  --font-code: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 
-  --large-font-size: 20px;
+  /* Shape */
+  --radius-pill: 999px;
+  --radius-panel: 24px;
+  --radius-stage: 16px;
+  --radius-card: 14px;
+  --radius-button: 10px;
+  --shadow-pixel: 4px 4px 0 var(--color-ink);
+  --shadow-nav: 0 8px 24px rgba(46, 36, 24, 0.08);
 
-  --code-font-family: Menlo, Monaco, "Courier New", monospace;
-  --code-color: #bf616a;
+  /* Layout */
+  --content-max: 1160px;
+  --reading-max: 720px;
+  --gutter: 24px;
+  --header-offset: 96px; /* scroll-margin for anchors under the sticky header */
+}
+
+@media (max-width: 480px) {
+  :root { --gutter: 16px; }
 }

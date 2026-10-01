@@ -1,6 +1,6 @@
-* {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -11,60 +11,65 @@ body {
 }
 
 html {
-  font-family: var(--root-font-family);
-  font-weight: var(--root-font-weight);
-  font-size: var(--root-font-size);
-  line-height: var(--root-line-height);
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
-@media (min-width: 38em) {
+
+@media (prefers-reduced-motion: reduce) {
   html {
-    font-size: var(--large-font-size);
+    scroll-behavior: auto;
   }
 }
 
+/* clip, not hidden: hidden would make body a scroll container and break the
+   sticky header. */
 body {
-  color: var(--body-color);
-  background-color: var(--body-bg);
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
+  background: var(--color-page);
+  color: var(--color-ink);
+  font: 400 17px/1.6 var(--font-text);
+  overflow-x: clip;
 }
 
 a {
-  color: var(--link-color);
+  color: var(--color-accent);
   text-decoration: none;
 }
-a:hover, a:focus {
-  text-decoration: underline;
-}
-a strong {
-  color: inherit;
+a:hover {
+  color: var(--color-accent-hover);
 }
 
-p {
-  font-size: 24px;
-  font-family: var(--root-font-family);
+:where(a, button):focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--color-page);
+}
+
+/* Keep anchor targets clear of the sticky header. */
+[id] {
+  scroll-margin-top: var(--header-offset);
 }
 
 img {
   display: block;
   max-width: 100%;
+  height: auto;
   margin: 0 0 1rem;
-  border-radius: 5px;
-  border: 1px solid #515151;
+  border-radius: var(--radius-button);
+  border: 1px solid var(--color-border);
 }
 
 table {
   margin-bottom: 1rem;
   width: 100%;
   font-size: 85%;
-  border: 1px solid #e5e5e5;
   border-collapse: collapse;
 }
 
 td,
 th {
   padding: 0.25rem 0.5rem;
-  border: 1px solid #e5e5e5;
+  border: 1px solid var(--color-border);
 }
 
 th {
@@ -73,5 +78,5 @@ th {
 
 tbody tr:nth-child(odd) td,
 tbody tr:nth-child(odd) th {
-  background-color: #f9f9f9;
+  background-color: var(--color-surface);
 }

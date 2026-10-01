@@ -1,0 +1,21 @@
+---
+interface Props {
+  /** Height in px; the width follows the logo's 68:45 ratio. */
+  height?: number;
+}
+
+const { height = 20 } = Astro.props;
+const width = Math.round((height * 68) / 45);
+---
+
+<svg
+  viewBox="0 0 68 45"
+  width={width}
+  height={height}
+  shape-rendering="crispEdges"
+  aria-hidden="true"
+  class="jl-mark"
+>
+  <path fill="var(--color-accent)" d="M15 0h15v45H0V30h15z"></path>
+  <path fill="var(--color-ink)" d="M38 0h14v30h16v15H38z"></path>
+</svg>
