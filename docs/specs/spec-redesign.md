@@ -31,7 +31,7 @@ Five deliberate deviations from the mock. D1 and D2 are for accessibility and po
 - **D2. Blog nav link** uses the relative `/blog/` rather than the mock's absolute `https://jlawcordova.com/blog`.
 - **D3. Logo.** The mock's isometric cube mark is **not** used. The site keeps J. Law's existing logo: a flat block "J" and "L" built on a square grid. Only its colors change, to the new palette. It stays flat and 2D, with no isometric faces or 3D shading.
 - **D4. No highlights section.** The mock's `HIGHLIGHTS` / `DAVAO CITY, PH · UTC+8` label row and its six highlight cards are dropped. The hero ends after the buttons and the island art.
-- **D5. Shorter hero lede.** The mock's 39-word paragraph becomes 23 words ([§7.1](#71-hero)).
+- **D5. Shorter paragraphs.** The hero lede goes from 39 words to 23 ([§7.1](#71-hero)), and the Range paragraph from 38 words to 22 ([§7.3](#73-range)).
 
 ## 2. Architecture
 
@@ -398,7 +398,9 @@ export const rangeClasses = [
 The `shadow` values are the mock's `CL[i].A` colors, used as the nameplate's hard shadow. Sprite variant *i* in the SVG matches entry *i*.
 
 - **H2:** Many hats. *One craftsman.* (The second clause is gold.)
-- **Lede:** From TDD and code review to lakehouse design and production sign-off, I’ve worked every stage of shipping software. I keep every layer in one head, and let AI speed up the cutting while the judgment stays mine.
+- **Lede:** I’ve worked every stage of shipping software, from code review to production sign-off. AI speeds up the work; the judgment stays mine.
+
+  This replaces the mock's longer paragraph (D5).
 
 ### 7.4 Site metadata
 

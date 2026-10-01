@@ -109,7 +109,7 @@ All of it is stepped (`steps()` / `step-end`) so it feels like sprite animation,
    - Left: a frosted panel holding the isogrid stage, with a nameplate showing the current class, previous and next pixel-arrow buttons, the character sprite on its island, and five pager dots.
    - Classes, in order: **Front-end, Infrastructure, UX Design, Data Engineering, Project Management**. Each one recolors the sprite's outfit and headgear (palette and row overrides in the mock's `CL` table).
    - The classes should line up with the profile's [disciplines](../references/profile.md#disciplines). **UX Design** is backed by the Figma UI design work for a client's internal retail planning tool. **Security & Governance**, one of the profile's strongest areas, has no class. See [Decisions](#decisions) #7.
-   - Right: H2 "Many hats. *One craftsman.*" (second clause in gold), then the paragraph about working every stage of shipping software.
+   - Right: H2 "Many hats. *One craftsman.*" (second clause in gold), then a **short** paragraph, two sentences, about working every stage of shipping software.
 4. **Footer.** Dark brown bar in Silkscreen: "© {year} J. LAW. CORDOVA" with links **GITHUB · LINKEDIN · X · BLOG**. Keep the year computed at build time as the current footer does.
 
 Copy should be taken verbatim from the mock, checked against the [profile](../references/profile.md). The current home sections (intro with cogs, "Code + Create" bio, recent blog posts) are replaced. See [Decisions](#decisions) about recent posts.
@@ -136,7 +136,7 @@ Copy should be taken verbatim from the mock, checked against the [profile](../re
 
 ## Acceptance criteria
 
-- [ ] At 1440px wide, the home page matches Prototype B in layout, colors, type, copy and pixel art when compared side by side, apart from the deliberate changes recorded here and in the spec (JL logo, no highlights section, shorter hero paragraph).
+- [ ] At 1440px wide, the home page matches Prototype B in layout, colors, type, copy and pixel art when compared side by side, apart from the deliberate changes recorded here and in the spec (JL logo, no highlights section, shorter hero and Range paragraphs).
 - [ ] Every factual claim on the site (role, employer, disciplines, technologies) can be traced to `docs/references/profile.md`. No old role copy ("Enterprise Applications / Backend Systems / Automated Pipelines", "Code + Create" bio) remains.
 - [ ] No client names, project codenames or colleagues' names appear anywhere in the built site.
 - [ ] At 390px wide, the home page has no horizontal scroll, all content is reachable, and the tap targets are at least 44px.
