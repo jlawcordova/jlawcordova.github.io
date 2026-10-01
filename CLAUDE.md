@@ -30,4 +30,5 @@ If you're unsure whether something is safe to publish, leave it out and ask befo
 ## Docs
 
 - `docs/intents/`: intent documents that describe planned changes, for example `intent-redesign.md`.
+- `docs/specs/`: specifications that turn an intent into buildable detail, for example `spec-redesign.md`.
 - `docs/references/`: public-safe reference material that intents and site copy draw on.
