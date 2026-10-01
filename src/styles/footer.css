@@ -1,72 +1,42 @@
-footer {
-  padding: 0 16px;
-  margin: 0;
-  background-color: var(--body-color);
-  padding-top: 72px;
-  padding-bottom: 12px;
-}
-footer .footer-container {
+.site-footer {
+  background: var(--color-footer);
+  padding: 22px var(--gutter);
   display: flex;
-  padding: 0 16px;
-  flex-direction: column-reverse;
+  flex-wrap: wrap;
   align-items: center;
-}
-footer .footer-container .external-sites {
-  margin-bottom: 0.6875rem;
-  display: flex;
-}
-footer .footer-container .external-sites a {
-  text-decoration: none;
-}
-footer .footer-container .external-sites a i {
-  color: var(--primary-color);
-  font-size: 1.5rem;
-}
-footer .footer-container .external-sites a {
-  margin-right: 1.625rem;
-}
-footer .footer-container .external-sites a:last-child {
-  margin-right: 0;
-}
-footer .footer-container .footer-content p {
-  font-family: var(--root-font-family);
-  font-style: normal;
-  font-weight: 300;
-  font-size: 0.6875rem;
-  line-height: 150%;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.5);
+  justify-content: space-between;
+  gap: 12px;
+  font: 12px var(--font-pixel);
+  letter-spacing: 1px;
+  color: var(--color-on-footer);
 }
 
-@media only screen and (min-width: 768px) {
-  footer {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    padding-top: 104px;
-    padding-bottom: 24px;
-  }
-  footer .footer-container {
-    grid-column: 2/12;
-    display: flex;
-    padding: 0;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-  footer .footer-container .footer-content p {
-    text-align: left;
-  }
-  footer .footer-container .external-sites a {
-    text-decoration: none;
-  }
-  footer .footer-container .external-sites a i {
-    color: var(--primary-color);
-    font-size: 1.25rem;
-  }
-  footer .footer-container .external-sites a {
-    margin-right: 1.5rem;
-  }
-  footer .footer-container .external-sites a:last-child {
-    margin-right: 0;
-  }
+.site-footer__copy {
+  margin: 0;
+}
+
+.site-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* 44px targets, even for the one-letter X. */
+.site-footer__links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  color: var(--color-on-footer);
+}
+.site-footer__links a:hover,
+.site-footer__links a:focus-visible {
+  color: var(--color-on-footer);
+  text-decoration: underline;
+}
+
+.site-footer :where(a, button):focus-visible {
+  outline-color: var(--color-on-forest);
+  box-shadow: 0 0 0 5px var(--color-footer);
 }
