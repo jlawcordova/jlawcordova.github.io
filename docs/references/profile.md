@@ -19,6 +19,7 @@ Main areas of contribution:
 
 - Technical lead and architect for client applications, across frontend, backend and delivery.
 - Full-stack development in C#, ASP.NET Core, React, Next.js and JavaScript.
+- UI and UX design in Figma: component-based, responsive interfaces built to a client's brand guidelines.
 - Data platform architecture on Microsoft Fabric and Power BI, built as a Bronze, Silver and Gold lakehouse.
 - Secure software delivery: PCI-related controls, handling of personally identifiable information, and production governance.
 - Release management, from development to staging to production, with sign-offs and rollback.
@@ -37,6 +38,7 @@ These are public-safe and can be used as site copy. The six highlight cards in t
 | Microsoft Fabric data foundation | Designed and presented a Bronze, Silver and Gold lakehouse that separates engineering from analytics. Per-client workspaces and access, Power BI on top. Built on synthetic data so no client data was exposed. |
 | PCI-aware release process | Release manager and secure-code reviewer for a payment-sensitive browser extension. Defined its secure SDLC, sign-offs, evidence collection, emergency releases, post-release stabilization and rollback. |
 | 100+ pull requests reviewed | Brought in test-driven development and structured code review on a large enterprise client platform, and onboarded developers onto it. |
+| UI design for a Fortune 500 client | Designed the UI in Figma for a Fortune 500 client's internal retail planning and management tool. It made full use of Figma's component system (reusable components and variants) and auto layout, so screens adapt to different content and sizes. The design followed the client's branding, and the client approved it and was happy with how closely it matched their brand. |
 | Estimates backed by prototypes | Built a working Next.js proof of concept to check scope and setup effort before committing to an estimate. |
 | Responsible AI, taught in-house | Presented a framework for working with AI ("delegation, description, discernment, diligence"), including how to protect sensitive data. |
 | SDLC standardization | Led a workshop to define standard operating procedures: GitHub issue tracking with severity and PCI impact, a dev-to-staging-to-production branching path, ownership, and compliance evidence. Owns the company key result for SDLC compliance. |
@@ -50,10 +52,11 @@ These are public-safe and can be used as site copy. The six highlight cards in t
 These are the main groups the work falls into. Use them to check the Range carousel classes in the redesign.
 
 1. **Software engineering:** full-stack web, front-end and back-end.
-2. **Data and analytics:** Fabric, lakehouse, Power BI.
-3. **Cloud and DevOps:** Azure, AWS, Vercel, CI/CD, environments, releases.
-4. **Leadership and delivery:** tech lead, estimation, sprint and release planning, mentoring.
-5. **Security and governance:** secure SDLC, PCI controls, PII, compliance evidence, source-code governance.
+2. **UI and UX design:** Figma design systems, component-based and responsive layouts, designing to brand guidelines.
+3. **Data and analytics:** Fabric, lakehouse, Power BI.
+4. **Cloud and DevOps:** Azure, AWS, Vercel, CI/CD, environments, releases.
+5. **Leadership and delivery:** tech lead, estimation, sprint and release planning, mentoring.
+6. **Security and governance:** secure SDLC, PCI controls, PII, compliance evidence, source-code governance.
 
 ## Skills inventory
 
@@ -63,6 +66,12 @@ These are the main groups the work falls into. Use them to check the Range carou
 - **Design:** REST API design and integration, N-tier and layered architecture.
 - **Testing:** xUnit, test-driven development, unit and integration testing.
 - **Source control and review:** Git, GitHub, GitLab, pull-request and peer-review practices.
+
+### UI and UX design
+
+- **Tools:** Figma.
+- **Design systems:** reusable components and variants, auto layout, responsive and flexible layouts.
+- **Branding:** working within a client's brand guidelines.
 
 ### Data and analytics
 

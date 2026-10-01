@@ -117,7 +117,7 @@ All of it is stepped (`steps()` / `step-end`) so it feels like sprite animation,
 3. **Range** (`#range`, forest background):
    - Left: a frosted panel holding the isogrid stage, with a nameplate showing the current class, previous and next pixel-arrow buttons, the character sprite on its island, and five pager dots.
    - Classes, in order: **Front-end, Infrastructure, UX Design, Data Engineering, Project Management**. Each one recolors the sprite's outfit and headgear (palette and row overrides in the mock's `CL` table).
-   - The classes should line up with the profile's [disciplines](../references/profile.md#disciplines). **UX Design has nothing in the profile to back it**, and **Security & Governance**, one of the profile's strongest areas, has no class. See [Decisions](#decisions) #7.
+   - The classes should line up with the profile's [disciplines](../references/profile.md#disciplines). **UX Design** is backed by the Figma work for a Fortune 500 client's retail planning tool. **Security & Governance**, one of the profile's strongest areas, has no class. See [Decisions](#decisions) #7.
    - Right: H2 "Many hats. *One craftsman.*" (second clause in gold), then the paragraph about working every stage of shipping software.
 4. **Footer.** Dark brown bar in Silkscreen: "© {year} J. LAW. CORDOVA" with links **GITHUB · LINKEDIN · X · BLOG**. Keep the year computed at build time as the current footer does.
 
@@ -171,7 +171,7 @@ Open items to settle before or during implementation. Record the answer here.
 | 4 | Should the nav and footer link to the **résumé PDF** (`/public/CORDOVA-JUNEL-LAWRENCE-RESUME.pdf`)? It probably predates the updated profile. | No, as in the mock. Refreshing the PDF against the profile is a separate task. |
 | 5 | **Post pages** have no mock. Is a token-level restyle enough, or should a post layout be designed on the canvas first? | Token-level restyle, reviewed in the PR. |
 | 6 | **Twitter → X.** The footer label becomes "X". Should the URL change to `x.com`? | Keep the existing URL and change only the label. |
-| 7 | **Range classes vs. profile.** Should UX Design (unsupported by the profile) be replaced, and should Infrastructure be renamed? | Replace **UX Design** with **Security & Governance**, which needs a new outfit palette in the same style. Rename **Infrastructure** to **Cloud & DevOps** to match the profile. Keep the others. |
+| 7 | **Range classes vs. profile.** Should **Security & Governance** get a class, and should Infrastructure be renamed? UX Design stays, since the Figma work backs it. | Keep the mock's five classes, including UX Design. Rename **Infrastructure** to **Cloud & DevOps** to match the profile. Don't add Security & Governance: the "PCI-aware release process" highlight already covers it, and a sixth class would need a new outfit and another pager dot. |
 | 8 | Should the home page show a **skills list** from the profile's inventory, for example a strip under Range? | No. The mock has none, and Range plus the highlights carry it. Revisit after launch. |
 
 ## References
