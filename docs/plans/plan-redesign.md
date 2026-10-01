@@ -199,7 +199,7 @@ Used by T1.2. It lists every old custom property still referenced in `src/styles
 
 ## 8. Follow-ups (not in this plan)
 
-- A sixth Range class, **Security & Governance**, with new outfit art (intent decision #7).
+- A sixth Range class, **Security & Governance**, with new outfit art (intent decision #7). The art is made with the pixel-art engine in [`intent-pixel-art-engine.md`](../intents/intent-pixel-art-engine.md).
 - A nav link to Accomplishments once there are enough records (decision #11).
 - Refreshing the résumé PDF against the profile (decision #4).
 - A skills strip from the profile's inventory (decision #8).
