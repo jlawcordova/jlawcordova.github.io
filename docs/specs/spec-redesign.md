@@ -6,6 +6,7 @@
 | **Intent** | [`docs/intents/intent-redesign.md`](../intents/intent-redesign.md) |
 | **Design source** | [J. Law Portfolio canvas](https://claude.ai/artifact/JhKbkNZP9qGWHMaWE8USbR), artboard "Prototype B — isometric" (`project/Isometric.dc.html`) |
 | **Content source** | [`docs/references/profile.md`](../references/profile.md) |
+| **Plan** | [`docs/plans/plan-redesign.md`](../plans/plan-redesign.md) |
 | **Created** | 2026-10-01 |
 
 This spec turns the intent into buildable detail: files, tokens, components, behavior, budgets and checks. The intent says *what* and *why*; this says *how*. If the spec and the intent conflict, the intent wins and this spec gets fixed.
@@ -222,7 +223,7 @@ Silkscreen is loaded at 400 only, because the mock never uses 700.
 
 ## 4. Global styles
 
-- **`body`:** `background: var(--color-page); color: var(--color-ink); font: 400 17px/1.6 var(--font-text); overflow-x: hidden;` (hidden overflow guards against the hero art's `overflow: visible`).
+- **`body`:** `background: var(--color-page); color: var(--color-ink); font: 400 17px/1.6 var(--font-text); overflow-x: clip;`. This guards against the hero art's `overflow: visible`. It uses `clip`, not `hidden`, because `clip` doesn't create a scroll container, so the sticky header keeps working.
 - **Links:** `color: var(--color-accent)`; on hover `var(--color-accent-hover)`. Underline them in post bodies and not in UI chrome.
 - **Focus:** `:where(a, button):focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; box-shadow: 0 0 0 5px var(--color-page); }`. On forest and footer grounds, the outline is `var(--color-on-forest)` and the halo is the section ground.
 - **Anchors:** `[id] { scroll-margin-top: var(--header-offset); }` and `html { scroll-behavior: smooth; }`, with the smooth scroll removed under reduced motion.

@@ -7,6 +7,7 @@
 | **Created** | 2026-10-01 |
 | **Design source** | [J. Law Portfolio canvas](https://claude.ai/artifact/JhKbkNZP9qGWHMaWE8USbR), artboard **"Prototype B — isometric"** (`project/Isometric.dc.html`) |
 | **Specification** | [`docs/specs/spec-redesign.md`](../specs/spec-redesign.md) |
+| **Plan** | [`docs/plans/plan-redesign.md`](../plans/plan-redesign.md) |
 | **Content source** | [`docs/references/profile.md`](../references/profile.md): updated roles, highlights and skills (2026) |
 
 ## Intent
