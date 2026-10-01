@@ -70,6 +70,8 @@
   }
   .site-nav__links {
     flex: 1 1 100%;
-    justify-content: space-between;
+  }
+  .site-nav__links .pill {
+    margin-left: auto;
   }
 }
