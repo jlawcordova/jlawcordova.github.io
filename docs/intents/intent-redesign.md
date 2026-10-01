@@ -6,6 +6,7 @@
 | **Owner** | J. Law. Cordova |
 | **Created** | 2026-10-01 |
 | **Design source** | [J. Law Portfolio canvas](https://claude.ai/artifact/JhKbkNZP9qGWHMaWE8USbR), artboard **"Prototype B — isometric"** (`project/Isometric.dc.html`) |
+| **Content source** | [`docs/references/profile.md`](../references/profile.md): updated roles, highlights and skills (2026) |
 
 ## Intent
 
@@ -13,9 +14,11 @@ Rebrand jlawcordova.com from the current Poole-based look (white page, pink acce
 
 Prototype B is the source of truth for look, layout, copy and motion. Where this document and the mock disagree, the mock wins unless an entry under [Decisions](#decisions) says otherwise.
 
+The redesign also brings the site's **roles and skills** up to date. The current site describes an earlier backend-focused profile. The updated profile is in [`docs/references/profile.md`](../references/profile.md) and is the source of truth for **facts**: role, disciplines, highlights and skills. The mock's copy was written from that same profile. If the mock's wording and the profile disagree on a fact, follow the profile and record the change under [Decisions](#decisions).
+
 ## Why
 
-- The current home page sells "Enterprise Applications / Backend Systems / Automated Pipelines". That undersells the current role, which is leading teams and owning delivery end to end.
+- The current home page sells "Enterprise Applications / Backend Systems / Automated Pipelines". That undersells the current role, which is leading teams and owning delivery end to end. The profile has since grown into technical leadership, Microsoft Fabric data platforms, secure and PCI-aware delivery, release governance, estimation and mentoring. None of that is on the site today.
 - The visual identity is a lightly modified Poole theme with no character of its own.
 - The isometric pixel-art world gives a memorable look and makes the "many hats, one craftsman" message concrete: one character who changes outfit for each discipline.
 
@@ -28,13 +31,15 @@ Prototype B is the source of truth for look, layout, copy and motion. Where this
 3. **Home page** (`src/pages/index.astro`), rebuilt to the mock's three sections: hero with highlights, Range, and footer.
 4. **Pixel-art assets.** The isometric hero island and the Range character sprite, ported from the mock's SVG.
 5. **Blog index, post pages and 404**, restyled with the new tokens, type and surfaces. These have no mock, so they should follow the brand rules below and not be invented from scratch.
-6. **Brand marks.** Swap the logo to the isometric cube mark from the nav. Favicon, `apple-touch-icon` and the social share image follow if [Decisions](#decisions) says to.
-7. **Clean-up.** Remove styles, assets and scripts made obsolete by the redesign, for example `intro.css`, `bio.css`, the cogs SVG, the skill-rotator script, and Font Awesome if no icon still needs it.
+6. **Content update.** Replace the old role copy with the updated profile wherever the site states who J. Law is or what he does: the hero, highlights, Range, `site.description`, meta and Open Graph descriptions, and the 404 page if it has bio copy.
+7. **Brand marks.** Swap the logo to the isometric cube mark from the nav. Favicon, `apple-touch-icon` and the social share image follow if [Decisions](#decisions) says to.
+8. **Clean-up.** Remove styles, assets and scripts made obsolete by the redesign, for example `intro.css`, `bio.css`, the cogs SVG, the skill-rotator script, and Font Awesome if no icon still needs it.
 
 ### Out of scope
 
 - The other two prototypes on the canvas (Main and Prototype C).
 - Post content, URLs, permalinks, the Atom feed and the content schema. Existing links must keep working.
+- A full résumé, project list or skills page. The profile feeds the copy on the existing pages and doesn't become a new page (see [Decisions](#decisions) #4 and #8).
 - The build, deploy and hosting setup (Astro, GitHub Pages workflow).
 - New pages or sections the mock doesn't show.
 
@@ -100,20 +105,23 @@ All of it is stepped (`steps()` / `step-end`) so it feels like sprite animation,
 2. **Hero** (`#top`, isogrid on hero ground):
    - Left: "Hi, I'm J. Law. Cordova." / H1 "I ship whole products, *not handoffs.*" (second clause in accent) / lede about being a senior developer and tech lead at Netzon in Davao City / buttons **Press start** (to `#range`, primary with a hard shadow) and **Get in touch** (LinkedIn, ghost).
    - Right: the floating isometric island. It has a house, river and waterfall, a bridge, a road with two trucks, a tower crane, trees and drifting clouds. A small second island holds the character at a chalkboard.
-   - Below: the row label **HIGHLIGHTS** / **DAVAO CITY, PH · UTC+8**, then six highlight cards in an auto-fit grid (min 320px), each with a colored pixel marker:
+   - Below: the row label **HIGHLIGHTS** / **DAVAO CITY, PH · UTC+8**, then six highlight cards in an auto-fit grid (min 320px), each with a colored pixel marker. Each card maps to a profile highlight:
      1. Led two full-stack teams
      2. Fabric data foundation
      3. PCI-aware release process
      4. 100+ pull requests reviewed
      5. Estimates backed by prototypes
      6. Responsible AI, taught in-house
+
+     The profile has more highlights that could replace these: SDLC standardization, AWS partner enablement, mentoring and engineering metrics. Keep six cards.
 3. **Range** (`#range`, forest background):
    - Left: a frosted panel holding the isogrid stage, with a nameplate showing the current class, previous and next pixel-arrow buttons, the character sprite on its island, and five pager dots.
    - Classes, in order: **Front-end, Infrastructure, UX Design, Data Engineering, Project Management**. Each one recolors the sprite's outfit and headgear (palette and row overrides in the mock's `CL` table).
+   - The classes should line up with the profile's [disciplines](../references/profile.md#disciplines). **UX Design has nothing in the profile to back it**, and **Security & Governance**, one of the profile's strongest areas, has no class. See [Decisions](#decisions) #7.
    - Right: H2 "Many hats. *One craftsman.*" (second clause in gold), then the paragraph about working every stage of shipping software.
 4. **Footer.** Dark brown bar in Silkscreen: "© {year} J. LAW. CORDOVA" with links **GITHUB · LINKEDIN · X · BLOG**. Keep the year computed at build time as the current footer does.
 
-Copy should be taken verbatim from the mock. The current home sections (intro with cogs, "Code + Create" bio, recent blog posts) are replaced. See [Decisions](#decisions) about recent posts.
+Copy should be taken verbatim from the mock, checked against the [profile](../references/profile.md). The current home sections (intro with cogs, "Code + Create" bio, recent blog posts) are replaced. See [Decisions](#decisions) about recent posts.
 
 ## Constraints
 
@@ -132,11 +140,14 @@ Copy should be taken verbatim from the mock. The current home sections (intro wi
   - The nav wraps instead of collapsing into a drawer.
   - The pixel art scales down with `max-width: 100%`.
 - **Fonts:** load only Silkscreen and Sora from Google Fonts, and drop Merriweather and Roboto.
-- **SEO and sharing:** keep the existing meta and Open Graph tags working. Update `site.description` to match the new positioning.
+- **SEO and sharing:** keep the existing meta and Open Graph tags working. Update `site.description` to match the new positioning, drawing on the profile summary.
+- **Confidentiality:** the repo and site are public. Copy may use only what's in [`docs/references/profile.md`](../references/profile.md): no client names, project codenames, colleagues' names, or internal incidents and decisions. Describe work by its kind, not by who it was for.
 
 ## Acceptance criteria
 
 - [ ] At 1440px wide, the home page matches Prototype B in layout, colors, type, copy and pixel art when compared side by side.
+- [ ] Every factual claim on the site (role, employer, highlights, disciplines, technologies) can be traced to `docs/references/profile.md`. No old role copy ("Enterprise Applications / Backend Systems / Automated Pipelines", "Code + Create" bio) remains.
+- [ ] No client names, project codenames or colleagues' names appear anywhere in the built site.
 - [ ] At 390px wide, the home page has no horizontal scroll, all content is reachable, and the tap targets are at least 44px.
 - [ ] The Range carousel cycles through all five classes on its own and with the buttons. The nameplate, sprite colors, pager dots and text alternative all update together.
 - [ ] With `prefers-reduced-motion: reduce`, nothing moves and each animated element shows one static frame.
@@ -157,13 +168,16 @@ Open items to settle before or during implementation. Record the answer here.
 | 1 | The mock drops the **Recent Blog Posts** section from the home page. Drop it, or add a section in the new style before the footer? | Drop it. Blog stays one click away in the nav and footer. |
 | 2 | The mock links **Contact** and **Get in touch** to LinkedIn. Use email (`site.author.email`) instead? | LinkedIn, as in the mock. |
 | 3 | Should the new cube mark replace the **favicon, touch icons and OG share image**? | Yes for favicon and touch icons. Regenerate the OG image in the new style. |
-| 4 | Should the nav and footer link to the **résumé PDF** (`/public/CORDOVA-JUNEL-LAWRENCE-RESUME.pdf`)? | No, as in the mock. |
+| 4 | Should the nav and footer link to the **résumé PDF** (`/public/CORDOVA-JUNEL-LAWRENCE-RESUME.pdf`)? It probably predates the updated profile. | No, as in the mock. Refreshing the PDF against the profile is a separate task. |
 | 5 | **Post pages** have no mock. Is a token-level restyle enough, or should a post layout be designed on the canvas first? | Token-level restyle, reviewed in the PR. |
 | 6 | **Twitter → X.** The footer label becomes "X". Should the URL change to `x.com`? | Keep the existing URL and change only the label. |
+| 7 | **Range classes vs. profile.** Should UX Design (unsupported by the profile) be replaced, and should Infrastructure be renamed? | Replace **UX Design** with **Security & Governance**, which needs a new outfit palette in the same style. Rename **Infrastructure** to **Cloud & DevOps** to match the profile. Keep the others. |
+| 8 | Should the home page show a **skills list** from the profile's inventory, for example a strip under Range? | No. The mock has none, and Range plus the highlights carry it. Revisit after launch. |
 
 ## References
 
 - Design canvas: https://claude.ai/artifact/JhKbkNZP9qGWHMaWE8USbR (Prototype B — isometric)
+- Updated roles and skills: `docs/references/profile.md`
 - Current tokens: `src/styles/variables.css`
 - Current shell: `src/layouts/BaseLayout.astro`, `src/components/Navigation.astro`, `src/components/Footer.astro`
 - Current home: `src/pages/index.astro`
