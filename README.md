@@ -1,121 +1,53 @@
-# Poole
+# jlawcordova.com
 
-*The Strange Case of Dr. Jekyll and Mr. Hyde* tells the story of a lawyer investigating the connection of two persons, Dr. Henry Jekyll and Mr. Edward Hyde. Chief among the novel's supporting cast is a man by the name of Mr. Poole, Dr. Jekyll's loyal butler.
+Personal site and blog of J. Law. Cordova, built with [Astro](https://astro.build) and TypeScript, with plain CSS. It's deployed to GitHub Pages by GitHub Actions.
 
------
+## Develop
 
-Poole is the butler for [Jekyll](http://jekyllrb.com), the static site generator. It's designed and developed by [@mdo](https://twitter.com/mdo) to provide a clear and concise foundational setup for any Jekyll site. It does so by furnishing a full vanilla Jekyll install with example templates, pages, posts, and styles.
+Requires Node.js 22.12 or newer.
 
-![Poole](https://f.cloud.github.com/assets/98681/1834359/71ae4048-73db-11e3-9a3c-df38eb170537.png)
-
-See Poole in action with [the demo site](http://demo.getpoole.com).
-
-There are currently two official themes built on Poole:
-
-* [Hyde](http://hyde.getpoole.com)
-* [Lanyon](http://lanyon.getpoole.com)
-
-Individual theme feedback and bug reports should be submitted to the theme's individual repository.
-
-
-## Contents
-
-- [Usage](#usage)
-- [Options](#options)
-  - [Rems, `font-size`, and scaling](#rems-font-size-and-scaling)
-- [Development](#development)
-- [Author](#author)
-- [License](#license)
-
-
-## Usage
-
-### 1. Install dependencies
-
-Poole is built on Jekyll and uses its built-in SCSS compiler to generate our CSS. Before getting started, you'll need to install the Jekyll gem:
-
-```bash
-$ gem install jekyll
+```sh
+npm install
+npm run dev      # dev server at http://localhost:4321
+npm run build    # type-check (astro check) and build to dist/
+npm run preview  # serve the built site
 ```
 
-**Windows users:** Windows users have a bit more work to do, but luckily [@juthilo](https://github.com/juthilo) has your back with his [Run Jekyll on Windows](https://github.com/juthilo/run-jekyll-on-windows) guide.
+## Project layout
 
-**Need syntax highlighting?** Poole includes support for Pygments or Rouge, so install your gem of choice to make use of the built-in styling. Read more about this [in the Jekyll docs](http://jekyllrb.com/docs/templates/#code_snippet_highlighting).
+| Path | What it is |
+| --- | --- |
+| `src/content/posts/` | Blog posts in Markdown. The filename sets the date and URL slug: `YYYY-MM-DD-slug.md`. |
+| `src/content.config.ts` | Frontmatter schema for posts. |
+| `src/pages/` | Routes: home, `/blog/` (paginated as `/blog/page2/`, ...), posts, `/atom.xml`, 404. |
+| `src/layouts/`, `src/components/` | Page shell, navigation, footer, and shared pieces. |
+| `src/styles/` | Plain CSS. `global.css` imports the rest in order; `variables.css` holds the design tokens. |
+| `src/site.ts` | Site title, description, author links, posts per page. |
+| `static/` | Copied to the site root as-is. `static/public/*` is served at `/public/*` (images, favicons, resume). |
 
-### 2a. Quick start
+## Writing a post
 
-To help anyone with any level of familiarity with Jekyll quickly get started, Poole includes everything you need for a basic Jekyll site. To that end, just download Poole and start up Jekyll.
+Create `src/content/posts/YYYY-MM-DD-my-post.md`:
 
-### 2b. Roll your own Jekyll site
+```md
+---
+title: My Post
+tags: space separated tags
+categories: architecture
+featured-image: /public/YYYY-MM-DD/featured.png
+featured-image-alt: short description of the image
+description: One-line summary shown on the blog page and in link previews.
+---
 
-Folks wishing to use Jekyll's templates and styles can do so with a little bit of manual labor. Download Poole and then copy what you need (likely `_layouts/`, `*.html` files, `atom.xml` for RSS, and `public/` for CSS, JS, etc.).
-
-### 3. Running locally
-
-To see your Jekyll site with Poole applied, start a Jekyll server. In Terminal, from `/poole` (or whatever your Jekyll site's root directory is named):
-
-```bash
-$ jekyll serve
+Post body in Markdown. Fenced code blocks (```ts) are syntax highlighted.
 ```
 
-Open <http://localhost:4000> in your browser, and voilà.
+The post is published at `/<categories>/<YYYY>/<MM>/<DD>/<slug>/`, the same scheme as the old Jekyll site, so existing links keep working.
 
-### 4. Serving it up
+## Deploy
 
-If you host your code on GitHub, you can use [GitHub Pages](https://pages.github.com) to host your project.
-
-1. Fork this repo and switch to the `gh-pages` branch.
-  1. If you're [using a custom domain name](https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages), modify the `CNAME` file to point to your new domain.
-  2. If you're not using a custom domain name, **modify the `baseurl` in `_config.yml`** to point to your GitHub Pages URL. Example: for a repo at `github.com/username/poole`, use `http://username.github.io/poole/`. **Be sure to include the trailing slash.**
-3. Done! Head to your GitHub Pages URL or custom domain.
-
-No matter your production or hosting setup, be sure to verify the `baseurl` option file and `CNAME` settings. Not applying this correctly can mean broken styles on your site.
-
-## Options
-
-Poole includes some customizable options, typically applied via classes on the `<body>` element.
-
-
-### Rems, `font-size`, and scaling
-
-Poole is built almost entirely with `rem`s (instead of pixels). `rem`s are like `em`s, but instead of building on the immediate parent's `font-size`, they build on the root element, `<html>`.
-
-By default, we use the following:
-
-```css
-html {
-  font-size: 16px;
-  line-height: 1.5;
-}
-@media (min-width: 38em) {
-  html {
-    font-size: 20px;
-  }
-}
-
-```
-
-To easily scale your site's typography and components, simply customize the base `font-size`s here.
-
-
-## Development
-
-Poole has two branches, but only one is used for active development.
-
-- `master` for development.  **All pull requests should be to submitted against `master`.**
-- `gh-pages` for our hosted site, which includes our analytics tracking code. **Please avoid using this branch.**
-
-CSS is handled via Jeykll's built-in Sass compiler. Source Sass files are located in `_sass/`, included into `styles.scss`, and compile to `styles.css`.
-
-## Author
-
-**Mark Otto**
-- <https://github.com/mdo>
-- <https://twitter.com/mdo>
-
+Pushing to `master` runs `.github/workflows/deploy.yml`, which builds the site and deploys it to GitHub Pages. Pull requests are built but not deployed. The repository's Pages source must be set to **GitHub Actions** (Settings → Pages → Build and deployment → Source).
 
 ## License
 
-Open sourced under the [MIT license](LICENSE.md).
-
-<3
+Site design originally based on [Poole](https://github.com/poole/poole) by @mdo; see [LICENSE.md](LICENSE.md).

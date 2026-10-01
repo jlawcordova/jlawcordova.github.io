@@ -1,0 +1,85 @@
+---
+import PostListItem from './PostListItem.astro';
+import type { Post } from '../lib/posts';
+
+interface Props {
+  posts: Post[];
+  page: number;
+  totalPages: number;
+  totalPosts: number;
+}
+
+const { posts, page, totalPages, totalPosts } = Astro.props;
+const pagePath = (n: number) => (n === 1 ? '/blog/' : `/blog/page${n}/`);
+const [highlight, ...rest] = posts;
+---
+
+{
+  page > 1 ? (
+    <div class="blog-container">
+      <ol class="posts-container">
+        {posts.map((post) => (
+          <PostListItem post={post} />
+        ))}
+      </ol>
+    </div>
+  ) : (
+    <div class="blog-container">
+      <div class="overall-posts-container">
+        {highlight && (
+          <ol class="highlight-posts-container">
+            <li class="highlight-post-container">
+              <a href={highlight.url}>
+                <img class="highlight-featured-post-image" src={highlight.featuredImage} alt={highlight.featuredImageAlt} />
+              </a>
+              <div class="highlight-post-content-container">
+                <p class="category-pre-heading">{highlight.category}</p>
+                <h3 class="highlight-post-heading">
+                  <a href={highlight.url}>{highlight.title}</a>
+                </h3>
+                <p class="highlight-post-description">{highlight.description}</p>
+                <a class="read-more" href={highlight.url}>
+                  Read more
+                </a>
+              </div>
+            </li>
+          </ol>
+        )}
+        <p class="page-info">
+          {totalPosts} blog posts &middot; Page {page} of {totalPages}
+        </p>
+        <ol class="posts-container">
+          {rest.map((post) => (
+            <PostListItem post={post} />
+          ))}
+        </ol>
+      </div>
+    </div>
+  )
+}
+
+<div class="blog-pagination-container">
+  <div class="blog-pagination-wrapper">
+    <div class="blog-pagination">
+      {
+        page > 1 && (
+          <>
+            <a class="pagination-item pagination-previous" href={pagePath(page - 1)}>prev</a>
+            <a class="pagination-item pagination-previous" href={pagePath(page - 1)}>{page - 1}</a>
+          </>
+        )
+      }
+
+      <p class="pagination-item current-page">{page}</p>
+
+      {
+        page < totalPages && (
+          <>
+            <a class="pagination-item pagination-next" href={pagePath(page + 1)}>{page + 1}</a>
+            <a class="pagination-item pagination-next" href={pagePath(page + 1)}>next</a>
+          </>
+        )
+      }
+    </div>
+  </div>
+</div>

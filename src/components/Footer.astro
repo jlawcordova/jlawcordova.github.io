@@ -1,0 +1,22 @@
+---
+import { site } from '../site';
+
+const builtAt = new Date();
+---
+
+<footer>
+  <div class="footer-container">
+    <div class="footer-content">
+      <p>
+        &copy; <time datetime={builtAt.toISOString()}>{builtAt.getUTCFullYear()}</time> J. Law. Cordova.
+        <br />
+        All rights reserved.
+      </p>
+    </div>
+    <div class="external-sites">
+      <a href={site.author.github} aria-label="GitHub"><i class="fab fa-github"></i></a>
+      <a href={site.author.linkedin} aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+      <a href={site.author.twitter} aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+    </div>
+  </div>
+</footer>

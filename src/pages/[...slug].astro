@@ -1,0 +1,66 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatDate, getPosts, toXmlSchema, type Post } from '../lib/posts';
+
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+  return posts.map((post) => ({
+    params: { slug: post.path },
+    // Like Jekyll's related_posts without LSI: the most recent other posts.
+    props: { post, related: posts.filter((p) => p !== post).slice(0, 2) },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  post: Post;
+  related: Post[];
+}
+
+const { post, related } = Astro.props;
+const { Content } = await render(post.entry);
+---
+
+<BaseLayout
+  title={post.title}
+  article={{
+    url: post.url,
+    description: post.description,
+    image: post.featuredImage,
+    imageAlt: post.featuredImageAlt,
+  }}
+>
+  <div class="article-container">
+    <div class="article-wrapper">
+      <article class="post">
+        <h1 class="post-title">{post.title}</h1>
+        <time datetime={toXmlSchema(post.date)} class="post-date">{formatDate(post.date)}</time>
+        <Content />
+      </article>
+
+      {
+        related.length > 0 && (
+          <aside class="related">
+            <h3>Related posts</h3>
+            <ul class="related-posts">
+              {related.map((r) => (
+                <li class="recent-blog-container">
+                  <a href={r.url}>
+                    <img class="featured-blog-image" src={r.featuredImage} alt={r.featuredImageAlt} />
+                  </a>
+                  <div class="blog-content-container">
+                    <p class="category-pre-heading">{r.category}</p>
+                    <h3 class="blog-heading">
+                      <a href={r.url}>{r.title}</a>
+                    </h3>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )
+      }
+    </div>
+  </div>
+</BaseLayout>
