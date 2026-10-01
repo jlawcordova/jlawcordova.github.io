@@ -25,11 +25,13 @@ The intent's open decisions are taken at their defaults. To change one, update t
 | 7 | Range classes | **Front-end, Cloud & DevOps, UX Design, Data Engineering, Project Management.** "Infrastructure" is renamed, the outfit art doesn't change, and no sixth class is added. |
 | 8 | Skills list on home | **None.** |
 
-Three deliberate deviations from the mock. D1 and D2 are for accessibility and portability; D3 is the owner's brand choice:
+Five deliberate deviations from the mock. D1 and D2 are for accessibility and portability; D3 to D5 are the owner's choices:
 
 - **D1. Pause control for the Range carousel.** WCAG 2.2.2 requires a way to pause content that moves on its own for more than 5s. A 44px pixel pause/play button sits beside the pager dots ([§6.6](#66-range)).
 - **D2. Blog nav link** uses the relative `/blog/` rather than the mock's absolute `https://jlawcordova.com/blog`.
 - **D3. Logo.** The mock's isometric cube mark is **not** used. The site keeps J. Law's existing logo: a flat block "J" and "L" built on a square grid. Only its colors change, to the new palette. It stays flat and 2D, with no isometric faces or 3D shading.
+- **D4. No highlights section.** The mock's `HIGHLIGHTS` / `DAVAO CITY, PH · UTC+8` label row and its six highlight cards are dropped. The hero ends after the buttons and the island art.
+- **D5. Shorter hero lede.** The mock's 39-word paragraph becomes 23 words ([§7.1](#71-hero)).
 
 ## 2. Architecture
 
@@ -37,7 +39,7 @@ The stack stays as it is: Astro 7, TypeScript, plain CSS in `src/styles/`, and P
 
 - **Static by default.** Every page is static HTML and CSS. The only client script is the Range carousel, a small vanilla `<script>` bundled by Astro.
 - **The pixel art is inline SVG.** It's inlined, rather than loaded through `<img>`, so that page CSS drives its animations and `prefers-reduced-motion`, and so the carousel can switch sprite variants. The art is imported as `?raw` strings from optimized SVG files and rendered with `set:html`.
-- **Content is data.** Highlights and Range classes live in `src/data/home.ts`, typed, and the components map over them. Copy comes from the mock, checked against the profile.
+- **Content is data.** Range classes live in `src/data/home.ts`, typed, and the component maps over them. Copy comes from the mock, checked against the profile.
 
 ### 2.1 File plan
 
@@ -46,14 +48,14 @@ The stack stays as it is: Astro 7, TypeScript, plain CSS in `src/styles/`, and P
 | Path | Purpose |
 | --- | --- |
 | `src/styles/pixel-art.css` | Crisp rendering, keyframes and reduced-motion rules for all pixel art |
-| `src/styles/hero.css`, `src/styles/highlights.css`, `src/styles/range.css` | Home sections |
+| `src/styles/hero.css`, `src/styles/range.css` | Home sections |
+| `src/styles/card.css` | Shared `.card` surface for the blog ([§6.4](#64-card-surface)) |
 | `src/styles/buttons.css` | `.btn`, `.btn--primary`, `.btn--ghost`, `.pill` |
 | `src/components/JLMark.astro` | The existing JL logo as inline SVG, recolored ([§6.2](#62-jl-mark)) |
-| `src/components/home/Hero.astro` | Hero section, including highlights |
+| `src/components/home/Hero.astro` | Hero section |
 | `src/components/home/HeroIsland.astro` | Inlines the hero art SVG |
-| `src/components/home/HighlightCard.astro` | One highlight card |
 | `src/components/home/Range.astro` | Range section, sprite stage and carousel script |
-| `src/data/home.ts` | `highlights` and `rangeClasses` arrays (see [§7](#7-content)) |
+| `src/data/home.ts` | `rangeClasses` array (see [§7](#7-content)) |
 | `src/assets/pixel-art/source/hero-island.src.svg` | Hero art exactly as extracted from the mock (rect form) |
 | `src/assets/pixel-art/source/range-sprite.src.svg` | Range sprite and island, all five variants, as extracted |
 | `src/assets/pixel-art/hero-island.svg` | Optimized output, committed |
@@ -132,14 +134,6 @@ Keep `static/public/home/jlawcordova-profile.png` and the résumé PDF; they're 
   --color-footer: #3F2B1E;
   --color-on-footer: #E9DCC6;
 
-  /* Highlight markers */
-  --marker-wine: #7B2D3B;
-  --marker-teal: #5F8C7E;
-  --marker-gold: #D8B66A;
-  --marker-leaf: #6F8F55;
-  --marker-clay: #8A5A34;
-  --marker-moss: #3E4A2A;
-
   /* Type */
   --font-text: 'Sora', 'Segoe UI', system-ui, sans-serif;
   --font-pixel: 'Silkscreen', ui-monospace, monospace;
@@ -152,7 +146,6 @@ Keep `static/public/home/jlawcordova-profile.png` and the résumé PDF; they're 
   --radius-card: 14px;
   --radius-button: 10px;
   --shadow-pixel: 4px 4px 0 var(--color-ink);
-  --shadow-pixel-sm: 2px 2px 0 var(--color-ink);
   --shadow-nav: 0 8px 24px rgba(46, 36, 24, 0.08);
 
   /* Layout */
@@ -174,7 +167,7 @@ Media queries can't read custom properties, so breakpoints are written literally
 | Pair | Ratio | Use |
 | --- | --- | --- |
 | ink on page | 13.05 | Body text |
-| ink-muted on page / hero / card | 7.16 / 6.30 / 6.16 | Ledes, card body, labels |
+| ink-muted on page / hero / card | 7.16 / 6.30 / 6.16 | Ledes, descriptions, labels |
 | accent on page / hero | 5.30 / 4.67 | Links, accent heading clause |
 | on-accent on accent | 5.44 | Button text |
 | on-forest / on-forest-muted / gold on forest | 8.83 / 6.65 / 5.30 | Range section |
@@ -193,8 +186,7 @@ All of these pass WCAG AA for their sizes. Don't introduce a text/ground pair th
 | Pre-title ("Hi, I'm…") | text | 20px | 500 | 1.4 | 0 |
 | Lede | text | 18px | 400 | 1.6 (hero), 1.65 (range) | 0 |
 | Post body | text | 17px | 400 | 1.75 | 0 |
-| Card title | text | 14px | 600 | 1.4 | 0 |
-| Card body | text | 13px | 400 | 1.45 | 0 |
+| Card title (blog lists) | text | 18px | 600 | 1.35 | 0 |
 | Nav link | text | 14px | 400 | 1 | 0 |
 | Wordmark | pixel | 18px | 400 | 1 | 1px |
 | Primary button | pixel | 15px | 400 | 1 | 0 |
@@ -217,7 +209,7 @@ Silkscreen is loaded at 400 only, because the mock never uses 700.
 
 ### 3.5 Stylesheet order
 
-`global.css` imports in this order: `variables`, `base`, `type`, `layout`, `buttons`, `pixel-art`, `syntax`, `code`, `navigation`, `footer`, `hero`, `highlights`, `range`, `blog`, `blog-item`, `posts`, `page`.
+`global.css` imports in this order: `variables`, `base`, `type`, `layout`, `buttons`, `pixel-art`, `syntax`, `code`, `navigation`, `footer`, `card`, `hero`, `range`, `blog`, `blog-item`, `posts`, `page`.
 
 ## 4. Global styles
 
@@ -302,18 +294,14 @@ The hero is a `<section id="top" class="hero isogrid">` with `background-color: 
   3. `<p class="hero__lede">`: the lede, `max-width: 540px`, ink-muted.
   4. The button row, `display: flex; flex-wrap: wrap; gap: 14px; padding-top: 6px`, holding `<a class="btn btn--primary" href="#range">Press start</a>` and `<a class="btn btn--ghost" href={linkedin}>Get in touch</a>`.
 - **Art column:** `flex: 1 1 460px; display: flex; justify-content: center` with class `floaty`. It holds `<HeroIsland />`, which outputs the SVG at `width: 675px; max-width: 100%; height: auto; display: block; overflow: visible`, with `aria-hidden="true"`.
-- **Highlights block:**
-  - Placement: `.container` with `margin-top: 56px; display: flex; flex-direction: column; gap: 14px`.
-  - Label row: `display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px`, in pixel 12px, ink-muted. It reads `HIGHLIGHTS` and `DAVAO CITY, PH · UTC+8`.
-  - Grid: `<ul class="highlights" role="list">`, `display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 12px; list-style: none; padding: 0; margin: 0`.
+- **No highlights block (D4).** Nothing follows the two columns inside the hero.
 
-### 6.4 Highlight card
+### 6.4 Card surface
 
-`HighlightCard.astro` takes props `{ title: string; body: string; marker: MarkerColor }` and renders `<li class="highlight">`.
+The frosted card from the mock's highlight cards is kept as a generic surface for blog lists and related posts, without the colored marker.
 
-- **Card:** `border-radius: var(--radius-card); padding: 14px 16px; background: var(--color-surface); border: 1px solid var(--color-border); display: flex; gap: 12px; align-items: flex-start`.
-- **Marker:** `<span class="highlight__marker" aria-hidden="true">`, `flex-shrink: 0; width: 10px; height: 10px; margin-top: 5px; background: var(--marker-*); box-shadow: var(--shadow-pixel-sm)`.
-- **Text:** `<strong>` for the title and `<span>` for the body, in a column with a 2px gap, using the card type from [§3.3](#33-typography).
+- **`.card`:** `border-radius: var(--radius-card); padding: 14px 16px; background: var(--color-surface); border: 1px solid var(--color-border);`
+- **Hover**, when the whole card is a link target: `border-color: var(--color-border-strong); background: var(--color-surface-ghost)`. No shadow or lift.
 
 ### 6.5 Hero island art
 
@@ -386,25 +374,14 @@ All copy is exactly as written here. Typographic apostrophes are `’` and the m
 
 - **Pre-title:** Hi, I’m J. Law. Cordova.
 - **H1:** I ship whole products, *not handoffs.* (The second clause is accent-colored.)
-- **Lede:** Senior developer and tech lead at Netzon in Davao City. I lead full-stack teams on C#, ASP.NET Core, React and Next.js, design data platforms on Microsoft Fabric, and own the release process that gets it all safely to production.
+- **Lede:** Senior developer and tech lead at Netzon in Davao City. I lead full-stack teams, design data platforms, and take releases safely to production.
+
+  This replaces the mock's longer paragraph (D5). The technology list is dropped; the Range classes and the blog carry it.
 - **Buttons:** Press start · Get in touch
 
-### 7.2 Highlights (`src/data/home.ts`)
+### 7.2 Highlights
 
-```ts
-export type MarkerColor = 'wine' | 'teal' | 'gold' | 'leaf' | 'clay' | 'moss';
-
-export const highlights = [
-  { title: 'Led two full-stack teams', body: 'Shipped e-commerce products on React, Next.js and ASP.NET Core', marker: 'wine' },
-  { title: 'Fabric data foundation', body: 'Designed a Bronze, Silver, Gold lakehouse with per-client access and Power BI on top', marker: 'teal' },
-  { title: 'PCI-aware release process', body: 'Secure SDLC, sign-offs and rollback for a payment-sensitive browser extension', marker: 'gold' },
-  { title: '100+ pull requests reviewed', body: 'TDD, code review and developer onboarding on a large enterprise platform', marker: 'leaf' },
-  { title: 'Estimates backed by prototypes', body: 'Built a working Next.js proof of concept to test scope before committing', marker: 'clay' },
-  { title: 'Responsible AI, taught in-house', body: 'A framework for working with AI without leaking client data', marker: 'moss' },
-] as const satisfies readonly { title: string; body: string; marker: MarkerColor }[];
-```
-
-Each one traces to a row in the profile's Highlights table.
+None on the site (D4). The profile's Highlights table stays as the source of facts for the copy that remains.
 
 ### 7.3 Range
 
@@ -498,7 +475,7 @@ These pages have no mock. They use the tokens, type and surfaces above and inven
 - **Featured post (page 1):** a card with `border-radius: var(--radius-card); background: var(--color-surface); border: 1px solid var(--color-border); overflow: hidden`, in a two-column grid that becomes one column below 720px.
   - The image is `aspect-ratio: 16/9; object-fit: cover`.
   - Then the category label (pixel 12px, uppercase, ink-muted), the title (Sora 600, 24px, ink link, accent on hover), the description (ink-muted, 16px), and "Read more" as `.btn.btn--primary`.
-- **Post list:** a grid of `auto-fill, minmax(min(300px, 100%), 1fr)` with a 12px gap. Each item is a highlight-style card without a marker: category label, then the title link.
+- **Post list:** a grid of `auto-fill, minmax(min(300px, 100%), 1fr)` with a 12px gap. Each item is a `.card` ([§6.4](#64-card-surface)): category label, then the title link.
 - **Pagination:**
   - Buttons are `min-width: 44px; min-height: 44px; border-radius: var(--radius-button)`, in pixel 13px.
   - Links have the ghost style.
@@ -578,10 +555,10 @@ These replace the current `apple-touch-icon-precomposed` and `shortcut icon` lin
 
 | Width | Behavior |
 | --- | --- |
-| ≥ 960px | As in the mock. Hero and Range are two columns. Highlights are 3 × 2. |
-| 720–959px | Hero and Range wrap to one column (copy first, then art or panel). Highlights are 2 per row. |
+| ≥ 960px | As in the mock. Hero and Range are two columns. |
+| 720–959px | Hero and Range wrap to one column (copy first, then art or panel). |
 | < 720px | One column throughout. The hero art is 100% of the content width. The blog featured card stacks. |
-| < 480px | Gutter is 16px. Hero padding is `48px 16px 64px`. Range padding is `64px 16px 72px`. The nav links wrap under the brand. Highlights are 1 per row (the `min(320px, 100%)` guard). |
+| < 480px | Gutter is 16px. Hero padding is `48px 16px 64px`. Range padding is `64px 16px 72px`. The nav links wrap under the brand. |
 
 At every width from 320px up there's no horizontal scroll. All tap targets are at least 44×44.
 
@@ -607,7 +584,7 @@ Each intent acceptance criterion maps to a check:
 
 | Intent criterion | How to check |
 | --- | --- |
-| Matches Prototype B at 1440px | Screenshot `/` at 1440×900 and full page with Playwright. Compare side by side with the canvas board. The art must be pixel-identical, which the optimizer's lossless check guarantees. Layout, colors and copy must match. |
+| Matches Prototype B at 1440px | Screenshot `/` at 1440×900 and full page with Playwright. Compare side by side with the canvas board. The art must be pixel-identical, which the optimizer's lossless check guarantees. Layout, colors and copy must match, apart from deviations D1–D5 in [§1](#1-decisions-adopted). |
 | Facts trace to the profile | Review §7 against `docs/references/profile.md`. Grep `dist/` for the old copy ("Enterprise Applications", "Code + Create", "Backend Systems"): no matches. |
 | No confidential names | §7.5 grep over `dist/`: no matches. |
 | 390px works | Screenshot at 390×844. `document.documentElement.scrollWidth <= innerWidth` on every page type. Tap-target audit in Lighthouse. |
@@ -627,7 +604,7 @@ Each slice is reviewable on its own and leaves the site deployable.
 
 1. **Foundation:** tokens, fonts, base, type, buttons and pixel-art CSS. New header, footer and recolored JL mark. Font Awesome removed. Every page picks up the new shell.
 2. **Pixel-art pipeline:** source SVGs, the optimizer script with its lossless check, and the optimized outputs.
-3. **Home:** hero, highlights, Range with the carousel, `home.ts` and the site description. Old home sections and assets deleted.
+3. **Home:** hero, Range with the carousel, `home.ts` and the site description. Old home sections and assets deleted.
 4. **Secondary pages:** blog index, pagination, post, syntax theme, related posts and 404.
 5. **Brand marks:** favicons, touch and manifest icons, logo, OG image and manifest fix.
 6. **Verification pass:** §13 checks, with numbers and screenshots in the PR.

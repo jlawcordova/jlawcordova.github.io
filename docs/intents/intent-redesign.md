@@ -29,10 +29,10 @@ The redesign also brings the site's **roles and skills** up to date. The current
 
 1. **Design tokens.** Replace `src/styles/variables.css` with the Prototype B palette, type and radii (see [Brand spec](#brand-spec)).
 2. **Global shell.** New sticky pill navigation, new footer and fonts, in `BaseLayout.astro`, `Navigation.astro` and `Footer.astro`.
-3. **Home page** (`src/pages/index.astro`), rebuilt to the mock's three sections: hero with highlights, Range, and footer.
+3. **Home page** (`src/pages/index.astro`), rebuilt to the mock's sections without the highlights row: hero, Range, and footer.
 4. **Pixel-art assets.** The isometric hero island and the Range character sprite, ported from the mock's SVG.
 5. **Blog index, post pages and 404**, restyled with the new tokens, type and surfaces. These have no mock, so they should follow the brand rules below and not be invented from scratch.
-6. **Content update.** Replace the old role copy with the updated profile wherever the site describes J. Law's role or work: the hero, highlights, Range, `site.description`, meta and Open Graph descriptions, and the 404 page if it has bio copy.
+6. **Content update.** Replace the old role copy with the updated profile wherever the site describes J. Law's role or work: the hero, Range, `site.description`, meta and Open Graph descriptions, and the 404 page if it has bio copy.
 7. **Brand marks.** Keep the existing **JL logo**: the flat block "J" and "L" on a square grid. Recolor it to the new palette, with the J in the accent green (was pink) and the L in ink. Don't use the mock's isometric cube, don't make it 3D, and don't change its shape. Favicon, `apple-touch-icon` and the social share image follow if [Decisions](#decisions) says to.
 8. **Clean-up.** Remove styles, assets and scripts made obsolete by the redesign, for example `intro.css`, `bio.css`, the cogs SVG, the skill-rotator script, and Font Awesome if no icon still needs it.
 
@@ -56,34 +56,32 @@ Taken from `Isometric.dc.html`. Treat the values as the token set and name them 
 | Hero ground | `#EADFC8` | Hero section, under the isometric grid |
 | Card ground | `#E9DCC6` | Range sprite stage, footer link text |
 | Ink | `#2E2418` | Headings, body text, pixel outlines, hard shadows |
-| Ink, muted | `#5C4B39` | Lede, card body, small caps labels |
+| Ink, muted | `#5C4B39` | Lede, descriptions, small caps labels |
 | Earth | `#5A3E2B` | Grid lines, borders (at low alpha), logo side |
 | **Accent (default)** | `#3F6B45` | Primary button, Contact pill, "not handoffs.", logo top, links |
 | Accent hover | `#2E4F33` | Link hover |
 | Forest (dark section) | `#2F4632` | Range section background |
 | Footer | `#3F2B1E` | Footer background |
-| Gold | `#D8B66A` | "One craftsman." on dark, highlight markers |
+| Gold | `#D8B66A` | "One craftsman." on dark |
 | On-dark text | `#F4EDE0` / `#D9CFBB` | Heading / body on the forest section |
 | On-accent text | `#F6F0E3` | Text on accent buttons |
-
-Highlight marker colors, one per card: `#7B2D3B`, `#5F8C7E`, `#D8B66A`, `#6F8F55`, `#8A5A34`, `#3E4A2A`.
 
 The mock offers accent alternates `#7B2D3B` (wine), `#8A5A34` (clay) and `#5E6B2F` (olive). Ship the default green. Keep the accent a single token so it can be swapped.
 
 ### Type
 
-- **Display / UI pixel font:** [Silkscreen](https://fonts.google.com/specimen/Silkscreen) 400/700. Used for the wordmark, buttons, the Contact pill, small caps labels ("HIGHLIGHTS"), the Range class nameplate and the footer. Letter-spacing about 1px.
+- **Display / UI pixel font:** [Silkscreen](https://fonts.google.com/specimen/Silkscreen) 400/700. Used for the wordmark, buttons, the Contact pill, small caps labels (dates, categories), the Range class nameplate and the footer. Letter-spacing about 1px.
 - **Text font:** [Sora](https://fonts.google.com/specimen/Sora) 400/500/600/700, falling back to `'Segoe UI', system-ui, sans-serif`. Used for headings and body.
 - Hero H1: Sora 700, `clamp(44px, 5.6vw, 76px)`, line-height 1.02, letter-spacing -1.5px.
 - Section H2: Sora 700, `clamp(40px, 5vw, 64px)`, line-height 1.04, letter-spacing -1px.
-- Lede: 18px, line-height 1.6. Card title 14px/600, card body 13px.
+- Lede: 18px, line-height 1.6.
 - Post body type on the blog is not in the mock. Use Sora at a comfortable reading size (about 17–18px, line-height about 1.7) and keep code in a monospace stack.
 
 ### Surfaces and shape
 
 - **Isometric grid texture** (`.isogrid`): two 1px lines at ±26.57° in `rgba(90,62,43,.06)`, tile `32px × 16px`. Used on the hero and the sprite stage.
-- **Frosted surfaces:** nav and highlight cards use translucent cream (`rgba(250,245,235,.55–.62)`), a 1px border in `rgba(90,62,43,.16)`, and a backdrop blur on the nav.
-- **Hard pixel shadow:** `4px 4px 0 #2E2418` on the primary button, and `2px 2px 0` on the 10px square highlight markers. Never use soft drop shadows on pixel elements.
+- **Frosted surfaces:** the nav and cards (blog lists) use translucent cream (`rgba(250,245,235,.55–.62)`), a 1px border in `rgba(90,62,43,.16)`, and a backdrop blur on the nav.
+- **Hard pixel shadow:** `4px 4px 0 #2E2418` on the primary button. Never use soft drop shadows on pixel elements.
 - **Radii:** nav and pills `999px`, buttons `10px`, cards `14px`, Range panel `24px` outer and `16px` inner.
 - Pixel art always renders with `shape-rendering: crispEdges` and is never smoothed or blurred when scaled.
 - Max content width `1160px`, 24px side gutters.
@@ -104,17 +102,9 @@ All of it is stepped (`steps()` / `step-end`) so it feels like sprite animation,
 
 1. **Header.** A sticky, centered pill nav: the recolored JL logo (in place of the mock's cube) with the **J.LAW** wordmark, links **Range** (`#range`) and **Blog** (`/blog`), and an accent **Contact** pill that links to LinkedIn.
 2. **Hero** (`#top`, isogrid on hero ground):
-   - Left: "Hi, I'm J. Law. Cordova." / H1 "I ship whole products, *not handoffs.*" (second clause in accent) / lede about being a senior developer and tech lead at Netzon in Davao City / buttons **Press start** (to `#range`, primary with a hard shadow) and **Get in touch** (LinkedIn, ghost).
+   - Left: "Hi, I'm J. Law. Cordova." / H1 "I ship whole products, *not handoffs.*" (second clause in accent) / a **short** lede, two sentences, about being a senior developer and tech lead at Netzon in Davao City / buttons **Press start** (to `#range`, primary with a hard shadow) and **Get in touch** (LinkedIn, ghost).
    - Right: the floating isometric island. It has a house, river and waterfall, a bridge, a road with two trucks, a tower crane, trees and drifting clouds. A small second island holds the character at a chalkboard.
-   - Below: the row label **HIGHLIGHTS** / **DAVAO CITY, PH · UTC+8**, then six highlight cards in an auto-fit grid (min 320px), each with a colored pixel marker. Each card maps to a profile highlight:
-     1. Led two full-stack teams
-     2. Fabric data foundation
-     3. PCI-aware release process
-     4. 100+ pull requests reviewed
-     5. Estimates backed by prototypes
-     6. Responsible AI, taught in-house
-
-     The profile has more highlights that could replace these: SDLC standardization, AWS partner enablement, mentoring and engineering metrics. Keep six cards.
+   - **No highlights section.** The mock's `HIGHLIGHTS` label row and six highlight cards are left out on purpose.
 3. **Range** (`#range`, forest background):
    - Left: a frosted panel holding the isogrid stage, with a nameplate showing the current class, previous and next pixel-arrow buttons, the character sprite on its island, and five pager dots.
    - Classes, in order: **Front-end, Infrastructure, UX Design, Data Engineering, Project Management**. Each one recolors the sprite's outfit and headgear (palette and row overrides in the mock's `CL` table).
@@ -146,8 +136,8 @@ Copy should be taken verbatim from the mock, checked against the [profile](../re
 
 ## Acceptance criteria
 
-- [ ] At 1440px wide, the home page matches Prototype B in layout, colors, type, copy and pixel art when compared side by side.
-- [ ] Every factual claim on the site (role, employer, highlights, disciplines, technologies) can be traced to `docs/references/profile.md`. No old role copy ("Enterprise Applications / Backend Systems / Automated Pipelines", "Code + Create" bio) remains.
+- [ ] At 1440px wide, the home page matches Prototype B in layout, colors, type, copy and pixel art when compared side by side, apart from the deliberate changes recorded here and in the spec (JL logo, no highlights section, shorter hero paragraph).
+- [ ] Every factual claim on the site (role, employer, disciplines, technologies) can be traced to `docs/references/profile.md`. No old role copy ("Enterprise Applications / Backend Systems / Automated Pipelines", "Code + Create" bio) remains.
 - [ ] No client names, project codenames or colleagues' names appear anywhere in the built site.
 - [ ] At 390px wide, the home page has no horizontal scroll, all content is reachable, and the tap targets are at least 44px.
 - [ ] The Range carousel cycles through all five classes on its own and with the buttons. The nameplate, sprite colors, pager dots and text alternative all update together.
@@ -172,8 +162,8 @@ Open items to settle before or during implementation. Record the answer here.
 | 4 | Should the nav and footer link to the **résumé PDF** (`/public/CORDOVA-JUNEL-LAWRENCE-RESUME.pdf`)? It probably predates the updated profile. | No, as in the mock. Refreshing the PDF against the profile is a separate task. |
 | 5 | **Post pages** have no mock. Is a token-level restyle enough, or should a post layout be designed on the canvas first? | Token-level restyle, reviewed in the PR. |
 | 6 | **Twitter → X.** The footer label becomes "X". Should the URL change to `x.com`? | Keep the existing URL and change only the label. |
-| 7 | **Range classes vs. profile.** Should **Security & Governance** get a class, and should Infrastructure be renamed? UX Design stays, since the Figma work backs it. | Keep the mock's five classes, including UX Design. Rename **Infrastructure** to **Cloud & DevOps** to match the profile. Don't add Security & Governance: the "PCI-aware release process" highlight already covers it, and a sixth class would need a new outfit and another pager dot. |
-| 8 | Should the home page show a **skills list** from the profile's inventory, for example a strip under Range? | No. The mock has none, and Range plus the highlights carry it. Revisit after launch. |
+| 7 | **Range classes vs. profile.** Should **Security & Governance** get a class, and should Infrastructure be renamed? UX Design stays, since the Figma work backs it. | Keep the mock's five classes, including UX Design. Rename **Infrastructure** to **Cloud & DevOps** to match the profile. Don't add Security & Governance: a sixth class would need a new outfit and another pager dot. The security work stays in the profile and can come back in a later change. |
+| 8 | Should the home page show a **skills list** from the profile's inventory, for example a strip under Range? | No. The mock has none, and Range carries it. Revisit after launch. |
 
 ## References
 
