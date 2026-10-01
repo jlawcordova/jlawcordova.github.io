@@ -19,7 +19,7 @@ Main areas of contribution:
 
 - Technical lead and architect for client applications, across frontend, backend and delivery.
 - Full-stack development in C#, ASP.NET Core, React, Next.js and JavaScript.
-- UI and UX design in Figma: component-based, responsive interfaces built to a client's brand guidelines.
+- UI and UX design in Figma: component-based, responsive interfaces built to a client's brand guidelines, plus quick prototypes and high-fidelity designs for proposals.
 - Data platform architecture on Microsoft Fabric and Power BI, built as a Bronze, Silver and Gold lakehouse.
 - Secure software delivery: PCI-related controls, handling of personally identifiable information, and production governance.
 - Release management, from development to staging to production, with sign-offs and rollback.
@@ -39,6 +39,7 @@ These are public-safe and can be used as site copy. The six highlight cards in t
 | PCI-aware release process | Release manager and secure-code reviewer for a payment-sensitive browser extension. Defined its secure SDLC, sign-offs, evidence collection, emergency releases, post-release stabilization and rollback. |
 | 100+ pull requests reviewed | Brought in test-driven development and structured code review on a large enterprise client platform, and onboarded developers onto it. |
 | UI design for a Fortune 500 client | Designed the UI in Figma for a Fortune 500 client's internal retail planning and management tool. It made full use of Figma's component system (reusable components and variants) and auto layout, so screens adapt to different content and sizes. The design followed the client's branding, and the client approved it and was happy with how closely it matched their brand. |
+| Designs that sell the proposal | Makes quick prototypes and high-fidelity designs during proposals, so clients can see the solution before work is estimated and committed. The most recent was for a journey-planning feature on a client portal. |
 | Estimates backed by prototypes | Built a working Next.js proof of concept to check scope and setup effort before committing to an estimate. |
 | Responsible AI, taught in-house | Presented a framework for working with AI ("delegation, description, discernment, diligence"), including how to protect sensitive data. |
 | SDLC standardization | Led a workshop to define standard operating procedures: GitHub issue tracking with severity and PCI impact, a dev-to-staging-to-production branching path, ownership, and compliance evidence. Owns the company key result for SDLC compliance. |
@@ -52,7 +53,7 @@ These are public-safe and can be used as site copy. The six highlight cards in t
 These are the main groups the work falls into. Use them to check the Range carousel classes in the redesign.
 
 1. **Software engineering:** full-stack web, front-end and back-end.
-2. **UI and UX design:** Figma design systems, component-based and responsive layouts, designing to brand guidelines.
+2. **UI and UX design:** Figma design systems, component-based and responsive layouts, designing to brand guidelines, prototypes and high-fidelity designs for proposals.
 3. **Data and analytics:** Fabric, lakehouse, Power BI.
 4. **Cloud and DevOps:** Azure, AWS, Vercel, CI/CD, environments, releases.
 5. **Leadership and delivery:** tech lead, estimation, sprint and release planning, mentoring.
@@ -71,6 +72,7 @@ These are the main groups the work falls into. Use them to check the Range carou
 
 - **Tools:** Figma.
 - **Design systems:** reusable components and variants, auto layout, responsive and flexible layouts.
+- **Pre-sales:** quick prototypes and high-fidelity designs that support proposals and estimates.
 - **Branding:** working within a client's brand guidelines.
 
 ### Data and analytics
