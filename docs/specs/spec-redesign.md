@@ -31,7 +31,7 @@ Five deliberate deviations from the mock. D1 and D2 are for accessibility and po
 - **D2. Blog nav link** uses the relative `/blog/` rather than the mock's absolute `https://jlawcordova.com/blog`.
 - **D3. Logo.** The mock's isometric cube mark is **not** used. The site keeps J. Law's existing logo: a flat block "J" and "L" built on a square grid. Only its colors change, to the new palette. It stays flat and 2D, with no isometric faces or 3D shading.
 - **D4. No highlights section.** The mock's `HIGHLIGHTS` / `DAVAO CITY, PH · UTC+8` label row and its six highlight cards are dropped. The hero ends after the buttons and the island art.
-- **D5. Shorter paragraphs.** The hero lede goes from 39 words to 23 ([§7.1](#71-hero)), and the Range paragraph from 38 words to 22 ([§7.3](#73-range)).
+- **D5. Shorter paragraphs.** The hero lede goes from 39 words to 23 ([§7.1](#71-hero)), and the Range paragraph from 37 words to 22 ([§7.3](#73-range)).
 
 ## 2. Architecture
 
