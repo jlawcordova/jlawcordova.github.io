@@ -1,0 +1,46 @@
+---
+import { formatDateRange, getAccomplishments, linkLabel } from '../lib/accomplishments';
+
+const { status, items } = getAccomplishments();
+---
+
+<section class="accomplishments-section-container" id="accomplishments">
+  <div class="accomplishments-section-wrapper">
+    <h2 class="accomplishments-heading">Accomplishments</h2>
+    {
+      status === 'unavailable' ? (
+        <p class="accomplishments-note">Accomplishments couldn't be loaded right now. Check back soon.</p>
+      ) : items.length === 0 ? (
+        <p class="accomplishments-note">Nothing here yet.</p>
+      ) : (
+        <ol class="accomplishments-list">
+          {items.map((item) => (
+            <li class="accomplishment">
+              <p class="category-pre-heading accomplishment-date">{formatDateRange(item)}</p>
+              <h3 class="accomplishment-title">{item.title}</h3>
+              <p class="accomplishment-description">{item.description}</p>
+              {item.tags.length > 0 && (
+                <ul class="accomplishment-tags">
+                  {item.tags.map((tag) => (
+                    <li>{tag}</li>
+                  ))}
+                </ul>
+              )}
+              {item.links.length > 0 && (
+                <ul class="accomplishment-links">
+                  {item.links.map((link) => (
+                    <li>
+                      <a href={link} target="_blank" rel="noopener noreferrer">
+                        {linkLabel(link)}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ol>
+      )
+    }
+  </div>
+</section>

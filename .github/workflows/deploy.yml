@@ -7,6 +7,12 @@ on:
   pull_request:
     branches: [master]
   workflow_dispatch:
+  # Sent by the jlawcordova-mcp Worker after an accomplishment is added or deleted.
+  repository_dispatch:
+    types: [atproto-updated]
+  # Daily rebuild catches any accomplishment change whose dispatch was missed.
+  schedule:
+    - cron: "17 3 * * *"
 
 permissions:
   contents: read
@@ -24,6 +30,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+      # Never fails the build: on any error it writes an "unavailable" file.
+      - name: Fetch accomplishments from AT Protocol
+        run: node scripts/fetch-accomplishments.mjs
       - name: Install, build, and upload site
         uses: withastro/action@v6
         with:

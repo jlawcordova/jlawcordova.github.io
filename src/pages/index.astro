@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Accomplishments from '../components/Accomplishments.astro';
 import PostListItem from '../components/PostListItem.astro';
 import { getPosts } from '../lib/posts';
 
@@ -35,6 +36,8 @@ const recentPosts = (await getPosts()).slice(0, 3);
       </p>
     </div>
   </section>
+
+  <Accomplishments />
 
   {
     recentPosts.length > 0 && (
