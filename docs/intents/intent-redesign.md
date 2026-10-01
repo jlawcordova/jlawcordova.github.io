@@ -33,7 +33,7 @@ The redesign also brings the site's **roles and skills** up to date. The current
 4. **Pixel-art assets.** The isometric hero island and the Range character sprite, ported from the mock's SVG.
 5. **Blog index, post pages and 404**, restyled with the new tokens, type and surfaces. These have no mock, so they should follow the brand rules below and not be invented from scratch.
 6. **Content update.** Replace the old role copy with the updated profile wherever the site describes J. Law's role or work: the hero, highlights, Range, `site.description`, meta and Open Graph descriptions, and the 404 page if it has bio copy.
-7. **Brand marks.** Swap the logo to the isometric cube mark from the nav. Favicon, `apple-touch-icon` and the social share image follow if [Decisions](#decisions) says to.
+7. **Brand marks.** Keep the existing **JL logo**: the flat block "J" and "L" on a square grid. Recolor it to the new palette, with the J in the accent green (was pink) and the L in ink. Don't use the mock's isometric cube, don't make it 3D, and don't change its shape. Favicon, `apple-touch-icon` and the social share image follow if [Decisions](#decisions) says to.
 8. **Clean-up.** Remove styles, assets and scripts made obsolete by the redesign, for example `intro.css`, `bio.css`, the cogs SVG, the skill-rotator script, and Font Awesome if no icon still needs it.
 
 ### Out of scope
@@ -102,7 +102,7 @@ All of it is stepped (`steps()` / `step-end`) so it feels like sprite animation,
 
 ## Page spec: home
 
-1. **Header.** A sticky, centered pill nav: isometric cube mark with the **J.LAW** wordmark, links **Range** (`#range`) and **Blog** (`/blog`), and an accent **Contact** pill that links to LinkedIn.
+1. **Header.** A sticky, centered pill nav: the recolored JL logo (in place of the mock's cube) with the **J.LAW** wordmark, links **Range** (`#range`) and **Blog** (`/blog`), and an accent **Contact** pill that links to LinkedIn.
 2. **Hero** (`#top`, isogrid on hero ground):
    - Left: "Hi, I'm J. Law. Cordova." / H1 "I ship whole products, *not handoffs.*" (second clause in accent) / lede about being a senior developer and tech lead at Netzon in Davao City / buttons **Press start** (to `#range`, primary with a hard shadow) and **Get in touch** (LinkedIn, ghost).
    - Right: the floating isometric island. It has a house, river and waterfall, a bridge, a road with two trucks, a tower crane, trees and drifting clouds. A small second island holds the character at a chalkboard.
@@ -168,7 +168,7 @@ Open items to settle before or during implementation. Record the answer here.
 | --- | --- | --- |
 | 1 | The mock drops the **Recent Blog Posts** section from the home page. Drop it, or add a section in the new style before the footer? | Drop it. Blog stays one click away in the nav and footer. |
 | 2 | The mock links **Contact** and **Get in touch** to LinkedIn. Use email (`site.author.email`) instead? | LinkedIn, as in the mock. |
-| 3 | Should the new cube mark replace the **favicon, touch icons and OG share image**? | Yes for favicon and touch icons. Regenerate the OG image in the new style. |
+| 3 | Should the recolored JL logo replace the **favicon, touch icons and OG share image**? | Yes for favicon and touch icons. Regenerate the OG image in the new style. |
 | 4 | Should the nav and footer link to the **résumé PDF** (`/public/CORDOVA-JUNEL-LAWRENCE-RESUME.pdf`)? It probably predates the updated profile. | No, as in the mock. Refreshing the PDF against the profile is a separate task. |
 | 5 | **Post pages** have no mock. Is a token-level restyle enough, or should a post layout be designed on the canvas first? | Token-level restyle, reviewed in the PR. |
 | 6 | **Twitter → X.** The footer label becomes "X". Should the URL change to `x.com`? | Keep the existing URL and change only the label. |

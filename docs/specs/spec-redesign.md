@@ -18,17 +18,18 @@ The intent's open decisions are taken at their defaults. To change one, update t
 | --- | --- | --- |
 | 1 | Recent blog posts on home | **Dropped.** Blog is linked from the nav and footer. |
 | 2 | Contact target | **LinkedIn** (`site.author.linkedin`) for both "Contact" and "Get in touch". |
-| 3 | Brand marks | **Replace** favicon, touch icons and manifest icons with the cube mark. **Regenerate** the OG image. |
+| 3 | Brand marks | **Keep the existing JL logo**, recolored to the new palette ([§6.2](#62-jl-mark)). Regenerate the favicon, touch icons and manifest icons from it. **Regenerate** the OG image. |
 | 4 | Résumé link | **Not linked.** The PDF stays at its URL, untouched. |
 | 5 | Post pages | **Token-level restyle** per [§9](#9-secondary-pages), reviewed in the PR. |
 | 6 | Twitter → X | Label **"X"**, URL unchanged (`site.author.twitter`). |
 | 7 | Range classes | **Front-end, Cloud & DevOps, UX Design, Data Engineering, Project Management.** "Infrastructure" is renamed, the outfit art doesn't change, and no sixth class is added. |
 | 8 | Skills list on home | **None.** |
 
-Two deliberate deviations from the mock, both for accessibility:
+Three deliberate deviations from the mock. D1 and D2 are for accessibility and portability; D3 is the owner's brand choice:
 
 - **D1. Pause control for the Range carousel.** WCAG 2.2.2 requires a way to pause content that moves on its own for more than 5s. A 44px pixel pause/play button sits beside the pager dots ([§6.6](#66-range)).
 - **D2. Blog nav link** uses the relative `/blog/` rather than the mock's absolute `https://jlawcordova.com/blog`.
+- **D3. Logo.** The mock's isometric cube mark is **not** used. The site keeps J. Law's existing logo: a flat block "J" and "L" built on a square grid. Only its colors change, to the new palette. It stays flat and 2D, with no isometric faces or 3D shading.
 
 ## 2. Architecture
 
@@ -47,7 +48,7 @@ The stack stays as it is: Astro 7, TypeScript, plain CSS in `src/styles/`, and P
 | `src/styles/pixel-art.css` | Crisp rendering, keyframes and reduced-motion rules for all pixel art |
 | `src/styles/hero.css`, `src/styles/highlights.css`, `src/styles/range.css` | Home sections |
 | `src/styles/buttons.css` | `.btn`, `.btn--primary`, `.btn--ghost`, `.pill` |
-| `src/components/CubeMark.astro` | Isometric cube logo, inline SVG, accent top face |
+| `src/components/JLMark.astro` | The existing JL logo as inline SVG, recolored ([§6.2](#62-jl-mark)) |
 | `src/components/home/Hero.astro` | Hero section, including highlights |
 | `src/components/home/HeroIsland.astro` | Inlines the hero art SVG |
 | `src/components/home/HighlightCard.astro` | One highlight card |
@@ -58,7 +59,8 @@ The stack stays as it is: Astro 7, TypeScript, plain CSS in `src/styles/`, and P
 | `src/assets/pixel-art/hero-island.svg` | Optimized output, committed |
 | `src/assets/pixel-art/range-sprite.svg` | Optimized output, committed |
 | `scripts/optimize-pixel-art.mjs` | Source → optimized converter with a lossless check ([§8](#8-pixel-art-pipeline)) |
-| `static/public/favicon.svg` | Cube mark favicon |
+| `static/public/favicon.svg` | JL mark favicon |
+| `static/public/logo@2x.png` | JL mark at 136×90 |
 
 **Modify**
 
@@ -78,7 +80,7 @@ The stack stays as it is: Astro 7, TypeScript, plain CSS in `src/styles/`, and P
 | `src/pages/404.astro` | Restyled, same copy |
 | `src/site.ts` | New `description` ([§7.4](#74-site-metadata)) |
 | `static/public/site.webmanifest` | Name, colors and icon paths (currently wrong: `/android-chrome-*` → `/public/android-chrome-*`) |
-| `static/public/logo.svg`, `logo.png`, `favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png`, `apple-touch-icon-precomposed.png`, `android-chrome-192x192.png`, `android-chrome-512x512.png` | Regenerated from the cube mark |
+| `static/public/logo.svg`, `logo.png`, `favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png`, `apple-touch-icon-precomposed.png`, `android-chrome-192x192.png`, `android-chrome-512x512.png` | Regenerated from the recolored JL mark |
 | `static/public/jlawcordova-image.png` | New OG image ([§10](#10-brand-marks)) |
 | `package.json` | Adds the script `"art": "node scripts/optimize-pixel-art.mjs"` |
 | `README.md` | Project layout table: adds `src/data/`, `src/assets/pixel-art/`, `scripts/` and `docs/` |
@@ -245,7 +247,7 @@ Silkscreen is loaded at 400 only, because the mock never uses 700.
 ```html
 <header class="site-header">
   <nav class="site-nav" aria-label="Main">
-    <a class="site-nav__brand" href="/"><CubeMark /> J.LAW</a>
+    <a class="site-nav__brand" href="/"><JLMark /> J.LAW</a>
     <div class="site-nav__links">
       <a href="/#range">Range</a>
       <a href="/blog/">Blog</a>
@@ -264,19 +266,30 @@ Silkscreen is loaded at 400 only, because the mock never uses 700.
 - **Small screens:** the nav wraps, and there's no drawer. Below 480px the link group takes the full width and the pill keeps its size.
 - **Removed:** the drawer button and its script.
 
-### 6.2 Cube mark
+### 6.2 JL mark
 
-`CubeMark.astro` renders the inline SVG from the mock, `aria-hidden="true"`, 18×16:
+The logo is the existing `static/public/logo.svg`. It's a "J" and an "L" drawn as flat blocks on a 15-unit square grid, so each letter reads as a few stacked squares. **Keep its geometry exactly as it is.** Only the colors change:
+
+| Letter | Old color | New color |
+| --- | --- | --- |
+| J (left) | `#EC407A` (pink) | `var(--color-accent)`, `#3F6B45` |
+| L (right) | `#1B1B1B` | `var(--color-ink)`, `#2E2418` |
+
+It's flat, with no isometric faces, no earth side and no shading. It stays two letters, not a single cube.
+
+`JLMark.astro` renders the old file's eleven overlapping `<rect>`s merged into two paths. The outline is identical to the old file:
 
 ```html
-<svg viewBox="0 0 18 16" width="18" height="16" aria-hidden="true">
-  <polygon points="9,0 18,4.5 9,9 0,4.5" fill="var(--color-accent)" />
-  <polygon points="0,4.5 9,9 9,16 0,11.5" fill="var(--color-ink)" />
-  <polygon points="9,9 18,4.5 18,11.5 9,16" fill="var(--color-earth)" />
+<svg viewBox="0 0 68 45" width="30" height="20" shape-rendering="crispEdges" aria-hidden="true" class="jl-mark">
+  <path fill="var(--color-accent)" d="M15 0h15v45H0V30h15z" />  <!-- J -->
+  <path fill="var(--color-ink)" d="M38 0h14v30h16v15H38z" />    <!-- L -->
 </svg>
 ```
 
-It takes an optional `size` prop. The static logo, favicons and OG image all use this geometry ([§10](#10-brand-marks)).
+- **Size:** a `height` prop sets the size, and the width follows the 68:45 ratio. The default is 20px high, about 30px wide, in the nav.
+- **Accent swaps:** the J uses the accent token, so it follows if the accent changes.
+- **Dark grounds** (only if the mark is ever placed on forest or footer): J in `var(--color-gold)`, L in `var(--color-on-forest)`. The site doesn't use this variant yet.
+- **Other assets:** the static logo, favicons and OG image all use this geometry ([§10](#10-brand-marks)).
 
 ### 6.3 Hero
 
@@ -530,16 +543,16 @@ The title band has H1 **404: Page not found**. Below it, the existing sentence s
 
 ## 10. Brand marks
 
-All marks use the cube geometry of [§6.2](#62-cube-mark), in accent, ink and earth.
+All marks use the JL geometry of [§6.2](#62-jl-mark): J in accent, L in ink. They're flat, never isometric or shaded.
 
 | Asset | Spec |
 | --- | --- |
-| `favicon.svg` | Cube on a transparent background, viewBox padded to square (`-1 -2 20 20`) |
-| `favicon.ico` (16/32/48), `favicon-16x16.png`, `favicon-32x32.png` | Cube rasterized pixel-snapped on transparent, no anti-aliasing at 16px |
-| `apple-touch-icon.png`, `apple-touch-icon-precomposed.png` | 180×180, cube at 60% on `--color-page` |
-| `android-chrome-192x192.png`, `-512x512.png` | Cube at 60% on `--color-page` |
-| `logo.svg` / `logo.png` | Cube plus the `J.LAW` wordmark in Silkscreen, outlined to paths (no font dependency); PNG at 2x |
-| `jlawcordova-image.png` (OG) | 1200×630, PNG, ≤ 300 KB. Hero ground with isogrid, the hero island on the right (about 560px wide), the cube with `J.LAW` top-left, and the H1 "I ship whole products, not handoffs." in Sora 700, ink, with the accent clause. No other text. |
+| `favicon.svg` | JL mark on a transparent background, viewBox padded to square (`-2 -13.5 72 72`) |
+| `favicon.ico` (16/32/48), `favicon-16x16.png`, `favicon-32x32.png` | JL mark rasterized on transparent, with edges snapped to whole pixels at 16px |
+| `apple-touch-icon.png`, `apple-touch-icon-precomposed.png` | 180×180, JL mark at 60% width on `--color-page` |
+| `android-chrome-192x192.png`, `-512x512.png` | JL mark at 60% width on `--color-page` |
+| `logo.svg` / `logo.png` | The JL mark alone, same 68×45 canvas as today, recolored. `logo.png` is re-exported at 68×45 and 136×90 (`logo@2x.png`). |
+| `jlawcordova-image.png` (OG) | 1200×630, PNG, ≤ 300 KB. Hero ground with isogrid, the hero island on the right (about 560px wide), the JL mark with the `J.LAW` wordmark top-left, and the H1 "I ship whole products, not handoffs." in Sora 700, ink, with the accent clause. No other text. |
 
 The OG image can be rendered by any means, for example a throwaway HTML page captured with the pre-installed Playwright Chromium. Commit the output PNG only.
 
@@ -612,7 +625,7 @@ Each intent acceptance criterion maps to a check:
 
 Each slice is reviewable on its own and leaves the site deployable.
 
-1. **Foundation:** tokens, fonts, base, type, buttons and pixel-art CSS. New header, footer and cube mark. Font Awesome removed. Every page picks up the new shell.
+1. **Foundation:** tokens, fonts, base, type, buttons and pixel-art CSS. New header, footer and recolored JL mark. Font Awesome removed. Every page picks up the new shell.
 2. **Pixel-art pipeline:** source SVGs, the optimizer script with its lossless check, and the optimized outputs.
 3. **Home:** hero, highlights, Range with the carousel, `home.ts` and the site description. Old home sections and assets deleted.
 4. **Secondary pages:** blog index, pagination, post, syntax theme, related posts and 404.
