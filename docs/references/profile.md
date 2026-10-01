@@ -30,7 +30,7 @@ Main areas of contribution:
 
 ## Highlights
 
-These are public-safe and can be used as site copy. The six highlight cards in the redesign mock come from this list.
+These are public-safe and can be used as site copy. The redesigned home page doesn't show a highlights section, but its copy must stay consistent with this list.
 
 | Highlight | Context |
 | --- | --- |
