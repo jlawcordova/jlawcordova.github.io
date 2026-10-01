@@ -1,0 +1,80 @@
+.accomplishments-section-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 16px;
+  padding: 0 16px;
+  margin: 72px 0;
+}
+.accomplishments-section-container .accomplishments-section-wrapper {
+  grid-column: 1/5;
+}
+.accomplishments-section-container .accomplishments-heading {
+  color: var(--body-color);
+  font-family: Merriweather;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 2.3125rem;
+  line-height: 60px;
+  letter-spacing: 0.02em;
+  margin-top: 0;
+  text-align: center;
+}
+.accomplishments-section-container .accomplishments-note {
+  color: var(--gray-3);
+  text-align: center;
+}
+.accomplishments-section-container .accomplishments-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.accomplishments-section-container .accomplishment {
+  margin-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.accomplishments-section-container .accomplishment:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.accomplishments-section-container .accomplishment-date {
+  color: var(--gray-4);
+}
+.accomplishments-section-container .accomplishment-title {
+  font-family: var(--root-font-family);
+  font-weight: 500;
+  font-size: 1.125rem;
+  margin: 0 0 0.5rem;
+}
+.accomplishments-section-container .accomplishment-description {
+  margin-bottom: 0.75rem;
+  white-space: pre-line;
+}
+.accomplishments-section-container .accomplishment-tags,
+.accomplishments-section-container .accomplishment-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0 0 0.5rem;
+  padding: 0;
+}
+.accomplishments-section-container .accomplishment-tags li {
+  font-size: 0.875rem;
+  padding: 0 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+.accomplishments-section-container .accomplishment-links li {
+  font-size: 0.875rem;
+}
+
+@media only screen and (min-width: 768px) {
+  .accomplishments-section-container {
+    grid-template-columns: repeat(12, 1fr);
+    margin: 96px 0;
+  }
+  .accomplishments-section-container .accomplishments-section-wrapper {
+    grid-column: 2/12;
+  }
+}

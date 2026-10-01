@@ -11,6 +11,8 @@ npm install
 npm run dev      # dev server at http://localhost:4321
 npm run build    # type-check (astro check) and build to dist/
 npm run preview  # serve the built site
+npm run fetch-accomplishments  # refresh src/data/accomplishments.json from AT Protocol
+npm test         # tests for the fetch script (Node built-ins, no network)
 ```
 
 ## Project layout
@@ -22,6 +24,8 @@ npm run preview  # serve the built site
 | `src/pages/` | Routes: home, `/blog/` (paginated as `/blog/page2/`, ...), posts, `/atom.xml`, 404. |
 | `src/layouts/`, `src/components/` | Page shell, navigation, footer, and shared pieces. |
 | `src/styles/` | Plain CSS. `global.css` imports the rest in order; `variables.css` holds the design tokens. |
+| `src/data/accomplishments.json` | Accomplishments for the home page. The committed copy is an empty `"unavailable"` placeholder; CI overwrites it before every build. |
+| `scripts/fetch-accomplishments.mjs` | Reads the public `com.jlawcordova.profile.accomplishment` records from the AT Protocol repo of `jlawcordova.com` and writes the file above. Any failure writes the placeholder and exits 0, so the build never breaks on the data. |
 | `src/site.ts` | Site title, description, author links, posts per page. |
 | `static/` | Copied to the site root as-is. `static/public/*` is served at `/public/*` (images, favicons, resume). |
 
@@ -46,7 +50,7 @@ The post is published at `/<categories>/<YYYY>/<MM>/<DD>/<slug>/`, the same sche
 
 ## Deploy
 
-Pushing to `master` runs `.github/workflows/deploy.yml`, which builds the site and deploys it to GitHub Pages. Pull requests are built but not deployed. The repository's Pages source must be set to **GitHub Actions** (Settings → Pages → Build and deployment → Source).
+Pushing to `master` runs `.github/workflows/deploy.yml`, which fetches the accomplishments, builds the site, and deploys it to GitHub Pages. Pull requests are built but not deployed. The workflow also deploys `master` when the accomplishments MCP server sends a `repository_dispatch` of type `atproto-updated` (after an add or delete), and daily at 03:17 UTC to catch a missed dispatch. The repository's Pages source must be set to **GitHub Actions** (Settings → Pages → Build and deployment → Source).
 
 ## License
 
