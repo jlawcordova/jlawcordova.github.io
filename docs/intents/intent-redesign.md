@@ -31,7 +31,7 @@ The redesign also brings the site's **roles and skills** up to date. The current
 3. **Home page** (`src/pages/index.astro`), rebuilt to the mock's three sections: hero with highlights, Range, and footer.
 4. **Pixel-art assets.** The isometric hero island and the Range character sprite, ported from the mock's SVG.
 5. **Blog index, post pages and 404**, restyled with the new tokens, type and surfaces. These have no mock, so they should follow the brand rules below and not be invented from scratch.
-6. **Content update.** Replace the old role copy with the updated profile wherever the site states who J. Law is or what he does: the hero, highlights, Range, `site.description`, meta and Open Graph descriptions, and the 404 page if it has bio copy.
+6. **Content update.** Replace the old role copy with the updated profile wherever the site describes J. Law's role or work: the hero, highlights, Range, `site.description`, meta and Open Graph descriptions, and the 404 page if it has bio copy.
 7. **Brand marks.** Swap the logo to the isometric cube mark from the nav. Favicon, `apple-touch-icon` and the social share image follow if [Decisions](#decisions) says to.
 8. **Clean-up.** Remove styles, assets and scripts made obsolete by the redesign, for example `intro.css`, `bio.css`, the cogs SVG, the skill-rotator script, and Font Awesome if no icon still needs it.
 
