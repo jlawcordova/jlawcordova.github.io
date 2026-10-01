@@ -24,14 +24,18 @@ The intent's open decisions are taken at their defaults. To change one, update t
 | 6 | Twitter → X | Label **"X"**, URL unchanged (`site.author.twitter`). |
 | 7 | Range classes | **Front-end, Cloud & DevOps, UX Design, Data Engineering, Project Management.** "Infrastructure" is renamed, the outfit art doesn't change, and no sixth class is added. |
 | 8 | Skills list on home | **None.** |
+| 9 | Accomplishments placement | **After Range, before the footer.** |
+| 10 | Accomplishments when empty or unavailable | **Section omitted** entirely. No placeholder note. |
+| 11 | Nav link to Accomplishments | **None.** |
 
-Five deliberate deviations from the mock. D1 and D2 are for accessibility and portability; D3 to D5 are the owner's choices:
+Six deliberate deviations from the mock. D1 and D2 are for accessibility and portability; D3 to D6 are the owner's choices:
 
 - **D1. Pause control for the Range carousel.** WCAG 2.2.2 requires a way to pause content that moves on its own for more than 5s. A 44px pixel pause/play button sits beside the pager dots ([§6.6](#66-range)).
 - **D2. Blog nav link** uses the relative `/blog/` rather than the mock's absolute `https://jlawcordova.com/blog`.
 - **D3. Logo.** The mock's isometric cube mark is **not** used. The site keeps J. Law's existing logo: a flat block "J" and "L" built on a square grid. Only its colors change, to the new palette. It stays flat and 2D, with no isometric faces or 3D shading.
 - **D4. No highlights section.** The mock's `HIGHLIGHTS` / `DAVAO CITY, PH · UTC+8` label row and its six highlight cards are dropped. The hero ends after the buttons and the island art.
 - **D5. Shorter paragraphs.** The hero lede goes from 39 words to 23 ([§7.1](#71-hero)), and the Range paragraph from 37 words to 22 ([§7.3](#73-range)).
+- **D6. Accomplishments section added.** The section from `master`, built from AT Protocol records, is kept and restyled into the brand ([§6.8](#68-accomplishments)). The mock has no equivalent.
 
 ## 2. Architecture
 
@@ -40,6 +44,7 @@ The stack stays as it is: Astro 7, TypeScript, plain CSS in `src/styles/`, and P
 - **Static by default.** Every page is static HTML and CSS. The only client script is the Range carousel, a small vanilla `<script>` bundled by Astro.
 - **The pixel art is inline SVG.** It's inlined, rather than loaded through `<img>`, so that page CSS drives its animations and `prefers-reduced-motion`, and so the carousel can switch sprite variants. The art is imported as `?raw` strings from optimized SVG files and rendered with `set:html`.
 - **Content is data.** Range classes live in `src/data/home.ts`, typed, and the component maps over them. Copy comes from the mock, checked against the profile.
+- **Accomplishments stay data-driven.** They come from `getAccomplishments()` in `src/lib/accomplishments.ts`, which reads the JSON that `scripts/fetch-accomplishments.mjs` writes in CI. The redesign only changes the component's markup and CSS. The pipeline (fetch script, tests, lib, schema, placeholder JSON and the deploy workflow's fetch step, dispatch and schedule) is unchanged.
 
 ### 2.1 File plan
 
@@ -76,7 +81,9 @@ The stack stays as it is: Astro 7, TypeScript, plain CSS in `src/styles/`, and P
 | `src/layouts/BaseLayout.astro` | Fonts, icons, manifest and theme color; Font Awesome removed |
 | `src/components/Navigation.astro` | Pill nav ([§6.1](#61-header-and-nav)) |
 | `src/components/Footer.astro` | Footer bar ([§6.7](#67-footer)) |
-| `src/pages/index.astro` | Composes `Hero` and `Range`; old sections and the skill-rotator script removed |
+| `src/pages/index.astro` | Composes `Hero`, `Range` and `Accomplishments`, in that order. Old sections, recent posts and the skill-rotator script removed. |
+| `src/components/Accomplishments.astro` | New markup ([§6.8](#68-accomplishments)). Renders nothing when there are no items or the status is `"unavailable"`. |
+| `src/styles/accomplishments.css` | Rewritten on tokens ([§6.8](#68-accomplishments)). |
 | `src/components/BlogPage.astro`, `PostListItem.astro`, `src/pages/blog/*.astro` | Markup for the restyle; adds a page `<h1>` |
 | `src/pages/[...slug].astro` | Related posts markup moved to new classes |
 | `src/pages/404.astro` | Restyled, same copy |
@@ -96,6 +103,8 @@ The stack stays as it is: Astro 7, TypeScript, plain CSS in `src/styles/`, and P
 | Font Awesome kit `<script>` in `BaseLayout.astro` | No icon fonts remain; icons are inline SVG |
 
 Keep `static/public/home/jlawcordova-profile.png` and the résumé PDF; they're out of scope.
+
+**Unchanged:** `scripts/fetch-accomplishments.mjs`, `scripts/fetch-accomplishments.test.mjs`, `scripts/test/`, `src/lib/accomplishments.ts`, `src/data/accomplishments.json` (stays the committed `"unavailable"` placeholder) and `.github/workflows/deploy.yml`.
 
 ## 3. Design tokens
 
@@ -209,7 +218,7 @@ Silkscreen is loaded at 400 only, because the mock never uses 700.
 
 ### 3.5 Stylesheet order
 
-`global.css` imports in this order: `variables`, `base`, `type`, `layout`, `buttons`, `pixel-art`, `syntax`, `code`, `navigation`, `footer`, `card`, `hero`, `range`, `blog`, `blog-item`, `posts`, `page`.
+`global.css` imports in this order: `variables`, `base`, `type`, `layout`, `buttons`, `pixel-art`, `syntax`, `code`, `navigation`, `footer`, `card`, `hero`, `range`, `accomplishments`, `blog`, `blog-item`, `posts`, `page`.
 
 ## 4. Global styles
 
@@ -366,6 +375,65 @@ The Range section is `<section id="range" class="range" aria-labelledby="range-t
 - **Right:** `<nav aria-label="Elsewhere">` with links `GITHUB`, `LINKEDIN`, `X` and `BLOG`, in that order, 20px apart. Each link has `padding-block: 12px` to give a 44px target.
 - **Links:** `color: var(--color-on-footer)`, underlined on hover and focus.
 
+### 6.8 Accomplishments
+
+Not in the mock (D6). It uses only the brand's existing tokens, type, card surface and pixel details.
+
+**Rendering rule.** Call `getAccomplishments()`. If `status === 'unavailable'` or `items.length === 0`, the component renders **nothing**: no section, heading or note. Otherwise:
+
+```html
+<section id="accomplishments" class="accomplishments" aria-labelledby="accomplishments-title">
+  <div class="container">
+    <header class="accomplishments__head">
+      <p class="label">Achievements unlocked</p>
+      <h2 id="accomplishments-title">Accomplishments</h2>
+    </header>
+    <ol class="accomplishments__list" role="list">
+      <li class="accomplishment card"> … </li>
+    </ol>
+  </div>
+</section>
+```
+
+**Section.** `.accomplishments` is `background: var(--color-page); padding: 96px var(--gutter) 112px`. It sits on plain page ground with no isogrid, so it reads as calmer than the hero.
+
+**Head.**
+- Layout: `display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px`.
+- `.label` is pixel 12px, uppercase, `letter-spacing: 1px`, ink-muted.
+- The H2 uses the section H2 type from [§3.3](#33-typography), in ink.
+
+**List.**
+- Layout: `display: grid; grid-template-columns: repeat(auto-fill, minmax(min(440px, 100%), 1fr)); gap: 16px; list-style: none; margin: 0; padding: 0`. That's two columns at the content width and one on narrow screens.
+- **Order:** newest first, as the fetch script already sorts them. Don't re-sort.
+- **More than 8 items:** render the first 8. Put the rest in `<details class="accomplishments__more">` after the list. Its `<summary class="btn btn--ghost">` reads "Show {n} more", and it holds a second `<ol>` with the same classes. No JavaScript.
+
+**Card** (`.accomplishment.card`, on the [§6.4](#64-card-surface) surface):
+- **Layout:** `padding: 20px 22px; display: grid; grid-template-columns: 28px 1fr; column-gap: 14px; align-items: start`.
+- **Badge:** `<svg class="accomplishment__badge pixel-art" viewBox="0 0 8 8" width="28" height="28" aria-hidden="true">`, a 7×7 pixel star. It's drawn twice from this grid: once in `var(--color-ink)` offset by (1, 1) as a hard shadow, then in `var(--color-gold)` on top.
+
+  ```
+  ...#...
+  ..###..
+  #######
+  .#####.
+  ..###..
+  .##.##.
+  .#...#.
+  ```
+- **Body column** (`display: flex; flex-direction: column; gap: 8px; min-width: 0`), in order:
+  1. **Date:** `<p class="accomplishment__date">` showing `formatDateRange(item)`, e.g. "SEP 2026" or "MAR 2025 – SEP 2026". Pixel 12px, uppercase, ink-muted.
+  2. **Title:** `<h3 class="accomplishment__title">`. Sora 600, 20px, line-height 1.3, ink, no margin. Long words wrap (`overflow-wrap: anywhere`).
+  3. **Description:** `<p class="accomplishment__description">`. Sora 16px, line-height 1.6, ink-muted, `white-space: pre-line` so the record's line breaks show.
+  4. **Tags** (only if any): `<ul class="accomplishment__tags" aria-label="Tags">`, `display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 4px 0 0`. Each `<li>` is a chip: `font: 12px var(--font-pixel); letter-spacing: 0.5px; padding: 4px 8px; background: var(--color-card); color: var(--color-ink); border-radius: 6px`. Contrast is 11.23:1.
+  5. **Links** (only if any): `<ul class="accomplishment__links">`, `display: flex; flex-wrap: wrap; column-gap: 16px; list-style: none; padding: 0; margin: 0`.
+     - Each link is `<a href={link} target="_blank" rel="noopener noreferrer">`.
+     - Its text is `{linkLabel(link)}`, followed by a 7×7 pixel "↗" arrow (inline SVG, `aria-hidden`) and `<span class="visually-hidden">(opens in a new tab)</span>`.
+     - Style: `display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--color-accent); font-weight: 500`, underlined on hover.
+
+**No motion.** Nothing in this section animates, so it needs no reduced-motion rules.
+
+**Removed from the old component:** the `category-pre-heading` reuse, the Merriweather heading, the centered 12-column grid, the bordered list rows, and both placeholder notes.
+
 ## 7. Content
 
 All copy is exactly as written here. Typographic apostrophes are `’` and the middle dot is `·`.
@@ -412,7 +480,18 @@ That's 151 characters. It's used for `<meta name="description">` and the home pa
 
 ### 7.5 Confidentiality check
 
-Before merging, search the built `dist/` for any client name, project codename or colleague name from the private source material. There must be zero matches. The only organization named on the site is the employer, Netzon, which is already public in the profile.
+Before merging, search the built `dist/` for any client name, project codename or colleague name from the private source material. There must be zero matches. The only organization named on the site is the employer, Netzon, which is already public in the profile. Run the check on a build that includes the live accomplishments, since they're published too.
+
+### 7.6 Accomplishments copy
+
+| Element | Text |
+| --- | --- |
+| Kicker | Achievements unlocked (rendered uppercase) |
+| H2 | Accomplishments |
+| Overflow summary | Show {n} more |
+| External-link hint (screen readers only) | (opens in a new tab) |
+
+Everything else comes from the records. Records are published on the site at the next build, so the same public-safe rule as `CLAUDE.md` applies to them: no client names, project codenames or colleagues' names.
 
 ## 8. Pixel-art pipeline
 
@@ -557,10 +636,10 @@ These replace the current `apple-touch-icon-precomposed` and `shortcut icon` lin
 
 | Width | Behavior |
 | --- | --- |
-| ≥ 960px | As in the mock. Hero and Range are two columns. |
+| ≥ 960px | As in the mock. Hero and Range are two columns. Accomplishments are two cards per row. |
 | 720–959px | Hero and Range wrap to one column (copy first, then art or panel). |
-| < 720px | One column throughout. The hero art is 100% of the content width. The blog featured card stacks. |
-| < 480px | Gutter is 16px. Hero padding is `48px 16px 64px`. Range padding is `64px 16px 72px`. The nav links wrap under the brand. |
+| < 720px | One column throughout. The hero art is 100% of the content width. The blog featured card stacks. Accomplishments are one card per row. |
+| < 480px | Gutter is 16px. Hero padding is `48px 16px 64px`. Range and Accomplishments padding is `64px 16px 72px`. The nav links wrap under the brand. |
 
 At every width from 320px up there's no horizontal scroll. All tap targets are at least 44×44.
 
@@ -586,10 +665,11 @@ Each intent acceptance criterion maps to a check:
 
 | Intent criterion | How to check |
 | --- | --- |
-| Matches Prototype B at 1440px | Screenshot `/` at 1440×900 and full page with Playwright. Compare side by side with the canvas board. The art must be pixel-identical, which the optimizer's lossless check guarantees. Layout, colors and copy must match, apart from deviations D1–D5 in [§1](#1-decisions-adopted). |
+| Matches Prototype B at 1440px | Screenshot `/` at 1440×900 and full page with Playwright. Compare side by side with the canvas board. The art must be pixel-identical, which the optimizer's lossless check guarantees. Layout, colors and copy must match, apart from deviations D1–D6 in [§1](#1-decisions-adopted). |
 | Facts trace to the profile | Review §7 against `docs/references/profile.md`. Grep `dist/` for the old copy ("Enterprise Applications", "Code + Create", "Backend Systems"): no matches. |
 | No confidential names | §7.5 grep over `dist/`: no matches. |
 | 390px works | Screenshot at 390×844. `document.documentElement.scrollWidth <= innerWidth` on every page type. Tap-target audit in Lighthouse. |
+| Accomplishments | Locally, overwrite `src/data/accomplishments.json` with fixtures and build each one. Restore the placeholder with `git checkout src/data/accomplishments.json` afterwards; never commit real or fixture data to it. The fixtures are: (a) the `"unavailable"` placeholder, (b) `"ok"` with no items, (c) 1 item, (d) 3 items, (e) 12 items, including a 600-character description with line breaks, a title with a long unbroken word, 10 tags and 3 links. (a) and (b): no `#accomplishments` in `dist/index.html`. (c)–(e): screenshots at 1440px and 390px, no horizontal scroll, and (e) shows 8 cards plus "Show 4 more". `npm test` still passes. |
 | Range carousel | Manual and Playwright: auto-advances through 5 names; prev and next wrap around; nameplate, sprite variant, dots and `aria-label` stay in sync; pause stops it; hover and focus pause it. |
 | Reduced motion | Playwright with `reducedMotion: 'reduce'`: no running animations (`document.getAnimations().length === 0`), the carousel isn't playing, the single static frames show. |
 | Secondary pages restyled | Visual review of `/blog/`, `/blog/page2/`, one post with code, one with a blockquote, and `/404`. Grep `dist/` for `fa-`, `Merriweather`, `Roboto` and `#EC407A`: no matches. |
@@ -606,7 +686,7 @@ Each slice is reviewable on its own and leaves the site deployable.
 
 1. **Foundation:** tokens, fonts, base, type, buttons and pixel-art CSS. New header, footer and recolored JL mark. Font Awesome removed. Every page picks up the new shell.
 2. **Pixel-art pipeline:** source SVGs, the optimizer script with its lossless check, and the optimized outputs.
-3. **Home:** hero, Range with the carousel, `home.ts` and the site description. Old home sections and assets deleted.
+3. **Home:** hero, Range with the carousel, restyled Accomplishments, `home.ts` and the site description. Old home sections and assets deleted.
 4. **Secondary pages:** blog index, pagination, post, syntax theme, related posts and 404.
 5. **Brand marks:** favicons, touch and manifest icons, logo, OG image and manifest fix.
 6. **Verification pass:** §13 checks, with numbers and screenshots in the PR.

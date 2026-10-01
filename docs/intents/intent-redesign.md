@@ -29,7 +29,7 @@ The redesign also brings the site's **roles and skills** up to date. The current
 
 1. **Design tokens.** Replace `src/styles/variables.css` with the Prototype B palette, type and radii (see [Brand spec](#brand-spec)).
 2. **Global shell.** New sticky pill navigation, new footer and fonts, in `BaseLayout.astro`, `Navigation.astro` and `Footer.astro`.
-3. **Home page** (`src/pages/index.astro`), rebuilt to the mock's sections without the highlights row: hero, Range, and footer.
+3. **Home page** (`src/pages/index.astro`), rebuilt to the mock's sections without the highlights row: hero, Range, and footer. The **Accomplishments** section already on `master` (built from AT Protocol records) is kept and restyled into the new brand, after Range.
 4. **Pixel-art assets.** The isometric hero island and the Range character sprite, ported from the mock's SVG.
 5. **Blog index, post pages and 404**, restyled with the new tokens, type and surfaces. These have no mock, so they should follow the brand rules below and not be invented from scratch.
 6. **Content update.** Replace the old role copy with the updated profile wherever the site describes J. Law's role or work: the hero, Range, `site.description`, meta and Open Graph descriptions, and the 404 page if it has bio copy.
@@ -42,7 +42,8 @@ The redesign also brings the site's **roles and skills** up to date. The current
 - Post content, URLs, permalinks, the Atom feed and the content schema. Existing links must keep working.
 - A full résumé, project list or skills page. The profile feeds the copy on the existing pages and doesn't become a new page (see [Decisions](#decisions) #4 and #8).
 - The build, deploy and hosting setup (Astro, GitHub Pages workflow).
-- New pages or sections the mock doesn't show.
+- New pages or sections the mock doesn't show. The one exception is Accomplishments, which already exists and is only restyled.
+- The accomplishments data pipeline: `scripts/fetch-accomplishments.mjs`, its tests, `src/lib/accomplishments.ts`, the record schema, the placeholder `src/data/accomplishments.json`, and the deploy workflow's fetch step, dispatch and schedule. The redesign changes how the records look, not how they're fetched.
 
 ## Brand spec
 
@@ -110,9 +111,15 @@ All of it is stepped (`steps()` / `step-end`) so it feels like sprite animation,
    - Classes, in order: **Front-end, Infrastructure, UX Design, Data Engineering, Project Management**. Each one recolors the sprite's outfit and headgear (palette and row overrides in the mock's `CL` table).
    - The classes should line up with the profile's [disciplines](../references/profile.md#disciplines). **UX Design** is backed by the Figma UI design work for a client's internal retail planning tool. **Security & Governance**, one of the profile's strongest areas, has no class. See [Decisions](#decisions) #7.
    - Right: H2 "Many hats. *One craftsman.*" (second clause in gold), then a **short** paragraph, two sentences, about working every stage of shipping software.
-4. **Footer.** Dark brown bar in Silkscreen: "© {year} J. LAW. CORDOVA" with links **GITHUB · LINKEDIN · X · BLOG**. Keep the year computed at build time as the current footer does.
+4. **Accomplishments** (`#accomplishments`, page ground). Not in the mock. It's the existing section from `master`, restyled with the brand's tokens, type and surfaces:
+   - a Silkscreen kicker and the H2 "Accomplishments";
+   - each record as a frosted card with a small gold pixel badge, its date range in Silkscreen, title, description, tags as pixel chips, and links;
+   - newest first, as the fetch script already sorts them.
 
-Copy should be taken verbatim from the mock, checked against the [profile](../references/profile.md). The current home sections (intro with cogs, "Code + Create" bio, recent blog posts) are replaced. See [Decisions](#decisions) about recent posts.
+   When there are no records, or the build couldn't load them, the whole section is left out instead of showing a placeholder note. See [Decisions](#decisions) #9–#11.
+5. **Footer.** Dark brown bar in Silkscreen: "© {year} J. LAW. CORDOVA" with links **GITHUB · LINKEDIN · X · BLOG**. Keep the year computed at build time as the current footer does.
+
+Copy should be taken verbatim from the mock, checked against the [profile](../references/profile.md). The current home sections (intro with cogs, "Code + Create" bio, recent blog posts) are replaced. The current Accomplishments section is restyled, not replaced. See [Decisions](#decisions) about recent posts.
 
 ## Constraints
 
@@ -136,10 +143,11 @@ Copy should be taken verbatim from the mock, checked against the [profile](../re
 
 ## Acceptance criteria
 
-- [ ] At 1440px wide, the home page matches Prototype B in layout, colors, type, copy and pixel art when compared side by side, apart from the deliberate changes recorded here and in the spec (JL logo, no highlights section, shorter hero and Range paragraphs).
+- [ ] At 1440px wide, the home page matches Prototype B in layout, colors, type, copy and pixel art when compared side by side, apart from the deliberate changes recorded here and in the spec (JL logo, no highlights section, shorter hero and Range paragraphs, and the added Accomplishments section).
 - [ ] Every factual claim on the site (role, employer, disciplines, technologies) can be traced to `docs/references/profile.md`. No old role copy ("Enterprise Applications / Backend Systems / Automated Pipelines", "Code + Create" bio) remains.
 - [ ] No client names, project codenames or colleagues' names appear anywhere in the built site.
 - [ ] At 390px wide, the home page has no horizontal scroll, all content is reachable, and the tap targets are at least 44px.
+- [ ] Accomplishments render in the new style with one record, a few records, and many (including long, multi-line descriptions, many tags and several links), at 1440px and 390px. With no records, or with the `"unavailable"` placeholder, the section and its heading don't appear at all.
 - [ ] The Range carousel cycles through all five classes on its own and with the buttons. The nameplate, sprite colors, pager dots and text alternative all update together.
 - [ ] With `prefers-reduced-motion: reduce`, nothing moves and each animated element shows one static frame.
 - [ ] Blog index, every post, and 404 use the new tokens, fonts, nav and footer, with no leftover pink accent, Merriweather, Roboto or Font Awesome icons.
@@ -164,6 +172,9 @@ Open items to settle before or during implementation. Record the answer here.
 | 6 | **Twitter → X.** The footer label becomes "X". Should the URL change to `x.com`? | Keep the existing URL and change only the label. |
 | 7 | **Range classes vs. profile.** Should **Security & Governance** get a class, and should Infrastructure be renamed? UX Design stays, since the Figma work backs it. | Keep the mock's five classes, including UX Design. Rename **Infrastructure** to **Cloud & DevOps** to match the profile. Don't add Security & Governance: a sixth class would need a new outfit and another pager dot. The security work stays in the profile and can come back in a later change. |
 | 8 | Should the home page show a **skills list** from the profile's inventory, for example a strip under Range? | No. The mock has none, and Range carries it. Revisit after launch. |
+| 9 | Where does **Accomplishments** go on the home page? | After Range, before the footer. "Press start" leads into Range, and the light section breaks up the dark Range section and footer. |
+| 10 | What shows when there are **no accomplishments, or they couldn't be loaded**? Today the section shows "Nothing here yet." or "Accomplishments couldn't be loaded right now. Check back soon." | Leave the section out entirely in both cases. A portfolio shouldn't show an empty state or an error. The fetch script's build log still records the failure. |
+| 11 | Should the nav link to **Accomplishments**? | No. The nav stays as in the mock (Range, Blog, Contact). Revisit once there are enough records to be worth a link. |
 
 ## References
 

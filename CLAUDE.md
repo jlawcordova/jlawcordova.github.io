@@ -25,6 +25,8 @@ Never commit:
 
 When content is based on private material (for example, profile or work-history updates), commit only a sanitized summary. Describe work by its kind ("an enterprise client platform", "a payment-sensitive browser extension"), not by who it was for or who was involved. `docs/references/profile.md` is the public-safe source for facts about roles and skills.
 
+The same rule applies to accomplishment records written to the AT Protocol repo (for example with the accomplishments MCP tools). They're public as soon as they're written, and the site publishes them at the next build.
+
 If you're unsure whether something is safe to publish, leave it out and ask before committing. If sensitive data has already been committed, stop and tell the user rather than trying to cover it up with another commit.
 
 ## Docs
