@@ -10,7 +10,7 @@
 }
 .accomplishments-section-container .accomplishments-heading {
   color: var(--body-color);
-  font-family: Merriweather;
+  font-family: var(--font-text);
   font-style: normal;
   font-weight: bold;
   font-size: 2.3125rem;
