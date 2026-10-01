@@ -31,7 +31,13 @@ If you're unsure whether something is safe to publish, leave it out and ask befo
 
 ## Docs
 
-- `docs/intents/`: intent documents that describe planned changes, for example `intent-redesign.md`.
-- `docs/specs/`: specifications that turn an intent into buildable detail, for example `spec-redesign.md`.
-- `docs/plans/`: plans that order a spec into pull requests and tasks with checks, for example `plan-redesign.md`.
-- `docs/references/`: public-safe reference material that intents and site copy draw on.
+Each planned change gets its own directory under `docs/intents/`, named `YYYY-MM-<slug>`. `YYYY-MM` is the month the intent was created, and `<slug>` is a short kebab-case name, for example `docs/intents/2026-10-redesign/`. Everything about that change lives in its directory:
+
+- `intent.md`: what the change is and why, its scope, constraints, acceptance criteria and open decisions. Write it first.
+- `spec.md`: turns the intent into buildable detail.
+- `plan.md`: orders the spec into pull requests and tasks with checks.
+- Anything else the change needs, such as notes or diagrams, sits next to them. Don't create top-level `docs/specs/` or `docs/plans/` folders.
+
+Link between documents in the same change with sibling paths (`spec.md`), to another change with `../YYYY-MM-<slug>/intent.md`, and to references with `../../references/<file>.md`. When you move or rename a doc, update every link and path mention to it, including comments in code.
+
+`docs/references/` holds public-safe reference material shared across changes, such as `profile.md`. It isn't tied to one intent.
