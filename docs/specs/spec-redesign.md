@@ -264,8 +264,8 @@ Silkscreen is loaded at 400 only, because the mock never uses 700.
   - `.site-nav` is `width: 100%; max-width: var(--content-max); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 10px 10px 22px; border-radius: var(--radius-pill); background: var(--color-surface-strong); border: 1px solid var(--color-border); box-shadow: var(--shadow-nav); backdrop-filter: blur(16px) saturate(130%)`, plus the `-webkit-` prefix.
   - Where `backdrop-filter` isn't supported, fall back to `background: var(--color-page)`, using `@supports not (backdrop-filter: blur(1px))`.
 - **Brand:** the brand link is `font: 18px var(--font-pixel); letter-spacing: 1px; color: var(--color-ink)` with a 10px gap to the mark. Off the home page it links to `/`; on the home page it links to `#top`.
-- **Text links:** `font-size: 14px; padding: 12px 14px; color: var(--color-ink)`, which gives a 44px target.
-- **Small screens:** the nav wraps, and there's no drawer. Below 480px the link group takes the full width and the pill keeps its size.
+- **Text links:** `display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; font-size: 14px; color: var(--color-ink)`, which gives a 44px target. (Vertical padding alone isn't enough: at line height 1, `12px` padding gives 38px.) The brand link also gets `min-height: 44px`.
+- **Small screens:** the nav wraps, and there's no drawer. Below 480px the link group takes the full width, the pill keeps its size, and the nav takes `border-radius: var(--radius-panel)` so the two-row bar doesn't become a tall stadium.
 - **Removed:** the drawer button and its script.
 
 ### 6.2 JL mark
@@ -373,7 +373,7 @@ The Range section is `<section id="range" class="range" aria-labelledby="range-t
 `<footer class="site-footer">`: `background: var(--color-footer); padding: 22px var(--gutter); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font: 12px var(--font-pixel); letter-spacing: 1px; color: var(--color-on-footer)`.
 
 - **Left:** `© <time datetime={iso}>{year}</time> J. LAW. CORDOVA`. The year is computed at build time, as today.
-- **Right:** `<nav aria-label="Elsewhere">` with links `GITHUB`, `LINKEDIN`, `X` and `BLOG`, in that order, 20px apart. Each link has `padding-block: 12px` to give a 44px target.
+- **Right:** `<nav aria-label="Elsewhere">` with links `GITHUB`, `LINKEDIN`, `X` and `BLOG`, in that order, 20px apart. Each link is `display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px` to give a 44×44 target, which the one-letter `X` needs in both directions. The footer is `align-items: center` so the copyright line centers against the taller links.
 - **Links:** `color: var(--color-on-footer)`, underlined on hover and focus.
 
 ### 6.8 Accomplishments
