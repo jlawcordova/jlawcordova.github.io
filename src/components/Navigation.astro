@@ -1,0 +1,28 @@
+<header class="navigation-header">
+  <div class="navigation-container">
+    <div class="subnavigation-container">
+      <a href="/" title="Home">
+        <img id="logo" src="/public/logo.svg" alt="jlawcordova-logo" />
+      </a>
+      <button class="navigation-drawer" type="button" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+    <nav class="collapsed">
+      <ul>
+        <li>
+          <a href="/">Home</a>
+        </li>
+        <li>
+          <a href="/blog">Blog</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  document.querySelector('.navigation-drawer')?.addEventListener('click', () => {
+    document.querySelector('nav')?.classList.toggle('collapsed');
+  });
+</script>

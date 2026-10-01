@@ -1,0 +1,16 @@
+---
+import type { Post } from '../lib/posts';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+---
+
+<li class="post-container">
+  <div class="post-content-container">
+    <p class="category-pre-heading">{post.category}</p>
+    <h3 class="post-heading"><a href={post.url}>{post.title}</a></h3>
+  </div>
+</li>

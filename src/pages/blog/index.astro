@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogPage from '../../components/BlogPage.astro';
+import { getPosts } from '../../lib/posts';
+import { paginate } from '../../lib/pagination';
+
+const [firstPage] = paginate(await getPosts());
+---
+
+<BaseLayout title="Blog">
+  <BlogPage {...firstPage} />
+</BaseLayout>

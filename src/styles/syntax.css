@@ -1,0 +1,41 @@
+/* Syntax highlighting for Prism tokens, using the same palette as the
+   previous Pygments/Rouge theme. */
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata { color: #999; }
+
+.token.keyword,
+.token.boolean,
+.token.constant { color: #069; }
+
+.token.operator { color: #555; }
+.token.number { color: #f60; }
+
+.token.string,
+.token.char,
+.token.attr-value { color: #c30; }
+
+.token.regex { color: #3aa; }
+.token.symbol { color: #fc3; }
+.token.builtin { color: #366; }
+.token.class-name { color: #0a8; }
+.token.function { color: #c0f; }
+.token.namespace { color: #0cf; }
+.token.variable { color: #033; }
+.token.entity { color: #999; }
+.token.decorator,
+.token.annotation { color: #99f; }
+
+.token.tag,
+.token.property,
+.token.selector { color: #2f6f9f; }
+
+.token.attr-name,
+.token.key { color: #4f9fcf; }
+.language-json .token.property { color: #99f; }
+
+.token.deleted { background-color: #fcc; }
+.token.inserted { background-color: #cfc; }
+.token.bold { font-weight: bold; }
+.token.italic { font-style: italic; }
