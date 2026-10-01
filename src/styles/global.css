@@ -2,7 +2,7 @@
  * Site styles, in cascade order: later files override earlier ones.
  * Interim list for the redesign (docs/plans/plan-redesign.md): the spec's
  * order for the files that exist so far, then the legacy layer and the old
- * section styles, which go away in PR 2 and PR 3.
+ * styles that PR 3 removes.
  */
 @import "./variables.css";
 @import "./base.css";
@@ -26,7 +26,3 @@
 @import "./legacy-aliases.css";
 @import "./masthead.css";
 @import "./message.css";
-@import "./home.css";
-@import "./intro.css";
-@import "./bio.css";
-@import "./recent-blogs.css";
