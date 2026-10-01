@@ -6,9 +6,9 @@
 | **Owner** | J. Law. Cordova |
 | **Created** | 2026-10-01 |
 | **Design source** | [J. Law Portfolio canvas](https://claude.ai/artifact/JhKbkNZP9qGWHMaWE8USbR), artboard **"Prototype B — isometric"** (`project/Isometric.dc.html`) |
-| **Specification** | [`docs/specs/spec-redesign.md`](../specs/spec-redesign.md) |
-| **Plan** | [`docs/plans/plan-redesign.md`](../plans/plan-redesign.md) |
-| **Content source** | [`docs/references/profile.md`](../references/profile.md): updated roles, highlights and skills (2026) |
+| **Specification** | [`spec.md`](spec.md) |
+| **Plan** | [`plan.md`](plan.md) |
+| **Content source** | [`docs/references/profile.md`](../../references/profile.md): updated roles, highlights and skills (2026) |
 
 ## Intent
 
@@ -16,7 +16,7 @@ Rebrand jlawcordova.com from the current Poole-based look (white page, pink acce
 
 Prototype B is the source of truth for look, layout, copy and motion. Where this document and the mock disagree, the mock wins unless an entry under [Decisions](#decisions) says otherwise.
 
-The redesign also brings the site's **roles and skills** up to date. The current site describes an earlier backend-focused profile. The updated profile is in [`docs/references/profile.md`](../references/profile.md) and is the source of truth for **facts**: role, disciplines, highlights and skills. The mock's copy was written from that same profile. If the mock's wording and the profile disagree on a fact, follow the profile and record the change under [Decisions](#decisions).
+The redesign also brings the site's **roles and skills** up to date. The current site describes an earlier backend-focused profile. The updated profile is in [`docs/references/profile.md`](../../references/profile.md) and is the source of truth for **facts**: role, disciplines, highlights and skills. The mock's copy was written from that same profile. If the mock's wording and the profile disagree on a fact, follow the profile and record the change under [Decisions](#decisions).
 
 ## Why
 
@@ -110,7 +110,7 @@ All of it is stepped (`steps()` / `step-end`) so it feels like sprite animation,
 3. **Range** (`#range`, forest background):
    - Left: a frosted panel holding the isogrid stage, with a nameplate showing the current class, previous and next pixel-arrow buttons, the character sprite on its island, and five pager dots.
    - Classes, in order: **Front-end, Infrastructure, UX Design, Data Engineering, Project Management**. Each one recolors the sprite's outfit and headgear (palette and row overrides in the mock's `CL` table).
-   - The classes should line up with the profile's [disciplines](../references/profile.md#disciplines). **UX Design** is backed by the Figma UI design work for a client's internal retail planning tool. **Security & Governance**, one of the profile's strongest areas, has no class. See [Decisions](#decisions) #7.
+   - The classes should line up with the profile's [disciplines](../../references/profile.md#disciplines). **UX Design** is backed by the Figma UI design work for a client's internal retail planning tool. **Security & Governance**, one of the profile's strongest areas, has no class. See [Decisions](#decisions) #7.
    - Right: H2 "Many hats. *One craftsman.*" (second clause in gold), then a **short** paragraph, two sentences, about working every stage of shipping software.
 4. **Accomplishments** (`#accomplishments`, page ground). Not in the mock. It's the existing section from `master`, restyled with the brand's tokens, type and surfaces:
    - a Silkscreen kicker and the H2 "Accomplishments";
@@ -120,7 +120,7 @@ All of it is stepped (`steps()` / `step-end`) so it feels like sprite animation,
    When there are no records, or the build couldn't load them, the whole section is left out instead of showing a placeholder note. See [Decisions](#decisions) #9–#11.
 5. **Footer.** Dark brown bar in Silkscreen: "© {year} J. LAW. CORDOVA" with links **GITHUB · LINKEDIN · X · BLOG**. Keep the year computed at build time as the current footer does.
 
-Copy should be taken verbatim from the mock, checked against the [profile](../references/profile.md). The current home sections (intro with cogs, "Code + Create" bio, recent blog posts) are replaced. The current Accomplishments section is restyled, not replaced. See [Decisions](#decisions) about recent posts.
+Copy should be taken verbatim from the mock, checked against the [profile](../../references/profile.md). The current home sections (intro with cogs, "Code + Create" bio, recent blog posts) are replaced. The current Accomplishments section is restyled, not replaced. See [Decisions](#decisions) about recent posts.
 
 ## Constraints
 
@@ -140,7 +140,7 @@ Copy should be taken verbatim from the mock, checked against the [profile](../re
   - The pixel art scales down with `max-width: 100%`.
 - **Fonts:** load only Silkscreen and Sora from Google Fonts, and drop Merriweather and Roboto.
 - **SEO and sharing:** keep the existing meta and Open Graph tags working. Update `site.description` to match the new positioning, drawing on the profile summary.
-- **Confidentiality:** the repo and site are public. Copy may use only what's in [`docs/references/profile.md`](../references/profile.md): no client names, project codenames, colleagues' names, or internal incidents and decisions. Describe work by its kind, not by who it was for.
+- **Confidentiality:** the repo and site are public. Copy may use only what's in [`docs/references/profile.md`](../../references/profile.md): no client names, project codenames, colleagues' names, or internal incidents and decisions. Describe work by its kind, not by who it was for.
 
 ## Acceptance criteria
 

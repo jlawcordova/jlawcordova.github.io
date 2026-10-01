@@ -5,14 +5,14 @@
 | **Status** | Draft |
 | **Owner** | J. Law. Cordova |
 | **Created** | 2026-10-01 |
-| **Builds on** | [`intent-redesign.md`](intent-redesign.md), its [spec](../specs/spec-redesign.md) §8 (pixel-art pipeline) and its [plan](../plans/plan-redesign.md) §8 (follow-ups) |
+| **Builds on** | The redesign: its [intent](../2026-10-redesign/intent.md), its [spec](../2026-10-redesign/spec.md) §8 (pixel-art pipeline) and its [plan](../2026-10-redesign/plan.md) §8 (follow-ups) |
 | **Design source** | [J. Law Portfolio canvas](https://claude.ai/artifact/JhKbkNZP9qGWHMaWE8USbR), artboard "Prototype B — isometric" (`project/Isometric.dc.html`) |
 
 ## Intent
 
 Give the site a small, repo-local engine for **making new** isometric pixel art, not just shipping the art that already exists. New art is written as compact text sources: character maps, palettes, per-variant overrides, and a few isometric building blocks. The engine compiles them to the same optimized inline SVG that the redesign ships, so the components, CSS animation hooks and budgets stay as they are.
 
-The redesign's pipeline ([spec §8](../specs/spec-redesign.md#8-pixel-art-pipeline)) is a lossless **compressor**. It takes SVG already drawn on the design canvas, merges same-colored pixels into paths, and proves nothing moved. It can't draw anything. This intent adds the drawing side in front of it.
+The redesign's pipeline ([redesign spec §8](../2026-10-redesign/spec.md#8-pixel-art-pipeline)) is a lossless **compressor**. It takes SVG already drawn on the design canvas, merges same-colored pixels into paths, and proves nothing moved. It can't draw anything. This intent adds the drawing side in front of it.
 
 ## Why
 
@@ -78,11 +78,11 @@ Open items to settle before or during the spec. Record the answer here.
 
 ## Sequencing
 
-This depends on redesign PR 2, which adds `scripts/optimize-pixel-art.mjs`, the extracted sources and `pixel-art.css`. It should start after PR 2 merges and can run alongside redesign PRs 3 and 4. A spec (`docs/specs/spec-pixel-art-engine.md`) and a plan follow this intent, as for the redesign.
+This depends on redesign PR 2, which adds `scripts/optimize-pixel-art.mjs`, the extracted sources and `pixel-art.css`. It should start after PR 2 merges and can run alongside redesign PRs 3 and 4. A `spec.md` and a `plan.md` follow this intent in this directory, as for the redesign.
 
 ## References
 
-- Redesign pipeline: [`spec-redesign.md` §8](../specs/spec-redesign.md#8-pixel-art-pipeline)
+- Redesign pipeline: [redesign `spec.md` §8](../2026-10-redesign/spec.md#8-pixel-art-pipeline)
 - Range sprite model in the mock: `project/Isometric.dc.html`, the `BASE`, `CL` and `pal` definitions in its component script
-- Disciplines: [`docs/references/profile.md`](../references/profile.md#disciplines)
-- Follow-ups this unblocks: [`plan-redesign.md` §8](../plans/plan-redesign.md#8-follow-ups-not-in-this-plan)
+- Disciplines: [`docs/references/profile.md`](../../references/profile.md#disciplines)
+- Follow-ups this unblocks: [redesign `plan.md` §8](../2026-10-redesign/plan.md#8-follow-ups-not-in-this-plan)
