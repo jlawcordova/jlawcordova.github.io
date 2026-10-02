@@ -153,7 +153,12 @@ describe('the page (R15, R24)', () => {
   test('R15: the lab carries the robots meta, and no other page links to /lab/', async () => {
     const html = await readFile(join(DIST, 'lab/pixel-art/index.html'), 'utf8');
     assert.match(html, /<meta name="robots" content="noindex, nofollow">/);
-    const others = (await walk(DIST)).filter((f) => /\.(html|xml|txt|json|webmanifest)$/.test(f) && f !== join('lab', 'pixel-art', 'index.html'));
+    // Text files, scripts and styles too, so a link built at run time would
+    // show; the lab's own bundles are left out.
+    const own = new Set([...html.matchAll(/(?:src|href)="\/(_astro\/[^"]+)"/g)].map((m) => m[1]));
+    const others = (await walk(DIST)).filter(
+      (f) => /\.(html|xml|txt|json|webmanifest|js|css)$/.test(f) && f !== join('lab', 'pixel-art', 'index.html') && !own.has(f.split('\\').join('/')),
+    );
     assert.ok(others.length > 10, 'dist/ looks empty');
     for (const file of others) {
       const text = await readFile(join(DIST, file), 'utf8');
@@ -215,7 +220,7 @@ describe('scene editing (R16)', () => {
     await context.close();
   });
 
-  test('R16: with the pointer: drag a thumbnail onto the stage, then drag the item one tile', async () => {
+  test('R16: with the pointer: drag a thumbnail onto the stage, then drag the item two tiles as one undo step', async () => {
     const { context, page, errors } = await openLab();
     await pickScene(page, SCENE);
     const stage = page.getByRole('group', { name: 'Scene stage' });
@@ -234,19 +239,19 @@ describe('scene editing (R16)', () => {
     assert.ok(x > box.x && y > box.y, 'the stage center is on the canvas');
     await page.mouse.move(x, y);
     await page.mouse.down();
-    await page.mouse.move(x + 8 * zoom, y + 4 * zoom, { steps: 4 });
-    await page.mouse.move(x + 16 * zoom, y + 8 * zoom, { steps: 4 });
+    // Two columns, a tile at a time, so the drag makes more than one edit.
+    for (let i = 1; i <= 2; i++) await page.mouse.move(x + 16 * zoom * i, y + 8 * zoom * i, { steps: 4 });
     await page.mouse.up();
     ({ item } = await newItem(await exportText(page)));
-    assert.deepEqual(item.at.tile, [col + 1, row, level], 'dragged one column');
+    assert.deepEqual(item.at.tile, [col + 2, row, level], 'dragged two columns');
 
     // The whole drag is one undo step.
     await page.getByRole('button', { name: 'Undo' }).click();
     ({ item } = await newItem(await exportText(page)));
-    assert.deepEqual(item.at.tile, [col, row, level]);
+    assert.deepEqual(item.at.tile, [col, row, level], 'one Undo takes back the whole drag');
     await page.getByRole('button', { name: 'Redo' }).click();
     ({ item } = await newItem(await exportText(page)));
-    assert.deepEqual(item.at.tile, [col + 1, row, level]);
+    assert.deepEqual(item.at.tile, [col + 2, row, level]);
     assert.deepEqual(errors, []);
     await context.close();
   });
@@ -290,6 +295,19 @@ describe('scene editing (R16)', () => {
     await page.keyboard.press('Control+z');
     ({ item } = await newItem(await exportTextByKeyboard(page), first));
     assert.deepEqual(item.at.tile, [col + 1, row + 1, 1], 'Ctrl+Z undoes the nudge');
+
+    // A held key: one press, then repeats. The whole hold is one undo step.
+    await tabTo(page, 'group', 'Scene stage');
+    await page.keyboard.down('ArrowRight');
+    const stage = page.getByRole('group', { name: 'Scene stage' });
+    for (let i = 0; i < 2; i++) await stage.dispatchEvent('keydown', { key: 'ArrowRight', repeat: true, bubbles: true });
+    await page.keyboard.up('ArrowRight');
+    ({ item } = await newItem(await exportTextByKeyboard(page), first));
+    assert.deepEqual(item.at.tile, [col + 4, row + 1, 1], 'a held arrow moves a tile per repeat');
+    await tabTo(page, 'group', 'Scene stage');
+    await page.keyboard.press('Control+z');
+    ({ item } = await newItem(await exportTextByKeyboard(page), first));
+    assert.deepEqual(item.at.tile, [col + 1, row + 1, 1], 'one Ctrl+Z takes back the whole held key');
 
     await tabTo(page, 'group', 'Scene stage');
     await page.keyboard.press('Delete');
@@ -434,6 +452,43 @@ describe('drafts (R20)', () => {
     await banner.getByRole('button', { name: 'Load site version' }).click();
     await banner.waitFor({ state: 'hidden' });
     assert.equal(await exportText(page), committed);
+    await context.close();
+  });
+
+  test("R20: a draft the lab can't use is dropped, and its scene opens as on the site", async () => {
+    const bad = {
+      'pixel-lab:scene:range-sprite': JSON.stringify({ version: 'x', saved: 0, doc: {} }),
+      'pixel-lab:scene:hero-island': JSON.stringify({ version: 'x', saved: 0, doc: { viewBox: [0, 0, 8, 8], items: [null] } }),
+      'pixel-lab:scene:outfit-preview': JSON.stringify({ version: 'x', saved: 0, doc: { viewBox: [0, 0, 8, 8], items: 'x' } }),
+    };
+    const init = [
+      (drafts) => {
+        try {
+          if (!sessionStorage.getItem('seeded')) {
+            for (const [key, value] of Object.entries(drafts)) localStorage.setItem(key, value);
+            sessionStorage.setItem('seeded', '1');
+          }
+        } catch {}
+      },
+      bad,
+    ];
+    const { context, page, errors } = await openLab({ init });
+    for (const name of ['hero-island', 'range-sprite', 'outfit-preview']) {
+      await pickScene(page, name);
+      const site = await readFile(join(ROOT, `src/assets/pixel-art/source/scenes/${name}.mjs`), 'utf8');
+      await page.getByRole('button', { name: 'Export' }).click();
+      const dialog = page.getByRole('dialog', { name: 'Export' });
+      await dialog.getByText(`src/assets/pixel-art/source/scenes/${name}.mjs`).waitFor();
+      assert.equal(await dialog.getByRole('textbox', { name: 'Source' }).inputValue(), site, `${name} opens as on the site`);
+      await dialog.getByRole('button', { name: 'Close' }).click();
+      // An edit then saves under this scene's own name, with its own content.
+      await page.getByRole('button', { name: 'tree', exact: true }).click();
+      await page.getByRole('group', { name: 'Scene stage' }).click();
+      const saved = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)).doc, `pixel-lab:scene:${name}`);
+      assert.equal(saved.output, (await load(site)).output, `the ${name} draft holds ${name}`);
+      await page.getByRole('button', { name: 'Reset to site version' }).click();
+    }
+    assert.deepEqual(errors, []);
     await context.close();
   });
 

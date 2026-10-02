@@ -554,7 +554,7 @@
   color: var(--color-ink);
 }
 .lab-dialog::backdrop {
-  background: rgba(46, 36, 24, 0.4);
+  background: color-mix(in srgb, var(--color-ink) 40%, transparent);
 }
 
 .lab-dialog__head h2 {

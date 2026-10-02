@@ -160,7 +160,7 @@ The lab at `/lab/pixel-art/` (or `npm run dev`, then http://localhost:4321/lab/p
 
 - **Drive it by accessible names and keys,** not pixel positions: the picker is the combobox "Open", the stage is the group "Scene stage", Library thumbnails are buttons named after their object, and the Items list is the tree "Items".
 - **Placing:** choose a thumbnail, then a tile; or focus a thumbnail and press Enter to place it at the stage cursor. New items go in back to front by `row + col`, then level.
-- **Stage keys** (only while the stage has focus): arrows move the selected item one tile (or the cursor), Shift + arrows nudge one pixel (the item is then placed by `px`), Page Up and Page Down change the level, `[` and `]` the paint order, Delete removes, Escape deselects, V, A and H pick Select, Place and Pan, 0–4 zoom, and Ctrl/Cmd+Z undoes.
+- **Stage keys** (only while the stage has focus): arrows move the selected item one tile (or the cursor), Shift + arrows nudge one pixel (the item is then placed by `px`), Page Up and Page Down change the level, `[` and `]` the paint order, Delete removes, Escape deselects, V, A and H pick Select, Place and Pan, 0–4 zoom, and Ctrl/Cmd+Z undoes. Fit picks the largest whole zoom that fits the stage, up to 8×, so it can go past the 4× button.
 - **Export** shows the canonical source and its path. Save it there exactly, then run `npm run art` and `npm test`. With problems, Export lists them instead.
 - **Drafts** stay in that browser's `localStorage`. They're not in the repo until someone exports and commits them.
 

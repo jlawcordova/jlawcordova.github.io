@@ -33,6 +33,30 @@ interface Snapshot {
 const UNDO_LIMIT = 200;
 
 const copy = <T>(value: T): T => JSON.parse(JSON.stringify(value));
+
+const isRecord = (v: unknown): v is Record<string, any> => typeof v === 'object' && v !== null && !Array.isArray(v);
+const wholes = (v: unknown, n: number) => Array.isArray(v) && v.length === n && v.every((x) => Number.isInteger(x));
+
+/** An item the lab can draw and edit: a placement, or a group of them. */
+function usableItem(item: unknown): boolean {
+  if (!isRecord(item)) return false;
+  if ('group' in item) return isRecord(item.group) && Array.isArray(item.items) && item.items.every(usableItem);
+  const at = item.at;
+  return typeof item.object === 'string' && isRecord(at) && (wholes(at.tile, 3) || wholes(at.px, 2));
+}
+
+/**
+ * Whether a stored draft has the shape of a scene, so it can be serialized,
+ * drawn and edited. Unknown objects and the like are fine: they show up as
+ * problems, which Export lists.
+ */
+export function usableScene(doc: unknown): boolean {
+  if (!isRecord(doc)) return false;
+  if (!wholes(doc.viewBox, 4) || doc.viewBox[2] <= 0 || doc.viewBox[3] <= 0) return false;
+  if ('origin' in doc && !wholes(doc.origin, 2)) return false;
+  if ('output' in doc && typeof doc.output !== 'string') return false;
+  return Array.isArray(doc.items) && doc.items.every(usableItem);
+}
 export const samePath = (a: Path | null, b: Path | null) => a !== null && b !== null && a.length === b.length && a.every((n, i) => n === b[i]);
 
 export class Lab {
@@ -94,22 +118,30 @@ export class Lab {
     requestAnimationFrame(() => this.announcer && (this.announcer.textContent = text));
   }
 
-  /** Opens a scene: its draft if there is one, else the site's version. */
+  /**
+   * Opens a scene: its draft if there is one, else the site's version. A
+   * draft the lab can't use (edited by hand, or from a broken build) is
+   * dropped, so the scene always opens.
+   */
   open(name: string) {
+    const key = `scene:${name}`;
+    const site = this.data.scenes[name];
+    const stored = this.storage ? readDraft(key) : null;
+    const draft = stored && usableScene(stored.doc) && serialize(stored.doc) !== serialize(site) ? stored : null;
+    if (stored && !draft) removeDraft(key);
+    // Nothing above can throw, so the name and the document change together.
     this.name = name;
     this.selected = null;
     this.undoStack = [];
     this.redoStack = [];
     this.lastGroup = null;
-    const draft = this.storage ? readDraft(this.key) : null;
-    if (draft && serialize(draft.doc) !== serialize(this.siteDoc)) {
+    if (draft) {
       this.doc = copy(draft.doc);
       this.draftVersion = draft.version;
       this.draftSaved = draft.saved;
-      this.stale = draft.version !== this.data.siteVersion[this.key];
+      this.stale = draft.version !== this.data.siteVersion[key];
     } else {
-      if (draft) removeDraft(this.key);
-      this.doc = copy(this.siteDoc);
+      this.doc = copy(site);
       this.draftVersion = null;
       this.stale = false;
     }

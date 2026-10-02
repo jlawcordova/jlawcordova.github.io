@@ -44,13 +44,18 @@ function setUpToolbar() {
 export function setUpKeyboard(lab: Lab, stage: Stage, scene: SceneMode) {
   setUpToolbar();
   const frame = stage.frame;
+  let holds = 0;
 
   frame.addEventListener('keydown', (e) => {
     const mod = e.ctrlKey || e.metaKey;
     const key = e.key;
-    // A held key repeats; its moves make one undo step.
-    const group = e.repeat ? `key-${key}` : null;
-    if (!e.repeat) lab.endGroup();
+    // A held key repeats. Its first press and every repeat share a group, so
+    // the whole hold is one undo step; the next press starts a new one.
+    if (!e.repeat) {
+      lab.endGroup();
+      holds++;
+    }
+    const group = `key-${key}-${holds}`;
 
     if (mod && key.toLowerCase() === 'z') {
       e.preventDefault();
