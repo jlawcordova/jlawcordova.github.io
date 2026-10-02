@@ -5,7 +5,7 @@
 | **Status** | Accepted |
 | **Owner** | J. Law. Cordova |
 | **Created** | 2026-10-01 |
-| **Amended** | 2026-10-02: decisions taken. The hero island moves into the engine, and an editor page is added on the site ([Decisions](#decisions)) |
+| **Amended** | 2026-10-02: decisions taken. The hero island moves into the engine, an editor page is added on the site, agent skills are added, and every PR gets an independent verification ([Decisions](#decisions)) |
 | **Builds on** | The redesign: its [intent](../2026-10-redesign/intent.md), its [spec](../2026-10-redesign/spec.md) §8 (pixel-art pipeline) and its [plan](../2026-10-redesign/plan.md) §8 (follow-ups) |
 | **Design source** | [J. Law Portfolio canvas](https://claude.ai/artifact/JhKbkNZP9qGWHMaWE8USbR), artboard "Prototype B — isometric" (`project/Isometric.dc.html`) |
 | **Spec** | [`spec.md`](spec.md) |
@@ -44,6 +44,10 @@ The redesign's pipeline ([redesign spec §8](../2026-10-redesign/spec.md#8-pixel
    - download or copy the source text, to commit to the repo.
 9. **Preview for review.** Preview images of changed art in each PR (Playwright screenshots), so diffs to sources can be reviewed visually.
 10. **First new asset.** The **Security and governance** outfit as a sixth outfit object, made with the engine. Adding it to the live Range carousel is a separate change (see [Decisions](#decisions) #5).
+11. **Agent skills.** Skills in `.claude/skills/` so that any AI agent can use the engine and the editor without this conversation's context:
+    - a skill for **making and changing pixel art**: objects, scenes, outfits, the design language, previews and the editor;
+    - a skill for **verifying a change** independently against its intent and spec. It's reusable for later changes, not only this one.
+12. **Verification levels.** Every PR is checked by the session that built it and then by an independent verifier session. Browser checks are committed as scripts.
 
 ### Out of scope
 
@@ -66,6 +70,8 @@ The redesign's pipeline ([redesign spec §8](../2026-10-redesign/spec.md#8-pixel
 - **Accessible by default.** Art is decorative (`aria-hidden`). Its text alternative lives in the component, as it does for the Range sprite. Every frame loop has a single static frame for reduced motion. The editor keeps the visible focus ring, 44px tap targets and `prefers-reduced-motion` support, and everything done by dragging can also be done with a keyboard or single taps.
 - **Public-safe.** The art is generic. No logos, names or likenesses of clients, employers or colleagues, per `CLAUDE.md`. The editor page is public, even though it's unlisted, so it shows only what's already in the repo.
 - **Test-first,** like the optimizer: `node:test` fixtures for the map parser, overrides, frames, scenes and each library object.
+- **Independent verification.** A verifier that didn't build the change checks each PR against this intent and the spec. It only recommends: it posts its findings as a PR comment and never pushes.
+- **Browser checks stay outside `npm test` and `package.json`.** They run with the Playwright that the environment provides, not a project dependency, so `npm test` stays Node built-ins with no network.
 
 ## Acceptance criteria
 
@@ -81,6 +87,8 @@ The redesign's pipeline ([redesign spec §8](../2026-10-redesign/spec.md#8-pixel
 - [ ] The editor page works at 1440px and 390px with no horizontal page scroll, can be used without dragging, isn't linked from the site, and is marked `noindex`.
 - [ ] `npm test` and `npm run build` pass with no new warnings, and no dependency is added.
 - [ ] The README documents the source formats, the editor page and `npm run art`.
+- [ ] A fresh agent session given only the pixel-art skill can add a new library object that passes validation and looks right in its preview.
+- [ ] Every PR in this change has an independent verifier report as a PR comment, and every requirement in the spec traces to a test or a named check.
 
 ## Decisions
 
@@ -98,6 +106,9 @@ Decided by the owner on 2026-10-02.
 | 8 | Is the editor page **public**? | **Live but unlisted.** It's deployed, kept out of the nav and search engines, and loads its code only on its own page. |
 | 9 | What can the editor do? | **Lay out scenes and paint pixels.** Both scenes and objects can be edited. |
 | 10 | How does editor work get into the repo? | **Download or copy the source.** The owner commits it, or hands it to Claude. The page never writes to GitHub. |
+| 11 | How are browser checks run? | **Scripts in the repo, run with the environment's own Playwright.** No `@playwright/test` dependency. They stay out of `npm test`. |
+| 12 | What may the verifier do? | **Recommend only.** It reports as a PR comment and never pushes. The implementer makes the fixes. |
+| 13 | Are agent skills in scope? | **Yes.** Skills for making pixel art and for verifying a change ship with this change. |
 
 ## Sequencing
 
