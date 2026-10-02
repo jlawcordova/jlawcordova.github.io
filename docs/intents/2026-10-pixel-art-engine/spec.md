@@ -34,7 +34,7 @@ These rules keep new art in one world, and keep sources small enough for a perso
   - The **outfit** palette adds at most 16 clothing colors.
   - The **legacy** palette is today's 81 extracted colors, frozen. Only imported art may use it.
   - The engine fails any new object that uses a legacy color, and any palette that goes over a cap.
-- **R27. Size caps.** The tile is 32×16 pixels and one level is 16 pixels high. A character is at most 16×24. An object is at most 64×64 and uses at most 12 colors (aim for 6–8). A block uses 3–4 (top, left, right and an optional edge). Imported legacy maps are exempt. The engine enforces every cap except the 6–8 target.
+- **R27. Size caps.** The tile is 32×16 pixels and one level is 16 pixels high. A character's figure, the pixels it actually paints, is at most 16×24, whatever the size of its map. An object's map is at most 64×64 and uses at most 12 colors (aim for 6–8). A block uses 3–4 (top, left, right and an optional edge). Imported legacy maps are exempt. The engine enforces every cap except the 6–8 target.
 - **R28. Light direction.** Every block and every new object is lit from the same side as the island: the top is the light shade, the left face the mid shade and the right face the shadow shade.
 - **R29. Previews.** `npm run art -- --preview <name>` writes a PNG of any object or scene at 1×, 2×, 3× and 4× to a git-ignored folder, using Node built-ins only. The same images go in PRs, and anyone editing a source, whether a person or an AI, checks the change by looking at the picture.
 - **R30. Precise errors.** Every validation error names the file, layer, frame, row and column, and the rule broken. Examples: "row 7 is 31 wide, expected 32", "key `q` is not in `keys`" and "`c-6f8a55` is a legacy color".
@@ -212,7 +212,7 @@ export default {
 
 - **Keys** are single printable characters other than space and `.`. Use mnemonic letters (`g` for grass, `w` for wood), and an uppercase letter for a darker shade of the same material.
 - **Caps (R27):**
-  - A map is at most 64×64. A character is at most 16×24.
+  - A map is at most 64×64. A character's figure is at most 16×24: the cap is on the bounding box of the pixels it paints, across every layer and frame, not on its map. The shared `character` map is wider, because it is aligned with the legacy outfits' props (owner, 2026-10-02).
   - An object uses at most 12 keys, with 6–8 as the target.
   - Objects marked `legacy: true` are exempt from both. That covers `island-base` (38 colors, up to 225×212) and `range-island`.
   - The two caps that matter most for editing as text are the 12 keys and the 64 width. A row of 32 or fewer is comfortable in a diff, and that's also where an AI's edits stay reliable: it reads text in chunks, not letter by letter, so long runs of the same character are where it miscounts.
@@ -245,7 +245,7 @@ New objects of either kind are data only (R4). A third kind, such as slopes, mea
 - **Projection.** 2:1 dimetric, with lines at ±26.57°. Every edge steps 2 pixels across for 1 down, so lines stay clean at every integer zoom.
 - **Tile position.** A tile at `[col, row, level]` has its top-face center at `x = (col − row) × 16 + ox` and `y = (col + row) × 8 − level × 16 + oy`. `[ox, oy]` is the scene's `origin`, which lines the grid up with the scene's art.
 - **Placement** is either `at: { tile: [col, row, level] }` or `at: { px: [x, y] }`. The second is for imported art and fine nudges. Both resolve to whole pixels.
-- **Character scale.** Today's character is 16×20: half a tile wide, and a little over a tile tall. New characters keep that scale (at most 16×24, R27).
+- **Character scale.** Today's figures are about 14×23: under half a tile wide, and a little over a tile tall. New characters keep that scale (a figure of at most 16×24, R27).
 
 ### D5. Scenes
 
@@ -281,7 +281,7 @@ export default {
    - colors not in the palette;
    - a non-legacy object using a legacy color, or a non-outfit object using an outfit color;
    - a palette tier over its cap;
-   - an object over 64×64 or 12 colors, or a character over 16×24;
+   - an object over 64×64 or 12 colors, or a character whose figure is over 16×24;
    - non-integer offsets.
 2. Render each scene to a tree of layers that mirrors its groups. Each layer is a map from pixel to color, where later paint wins.
 3. Emit a rect SVG: in each layer, one `<g fill>` per color, in order of first paint, with one `<rect>` per horizontal run. Group attributes and order are kept.
