@@ -20,10 +20,24 @@ Each requirement traces to the intent's Scope (S*n*) or Acceptance criteria (AC)
 - **R3. Scenes.** A scene is a `.mjs` file under `source/scenes/` that places objects on the isometric grid or at pixel offsets, in paint order. Each shipped SVG is built from exactly one scene (S2).
 - **R4. Extensible library.** Adding a new object (a block, water, a tree) needs only a new file under `objects/`, and any scene can place it. Only a new *kind* of object (see [D3](#d3-object-kinds)) needs engine code (S3, AC).
 - **R5. Frames and classes.** An object layer can declare a frame loop that compiles to the `class="<loop> <prefix>N"` groups that `pixel-art.css` animates (`wf w0..4`, `ff f0..3`, `hf h0..5`). Layers and placements can also carry fixed classes (`cbob`, `itruck it1`, `pcloud pc0`). No CSS changes (S4, AC).
-- **R6. Named palette.** Objects name their colors from one shared palette module. Brand colors use their `variables.css` token names and values, and a test keeps the two in step (intent constraint).
+- **R6. Named palette.** Objects name their colors from one shared palette module with three tiers: world, outfit and legacy (see [R26](#design-language)). Brand colors use their `variables.css` token names and values, and a test keeps the two in step (intent constraint).
 - **R7. Compiler.** `npm run art` compiles every scene, runs the existing optimizer and its lossless check, enforces the budget, and writes `src/assets/pixel-art/<name>.svg` for each scene that ships (S5, AC).
 - **R8. Deterministic.** The same sources always give byte-identical output. `npm test` fails if a committed SVG is stale against its sources (intent constraint).
 - **R9. Canonical format.** Every committed source is in the editor's canonical format: re-serializing it gives the same bytes. Hand edits and editor exports therefore give small, comparable diffs (supports S8).
+
+### Design language
+
+These rules keep new art in one world, and keep sources small enough for a person or an AI to read and edit as text. They were set by the owner on 2026-10-02, after measuring today's art (see [D2](#d2-palette) and [D4](#d4-isometric-grid)).
+
+- **R26. Palette tiers.**
+  - The **world** palette has at most 32 colors: 7 material ramps of 4 shades (highlight, light, mid, shadow), plus ink, cream and 2 skin tones.
+  - The **outfit** palette adds at most 16 clothing colors.
+  - The **legacy** palette is today's 81 extracted colors, frozen. Only imported art may use it.
+  - The engine fails any new object that uses a legacy color, and any palette that goes over a cap.
+- **R27. Size caps.** The tile is 32×16 pixels and one level is 16 pixels high. A character is at most 16×24. An object is at most 64×64 and uses at most 12 colors (aim for 6–8). A block uses 3–4 (top, left, right and an optional edge). Imported legacy maps are exempt. The engine enforces every cap except the 6–8 target.
+- **R28. Light direction.** Every block and every new object is lit from the same side as the island: the top is the light shade, the left face the mid shade and the right face the shadow shade.
+- **R29. Previews.** `npm run art -- --preview <name>` writes a PNG of any object or scene at 1×, 2×, 3× and 4× to a git-ignored folder, using Node built-ins only. The same images go in PRs, and anyone editing a source, whether a person or an AI, checks the change by looking at the picture.
+- **R30. Precise errors.** Every validation error names the file, layer, frame, row and column, and the rule broken. Examples: "row 7 is 31 wide, expected 32", "key `q` is not in `keys`" and "`c-6f8a55` is a legacy color".
 
 ### Round trip
 
@@ -35,6 +49,7 @@ Each requirement traces to the intent's Scope (S*n*) or Acceptance criteria (AC)
 
 - **R13. Library objects.** The library includes at least a block, a flat tile, a water block (with a frame loop) and a tree, plus a demo scene built only from them (S3, AC).
 - **R14. Security and governance outfit.** A sixth outfit object, made with the engine and placed in a preview scene. It's **not** added to `range-sprite.svg` or the carousel (S10, Decision #5).
+- **R31. First world palette.** The first 32 world colors are picked from the island's existing shades, so new art looks like the same world. They ship with a swatch sheet preview in their PR. The library objects (R13) and the new outfit (R14) use only world and outfit colors.
 
 ### Editor page
 
@@ -62,7 +77,7 @@ src/assets/pixel-art/
   hero-island.svg                 generated, committed (name unchanged)
   range-sprite.svg                generated, committed (name unchanged)
   source/
-    palette.mjs                   named colors
+    palette.mjs                   world, outfit and legacy color tiers (D2)
     objects/
       character.mjs               base body for every outfit
       outfit-front-end.mjs        one file per outfit, the six below plus…
@@ -96,31 +111,55 @@ scripts/
     range-sprite.src.svg          moved from source/
   pixel-art-engine.test.mjs
   pixel-art-roundtrip.test.mjs
+  pixel-art-preview.mjs           PNG previews (R29): engine pixels → PNG via node:zlib
+.art-preview/                     git-ignored output of the previews
 ```
 
 The engine is plain ES modules with JSDoc types and `// @ts-check`, not TypeScript. `node scripts/…` imports it without a build step (the repo supports Node ≥ 22.12, which doesn't strip types by default), and Astro bundles the same files into the editor. The engine uses no Node or DOM APIs, so it runs unchanged in both.
 
 ### D2. Palette
 
-`source/palette.mjs` exports a flat map from color name to `#RRGGBB`:
+**What the art uses today** (measured on 2026-10-02):
+
+| | Colors |
+| --- | --- |
+| Hero island (static base) | 38 |
+| Range island | 21 |
+| Each outfit (body included) | 16–18. Only 6 are shared by all five: outline, skin, hair, mouth and two leg shades |
+| **All art** | **81**, with many near-duplicates: 11 greens, 8 sand and path tones, 7 browns |
+
+The island is already built from a handful of materials, each in a few shades. The palette keeps that model and tightens it.
+
+**`source/palette.mjs`** exports three tiers:
 
 ```js
 export default {
-  ink: '#2E2418',      // --color-ink
-  earth: '#5A3E2B',    // --color-earth
-  gold: '#D8B66A',     // --color-gold
-  accent: '#3F6B45',   // --color-accent
-  page: '#F4EDE0',     // --color-page
-  // …
-  'moss-1': '#7E9A60',
-  'moss-2': '#8FA56E',
+  // World: at most 32. Seven 4-shade material ramps (1 = highlight … 4 = shadow),
+  // plus ink, cream and two skin tones.
+  world: {
+    'grass-1': '#B5C79C', 'grass-2': '#8FA56E', 'grass-3': '#6F8F55', 'grass-4': '#4E6B3A',
+    'soil-1': '#9C6B42',  'soil-2': '#8A5A34',  'soil-3': '#5A3E2B',  'soil-4': '#3F2B1E',
+    // wood, path, water, roof, gold …
+    ink: '#2E2418',       // --color-ink
+    cream: '#F4EDE0',     // --color-page
+    'skin-1': '#E9B98A', 'skin-2': '#A0524A',
+  },
+  // Outfit: at most 16 clothing colors, used only by outfit objects.
+  outfit: { 'teal-1': '#7FA89B' /* … */ },
+  // Legacy: today's 81 extracted colors, frozen. Only imported art may use them.
+  legacy: { 'c-6f8a55': '#6F8A55' /* … */ },
 };
 ```
 
-- Brand colors take their token names. A test parses `src/styles/variables.css` and checks that each token-named entry has the token's value.
-- The importer gives every other extracted color a name like `c-7e9a60`. Names are cosmetic, so renaming one later (for example to `moss-1`) changes no output.
-- Uppercase hex only, no alpha. Transparent is the absence of a pixel, never a color.
-- 81 colors exist today across both pieces of art. New ones are added by hand, never by the editor on its own (see R17: the editor paints only from the palette).
+- **Ramps.** The seven materials are grass, soil, wood, path, water, roof and gold. Each has 4 shades, named `<material>-1` (highlight) to `<material>-4` (shadow). The values above are illustrative. R31 picks the real ones from the island's existing shades.
+- **Brand colors** keep their token values: `ink` is `--color-ink`, `cream` is `--color-page`, `gold-2` is `--color-gold` and `soil-3` is `--color-earth`. A test parses `src/styles/variables.css` and checks each one.
+- **Legacy colors** are named `c-<hex>` by the importer. Names are cosmetic, so renaming one changes no output. Moving a legacy object to world colors is a visible change, made deliberately, one object at a time.
+- **Rules the engine enforces:**
+  - Uppercase hex only, with no alpha. Transparent is the absence of a pixel, never a color.
+  - Each name is unique across all tiers.
+  - Tier caps: world ≤ 32, outfit ≤ 16.
+  - An object marked `legacy: true` (only the importer sets it) may use any tier. Any other object may use only world colors, plus outfit colors if it `extends: 'character'`.
+- **Who adds colors.** New colors are added by hand in a reviewed commit, never by the editor (R17: the editor paints only from the palette).
 
 ### D3. Object kinds
 
@@ -133,7 +172,7 @@ An object's `kind` picks how the engine draws it. There are two kinds:
 export default {
   kind: 'sprite',
   anchor: [5, 13],              // the map pixel that sits on the placement point
-  keys: { L: 'moss-1', D: 'moss-3', T: 'earth' },   // '.' is always transparent
+  keys: { L: 'grass-2', D: 'grass-4', T: 'wood-3' },   // '.' is always transparent
   layers: [
     {
       map: [
@@ -147,7 +186,12 @@ export default {
 };
 ```
 
-- **Keys** are single printable characters other than space and `.`, which gives about 90 per object. That's enough for the island base's ~40 colors.
+- **Keys** are single printable characters other than space and `.`. Use mnemonic letters (`g` for grass, `w` for wood), and an uppercase letter for a darker shade of the same material.
+- **Caps (R27):**
+  - A map is at most 64×64. A character is at most 16×24.
+  - An object uses at most 12 keys, with 6–8 as the target.
+  - Objects marked `legacy: true` are exempt from both. That covers `island-base` (38 colors, up to 225×212) and `range-island`.
+  - The two caps that matter most for editing as text are the 12 keys and the 64 width. A row of 32 or fewer is comfortable in a diff, and that's also where an AI's edits stay reliable: it reads text in chunks, not letter by letter, so long runs of the same character are where it miscounts.
 - **Layers** paint bottom to top. A layer can carry `class: 'cbob'`, and it compiles to its own group so CSS can move it.
 - **Frames:** `{ loop: 'wf', prefix: 'w', frames: [map, map, …] }` compiles to groups `class="wf w0"`, `class="wf w1"` and so on, in order. Frame 0 is the static frame that reduced motion shows, which matches today's CSS.
 - **Inheritance**, the mock's `BASE` and `CL` model: an object can have `extends: 'character'` and then give `rows: { <layer>: { <rowIndex>: '<row>' } }` and `keys` overrides. Every outfit extends `character`. Whole rows are replaced, so an outfit's diff shows exactly which rows it changes.
@@ -159,21 +203,25 @@ export default {
 export default {
   kind: 'block',
   size: [1, 1, 0],              // tiles wide, tiles deep, levels high (0 = flat tile)
-  faces: { top: 'water-1', left: 'water-2', right: 'water-3', edge: 'water-4' },
+  faces: { top: 'water-1', left: 'water-2', right: 'water-3', edge: 'water-4' },  // R28: light, mid, shadow
   surface: { loop: 'wf', prefix: 'w', frames: [ /* top-face sprite maps */ ] },  // optional
 };
 ```
 
-- It draws the top, left and right faces in their three tones, with an optional 1px edge, on the 2:1 grid in [D4](#d4-isometric-grid).
+- It draws the top, left and right faces in their three tones, with an optional 1px edge, on the 2:1 grid in [D4](#d4-isometric-grid). The light comes from the same side as on the island: top light, left mid, right shadow (R28). A block uses 3–4 colors.
+- `size` is in tiles and levels, so a block is described by numbers rather than drawn. That makes blocks the easiest objects to place and change, for a person or an AI.
 - An optional `surface` sprite, which can have frames, is laid over the top face. That's how water ripples or grass detail work.
 
 New objects of either kind are data only (R4). A third kind, such as slopes, means engine code and its own tests, and is added only when an asset needs it (Decision #6).
 
 ### D4. Isometric grid
 
-- 2:1 dimetric, matching `.isogrid` (lines at ±26.57°). Every edge steps 2 pixels across for 1 down, so lines stay clean at every integer zoom.
-- A tile at `[col, row, level]` has its top-face center at `x = (col − row) × W/2` and `y = (col + row) × W/4 − level × Hz`. `W` is the tile width in art pixels and `Hz` is one level's height. The scene sets both, so the two shipped scenes can use the grid their art was drawn on. See [open question Q1](#open-questions).
-- A placement is either `at: { tile: [col, row, level] }` or `at: { px: [x, y] }`. The second is for imported art and fine nudges. Both resolve to whole pixels.
+- **The tile is 32×16 art pixels, fixed** (R27). That's what the hero island was drawn on: its grass checkerboard is made of 32×16 diamonds. It's also the shape of the site's `.isogrid` background. The island's grass is about 192 pixels across, which is roughly 6×6 tiles.
+- **One level is 16 pixels high,** so a one-level block is 32 wide and 32 tall and reads as a cube.
+- **Projection.** 2:1 dimetric, with lines at ±26.57°. Every edge steps 2 pixels across for 1 down, so lines stay clean at every integer zoom.
+- **Tile position.** A tile at `[col, row, level]` has its top-face center at `x = (col − row) × 16 + ox` and `y = (col + row) × 8 − level × 16 + oy`. `[ox, oy]` is the scene's `origin`, which lines the grid up with the scene's art.
+- **Placement** is either `at: { tile: [col, row, level] }` or `at: { px: [x, y] }`. The second is for imported art and fine nudges. Both resolve to whole pixels.
+- **Character scale.** Today's character is 16×20: half a tile wide, and a little over a tile tall. New characters keep that scale (at most 16×24, R27).
 
 ### D5. Scenes
 
@@ -182,7 +230,7 @@ New objects of either kind are data only (R4). A third kind, such as slopes, mea
 export default {
   output: 'range-sprite.svg',   // omit for preview-only scenes
   viewBox: [-51, -9, 103, 72],
-  grid: { tile: 16, level: 8 },
+  origin: [0, 32],              // where tile [0, 0, 0] sits; the grid itself is fixed (D4)
   items: [
     { object: 'range-island', at: { px: [-51, -9] } },
     { group: { 'data-class': '0' }, items: [{ object: 'outfit-front-end', at: { px: [-8, 20] } }] },
@@ -201,7 +249,16 @@ export default {
 
 `npm run art` runs `scripts/optimize-pixel-art.mjs`, which gains a scene step in front of the existing one:
 
-1. Load `palette.mjs`, every object and every scene, and validate them: unknown keys, ragged rows, missing objects, `extends` cycles, colors not in the palette, and non-integer offsets each fail with the file and row.
+1. Load `palette.mjs`, every object and every scene, and validate them. Each of these fails with the file, layer, frame, row and column (R30):
+   - unknown keys;
+   - ragged rows;
+   - missing objects;
+   - `extends` cycles;
+   - colors not in the palette;
+   - a non-legacy object using a legacy color, or a non-outfit object using an outfit color;
+   - a palette tier over its cap;
+   - an object over 64×64 or 12 colors, or a character over 16×24;
+   - non-integer offsets.
 2. Render each scene to a tree of layers that mirrors its groups. Each layer is a map from pixel to color, where later paint wins.
 3. Emit a rect SVG: in each layer, one `<g fill>` per color, in order of first paint, with one `<rect>` per horizontal run. Group attributes and order are kept.
 4. Hand that SVG to the existing `optimizeSvg` and `verifyLossless` unchanged, check the budget, and write `<output>`.
@@ -226,47 +283,224 @@ The optimizer's own fixtures and tests stay. The old "read `source/*.src.svg`" e
 - **Blocks:** each face's pixels for sizes `[1,1,0]`, `[1,1,1]` and `[2,1,2]`. Edges step exactly 2:1. Two adjacent blocks share an edge with no gap or overlap.
 - **Scenes:** paint order, group attributes, placement classes, and tile versus pixel placement.
 - **Serializer:** `serialize(load(file))` equals the file's bytes for every committed source (R9).
-- **Palette:** token-named entries match `variables.css`.
+- **Palette:** brand entries match `variables.css`. The tier caps (32 and 16) hold. Names are unique across tiers. The world tier is seven complete 4-shade ramps plus ink, cream and the two skin tones.
+- **Design-language caps:** an object of 65×64, a 13th color, a 16×25 character and a legacy color in a new object each fail with the expected message. Legacy objects are exempt.
+- **Previews:** the PNG writer produces a valid PNG (signature, IHDR, CRC) whose decoded pixels equal the engine's pixels at 1× and 3×.
 - **Staleness:** compiling every scene with an `output` gives byte-identical files to those committed (R8).
 - **Round trip:** see D7.
 
 ### D9. Editor page
 
-**Page.** `src/pages/lab/pixel-art.astro` renders with `BaseLayout`, which gets an optional `noindex` prop that emits the robots meta (R15). The title is "Pixel-art lab". The page header uses the existing `PageHead` component (label "Lab"). No `robots.txt` entry is added, because a `Disallow` would stop crawlers from reading the `noindex` and would also publish the URL.
+#### D9.1 Page and data
 
-**Data.** At build time the page imports every source with `import.meta.glob('…/source/**/*.mjs', { eager: true })` and embeds the palette, objects and scenes as JSON in one `<script type="application/json">`. The client script parses it, so there are no fetches.
+- **Route.** `src/pages/lab/pixel-art.astro` renders with `BaseLayout`, which gets an optional `noindex` prop that emits the robots meta (R15). The title is "Pixel-art lab". The site header and footer stay, so the page reads as part of the site and has a way back. No `robots.txt` entry is added, because a `Disallow` would stop crawlers from reading the `noindex` and would also publish the URL.
+- **Data.** At build time the page imports every source with `import.meta.glob('…/source/**/*.mjs', { eager: true })` and embeds the palette, objects and scenes as JSON in one `<script type="application/json">`. The client script parses it, so there are no fetches.
+- **Script.** Client code lives in `src/components/lab/` as TypeScript, bundled by Astro into this page only. It imports the engine from `src/lib/pixel-art/`, never re-implements it (R18), and doesn't use `eval` or dynamic `import()` of user content.
+- **Without JavaScript,** the workspace is replaced by a short note: "The pixel-art lab needs JavaScript."
 
-**Layout.** It follows the redesign's grid, tokens and breakpoints.
+#### D9.2 Regions
 
-| Width | Layout |
+The page is one workspace with five regions. They keep the same names everywhere in the UI, the code and this spec.
+
+| Region | What it holds |
 | --- | --- |
-| ≥ 960px | Three columns: **Library** (object list) · **Stage** (canvas) · **Inspector** (palette, layers, frames, variants, item properties). The toolbar sits above the stage. |
-| < 960px | One column: toolbar, stage, then Library and Inspector as two tabs below. |
-| < 480px | 16px gutter, as on the rest of the site. The toolbar wraps. |
+| **Lab bar** | The page title, the **document picker** (what's open: a scene or an object, by name, plus "New scene…" and "New object…"), the draft status and the **Export** button. |
+| **Toolbar** | The **Scene / Object** mode switch, the tools for that mode, zoom, the grid toggle, and undo and redo. |
+| **Stage** | The canvas, drawn by the engine over the `.isogrid` background. |
+| **Status bar** | The cursor position, the zoom, a problems count, and the live region that announces each action. |
+| **Library** | Every object, grouped and searchable, with a thumbnail. In Scene mode you place objects from it. In Object mode you open one to edit. |
+| **Inspector** | Panels for the open document. They change with the mode (D9.4 and D9.5). |
 
-The stage is a `<canvas>` inside a frame that scrolls on both axes inside itself, so a 4× zoom never scrolls the page sideways (R22). Drawing uses `imageSmoothingEnabled = false` and integer zoom only (1×, 2×, 3×, 4×, and "fit", which picks the largest integer that fits). The `.isogrid` background sits behind the canvas, so you can check alignment at each zoom (AC).
+#### D9.3 Layout
 
-**Modes.** A toolbar switch picks **Scene** or **Object**.
+**≥ 960px (wireframe at 1440px).** Three columns under the lab bar. The workspace fills the viewport below the sticky header (`height: calc(100dvh - var(--header-offset))`, at least 640px), so the page itself doesn't scroll while you work. Each column scrolls on its own. The footer sits below the workspace.
 
-- **Scene mode** (R16):
-  - **Add:** drag an object from the Library onto the stage, which snaps to the tile under the pointer. Or tap an object, then tap a tile. Or focus an object and press Enter, which places it at the stage cursor.
-  - **Select:** tap an item on the stage, or pick it in the **item list**. That list is a listbox of the scene's items in paint order, and it's the stage's accessible model.
-  - **Move:** drag it, or use the arrow keys to move one tile (Shift+arrow moves one pixel). Page Up and Page Down change the level, `[` and `]` change the paint order, and Delete removes it. Each control also has a 44px button in the Inspector.
-- **Object mode** (R17):
-  - **Tools:** pencil, eraser, fill and picker. Each is a 44px toolbar button with a one-letter shortcut (B, E, G, I).
-  - **Palette:** the shared palette as swatch buttons, each named in its `aria-label` (for example "moss-1, #7E9A60"). New colors aren't added in the editor (D2).
-  - **Layers, frames and variants:** shown as lists, with add, duplicate, reorder and delete actions. Painting on an outfit edits its override rows. The base `character` is edited by opening it directly.
-  - **Without a pointer:** arrow keys move a pixel cursor, and Space applies the current tool.
-  - **Frame preview:** step buttons always. A play button runs the loop at its CSS timing, and it doesn't autoplay under `prefers-reduced-motion: reduce`.
-- **Both modes:** undo and redo (Ctrl/Cmd+Z, Shift+Ctrl/Cmd+Z, plus buttons), with a history bounded at 200 steps. Every action is announced in a polite live region, for example "Tree moved to column 3, row 4".
+```
+┌────────────────────────────────────────────────────────────────────────────────────────────┐
+│ [JL] J.LAW                                                   Range   Blog   (Contact)      │  site header
+├────────────────────────────────────────────────────────────────────────────────────────────┤
+│ LAB  Pixel-art lab   [ Scene · hero-island   ▾ ]   ● Draft, 2 min ago   [Export]           │  lab bar
+├──────────────────┬──────────────────────────────────────────────────┬──────────────────────┤
+│ LIBRARY          │ (Scene|Object) [V][A][H] 1× 2× 3× 4× Fit # ↶ ↷   │ ITEMS                │  toolbar
+│ [ Search…      ] ├──────────────────────────────────────────────────┤ ▾ island-base        │
+│                  │                                                  │ · waterfall          │
+│ BLOCKS           │                                                  │ · tree          ◂    │
+│ ┌──┐ ┌──┐ ┌──┐   │                                                  │ · truck (it1)        │
+│ │▱▱│ │▱▱│ │≈≈│   │                                                  │ · truck (it2)        │
+│ └──┘ └──┘ └──┘   │                                                  ├──────────────────────┤
+│ block tile water │                                                  │ SELECTED · tree      │
+│                  │        stage: canvas over .isogrid               │ Col [3] ± Row [4] ±  │
+│ NATURE           │                                                  │ Level [0] ±          │
+│ ┌──┐ ┌──┐        │                                                  │ Nudge x [0] y [0]    │
+│ │/\│ │()│        │                                                  │ [Raise] [Lower]      │
+│ └──┘ └──┘        │                                                  │ [Duplicate] [Remove] │
+│ tree cloud-a     │                                                  ├──────────────────────┤
+│                  │                                                  │ SCENE                │
+│ CHARACTERS   ▸   │                                                  │ Output hero-island   │
+│ LEGACY       ▸   ├──────────────────────────────────────────────────┤ Origin [0] [32]      │
+│                  │ col 3 · row 4 · lvl 0   x 48 y 40   2×   ! 0     │                      │  status bar
+└──────────────────┴──────────────────────────────────────────────────┴──────────────────────┘
+  264px                               fills the rest                     304px
+```
 
-**Export** (R19). "Copy source" uses `navigator.clipboard.writeText` and "Download .mjs" uses a Blob link. Both use `serialize.mjs`, so the file is already in canonical form (R9). The panel shows the target path, such as `src/assets/pixel-art/source/objects/tree.mjs`, and the next step: "Commit it, then run `npm run art`." A new object or scene needs a name, which is checked against existing names, in lowercase kebab-case.
+**< 960px (wireframe at 390px).** One column. The stage comes first, at `height: 60dvh` (at least 320px). Library, Items and Inspector become three tabs below it. Nothing sits side by side, and nothing is wider than the viewport.
 
-**Drafts** (R20). Each edited scene or object is saved in `localStorage` under `pixel-lab:<kind>:<name>`, with a hash of the site version it started from. If the site version has changed since, the editor says so and offers "Keep draft" or "Load site version". All storage access is wrapped in try/catch, and the editor works without storage (private browsing).
+```
+┌──────────────────────────────┐
+│ [JL] J.LAW                   │ site header (wraps as today)
+│ Range  Blog  (Contact)       │
+├──────────────────────────────┤
+│ LAB  Pixel-art lab           │ lab bar: title,
+│ [ Scene · hero-island    ▾ ] │ picker on its own row,
+│ ● Draft, 2 min ago  [Export] │ then status and Export
+├──────────────────────────────┤
+│ (Scene|Object) [V][A][H]     │ toolbar wraps to two rows,
+│ [Fit ▾]   #   ↶  ↷           │ every button 44×44
+├──────────────────────────────┤
+│                              │
+│                              │
+│    stage: pans inside its    │
+│    own frame; never scrolls  │
+│    the page sideways         │
+│                              │
+├──────────────────────────────┤
+│ col 3 · row 4 · ! 0          │ status bar
+├──────────────────────────────┤
+│ [Library] [Items] [Inspector]│ tabs (role="tablist")
+│ ┌──┐ ┌──┐ ┌──┐ ┌──┐          │
+│ │▱▱│ │▱▱│ │≈≈│ │/\│          │ thumbnails wrap
+│ └──┘ └──┘ └──┘ └──┘          │
+└──────────────────────────────┘
+```
 
-**Script.** Client code lives in `src/components/lab/` as TypeScript, bundled by Astro into this page only. It imports the engine from `src/lib/pixel-art/`, never re-implements it (R18), and doesn't use `eval` or dynamic `import()` of user content.
+At < 480px the gutter is 16px, as on the rest of the site. At 390px the stage frame is 358px wide. At "Fit" zoom, the hero island scene (225 pixels wide) shows at 1×, and a 64-pixel object shows at 5×.
 
-**Styles.** Tokens only (`variables.css`): `--font-pixel` for labels, the focus ring from `base.css` (extended to the canvas and item list, which it doesn't cover today), and `--radius-*` for panels. The stage frame uses `--color-card`, like the Range stage.
+#### D9.4 Scene mode
+
+The **Library** sits on the left. The **Inspector** shows three panels: **Items**, **Selected** and **Scene**.
+
+- **Toolbar tools:**
+
+  | Tool | Key | What it does |
+  | --- | --- | --- |
+  | Select | V | Picks an item. Dragging it moves it. |
+  | Place | A | Places the Library's current object on the tapped tile. |
+  | Pan | H, or hold Space | Drags the view. |
+
+  The toolbar also has **zoom** (1×, 2×, 3×, 4×, Fit), the **grid** toggle (#), which draws every tile's outline on the stage, and **undo/redo**.
+- **Adding an object.** There are three ways, and each does the same thing:
+  - drag a Library thumbnail onto the stage;
+  - tap a thumbnail, then tap a tile;
+  - focus a thumbnail and press Enter, which places it at the stage cursor.
+
+  New items snap to tiles. They're inserted in back-to-front order (by `row + col`, then `level`).
+- **On the stage:**
+  - The tile under the pointer or cursor shows as an ink diamond outline at 50% opacity.
+  - The selected item gets a 1px accent outline around its pixels' bounding box. The outline doesn't animate.
+- **Items panel.** A listbox of the scene's items in paint order, with the front item at the top. Groups such as `data-class="2"` show as collapsible rows. This list is the stage's accessible model: choosing a row selects the item, and the stage keys act on it.
+- **Selected panel:**
+  - **Position:** Col, Row and Level as number fields with − and + buttons. Nudge x and y for pixel offsets.
+  - **Class:** the placement class, for example `itruck it1`.
+  - **Actions:** Raise, Lower, Duplicate and Remove, each a 44px button.
+- **Scene panel:** the scene's name, its output file (or "Preview only"), `viewBox` and `origin`.
+
+#### D9.5 Object mode
+
+The **Library** is the list of objects to open. The **Inspector** shows **Palette**, **Layers**, **Frames** and **Object** panels, plus a **Preview** at true size.
+
+- **Toolbar tools:**
+
+  | Tool | Key | What it does |
+  | --- | --- | --- |
+  | Pencil | B | Paints one pixel with the current color. |
+  | Eraser | E | Clears one pixel. |
+  | Fill | G | Flood-fills same-colored, 4-connected pixels. |
+  | Picker | I | Makes the clicked pixel's color current. |
+
+  The toolbar also has **zoom** (4×, 8×, 12×, 16×, Fit), the **pixel grid** toggle (#), which draws 1px lines between pixels at 8× and up, an **onion skin** toggle, which shows the previous frame at 30% opacity, and **undo/redo**.
+- **Stage:**
+  - The object sits on a checkerboard so you can see transparent pixels.
+  - A dashed ink rectangle marks the object's bounds.
+  - A small crosshair marks its anchor.
+  - Painting outside the cap (R27) isn't possible: the bounds stop at 64×64.
+- **Palette panel:**
+  - **Layout.** The world palette is laid out as its design language: one row per material, four swatches from highlight to shadow, then a row for ink, cream and the two skin tones. Outfit colors are a second group, shown only for outfit objects. Legacy colors are a third group, collapsed, and shown only for legacy objects.
+  - **Swatches** are 44×44 buttons. Each one's `aria-label` gives its name and value, for example "grass-2, #8FA56E". The current color has an ink ring and `aria-pressed="true"`.
+  - **Usage meter.** "Colors used: 7 of 12" sits under the swatches. It turns to the warning style at 9 and above, past the 6–8 target. At 12, any swatch not already in use is disabled.
+- **Layers panel:**
+  - A list of layers, bottom to top. Each row has a visibility toggle (editor only, never exported), its class (for example `cbob`), and Raise, Lower, Duplicate and Delete actions.
+  - Painting always goes to the selected layer.
+- **Frames panel:**
+  - Shown when the layer has a loop. A strip of frame thumbnails, numbered `w0`, `w1` and so on, with add, duplicate, delete and reorder actions.
+  - Step-back, play and step-forward buttons. Play runs at the loop's CSS timing. Under `prefers-reduced-motion: reduce` it doesn't start by itself, and only stepping is offered until you press play.
+- **Object panel:**
+  - Name, kind, anchor, and size (W × H, with the caps shown next to it).
+  - For an outfit, it shows "Extends character". Rows this outfit overrides are marked in a gutter beside the stage. Painting on a row that isn't overridden yet adds an override for that row.
+- **Preview:** the object at 1× and 2×, standing on one 32×16 tile over `.isogrid`. That's how you check the design at the size it ships.
+
+#### D9.6 Dialogs and messages
+
+- **Export** (`<dialog>`, opened from the lab bar):
+  - **Header:** the target path, for example `src/assets/pixel-art/source/objects/tree.mjs`.
+  - **Body:** the canonical source in a read-only monospace box (R9).
+  - **Buttons:** **Copy source** (`navigator.clipboard.writeText`), **Download .mjs** (a Blob link) and **Close**.
+  - **Next step:** "Commit it, then run `npm run art`."
+  - **Problems:** if the document has validation problems (R30), the dialog lists them instead and both export buttons are disabled. Every exported file therefore compiles.
+- **New scene / New object** (`<dialog>`):
+  - **Name:** lowercase kebab-case, checked against existing names as you type.
+  - **For an object:** its kind (sprite or block), its size, and whether it extends `character`. That last option makes it an outfit.
+- **Problems.** The status bar's problems count (`!`) opens a popover. It lists each problem with its location (R30), and choosing one moves the stage cursor there.
+- **Draft banner.** Shown under the lab bar when the open draft started from an older site version: "This draft started from an older version of `tree` on the site." [Keep draft] [Load site version].
+- **Empty states:**
+  - **Empty scene:** "Add an object from the Library."
+  - **No search results:** "No objects match '<query>'."
+  - **Storage unavailable:** the lab bar's status reads "Drafts off: this browser isn't saving them".
+
+#### D9.7 Keyboard
+
+Shortcuts work only while focus is on the stage, so they never interfere with typing in a field.
+
+| Keys | Scene mode | Object mode |
+| --- | --- | --- |
+| Arrows | Move the selected item one tile, or the cursor if nothing is selected | Move the pixel cursor |
+| Shift + arrows | Nudge the selected item one pixel | Move the cursor 8 pixels |
+| Space | Hold to pan | Apply the current tool at the cursor |
+| Enter | Place the Library's current object at the cursor | Apply the current tool at the cursor |
+| Page Up / Page Down | Raise or lower the level | Previous or next frame |
+| `[` / `]` | Paint order back or forward | Previous or next layer |
+| Delete | Remove the selected item | Erase at the cursor |
+| Escape | Deselect | Cancel the current stroke |
+| V A H / B E G I | Tools | Tools |
+| 0, 1–4 | Fit, or zoom 1×–4× | Fit, or zoom 4×, 8×, 12×, 16× |
+| Ctrl/Cmd+Z, Shift+Ctrl/Cmd+Z | Undo, redo | Undo, redo |
+
+- **Undo** keeps at most 200 steps. A pencil stroke counts as one step.
+- **Announcements.** Every action is announced in the status bar's polite live region, for example "Tree moved to column 3, row 4" or "Painted 6 pixels grass-2".
+- **Tab order:** lab bar, toolbar, stage, status bar, Library, then Inspector. On small screens, the tabs come in place of the side columns. The toolbar is one `role="toolbar"` tab stop with arrow-key movement inside it. The stage is a focusable group labeled "Scene stage" or "Object stage", described by the status bar.
+- **Focus ring.** The site's focus ring (`base.css`) is extended to the stage, swatches, list rows and tabs.
+
+#### D9.8 Visual style
+
+It uses the site's own look, from tokens only. The lab should feel like a room in the same house, not a different app.
+
+| Element | Style |
+| --- | --- |
+| Page ground | `--color-page`, with the workspace columns on `--color-surface` cards (`--radius-card`, 1px `--color-border`) |
+| Region headings (LIBRARY, ITEMS, PALETTE…) | `.label` style: `--font-pixel`, uppercase, `--color-ink-muted` |
+| Body text and fields | `--font-text`, `--color-ink` |
+| Stage frame | `--color-card` with `.isogrid`, `--radius-stage`, like the Range stage |
+| Tool buttons | 44×44 pixel icons drawn on a 9×9 grid, in the same style as the Range chevrons. Idle: no background. Current: `--color-ink` background, `--color-page` icon, `--shadow-pixel`, like the Range nameplate |
+| Export | `.btn .btn--primary` |
+| Secondary actions | `.btn .btn--ghost` |
+| Selection and the current swatch | 1px `--color-accent` outline on the stage; 2px `--color-ink` ring on swatches |
+| Warnings (the color meter, problems) | `--color-ink` text on `--color-gold`, never color alone. The `!` glyph and the count always show |
+
+There's no motion beyond frame playback: no panel transitions and no animated selection outline. Every number shown on screen (cursor position, sizes, color counts) uses `font-variant-numeric: tabular-nums` so it doesn't jitter.
+
+#### D9.9 Drafts and export plumbing
+
+- **Drafts** (R20). Each edited scene or object is saved in `localStorage` under `pixel-lab:<kind>:<name>`, together with a hash of the site version it started from. Every storage access is wrapped in try/catch, and the editor works without storage, for example in private browsing.
+- **Export** uses `serialize.mjs` (R9). A new document's name is checked against existing names, in lowercase kebab-case.
 
 ### D10. Budgets and weight
 
@@ -282,7 +516,7 @@ The stage is a `<canvas>` inside a frame that scrolls on both axes inside itself
 ### D11. Docs
 
 - **README:** the layout table rows for `src/assets/pixel-art/`, `scripts/optimize-pixel-art.mjs` and the new folders. Add a "Pixel art" section covering the formats (D2–D5), the editor URL and the "export → commit → `npm run art`" loop.
-- **`CLAUDE.md`:** the Conventions line becomes "Edit pixel art only in `src/assets/pixel-art/source/**/*.mjs` (or on the editor page), then run `npm run art`. Never hand-edit the generated SVGs." Add the editor to Commands and the Architecture paragraph.
+- **`CLAUDE.md`:** the Conventions line becomes "Edit pixel art only in `src/assets/pixel-art/source/**/*.mjs` (or on the editor page), then run `npm run art`. Never hand-edit the generated SVGs." Add the editor to Commands and the Architecture paragraph. Add one Conventions line for the design language: "New pixel art uses the world palette, the 32×16 tile, the light direction and the size caps (pixel-art engine spec R26–R28). Check it with `npm run art -- --preview <name>`."
 - **Code comments** that mention `source/*.src.svg` are updated. The redesign's `spec.md` and `plan.md` keep their wording, since `CLAUDE.md` says not to rewrite them. Their §8 describes how the art was first extracted, which is still true.
 
 ### D12. Verification
@@ -299,6 +533,9 @@ The stage is a `<canvas>` inside a frame that scrolls on both axes inside itself
 | Frame loops and reduced motion | Group classes checked in tests. Playwright with `reducedMotion: 'reduce'` on `/` and `/lab/pixel-art/`: `document.getAnimations().length === 0` and frame 0 shows |
 | Editor round trip | Playwright: open `library-demo`, add, move and remove an item, paint pixels on a copy of `tree`, export both. Write the exports into a temp copy of `source/`, compile, and compare the pixels to the editor canvas's `getImageData` at 1× |
 | Editor at 1440 and 390, no dragging, unlisted, noindex | Screenshots at both widths. `scrollWidth <= innerWidth` from 320px up. A keyboard-only Playwright run of the round trip above. Grep `dist/` for links to `/lab/`: none outside the page itself. The robots meta is present. Lighthouse accessibility = 100 |
+| Design language | Engine tests for each cap and tier (D8). The world palette's swatch sheet preview in its PR. The library objects and the new outfit pass validation with no legacy colors |
+| Previews | `npm run art -- --preview tree` writes four PNGs to `.art-preview/`, and they are git-ignored |
+| Editor layout | Screenshots of Scene and Object mode at 1440px and 390px, compared against the D9.3 wireframes |
 | Tests, build, no dependencies | `npm test` shows `# fail 0`. `npm run build` ends with 0 errors, warnings and hints. `package.json` and the lockfile have no new entries |
 | README documents it | Review D11 |
 
@@ -306,9 +543,9 @@ The stage is a `<canvas>` inside a frame that scrolls on both axes inside itself
 
 Each slice is one PR. Each one leaves the site deployable and looking exactly as it does today.
 
-1. **Engine and Range round trip:** palette, object and scene formats (sprite kind only), compiler step, serializer, importer, fixtures moved, the Range sprite rebuilt from source, tests, and docs for what exists so far.
+1. **Engine and Range round trip:** the palette tiers with today's colors as legacy, object and scene formats (sprite kind only), validation with the design-language caps (R26–R30), the compiler step, the serializer, PNG previews, the importer, the fixtures moved, the Range sprite rebuilt from source, tests, and docs for what exists so far.
 2. **Hero island round trip:** the island imported and rebuilt from source, with before and after screenshots.
-3. **Library:** the `block` kind, the `block`, `tile`, `water` and `tree` objects, and the `library-demo` scene.
+3. **World palette and library:** the first 32 world colors (R31) with a swatch sheet, then the `block` kind, the `block`, `tile`, `water` and `tree` objects in world colors only, and the `library-demo` scene.
 4. **Security and governance outfit:** the outfit object, `outfit-preview` and the preview images.
 5. **Editor, scene mode:** the page, `noindex`, data embedding, stage, library, item list, keyboard model, export and drafts.
 6. **Editor, object mode:** painting tools, layers, frames, variants and the full Playwright round trip.
@@ -345,6 +582,14 @@ A draft in `localStorage` can be older than what's deployed, for example after y
 
 Slices 1 and 2 rewrite `hero-island.svg` and `range-sprite.svg` with no visible change (D7). The diffs are large and can't be read. The proof is the round-trip tests and screenshots, not the diff.
 
+### A8. Two palettes side by side
+
+New art must use the 32 world colors, but the hero island and the five outfits keep their 81 legacy colors, because the exact rebuild (R10, R11) needs them. Until legacy art is moved to world colors, new pieces placed next to old ones can differ slightly in shade, for example a world `grass-2` tile beside an island grass that was one of 11 near-identical greens. R31 limits this by picking world colors from the island's own shades. **Owner:** accept that moving legacy art to world colors is later, deliberate and visible work, done one object at a time.
+
+### A9. Wireframes are a starting point
+
+D9.3's wireframes fix the regions, their order and the breakpoints. They don't fix exact spacing or icon drawings. Those are settled in the editor PRs against screenshots. A change that moves a region, or drops one at a breakpoint, comes back to this spec first.
+
 No two standards contradict each other outright. A5 is the closest, and the spec resolves it in favor of the performance budget.
 
 ## Open questions
@@ -353,8 +598,9 @@ Intent decisions 1–10 are all answered in the intent and adopted here as writt
 
 | # | Question | Proposal |
 | --- | --- | --- |
-| Q1 | **Tile size in art pixels.** The scene's `grid.tile` and `grid.level` should match the grid the island was drawn on, so new library pieces line up with it. | Measure it from the island during slice 1. Record it in `plan.md` and in the `library-demo` scene. |
+| Q1 | ~~Tile size in art pixels.~~ | **Closed:** 32×16, with a 16-pixel level, measured from the island's grass grid (D4, R27). |
 | Q2 | **Opening a downloaded file in the editor.** Sources are `.mjs`, so opening one means running it as code. | Not in this change. The library comes from the deployed site and work in progress lives in drafts. If you need it later, accept only the canonical format and parse it as data, never `import()` it. |
-| Q3 | **Palette names** for the 81 extracted colors. | The importer names them `c-<hex>`. Rename them as they're touched, which changes no output. |
+| Q3 | **Palette names** for the 81 extracted colors. | The importer names them `c-<hex>` in the legacy tier. Rename them as they're touched, which changes no output. |
+| Q6 | **Outfit colors.** The five outfits already use 51 distinct colors between them, 41 of which the Range island doesn't use, all legacy. The new outfit can use at most 16 outfit colors on top of the world palette. | The Security and governance outfit uses world colors plus at most 4 new outfit colors (for example a steel-blue ramp). The remaining 12 are left for later outfits. |
 | Q4 | **Editor URL.** | `/lab/pixel-art/`, which leaves room for other tools under `/lab/`. Post URLs have at least four segments (`[category/]YYYY/MM/DD/slug`), so it can't collide with one. |
 | Q5 | **Outfit inheritance fit.** If the five extracted outfits share little of their base, `character` plus row overrides gives little saving. | Factor what's shared in slice 1. If an outfit overrides most rows, that's still valid. The format doesn't change. |
