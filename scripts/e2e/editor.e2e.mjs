@@ -762,6 +762,44 @@ describe('object painting (R17)', () => {
     await context.close();
   });
 
+  test('R27: the usage meter warns from 9 colors, and at 12 turns off every color not in use', async () => {
+    const { context, page } = await openLab();
+    await pickObject(page, 'outfit-security-governance');
+    await page.getByText('Colors used: 10 of 12').waitFor();
+    // Two pixels of the outfit's most used key, so no color drops out.
+    const { sources } = await readSources(SOURCE_DIR);
+    const r = resolve(sources, 'outfit-security-governance');
+    const counts = new Map();
+    const pixels = [];
+    for (const [li, layer] of r.layers.entries()) layer.map?.forEach((row, y) => [...row].forEach((ch, x) => ch !== '.' && pixels.push({ li, x, y, ch }) && counts.set(ch, (counts.get(ch) ?? 0) + 1)));
+    // The layer that paints the most, and its most used key.
+    const byLayer = new Map();
+    for (const p of pixels) byLayer.set(p.li, (byLayer.get(p.li) ?? 0) + 1);
+    const layer = [...byLayer].sort((a, b) => b[1] - a[1])[0][0];
+    const inLayer = new Map();
+    for (const p of pixels) if (p.li === layer) inLayer.set(p.ch, (inLayer.get(p.ch) ?? 0) + 1);
+    const common = [...inLayer].sort((a, b) => b[1] - a[1])[0][0];
+    const spots = pixels.filter((p) => p.ch === common && p.li === layer).slice(0, 2);
+    assert.equal(spots.length, 2);
+    await page.getByRole('button', { name: new RegExp(`^Layer ${layer + 1}\\b`) }).click();
+    const used = new Set([...counts.keys()].map((k) => sources.colors.get(r.keys[k]).hex));
+    const fresh = Object.keys(palette.world).filter((n) => !used.has(palette.world[n])).slice(0, 3);
+    for (const [i, spot] of spots.entries()) {
+      await page.getByRole('button', { name: swatch(fresh[i]) }).click();
+      await clickPixel(page, spot.x, spot.y);
+    }
+    const meter = page.getByText('Colors used: 12 of 12');
+    await meter.waitFor();
+    assert.match(await meter.getAttribute('class'), /is-warning/);
+    const off = page.getByRole('button', { name: swatch(fresh[2]) });
+    assert.equal(await off.getAttribute('aria-disabled'), 'true');
+    // aria-disabled keeps it focusable and announced; a click does nothing.
+    await off.dispatchEvent('click');
+    assert.equal(await page.getByRole('button', { name: swatch(fresh[1]) }).getAttribute('aria-pressed'), 'true', 'a 13th color can\'t be chosen');
+    assert.equal(await page.getByRole('button', { name: swatch(fresh[0]) }).getAttribute('aria-disabled'), 'false', 'colors in use stay on');
+    await context.close();
+  });
+
   test('R21: with the keyboard alone: open, choose a color, paint, erase, fill, pick and undo', async () => {
     const { context, page, errors } = await openLab();
     // The toolbar is one tab stop: Tab to it, then arrow to Object.
