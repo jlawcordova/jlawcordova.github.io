@@ -1,0 +1,105 @@
+// The shared pixel-art palette (pixel-art engine spec D2, R26), in three
+// tiers. Objects name their colors from it. Colors are added by hand, in a
+// reviewed commit.
+//
+// - world: at most 32. Seven 4-shade material ramps (1 = highlight … 4 =
+//   shadow), plus ink, cream and two skin tones. Brand entries keep their
+//   variables.css values, and a test keeps them in step. For now it holds
+//   only the brand entries the art already uses; the ramps come later.
+// - outfit: at most 16 clothing colors, only for objects that extend
+//   character.
+// - legacy: the 81 colors extracted from the redesign's art, frozen. Only
+//   imported art (legacy: true) may use them. The same value may also be in
+//   another tier; names are unique.
+export default {
+  world: {
+    'gold-2': '#D8B66A', // --color-gold
+    'soil-3': '#5A3E2B', // --color-earth
+    ink: '#2E2418', // --color-ink
+    cream: '#F4EDE0', // --color-page
+  },
+  outfit: {},
+  legacy: {
+    'c-1f2226': '#1F2226',
+    'c-2e2418': '#2E2418',
+    'c-2e3238': '#2E3238',
+    'c-2e3a38': '#2E3A38',
+    'c-2e4f33': '#2E4F33',
+    'c-2f4a43': '#2F4A43',
+    'c-3b2a20': '#3B2A20',
+    'c-3b2f26': '#3B2F26',
+    'c-3e4a2a': '#3E4A2A',
+    'c-3e5e55': '#3E5E55',
+    'c-3f2b1e': '#3F2B1E',
+    'c-3f5a34': '#3F5A34',
+    'c-3f6b45': '#3F6B45',
+    'c-40454d': '#40454D',
+    'c-4a3324': '#4A3324',
+    'c-4a3a2c': '#4A3A2C',
+    'c-4a5524': '#4A5524',
+    'c-4e6b3a': '#4E6B3A',
+    'c-5a2230': '#5A2230',
+    'c-5a3e2b': '#5A3E2B',
+    'c-5a606a': '#5A606A',
+    'c-5b766e': '#5B766E',
+    'c-5e6b2f': '#5E6B2F',
+    'c-5e7d45': '#5E7D45',
+    'c-5f8c7e': '#5F8C7E',
+    'c-6e2734': '#6E2734',
+    'c-6e4728': '#6E4728',
+    'c-6e4d36': '#6E4D36',
+    'c-6f8a55': '#6F8A55',
+    'c-6f8f55': '#6F8F55',
+    'c-6f9a6e': '#6F9A6E',
+    'c-77925a': '#77925A',
+    'c-779d91': '#779D91',
+    'c-78806a': '#78806A',
+    'c-7a4e2d': '#7A4E2D',
+    'c-7b2d3b': '#7B2D3B',
+    'c-7e9a60': '#7E9A60',
+    'c-7fa89b': '#7FA89B',
+    'c-88a267': '#88A267',
+    'c-8a5a34': '#8A5A34',
+    'c-8fa56e': '#8FA56E',
+    'c-8faea5': '#8FAEA5',
+    'c-959b8a': '#959B8A',
+    'c-9ab188': '#9AB188',
+    'c-9c6b42': '#9C6B42',
+    'c-9dc1b4': '#9DC1B4',
+    'c-9e3b4b': '#9E3B4B',
+    'c-9fd08a': '#9FD08A',
+    'c-a0524a': '#A0524A',
+    'c-a7c0b8': '#A7C0B8',
+    'c-a8957a': '#A8957A',
+    'c-a9bd8c': '#A9BD8C',
+    'c-b08f48': '#B08F48',
+    'c-b0c1a2': '#B0C1A2',
+    'c-b5c79c': '#B5C79C',
+    'c-b8a88a': '#B8A88A',
+    'c-b9cc9f': '#B9CC9F',
+    'c-bb7681': '#BB7681',
+    'c-bba88a': '#BBA88A',
+    'c-bfd3cb': '#BFD3CB',
+    'c-c25a6a': '#C25A6A',
+    'c-c9b79a': '#C9B79A',
+    'c-c9bb9f': '#C9BB9F',
+    'c-c9ddd3': '#C9DDD3',
+    'c-ca939c': '#CA939C',
+    'c-d2c3a6': '#D2C3A6',
+    'c-d3dfc0': '#D3DFC0',
+    'c-d4c5a9': '#D4C5A9',
+    'c-d8b66a': '#D8B66A',
+    'c-d9c9ae': '#D9C9AE',
+    'c-e3c57e': '#E3C57E',
+    'c-e4cc97': '#E4CC97',
+    'c-e6b8a8': '#E6B8A8',
+    'c-e8f1ec': '#E8F1EC',
+    'c-e9b98a': '#E9B98A',
+    'c-e9dcc6': '#E9DCC6',
+    'c-ead7ad': '#EAD7AD',
+    'c-efe6d6': '#EFE6D6',
+    'c-f4ede0': '#F4EDE0',
+    'c-fbf6ec': '#FBF6EC',
+    'c-fffdf8': '#FFFDF8',
+  },
+};

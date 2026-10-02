@@ -46,11 +46,11 @@ Every merge to `master` deploys the site. If the change needs more than one PR, 
 # Plan: pixel-art outfit for security work (from intent.md 2026-10-01)
 
 ## Files that change
-src/assets/pixel-art/source/range-sprite.src.svg, src/assets/pixel-art/range-sprite.svg,
+src/assets/pixel-art/source/scenes/range-sprite.mjs, src/assets/pixel-art/range-sprite.svg,
 src/data/home.ts, src/styles/range.css
 
 ## Order of work
-1. Add the sixth outfit group to the sprite source and run npm run art.
+1. Add the sixth outfit object, place it in a new group in the sprite scene, and run npm run art.
 2. Add the class to rangeClasses.
 3. Add its data-current rule and check the pager at 390px.
 
