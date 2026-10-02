@@ -1,20 +1,46 @@
-.page-container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0 16px;
-  padding: 0 16px;
-  min-height: 70vh;
-}
-.page-container .page-wrapper {
-  grid-column: 1/5;
-  margin-top: 56px;
+/* Title band at the top of the blog, posts and 404. */
+.page-head {
+  background-color: var(--color-hero);
+  padding: 56px var(--gutter) 40px;
 }
 
-@media only screen and (min-width: 768px) {
-  .page-container {
-    grid-template-columns: repeat(12, 1fr);
+/* The bands supply the gutter, so these aren't .container. */
+.page-head__inner,
+.page-body__inner {
+  max-width: var(--content-max);
+  margin-inline: auto;
+}
+
+.page-head--reading .page-head__inner,
+.page-body--reading .page-body__inner {
+  max-width: var(--reading-max);
+}
+
+.page-head__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.page-head__inner > * {
+  margin: 0;
+}
+
+.page-body {
+  padding: 48px var(--gutter) 96px;
+}
+
+@media (max-width: 480px) {
+  .page-head {
+    padding: 40px var(--gutter) 32px;
   }
-  .page-container .page-wrapper {
-    grid-column: 2/12;
+  .page-body {
+    padding: 32px var(--gutter) 72px;
   }
+}
+
+.not-found p {
+  margin: 0 0 24px;
+  font-size: 18px;
+  color: var(--color-ink-muted);
 }
