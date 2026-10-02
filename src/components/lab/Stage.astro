@@ -1,5 +1,7 @@
 ---
-// The stage (spec D9.2): the engine's render on a canvas over .isogrid, in a
+// The stage (spec D9.2): the engine's render on a canvas over .isogrid (in
+// Object mode, over a checkerboard, with a gutter that marks an outfit's
+// overridden rows), in a
 // frame that scrolls on its own, so zoom never scrolls the page. The frame
 // is the stage's one tab stop, and its keys are in keyboard.ts.
 ---
@@ -14,6 +16,7 @@
   aria-describedby="lab-status-position"
 >
   <div class="lab-stage__sheet isogrid">
+    <canvas id="lab-gutter" class="lab-stage__gutter" width="1" height="1" aria-hidden="true" hidden></canvas>
     <canvas id="lab-canvas" width="1" height="1"></canvas>
   </div>
   <p class="lab-stage__empty" id="lab-empty" hidden>Add an object from the Library.</p>

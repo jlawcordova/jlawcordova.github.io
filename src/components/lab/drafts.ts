@@ -4,7 +4,7 @@
 // and the editor then works without drafts.
 
 export interface Draft {
-  /** The site version (a hash of its canonical source) the draft started from. */
+  /** The site version (a hash of its canonical source) the draft started from, or 'new' for a document the site doesn't have. */
   version: string;
   /** When it was last saved, in ms since the epoch. */
   saved: number;
@@ -62,4 +62,18 @@ export function ago(saved: number, now: number): string {
   if (minutes < 60) return `${minutes} min ago`;
   const hours = Math.floor(minutes / 60);
   return hours < 24 ? `${hours} hr ago` : `${Math.floor(hours / 24)} d ago`;
+}
+
+/** Every stored draft's key, such as `scene:hero-island` or `object:rock`, in code-point order. */
+export function draftKeys(): string[] {
+  try {
+    const keys: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && /^pixel-lab:(?:scene|object):/.test(key)) keys.push(key.slice(PREFIX.length));
+    }
+    return keys.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  } catch {
+    return [];
+  }
 }

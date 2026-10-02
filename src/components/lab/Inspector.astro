@@ -1,6 +1,8 @@
 ---
-// The right-hand column (spec D9.4): the Items list, then the Inspector's
-// Selected and Scene panels. scene-mode.ts fills them in.
+// The right-hand column (spec D9.4, D9.5). Scene mode: the Items list, then
+// the Selected and Scene panels (scene-mode.ts). Object mode: the Palette,
+// then the Layers, Frames, Object and Preview panels (object-mode.ts and the
+// *-panel.ts modules). Each mode's parts carry data-for.
 const position = [
   { field: 'col', label: 'Col', name: 'column' },
   { field: 'row', label: 'Row', name: 'row' },
@@ -13,15 +15,63 @@ const offset = [
 ---
 
 <div class="lab__side">
-  <section class="lab-panel" id="lab-items" aria-labelledby="lab-items-title">
-    <h2 class="label lab-panel__title" id="lab-items-title">Items</h2>
-    <div class="lab-tree" id="lab-tree" role="tree" tabindex="0" aria-labelledby="lab-items-title"></div>
+  <section class="lab-panel" id="lab-items">
+    <div data-for="scene">
+      <h2 class="label lab-panel__title" id="lab-items-title">Items</h2>
+      <div class="lab-tree" id="lab-tree" role="tree" tabindex="0" aria-labelledby="lab-items-title"></div>
+    </div>
+    <div data-for="object" hidden>
+      <h2 class="label lab-panel__title" id="lab-palette-title">Palette</h2>
+      <div id="lab-palette" role="group" aria-labelledby="lab-palette-title"></div>
+      <p class="lab-meter" id="lab-meter" aria-live="polite"></p>
+    </div>
   </section>
 
-  <section class="lab-panel" id="lab-inspector" aria-labelledby="lab-inspector-title">
+  <section class="lab-panel" id="lab-inspector">
     <h2 class="visually-hidden" id="lab-inspector-title">Inspector</h2>
 
-    <div class="lab-panel__part" aria-labelledby="lab-selected-title" role="group">
+    <div class="lab-panel__part" data-for="object" role="group" aria-labelledby="lab-layers-title" hidden>
+      <h3 class="label lab-panel__title" id="lab-layers-title">Layers</h3>
+      <ol class="lab-layers" id="lab-layers"></ol>
+      <div class="lab-actions" id="lab-layer-actions">
+        <button type="button" class="btn btn--ghost" data-layer="add">Add layer</button>
+      </div>
+    </div>
+
+    <div class="lab-panel__part" data-for="object" role="group" aria-labelledby="lab-frames-title" id="lab-frames-part" hidden>
+      <h3 class="label lab-panel__title" id="lab-frames-title">Frames</h3>
+      <div class="lab-frames" id="lab-frames" role="group" aria-label="Frames of the layer"></div>
+      <div class="lab-frames__play">
+        <button type="button" class="lab-step" data-frame="back" aria-label="Previous frame">‹</button>
+        <button type="button" class="lab-step lab-step--wide" data-frame="play" aria-pressed="false">Play</button>
+        <button type="button" class="lab-step" data-frame="forward" aria-label="Next frame">›</button>
+      </div>
+      <div class="lab-actions">
+        <button type="button" class="btn btn--ghost" data-frame="add">Add frame</button>
+        <button type="button" class="btn btn--ghost" data-frame="duplicate">Duplicate frame</button>
+        <button type="button" class="btn btn--ghost" data-frame="earlier">Move earlier</button>
+        <button type="button" class="btn btn--ghost" data-frame="later">Move later</button>
+        <button type="button" class="btn btn--ghost" data-frame="delete">Delete frame</button>
+      </div>
+    </div>
+
+    <div class="lab-panel__part" data-for="object" role="group" aria-labelledby="lab-object-title" hidden>
+      <h3 class="label lab-panel__title" id="lab-object-title">Object</h3>
+      <dl class="lab-facts" id="lab-object-facts"></dl>
+      <div class="lab-fields" id="lab-object-fields"></div>
+      <p class="lab-panel__note" id="lab-object-note"></p>
+    </div>
+
+    <div class="lab-panel__part" data-for="object" role="group" aria-labelledby="lab-preview-title" hidden>
+      <h3 class="label lab-panel__title" id="lab-preview-title">Preview</h3>
+      <div class="lab-preview isogrid">
+        <canvas id="lab-preview-1" width="1" height="1" aria-hidden="true"></canvas>
+        <canvas id="lab-preview-2" width="1" height="1" aria-hidden="true"></canvas>
+      </div>
+      <p class="lab-panel__note">At 1× and 2×, standing on one tile, at the frame shown.</p>
+    </div>
+
+    <div class="lab-panel__part" data-for="scene" aria-labelledby="lab-selected-title" role="group">
       <h3 class="label lab-panel__title" id="lab-selected-title">Selected</h3>
       <p class="lab-panel__note" id="lab-selected-none">Nothing selected. Choose an item in Items or on the stage.</p>
       <div id="lab-selected" hidden>
@@ -64,7 +114,7 @@ const offset = [
       </div>
     </div>
 
-    <div class="lab-panel__part" aria-labelledby="lab-scene-title" role="group">
+    <div class="lab-panel__part" data-for="scene" aria-labelledby="lab-scene-title" role="group">
       <h3 class="label lab-panel__title" id="lab-scene-title">Scene</h3>
       <dl class="lab-facts" id="lab-scene-facts"></dl>
     </div>

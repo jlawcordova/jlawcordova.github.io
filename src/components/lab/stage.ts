@@ -83,6 +83,7 @@ export class Stage {
   private readonly lab: Lab;
   private readonly art = new Map<string, Art>();
   private baseKey = '';
+  private artRevision = -1;
   /** Every item that shows, in paint order. */
   placed: Placed[] = [];
   /** The tile and pixel under the pointer, if it's over the stage. */
@@ -109,29 +110,35 @@ export class Stage {
     return this.lab.doc.viewBox;
   }
 
-  /** An object drawn on its own, with its anchor at (0, 0). Objects don't change in Scene mode. */
-  objectArt(sources: Sources, name: string): Art {
-    let art = this.art.get(name);
-    if (!art) {
-      let pixels = new Map<string, string>();
-      try {
-        pixels = composite(renderObject(sources, name));
-      } catch {
-        // A missing object shows as nothing; the problems list names it.
-      }
-      art = { pixels, box: bounds(pixels.keys()) };
-      this.art.set(name, art);
+  /** An object drawn on its own, with its anchor at (0, 0). */
+  artOf(sources: Sources, name: string): Art {
+    let pixels = new Map<string, string>();
+    try {
+      pixels = composite(renderObject(sources, name));
+    } catch {
+      // A missing object shows as nothing; the problems list names it.
     }
+    return { pixels, box: bounds(pixels.keys()) };
+  }
+
+  /** artOf, kept until an object changes. */
+  objectArt(sources: Sources, name: string): Art {
+    if (this.artRevision !== this.lab.objectRevision) {
+      this.art.clear();
+      this.artRevision = this.lab.objectRevision;
+    }
+    let art = this.art.get(name);
+    if (!art) this.art.set(name, (art = this.artOf(sources, name)));
     return art;
   }
 
   /** Re-renders the scene if it changed, then redraws. */
   render() {
     const { lab } = this;
-    if (!lab.doc) return;
+    if (!lab.doc || lab.kind !== 'scene') return;
     const { kept, leaves } = visibleItems(lab.doc.items ?? [], lab.selected);
     const view = { ...lab.doc, items: kept };
-    const key = JSON.stringify(view);
+    const key = `${lab.objectRevision}|${JSON.stringify(view)}`;
     if (key !== this.baseKey) {
       this.baseKey = key;
       this.paintBase(view);
@@ -151,8 +158,7 @@ export class Stage {
     const ctx = this.base.getContext('2d')!;
     const image = ctx.createImageData(w, h);
     try {
-      const { palette, objects } = this.lab.data;
-      const sources = loadSources({ palette, objects, scenes: { [this.lab.name]: view } });
+      const sources = loadSources({ palette: this.lab.data.palette, objects: this.lab.objects(), scenes: { [this.lab.name]: view } });
       for (const [p, color] of composite(renderScene(sources, this.lab.name).root)) {
         const comma = p.indexOf(',');
         const x = Number(p.slice(0, comma)) - vx;
@@ -183,7 +189,10 @@ export class Stage {
   /** Draws the rendered scene at the current zoom, then the overlays. */
   draw() {
     const { lab, ctx } = this;
-    if (!lab.doc) return;
+    if (!lab.doc || lab.kind !== 'scene') return;
+    this.sheet.classList.add('isogrid');
+    this.sheet.classList.remove('lab-checker');
+    document.getElementById('lab-gutter')!.hidden = true;
     const [vx, vy, w, h] = this.viewBox;
     const z = (this.scale = lab.zoom === 'fit' ? this.fitZoom() : lab.zoom);
     if (this.canvas.width !== w * z || this.canvas.height !== h * z) {

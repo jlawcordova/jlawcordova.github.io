@@ -209,7 +209,8 @@
   letter-spacing: 1px;
 }
 
-.lab-panel__part + .lab-panel__part {
+/* A divider above every part that follows a shown one. */
+.lab-panel__part:not([hidden], [data-off]) ~ .lab-panel__part {
   margin-top: 16px;
   padding-top: 12px;
   border-top: 1px solid var(--color-border);
@@ -615,6 +616,279 @@
   padding-left: 20px;
   font: 13px/1.5 var(--font-code);
   overflow-wrap: anywhere;
+}
+
+/* --------------------------------------------------------- object mode */
+
+/* Each mode hides the other's controls with hidden, and a panel hides a
+   part that doesn't apply with data-off (a block has no layers, a plain
+   layer no frames). Both beat any display set above. */
+.lab [hidden],
+.lab [data-off] {
+  display: none !important;
+}
+
+/* A checkerboard behind the object, one square per pixel, so transparent
+   pixels show. object-mode.ts sets its size to the zoom. */
+.lab-stage__sheet.lab-checker {
+  background-image: repeating-conic-gradient(var(--color-page) 0 25%, var(--color-card) 0 50%);
+}
+.lab-stage__sheet {
+  display: flex;
+  gap: 6px;
+}
+.lab-stage__gutter {
+  display: block;
+  width: 6px;
+  background: var(--color-surface);
+}
+.lab-stage__gutter[hidden] {
+  display: none;
+}
+.lab-stage[data-tool="pencil"] canvas,
+.lab-stage[data-tool="eraser"] canvas,
+.lab-stage[data-tool="fill"] canvas,
+.lab-stage[data-tool="picker"] canvas {
+  cursor: crosshair;
+}
+
+.lab-status__problems {
+  min-height: 32px;
+  min-width: 44px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.lab-status__problems:hover {
+  border-color: var(--color-border-strong);
+}
+
+.lab-popover {
+  max-width: min(480px, calc(100vw - 2 * var(--gutter)));
+  max-height: 60dvh;
+  overflow: auto;
+  margin: auto;
+  padding: 16px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-page);
+  color: var(--color-ink);
+}
+.lab-popover h2 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 1px;
+}
+.lab-popover__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+.lab-popover__item {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  background: var(--color-card);
+  color: var(--color-ink);
+  font: 13px/1.4 var(--font-code);
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.lab-palette__group {
+  margin: 8px 0 4px;
+  font-size: 11px;
+}
+.lab-palette__legacy summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.lab-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.lab-swatch {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-button);
+  background: var(--swatch);
+  cursor: pointer;
+}
+.lab-swatch[aria-pressed="true"] {
+  border-color: var(--color-page);
+  box-shadow: 0 0 0 2px var(--color-ink);
+}
+.lab-swatch[aria-disabled="true"] {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.lab-meter {
+  margin: 8px 0 0;
+  padding: 2px 8px;
+  font-size: 13px;
+}
+.lab-meter.is-warning::before,
+.lab-panel__note.is-warning::before {
+  content: "! ";
+}
+.lab-meter.is-warning,
+.lab-panel__note.is-warning {
+  background: var(--color-gold);
+  color: var(--color-ink);
+}
+
+.lab-layers {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+.lab-layer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  gap: 2px;
+}
+.lab-layer__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 2px;
+}
+.lab-layer__name {
+  min-height: 44px;
+  padding: 4px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  background: transparent;
+  color: var(--color-ink);
+  font: 14px var(--font-text);
+  text-align: left;
+  cursor: pointer;
+}
+.lab-layer__name[aria-pressed="true"] {
+  background: var(--color-ink);
+  color: var(--color-page);
+}
+
+.lab-frames {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.lab-frame {
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-button);
+  background: transparent;
+  color: var(--color-ink);
+  font: 13px var(--font-pixel);
+  cursor: pointer;
+}
+.lab-frame[aria-pressed="true"] {
+  background: var(--color-ink);
+  color: var(--color-page);
+}
+.lab-frames__play {
+  margin-top: 8px;
+  display: flex;
+  gap: 4px;
+}
+.lab-step--wide {
+  width: auto;
+  padding: 0 16px;
+  font-size: 14px;
+}
+.lab-step[aria-pressed="true"] {
+  background: var(--color-ink);
+  color: var(--color-page);
+}
+
+.lab-preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 12px;
+  border-radius: var(--radius-button);
+  background-color: var(--color-card);
+}
+.lab-preview canvas {
+  max-width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.lab-choice {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.lab-choice input {
+  width: 20px;
+  height: 20px;
+}
+.lab-dialog fieldset {
+  margin: 12px 0 0;
+  padding: 0;
+  border: 0;
+}
+.lab-dialog legend {
+  font-size: 14px;
+}
+.lab-dialog--small {
+  width: min(420px, calc(100vw - 2 * var(--gutter)));
+}
+.lab-dialog .lab-field input {
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: var(--radius-button);
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-page);
+  color: var(--color-ink);
+  font: 500 15px var(--font-text);
+}
+.lab-new__size {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.lab-new__object[hidden],
+.lab-new__sprite[hidden] {
+  display: none;
+}
+.lab-field select {
+  min-height: 44px;
+  padding: 0 8px;
+  border-radius: var(--radius-button);
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-page);
+  color: var(--color-ink);
+  font: 500 14px var(--font-text);
+}
+.lab-number label {
+  font-size: 13px;
 }
 
 /* -------------------------------------------- one column, below 960px */

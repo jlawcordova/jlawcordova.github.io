@@ -10,7 +10,7 @@ J. Law. Cordova's personal site and blog: Astro 7, TypeScript and plain CSS, dep
 - Test: `npm test` (Node built-ins, no network)
 - Browser checks: `npm run e2e` (serves the built `dist/` and runs `scripts/e2e/` with the environment's Playwright; run `npm run build` first)
 - Pixel art: `npm run art` (compiles the scenes in `src/assets/pixel-art/source/` to `src/assets/pixel-art/*.svg`). `npm run art -- --check <name>` validates one object or scene, `--preview <name>` writes PNGs to `.art-preview/`, and `--new object|scene <name>` writes a starter source. The `pixel-art` skill has the details.
-- Pixel-art lab: `npm run dev`, then http://localhost:4321/lab/pixel-art/ (unlisted). It edits scenes in the browser and exports their sources.
+- Pixel-art lab: `npm run dev`, then http://localhost:4321/lab/pixel-art/ (unlisted). It edits scenes, paints objects and exports their sources.
 - Accomplishments: `npm run fetch-accomplishments` (overwrites `src/data/accomplishments.json`; never commit the result)
 
 ## Verifying your work

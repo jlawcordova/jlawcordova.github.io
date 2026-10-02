@@ -10,7 +10,9 @@ import { inflateSync } from 'node:zlib';
 
 import { composite, describeObject, loadSources, paintedSize, renderObject, renderScene, resolve, usedKeys, validate } from '../src/lib/pixel-art/engine.mjs';
 import { blockFaces, pxToTile, tilePixels, tileToPx } from '../src/lib/pixel-art/iso.mjs';
+import { addFrame, addLayer, colorAt, deleteFrame, deleteLayer, duplicateFrame, duplicateLayer, floodFill, move, paint, resize } from '../src/lib/pixel-art/edit.mjs';
 import { serialize } from '../src/lib/pixel-art/serialize.mjs';
+import { starterBlock, starterExtends, starterScene, starterSprite } from '../src/lib/pixel-art/starter.mjs';
 import { toRectSvg } from '../src/lib/pixel-art/svg.mjs';
 import { encodePng, renderPreview } from './pixel-art-preview.mjs';
 
@@ -1149,5 +1151,115 @@ describe('previews (R29)', () => {
     const card = [1, 2, 3];
     const { image } = renderPreview(sources, { scene: 's' }, { card, grid: [4, 5, 6] });
     assert.deepEqual(decodePng(encodePng(image, 1)).pixels, [[0xf4, 0xed, 0xe0, 255], [...card, 255], [...card, 255]]);
+  });
+});
+
+describe('editing objects (R17)', () => {
+  const at = (layer = 0, frame = 0) => ({ layer, frame });
+  const base = () =>
+    sprite(['....', '.gg.', '.gg.', '....'], { g: 'grass-2' }, { layers: [{ map: ['....', '.gg.', '.gg.', '....'] }, { loop: 'wf', prefix: 'w', frames: [['....', '....', '....', '....'], ['g...', '....', '....', '....']] }] });
+
+  it('R17: the pencil paints pixels, and a new color gets a key named after it', () => {
+    const doc = base();
+    const sources = src({ s: doc });
+    assert.equal(paint(sources, 's', doc, at(), [[0, 0], [1, 1]], 'ink'), 2);
+    assert.deepEqual(doc.keys, { g: 'grass-2', i: 'ink' });
+    assert.deepEqual(doc.layers[0].map, ['i...', '.ig.', '.gg.', '....']);
+    assert.equal(paint(sources, 's', doc, at(), [[0, 0], [9, 9]], 'ink'), 0, 'no change, and outside the map is ignored');
+    assert.deepEqual(validate(sources), []);
+  });
+
+  it('R17: a key already taken falls back to the uppercase, then the fixed order', () => {
+    const doc = sprite(['..'], { g: 'grass-2', G: 'grass-4' });
+    const sources = src({ s: doc });
+    paint(sources, 's', doc, at(), [[0, 0]], 'grass-1');
+    assert.deepEqual(Object.keys(doc.keys), ['g', 'G', 'a']);
+  });
+
+  it('R17: the eraser clears pixels, on the frame being edited', () => {
+    const doc = base();
+    const sources = src({ s: doc });
+    assert.equal(paint(sources, 's', doc, at(0), [[1, 1]], null), 1);
+    assert.deepEqual(doc.layers[0].map, ['....', '..g.', '.gg.', '....']);
+    paint(sources, 's', doc, at(1, 1), [[0, 0]], null);
+    paint(sources, 's', doc, at(1, 0), [[3, 3]], 'grass-2');
+    assert.deepEqual(doc.layers[1].frames, [['....', '....', '....', '...g'], ['....', '....', '....', '....']]);
+  });
+
+  it('R17: painting an object that extends another overrides whole rows, and drops a row that matches the base again', () => {
+    const body = sprite(['....', '.gg.', '.gg.'], { g: 'grass-2' });
+    const outfit = { kind: 'sprite', extends: 'body', keys: {}, rows: {} };
+    const sources = src({ body, outfit });
+    paint(sources, 'outfit', outfit, at(), [[0, 2], [3, 0]], 'ink');
+    assert.deepEqual(outfit.rows, { 0: { 0: '...i', 2: 'igg.' } });
+    assert.deepEqual(outfit.keys, { i: 'ink' });
+    paint(sources, 'outfit', outfit, at(), [[0, 2]], null);
+    assert.deepEqual(outfit.rows, { 0: { 0: '...i' } });
+    paint(sources, 'outfit', outfit, at(), [[3, 0]], null);
+    assert.deepEqual(outfit.rows, {});
+    assert.equal(serialize(outfit), serialize({ kind: 'sprite', extends: 'body', keys: { i: 'ink' }, rows: {} }));
+  });
+
+  it('R17: an object that extends another can\'t paint a frame loop', () => {
+    const body = base();
+    const outfit = { kind: 'sprite', extends: 'body', rows: {} };
+    const sources = src({ body, outfit });
+    assert.throws(() => paint(sources, 'outfit', outfit, at(1), [[0, 0]], 'ink'), /frame loop/);
+  });
+
+  it('R17: fill takes 4-connected pixels of the same key only', () => {
+    const map = ['gg.g', 'g..g', '.g.g'];
+    assert.deepEqual(floodFill(map, 0, 0).map((p) => p.join(',')).sort(), ['0,0', '0,1', '1,0']);
+    assert.deepEqual(floodFill(map, 1, 1).map((p) => p.join(',')).sort(), ['1,1', '2,0', '2,1', '2,2']);
+    assert.deepEqual(floodFill(map, 9, 0), []);
+  });
+
+  it('R17: the picker reads the color under a pixel, on the frame shown', () => {
+    const sources = src({ s: base() });
+    const resolved = resolve(sources, 's');
+    assert.equal(colorAt(resolved, at(0), 1, 1), 'grass-2');
+    assert.equal(colorAt(resolved, at(0), 0, 0), null);
+    assert.equal(colorAt(resolved, at(1, 1), 0, 0), 'grass-2');
+    assert.equal(colorAt(resolved, at(1, 5), 0, 0), 'grass-2', 'past the last frame shows the last frame');
+  });
+
+  it('R17: resize pads and crops every map at the right and bottom', () => {
+    const doc = base();
+    resize(doc, 2, 5);
+    assert.deepEqual(doc.layers[0].map, ['..', '.g', '.g', '..', '..']);
+    assert.deepEqual(doc.layers[1].frames[1], ['g.', '..', '..', '..', '..']);
+    assert.deepEqual(validate(src({ s: doc })), []);
+  });
+
+  it('R17: layers and frames can be added, duplicated, moved and deleted, but never to none', () => {
+    const doc = base();
+    assert.equal(addLayer(doc), 2);
+    assert.deepEqual(doc.layers[2].map, ['....', '....', '....', '....']);
+    assert.equal(duplicateLayer(doc, 0), 1);
+    assert.deepEqual(doc.layers[1], doc.layers[0]);
+    assert.equal(move(doc.layers, 1, 1), 2);
+    assert.equal(move(doc.layers, 0, -1), 0, 'already first');
+    assert.equal(deleteLayer(doc, 3), 2);
+    assert.equal(doc.layers.length, 3);
+    const one = sprite(['g']);
+    assert.equal(deleteLayer(one, 0), 0);
+    assert.equal(one.layers.length, 1);
+
+    const loop = base();
+    assert.equal(addFrame(loop, 1, 0), 1);
+    assert.deepEqual(loop.layers[1].frames.map((f) => f[0]), ['....', '....', 'g...']);
+    assert.equal(duplicateFrame(loop, 1, 2), 3);
+    assert.deepEqual(loop.layers[1].frames[3], loop.layers[1].frames[2]);
+    assert.equal(deleteFrame(loop, 1, 3), 2);
+    assert.equal(loop.layers[1].frames.length, 3);
+    assert.deepEqual(validate(src({ s: loop })), []);
+  });
+
+  it('R17: the editor\'s starters are the same documents as npm run art -- --new writes', () => {
+    assert.deepEqual(starterSprite(4, 3), { kind: 'sprite', anchor: [2, 2], keys: { o: 'ink' }, layers: [{ map: ['....', '....', '....'] }] });
+    assert.deepEqual(starterScene(), { viewBox: [-64, -64, 128, 128], origin: [0, 0], items: [] });
+    const body = sprite(['gc'], { g: 'grass-2', c: 'c-6f8a55' }, { legacy: true });
+    assert.deepEqual(starterExtends(src({ body }), 'body'), { kind: 'sprite', extends: 'body', keys: { c: 'grass-2' }, rows: {} });
+    assert.deepEqual(starterBlock(), { kind: 'block', size: [1, 1, 1], faces: { top: 'grass-2', left: 'soil-2', right: 'soil-3' } });
   });
 });

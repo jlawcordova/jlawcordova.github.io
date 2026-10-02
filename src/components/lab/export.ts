@@ -1,13 +1,26 @@
-// The Export dialog (spec D9.6, R19): the open document's canonical source
-// from serialize(), the repo path it belongs at, Copy source and Download
-// .mjs. Nothing is sent over the network. While the document has problems,
-// the dialog lists them instead, and both export buttons are off, so every
-// exported file compiles.
+// The Export dialog (spec D9.6, R19): the open scene's or object's
+// canonical source from serialize(), the repo path it belongs at, Copy source
+// and Download .mjs. Nothing is sent over the network. While the document
+// has problems, the dialog lists them instead, and both export buttons are
+// off, so every exported file compiles.
 
 import { serialize } from '../../lib/pixel-art/serialize.mjs';
 import type { Lab } from './lab';
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+
+/** The objects a scene places that have drafts here, in code-point order. */
+function usedDrafts(lab: Lab) {
+  const names = new Set<string>();
+  const walk = (items: any[]) => {
+    for (const item of items) {
+      if (item && 'group' in item) walk(item.items ?? []);
+      else if (item && lab.workspace.has(`object:${item.object}`)) names.add(item.object);
+    }
+  };
+  walk(lab.doc.items ?? []);
+  return [...names].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+}
 
 export function setUpExport(lab: Lab) {
   const dialog = $<HTMLDialogElement>('lab-export-dialog');
@@ -26,7 +39,13 @@ export function setUpExport(lab: Lab) {
   $('lab-export').addEventListener('click', () => {
     const problems = lab.problems;
     text = problems.length ? '' : serialize(lab.doc);
-    $('lab-export-path').textContent = `src/assets/pixel-art/source/scenes/${lab.name}.mjs`;
+    $('lab-export-path').textContent = `src/assets/pixel-art/source/${lab.kind}s/${lab.name}.mjs`;
+    // A scene that places drafted objects compiles only once they're committed too.
+    const drafts = lab.kind === 'scene' ? usedDrafts(lab) : [];
+    $('lab-export-drafts').hidden = drafts.length === 0;
+    $('lab-export-drafts').textContent = drafts.length
+      ? `This scene uses ${drafts.length === 1 ? 'a draft' : 'drafts'} of ${drafts.join(', ')}. Export ${drafts.length === 1 ? 'it' : 'them'} too.`
+      : '';
     $('lab-export-problems').hidden = problems.length === 0;
     $('lab-export-problem-list').replaceChildren(
       ...problems.map((problem) => {

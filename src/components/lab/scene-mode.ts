@@ -232,17 +232,14 @@ export class SceneMode {
     const bar = document.querySelector<HTMLElement>('.lab-toolbar')!;
     bar.addEventListener('click', (e) => {
       const button = (e.target as Element).closest<HTMLButtonElement>('button');
-      if (!button) return;
-      const { tool, zoom, action, mode } = button.dataset;
-      if (mode === 'object') return this.lab.announce("Object mode isn't available yet");
+      if (!button || this.lab.kind !== 'scene') return;
+      const { tool, zoom, action } = button.dataset;
       if (tool) this.setTool(tool as Lab['tool']);
       if (zoom) this.setZoom(zoom === 'fit' ? 'fit' : (Number(zoom) as 1 | 2 | 3 | 4));
       if (action === 'grid') {
         this.lab.set({ grid: !this.lab.grid });
         this.lab.announce(`Tile grid ${this.lab.grid ? 'on' : 'off'}`);
       }
-      if (action === 'undo') this.lab.undo();
-      if (action === 'redo') this.lab.redo();
     });
   }
 
@@ -259,27 +256,8 @@ export class SceneMode {
   // ------------------------------------------------------------- library
 
   private setUpLibrary() {
-    const { palette, objects } = this.lab.data;
-    const sources = loadSources({ palette, objects });
-    for (const thumb of document.querySelectorAll<HTMLButtonElement>('.lab-thumb')) {
-      const name = thumb.dataset.object!;
-      this.drawThumb(thumb.querySelector('canvas')!, name, sources);
-      thumb.addEventListener('click', () => {
-        this.lab.set({ current: name, tool: 'place' });
-        this.lab.announce(`${name} chosen. Choose a tile on the stage to place it.`);
-      });
-      thumb.addEventListener('keydown', (e) => {
-        if (e.key !== 'Enter') return;
-        e.preventDefault();
-        this.lab.set({ current: name });
-        this.placeCurrentAtCursor();
-      });
-      thumb.addEventListener('dragstart', (e) => {
-        e.dataTransfer?.setData('text/plain', name);
-        if (e.dataTransfer) e.dataTransfer.effectAllowed = 'copy';
-        this.lab.set({ current: name });
-      });
-    }
+    for (const thumb of document.querySelectorAll<HTMLButtonElement>('.lab-thumb')) this.wireThumb(thumb);
+    this.redrawThumbs();
     const search = $<HTMLInputElement>('lab-search');
     const none = $('lab-search-none');
     search.addEventListener('input', () => {
@@ -301,10 +279,80 @@ export class SceneMode {
     });
   }
 
+  /**
+   * A thumbnail's actions. In Scene mode: choose it, then a tile; Enter
+   * places it at the cursor; drag it onto the stage. In Object mode: open it.
+   */
+  private wireThumb(thumb: HTMLButtonElement) {
+    const name = thumb.dataset.object!;
+    thumb.addEventListener('click', () => {
+      if (this.lab.kind === 'object') return this.lab.open('object', name);
+      this.lab.set({ current: name, tool: 'place' });
+      this.lab.announce(`${name} chosen. Choose a tile on the stage to place it.`);
+    });
+    thumb.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      if (this.lab.kind === 'object') return this.lab.open('object', name);
+      this.lab.set({ current: name });
+      this.placeCurrentAtCursor();
+    });
+    thumb.addEventListener('dragstart', (e) => {
+      if (this.lab.kind !== 'scene') return e.preventDefault();
+      e.dataTransfer?.setData('text/plain', name);
+      if (e.dataTransfer) e.dataTransfer.effectAllowed = 'copy';
+      this.lab.set({ current: name });
+    });
+  }
+
+  /** Each thumbnail's object as last drawn, so only changed ones redraw. */
+  private readonly drawn = new Map<string, string>();
+  private drawnRevision = -1;
+
+  /**
+   * Adds a thumbnail for each new object draft, drops the ones discarded, and
+   * redraws any object that changed since it was drawn.
+   */
+  private redrawThumbs(only?: string) {
+    if (this.drawnRevision === this.lab.objectRevision && !only) return;
+    this.drawnRevision = this.lab.objectRevision;
+    const objects = this.lab.objects();
+    const list = $('lab-library-drafts');
+    const fresh = this.lab.newNames('object');
+    for (const li of [...list.children] as HTMLElement[]) if (!fresh.includes(li.dataset.name!)) li.remove();
+    for (const name of fresh) {
+      if (list.querySelector(`li[data-name="${name}"]`)) continue;
+      const li = Object.assign(document.createElement('li'), {});
+      li.dataset.name = name;
+      const button = Object.assign(document.createElement('button'), { type: 'button', className: 'lab-thumb', draggable: true });
+      button.dataset.object = name;
+      button.setAttribute('aria-pressed', 'false');
+      const canvas = Object.assign(document.createElement('canvas'), { className: 'lab-thumb__art', width: 1, height: 1 });
+      canvas.setAttribute('aria-hidden', 'true');
+      button.append(canvas, Object.assign(document.createElement('span'), { className: 'lab-thumb__name', textContent: name }));
+      li.append(button);
+      list.append(li);
+      this.wireThumb(button);
+    }
+    list.closest<HTMLElement>('details')!.hidden = fresh.length === 0;
+    const sources = loadSources({ palette: this.lab.data.palette, objects });
+    for (const thumb of document.querySelectorAll<HTMLButtonElement>('.lab-thumb')) {
+      const name = thumb.dataset.object!;
+      if (only && name !== only) continue;
+      const json = JSON.stringify(objects[name]);
+      if (this.drawn.get(name) === json) continue;
+      this.drawn.set(name, json);
+      this.drawThumb(thumb.querySelector('canvas')!, name, sources);
+    }
+  }
+
   /** A Library thumbnail: the object at 1×, scaled in whole steps to fit 48px, or down if it's bigger. */
   private drawThumb(canvas: HTMLCanvasElement, name: string, sources: Sources) {
-    const art = this.stage.objectArt(sources, name);
-    if (!art.box) return;
+    const art = this.stage.artOf(sources, name);
+    if (!art.box) {
+      canvas.width = canvas.height = 1;
+      return;
+    }
     const { minX, minY, maxX, maxY } = art.box;
     const [w, h] = [maxX - minX + 1, maxY - minY + 1];
     canvas.width = w;
@@ -559,7 +607,7 @@ export class SceneMode {
     const { stage } = this;
     const canvas = stage.canvas;
     canvas.addEventListener('pointerdown', (e) => {
-      if (e.button !== 0) return;
+      if (this.lab.kind !== 'scene' || e.button !== 0) return;
       stage.frame.focus({ preventScroll: true });
       const px = stage.toScene(e.clientX, e.clientY);
       const pan = this.lab.tool === 'pan' || this.spaceHeld;
@@ -584,6 +632,7 @@ export class SceneMode {
       canvas.setPointerCapture(e.pointerId);
     });
     canvas.addEventListener('pointermove', (e) => {
+      if (this.lab.kind !== 'scene') return;
       const px = stage.toScene(e.clientX, e.clientY);
       stage.hover = { tile: stage.tileAt(px), px };
       const drag = this.drag;
@@ -620,13 +669,14 @@ export class SceneMode {
     canvas.addEventListener('pointerup', end);
     canvas.addEventListener('pointercancel', end);
     canvas.addEventListener('pointerleave', () => {
-      if (this.drag) return;
+      if (this.lab.kind !== 'scene' || this.drag) return;
       stage.hover = null;
       stage.draw();
       this.renderStatus();
     });
     // Dragging a Library thumbnail onto the stage places it on that tile.
     stage.frame.addEventListener('dragover', (e) => {
+      if (this.lab.kind !== 'scene') return;
       e.preventDefault();
       if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
       const px = stage.toScene(e.clientX, e.clientY);
@@ -636,7 +686,7 @@ export class SceneMode {
     stage.frame.addEventListener('drop', (e) => {
       e.preventDefault();
       const name = e.dataTransfer?.getData('text/plain') || this.lab.current;
-      if (!name || !this.lab.data.objects[name]) return;
+      if (this.lab.kind !== 'scene' || !name || !Object.hasOwn(this.lab.objects(), name)) return;
       this.lab.current = name;
       this.place(name, stage.tileAt(stage.toScene(e.clientX, e.clientY)));
       stage.frame.focus({ preventScroll: true });
@@ -655,8 +705,25 @@ export class SceneMode {
     $('lab-status-problems').classList.toggle('is-warning', lab.problems.length > 0);
   }
 
+  /** Redraws the open object's thumbnail once a frame at most while it's painted. */
+  private thumbPending = false;
+
   render() {
     const { lab } = this;
+    for (const thumb of document.querySelectorAll<HTMLButtonElement>('.lab-thumb')) {
+      thumb.setAttribute('aria-pressed', String(lab.kind === 'object' ? thumb.dataset.object === lab.name : thumb.dataset.object === lab.current));
+    }
+    if (lab.kind === 'object') {
+      if (!this.thumbPending) {
+        this.thumbPending = true;
+        requestAnimationFrame(() => {
+          this.thumbPending = false;
+          this.redrawThumbs(this.lab.kind === 'object' ? this.lab.name : undefined);
+        });
+      }
+      return;
+    }
+    this.redrawThumbs();
     for (const button of document.querySelectorAll<HTMLButtonElement>('.lab-toolbar [data-tool]')) {
       button.setAttribute('aria-pressed', String(button.dataset.tool === lab.tool));
     }
@@ -664,9 +731,6 @@ export class SceneMode {
       button.setAttribute('aria-pressed', String(button.dataset.zoom === String(lab.zoom)));
     }
     document.querySelector('.lab-toolbar [data-action="grid"]')!.setAttribute('aria-pressed', String(lab.grid));
-    for (const thumb of document.querySelectorAll<HTMLButtonElement>('.lab-thumb')) {
-      thumb.setAttribute('aria-pressed', String(thumb.dataset.object === lab.current));
-    }
     this.stage.frame.dataset.tool = this.spaceHeld ? 'pan' : lab.tool;
     this.renderTree();
     this.renderInspector();
