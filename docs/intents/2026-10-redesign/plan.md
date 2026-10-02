@@ -209,6 +209,6 @@ Used by T1.2. It lists every old custom property still referenced in `src/styles
 Update this checklist as PRs merge.
 
 - [x] PR 1: Foundation
-- [ ] PR 2: Home
+- [x] PR 2: Home
 - [ ] PR 3: Pages
 - [ ] PR 4: Brand marks and final verification
