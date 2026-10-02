@@ -215,6 +215,18 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
     - **README:** layout rows and a "Pixel art" section.
     - **`write-plan` skill:** point its example at the new paths.
 
+**How PR 1 departs from the steps above** (recorded in the PR 1 commit):
+
+- **Paint order is key order.** A sprite layer paints its colors in the order its `keys` lists them, so "order of first paint" (step 4) means key order. The importer assigns keys in the fixture's group order, so `range-island` comes out in the fixture's order. With `extends`, the base's keys come first, so in the outfits' `cbob` layers the five character colors now come before the outfit's own. The committed `range-sprite.svg` therefore has the same paths with a different fill order in those five layers, and no trailing newline: 32,628 bytes raw (was 32,629), 6,658 gzip (was 6,652). No fill group in the fixture overlaps another in its layer (a test checks this), so the order doesn't change any pixel. R10's test compares each layer's fills as a set, and `art.e2e.mjs` confirms it in the browser.
+- **The character cap is on the figure it paints.** Step 7's factoring aligns the outfits on their shared bounds, which include the legacy props, so `character` is a 32×35 canvas. R27's 16×24 limit for a character is checked on the bounding box of the pixels it paints, across every layer and frame, as PR 4's "the figure stays within 16×24" puts it. The 64×64 cap stays on the map's size.
+- **`--new object <name> --extends character`** re-keys every inherited legacy color to the nearest world or outfit color, so the starter validates. A new object may not paint legacy colors, even inherited ones (R26).
+- **Expected sizes are the most common ones.** A ragged row is measured against the most common row width in the object's maps, and a map's height against the most common height. The message then points at the row that's off, even when it's row 0.
+- **The layer tree** is `{ attrs, frame?, children }`, where each child is a group or a layer `{ pixels, colors }`. Class layers, frames and placement classes are groups. Consecutive unclassed paint in one group shares a layer.
+- **Key order in the serializer** puts `rows` between `keys` and `layers`.
+- **Scene previews** draw only the first of each run of sibling `data-class` groups, as the Range shows one variant at a time, rather than all five stacked.
+- **The skill's three examples** compile together against the committed sources, and a test (`R32:`) checks that they do and that they're canonical.
+- **`hero-island.svg`** has no scene until PR 2. `npm run art` no longer writes it, and `art.e2e.mjs` keeps it pinned to its fixture.
+
 ### PR 2: Hero island round trip (slice 2)
 
 1. **Test first:** `R11: hero island matches its fixture's visible image`. For each layer of the compiled scene and the fixture, compute the top-most color per pixel (later paint wins). The two maps must be equal. Then check that the group structure (classes, order) matches.
@@ -328,7 +340,7 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
 Tick these as PRs merge.
 
 - [x] PR 0: Verification tooling
-- [ ] PR 1: Engine and Range round trip
+- [x] PR 1: Engine and Range round trip
 - [ ] PR 2: Hero island round trip
 - [ ] PR 3: World palette and library
 - [ ] PR 4: Security and governance outfit

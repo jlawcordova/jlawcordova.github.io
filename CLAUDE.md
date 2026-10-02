@@ -9,7 +9,7 @@ J. Law. Cordova's personal site and blog: Astro 7, TypeScript and plain CSS, dep
 - Build: `npm run build` (runs `astro check`, then builds to `dist/`)
 - Test: `npm test` (Node built-ins, no network)
 - Browser checks: `npm run e2e` (serves the built `dist/` and runs `scripts/e2e/` with the environment's Playwright; run `npm run build` first)
-- Pixel art: `npm run art` (regenerates `src/assets/pixel-art/*.svg` from `source/`)
+- Pixel art: `npm run art` (compiles the scenes in `src/assets/pixel-art/source/` to `src/assets/pixel-art/*.svg`). `npm run art -- --check <name>` validates one object or scene, `--preview <name>` writes PNGs to `.art-preview/`, and `--new object|scene <name>` writes a starter source. The `pixel-art` skill has the details.
 - Accomplishments: `npm run fetch-accomplishments` (overwrites `src/data/accomplishments.json`; never commit the result)
 
 ## Verifying your work
@@ -26,14 +26,15 @@ Run these before reporting any task complete, and paste the output. If a test fa
 
 - No new dependencies, runtime or dev, without asking. No CSS or UI framework.
 - Colors, fonts, radii and spacing come from the tokens in `src/styles/variables.css`. The import order in `global.css` is the cascade order.
-- Edit pixel art only in `src/assets/pixel-art/source/*.src.svg`, then run `npm run art`. Never hand-edit the generated SVGs.
+- Edit pixel art only in `src/assets/pixel-art/source/**/*.mjs`, then run `npm run art`. Never hand-edit the generated SVGs.
+- New pixel art uses the world palette, the 32×16 tile, the light direction and the size caps (pixel-art engine spec R26–R28). Check it with `npm run art -- --preview <name>`.
 - Post URLs, `/blog/pageN/` and `/atom.xml` must never change.
 - `src/data/accomplishments.json` stays the committed `"unavailable"` placeholder. CI overwrites it before each build.
 - Keep the visible focus ring, 44px tap targets and `prefers-reduced-motion` support on anything interactive or animated.
 
 ## Architecture
 
-The README's project layout table maps every folder. In short: routes in `src/pages/`, components in `src/components/` (home sections in `home/`), one CSS file per area in `src/styles/`, scripts with `node:test` tests in `scripts/`, browser checks in `scripts/e2e/`, and `static/public/*` served at `/public/*`.
+The README's project layout table maps every folder. In short: routes in `src/pages/`, components in `src/components/` (home sections in `home/`), one CSS file per area in `src/styles/`, the pixel-art engine in `src/lib/pixel-art/` (plain `.mjs` with `// @ts-check`, shared by `npm run art`), scripts with `node:test` tests in `scripts/`, browser checks in `scripts/e2e/`, and `static/public/*` served at `/public/*`.
 
 ## How changes flow
 
