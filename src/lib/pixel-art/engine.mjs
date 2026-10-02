@@ -4,7 +4,7 @@
 // layer trees. It uses no Node or DOM APIs, so `npm run art` and the editor
 // run the same code.
 
-import { blockFaces, footprint, TILE_H, TILE_W, tileToPx } from './iso.mjs';
+import { blockFaces, blockSize, footprint, tilePixels, TILE_H, TILE_W, tileToPx } from './iso.mjs';
 
 /**
  * @typedef {{ class?: string, map: string[] }} MapLayer
@@ -538,7 +538,8 @@ export function resolve(sources, name, seen = []) {
 
 /**
  * A block as a Resolved: its surface is the one layer, and its size is the
- * silhouette's, so the caps and `--check` treat it like any object.
+ * silhouette's (worked out from the numbers, so a huge `size` is an error
+ * and not a crash), so the caps and `--check` treat it like any object.
  * @param {string} name
  * @param {any} obj
  * @returns {Resolved}
@@ -547,8 +548,7 @@ function resolveBlock(name, obj) {
   const { surface } = obj;
   /** @type {SpriteLayer[]} */
   const layers = surface ? [isFrames(surface) ? { loop: surface.loop, prefix: surface.prefix, frames: surface.frames } : { map: surface.map }] : [];
-  const { top, left, right } = blockFaces(obj.size, [0, 0]);
-  const box = bounds([...top, ...left, ...right]);
+  const [width, height] = blockSize(obj.size);
   return {
     name,
     block: { size: obj.size, faces: { ...obj.faces }, surface },
@@ -557,8 +557,8 @@ function resolveBlock(name, obj) {
     anchor: [0, 0],
     keys: { ...surface?.keys },
     layers,
-    width: box ? box.maxX - box.minX + 1 : 0,
-    height: box ? box.maxY - box.minY + 1 : 0,
+    width,
+    height,
   };
 }
 
@@ -703,10 +703,12 @@ function drawBlock({ size, faces, surface }, keys, cx, cy, group) {
     for (const p of shapes[face]) base.pixels.set(p, faces[face]);
   }
   if (surface) {
-    const top = new Set(shapes.top);
     /** @param {Layer} layer @param {string[]} map */
     const lay = (layer, map) => {
-      for (const [tx, ty] of footprint(size, [cx, cy])) paint(layer, map, keys, tx - TILE_W / 2, ty - TILE_H / 2, top);
+      // Each tile's map is clipped to that tile's own diamond.
+      for (const [tx, ty] of footprint(size, [cx, cy])) {
+        paint(layer, map, keys, tx - TILE_W / 2, ty - TILE_H / 2, new Set(tilePixels(tx, ty)));
+      }
     };
     if (isFrames(surface)) {
       surface.frames.forEach((/** @type {string[]} */ map, /** @type {number} */ i) => {

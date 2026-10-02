@@ -747,6 +747,18 @@ describe('blocks (R28, D3, D4)', () => {
     assert.ok(top.every((p) => flat.get(p) === 'cream'));
   });
 
+  it('R5: each tile\'s surface is clipped to that tile\'s own diamond, not the whole top', () => {
+    // A map that paints only its bottom-right corner, which is outside its own tile's diamond.
+    const map = Array.from({ length: 16 }, (_, y) => (y >= 14 ? `${'.'.repeat(30)}aa` : '.'.repeat(32)));
+    const slab = { kind: 'block', size: [2, 1, 0], faces: { top: 'grass-2' }, surface: { keys: { a: 'cream' }, map } };
+    const drawn = pixelsOf(src({ slab }), 'slab');
+    assert.deepEqual([...drawn.keys()].filter((p) => drawn.get(p) === 'cream'), [], 'nothing outside a tile\'s own diamond is painted, even if the next tile covers it');
+    // A map that paints a pixel inside its own diamond lands once per tile.
+    const dot = Array.from({ length: 16 }, (_, y) => (y === 8 ? `${'.'.repeat(16)}a${'.'.repeat(15)}` : '.'.repeat(32)));
+    const dotted = pixelsOf(src({ slab: { ...slab, surface: { keys: { a: 'cream' }, map: dot } } }), 'slab');
+    assert.deepEqual([...dotted.keys()].filter((p) => dotted.get(p) === 'cream').sort(), ['0,0', '16,8']);
+  });
+
   it('R5: the edge is drawn last, over the surface', () => {
     const map = Array.from({ length: 16 }, () => 'a'.repeat(32));
     const slab = { kind: 'block', size: [1, 1, 0], faces: { top: 'grass-2', edge: 'ink' }, surface: { keys: { a: 'cream' }, loop: 'wf', prefix: 'w', frames: [map] } };
@@ -803,6 +815,32 @@ describe('blocks (R28, D3, D4)', () => {
     const row = (ch) => ch.repeat(32);
     const surface = { keys: Object.fromEntries([...Array(10).keys()].map((i) => [String(i), `w-${i}`])), map: [...'0123456789'].map(row).concat(Array(6).fill(row('0'))) };
     assert.deepEqual(validate(src({ blk: { ...BLOCK, surface } }, {}, wide)), ['objects/blk.mjs: uses 14 colors, max 12']);
+  });
+
+  it('R27, L4: a block\'s size is checked before anything is drawn, so a typo is an error, not a crash', () => {
+    for (const seed of SEEDS) {
+      const r = rng(seed);
+      const size = [1 + Math.floor(r() * 5000), 1 + Math.floor(r() * 5000), Math.floor(r() * 500)];
+      const w = (size[0] + size[1]) * 16 - 2;
+      const h = (size[0] + size[1]) * 8 + size[2] * 16;
+      const started = Date.now();
+      assert.deepEqual(validate(src({ blk: { ...BLOCK, size } })), [`objects/blk.mjs: ${w}×${h}, max 64×64`], `seed ${seed}`);
+      assert.ok(Date.now() - started < 1000, `seed ${seed}: reported at once`);
+    }
+  });
+
+  it('R27, L4: a block\'s computed size is its drawn size', () => {
+    for (const seed of SEEDS) {
+      const r = rng(seed);
+      for (let i = 0; i < 6; i++) {
+        const size = [1 + Math.floor(r() * 3), 1 + Math.floor(r() * 3), Math.floor(r() * 3)];
+        const sources = src({ blk: { ...BLOCK, size } });
+        const { width, height } = resolve(sources, 'blk');
+        const faces = blockFaces(size, [0, 0]);
+        const xs = [...faces.top, ...faces.left, ...faces.right].map((p) => p.split(',').map(Number));
+        assert.deepEqual([width, height], [Math.max(...xs.map((p) => p[0])) - Math.min(...xs.map((p) => p[0])) + 1, Math.max(...xs.map((p) => p[1])) - Math.min(...xs.map((p) => p[1])) + 1], `size ${size}`);
+      }
+    }
   });
 
   it('R30: a sprite cannot extend a block', () => {
@@ -886,6 +924,22 @@ describe('library (R13, R31)', () => {
     assert.equal(water.surface.frames.length, 5);
     const [w, h] = (({ width, height }) => [width, height])(resolve(sources, 'tree'));
     assert.ok(w <= 64 && h <= 64, 'the tree fits 64×64');
+  });
+
+  it('R28: every library block is lit top light, left mid, right shadow', async () => {
+    const sources = await committed();
+    const lum = (hex) => {
+      const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+    let checked = 0;
+    for (const [name, obj] of sources.objects) {
+      if (obj.kind !== 'block' || !obj.faces.left) continue;
+      const [t, l, r] = ['top', 'left', 'right'].map((f) => lum(sources.colors.get(obj.faces[f]).hex));
+      assert.ok(t > l && l > r, `${name}: top ${t.toFixed(3)} > left ${l.toFixed(3)} > right ${r.toFixed(3)}`);
+      checked++;
+    }
+    assert.ok(checked >= 1, 'at least one block with sides is checked');
   });
 
   it('R13: library-demo is a 3×3 island that places every library object', async () => {

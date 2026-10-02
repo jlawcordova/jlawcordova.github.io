@@ -55,6 +55,17 @@ export function footprint([width, depth], [cx, cy]) {
 }
 
 /**
+ * The width and height of a block's silhouette, from its size alone. It
+ * agrees with the drawn faces (a test checks it), and costs nothing however
+ * big `size` is.
+ * @param {number[]} size
+ * @returns {[number, number]}
+ */
+export function blockSize([width, depth, levels]) {
+  return [(width + depth) * (TILE_W / 2) - 2, (width + depth) * (TILE_H / 2) + levels * LEVEL_H];
+}
+
+/**
  * The faces of a block whose first tile's top-face center is (cx, cy), as
  * "x,y" pixels (spec D3, D4). The top is the union of the footprint's tiles.
  * The sides hang `levels × 16` pixels below the top, split at the vertical
