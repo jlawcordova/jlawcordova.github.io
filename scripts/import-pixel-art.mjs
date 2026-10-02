@@ -19,6 +19,10 @@
 // palette takes its world name; any other is named c-<hex> from the legacy
 // tier.
 //
+// An object whose maps match an earlier object's, in other colors, is
+// written as a recolor: it extends the earlier one and overrides only the
+// keys that differ (the hero island's second truck).
+//
 // --factor character moves the rows that are identical in every data group's
 // object (layer by layer, aligned on their shared bounds) into a `character`
 // object. Each of those objects then extends it and overrides only its own
@@ -270,10 +274,21 @@ export function importUnits(units, { scene, viewBox, names = [], factor, palette
       at.set(v, [box.minX, box.minY]);
     });
   }
+  /** @type {{ name: string, object: any }[]} */
+  const plain = [];
   for (const unit of units) {
     if (at.has(unit)) continue;
     const { box, object } = plainObject(unit, nameOf);
-    add(unit.name, object);
+    // The same maps as an earlier object, in other colors: a recolor, which
+    // extends it and overrides only the keys that differ.
+    const base = plain.find((p) => p.name !== unit.name && JSON.stringify(p.object.layers) === JSON.stringify(object.layers));
+    if (base) {
+      const keys = Object.fromEntries(Object.entries(object.keys).filter(([k, color]) => base.object.keys[k] !== color));
+      add(unit.name, { kind: 'sprite', legacy: true, extends: base.name, keys });
+    } else {
+      add(unit.name, object);
+      plain.push({ name: unit.name, object });
+    }
     at.set(unit, [box.minX, box.minY]);
   }
   const items = units.map((u) => {

@@ -239,6 +239,13 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
    - Before and after screenshots of `/` at 1440px and 390px, with animations paused.
 4. **Update the skill** to mention legacy objects and why `island-base` is exempt (A2).
 
+**How PR 2 departs from the steps above** (recorded in the PR 2 commit):
+
+- **Two trucks, one shape.** The fixture's trucks share every pixel position but not their colors (red in `it1`, green in `it2`), so one object can't be "placed twice". The importer now writes a same-shape unit as a recolor: `truck-green` is `extends: 'truck'` with only the keys that differ.
+- **A second static object, `island-front`.** The fixture has two static runs, with the trucks between them in paint order: the island (`island-base`, 193×128, 33 colors), then the trees, crane, fence and roof drawn in front of the trucks (`island-front`, 109×98, 20 colors). They stay two objects, in that order, so the trucks still pass behind the foreground.
+- **No hidden pixels are dropped.** Concern A1's 1,492 repainted pixels are where `island-front` covers `island-base`. Those are two layers, and neither one hides pixels inside itself, so every fill group of every layer matches the fixture, which is stricter than R11's visible-image test. Both are tested. The output keeps every path; only the fill order in hearth frames `h1`, `h3` and `h5` changes (key order, as in PR 1), plus the trailing newline: 83,485 bytes raw (was 83,486).
+- **`--check` says "1 color",** not "1 colors".
+
 ### PR 3: World palette and library (slice 3)
 
 1. **Pick the world palette (R31):**
@@ -341,7 +348,7 @@ Tick these as PRs merge.
 
 - [x] PR 0: Verification tooling
 - [x] PR 1: Engine and Range round trip
-- [ ] PR 2: Hero island round trip
+- [x] PR 2: Hero island round trip
 - [ ] PR 3: World palette and library
 - [ ] PR 4: Security and governance outfit
 - [ ] PR 5: Editor, scene mode

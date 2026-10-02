@@ -505,7 +505,7 @@ export function describeObject(sources, resolved) {
   const cap = resolved.legacy ? 'legacy, no cap' : `of ${CAPS.colors}`;
   return [
     `${resolved.width}×${resolved.height}`,
-    `${colors} colors (${cap})`,
+    `${plural(colors, 'color')} (${cap})`,
     plural(resolved.layers.length, 'layer'),
     plural(frames, 'frame'),
   ].join(' · ');

@@ -35,11 +35,12 @@ function structure(svg) {
     for (const child of el.children) {
       if (child.text !== undefined) continue;
       if (isRectGroup(child)) {
-        if (!layer) out.push((layer = { fills: new Map(), painted: 0 }));
+        if (!layer) out.push((layer = { fills: new Map(), painted: 0, top: new Map() }));
         const pixels = rectPixels(child.children);
         const fill = attr(child, 'fill');
         layer.fills.set(fill, new Set([...(layer.fills.get(fill) ?? []), ...pixels]));
         layer.painted += pixels.size;
+        for (const p of pixels) layer.top.set(p, fill);
         continue;
       }
       layer = null;
@@ -68,6 +69,27 @@ function assertSameLayers(actual, expected, path = 'svg') {
       const extra = [...mine].filter((p) => !pixels.has(p));
       assert.deepEqual({ missing, extra }, { missing: [], extra: [] }, `${at}: fill ${fill}`);
     }
+  });
+}
+
+/**
+ * Asserts the same groups in the same order, and the same visible image in
+ * every layer: the top-most fill at each pixel, where later paint wins (R11,
+ * concern A1).
+ */
+function assertSameVisible(actual, expected, path = 'svg') {
+  assert.equal(actual.length, expected.length, `${path}: ${actual.length} children, expected ${expected.length}`);
+  expected.forEach((want, i) => {
+    const got = actual[i];
+    const at = `${path} > ${want.attrs !== undefined ? `g ${want.attrs}` : `layer ${i}`}`;
+    if (want.attrs !== undefined) {
+      assert.equal(got.attrs, want.attrs, `${at}: group attributes`);
+      return assertSameVisible(got.children, want.children, at);
+    }
+    assert.ok(got.top, `${at}: expected a layer`);
+    const differ = [...new Set([...want.top.keys(), ...got.top.keys()])].filter((p) => want.top.get(p) !== got.top.get(p));
+    const first = differ.slice(0, 3).map((p) => `${p}: fixture ${want.top.get(p) ?? 'none'}, compiled ${got.top.get(p) ?? 'none'}`);
+    assert.deepEqual(first, [], `${at}: ${differ.length} pixel(s) differ`);
   });
 }
 
@@ -156,6 +178,43 @@ describe('Range sprite round trip (R10)', () => {
   it('R10: the same viewBox and root attributes as the fixture', async () => {
     const open = (svg) => /^<svg[^>]*>/.exec(svg)[0];
     assert.equal(open(rects('range-sprite')), open(await readFile(join(FIXTURES, 'range-sprite.src.svg'), 'utf8')));
+  });
+});
+
+describe('hero island round trip (R11)', () => {
+  it('R11: the fixture\'s 1,492 repainted pixels are between its two static layers, not inside one', async () => {
+    const fixture = structure(await readFile(join(FIXTURES, 'hero-island.src.svg'), 'utf8'));
+    assertNoOverlaps(fixture);
+    const [back, front] = fixture.filter((l) => l.fills);
+    assert.equal([...front.top.keys()].filter((p) => back.top.has(p)).length, 1492);
+  });
+
+  it('R11: hero island matches its fixture\'s visible image, with the same groups in the same order', async () => {
+    const fixture = structure(await readFile(join(FIXTURES, 'hero-island.src.svg'), 'utf8'));
+    const compiled = structure(rects('hero-island'));
+    assertNoOverlaps(compiled);
+    assertSameVisible(compiled, fixture);
+  });
+
+  it('R11: as no layer hides pixels, every fill group of every layer matches too', async () => {
+    const fixture = structure(await readFile(join(FIXTURES, 'hero-island.src.svg'), 'utf8'));
+    assertSameLayers(structure(rects('hero-island')), fixture);
+  });
+
+  it('R11: the same viewBox and root attributes as the fixture', async () => {
+    const open = (svg) => /^<svg[^>]*>/.exec(svg)[0];
+    assert.equal(open(rects('hero-island')), open(await readFile(join(FIXTURES, 'hero-island.src.svg'), 'utf8')));
+  });
+
+  it('R11: the animated pieces are their own objects, and island-base is one legacy map', () => {
+    const loops = { waterfall: ['wf', 'w', 5], flag: ['ff', 'f', 4], hearth: ['hf', 'h', 6] };
+    for (const [name, [loop, prefix, frames]] of Object.entries(loops)) {
+      const layer = sources.objects.get(name).layers[0];
+      assert.deepEqual([layer.loop, layer.prefix, layer.frames.length], [loop, prefix, frames], name);
+    }
+    const base = resolve(sources, 'island-base');
+    assert.equal(base.legacy, true);
+    assert.ok(base.width <= 225 && base.height <= 212);
   });
 });
 
