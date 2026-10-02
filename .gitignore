@@ -45,3 +45,7 @@ node_modules
 # Astro
 dist
 .astro
+
+# Browser-check screenshots and pixel-art previews
+.e2e-output/
+.art-preview/

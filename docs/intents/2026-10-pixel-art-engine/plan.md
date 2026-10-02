@@ -126,14 +126,15 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
    - If `dist/` is missing: print `Run npm run build first` and exit 1.
    - Otherwise:
      1. Find a free port (`net.createServer().listen(0)`).
-     2. Spawn `node_modules/.bin/astro preview --port <p>`, and wait for HTTP 200 on `/`.
-     3. Run `node --test scripts/e2e/` with `E2E_BASE_URL` set, piping its output and returning its exit code.
-     4. Kill the server in `finally`.
+     2. Spawn `node_modules/.bin/astro preview --ignore-lock --port <p>`, and wait for HTTP 200 on `/`. Astro 7 backgrounds `astro preview` when it detects an AI agent, and refuses to start beside a running one. `--ignore-lock` keeps the server in the foreground and owned by the runner, and leaves any server you have running alone.
+     3. Run `node --test "scripts/e2e/*.e2e.mjs"` (or the files passed after `--`) with `E2E_BASE_URL` set, piping its output and returning its exit code. The glob keeps `browser.mjs` and `run.mjs` out of the run.
+     4. Kill the server in `finally`, and on SIGINT or SIGTERM before exiting.
 4. **`scripts/e2e/art.e2e.mjs`.** For each pair (fixture `.src.svg` → committed `.svg`; in PR 0 the fixtures are still in `source/`), render both with `page.setContent`, then compare `getImageData` pixel by pixel:
    - **States compared:**
      - every group visible, with no CSS;
      - each `data-class="N"` alone;
      - frame 0 of each loop, with only `.w0`, `.f0`, `.h0` showing and `.it2` hidden.
+     - each animation frame alone (and `.it2` alone): one state per `.wN`, `.fN` and `.hN` with every other loop frame hidden, and one with `.it1` hidden.
    - **Render setup:** each SVG at its viewBox size × 1, on a white page.
    - **Test name:** `R11: hero island renders identically to its fixture` (and `R10:` for the sprite).
 
@@ -151,7 +152,7 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
 
 **PR 0's own checks:**
 - `npm run e2e` passes with Playwright present.
-- `scripts/e2e-runner.test.mjs` (new, part of `npm test`, no browser and no network) spawns `run.mjs` with `E2E_PLAYWRIGHT_ROOT` pointing at an empty temp directory. It expects exit code 2 and the NOT RUN message (R35).
+- `scripts/e2e-runner.test.mjs` (new, part of `npm test`, no browser and no network) spawns `run.mjs` with `E2E_PLAYWRIGHT_ROOT` pointing at an empty temp directory. It expects exit code 2 and the NOT RUN message (R35). More cases, from the PR 0 verifier's report: a stand-in global module that isn't Playwright (exit 2, NOT RUN); a stand-in Playwright and no `dist/` (exit 1, "Run npm run build first"); and a stand-in `astro preview` with a waiting check, where SIGTERM to the runner must exit 143 and stop both. That last case runs under `npm test`'s own `node --test`, so it also proves `run.mjs` drops the inherited `NODE_TEST_CONTEXT`, which otherwise makes the checks skip every file and exit 0.
 - A local mutation (one rect removed from the committed `hero-island.svg`) turns `art.e2e.mjs` red, and is reverted.
 
 ### PR 1: Engine and Range round trip (slice 1)
@@ -326,7 +327,7 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
 
 Tick these as PRs merge.
 
-- [ ] PR 0: Verification tooling
+- [x] PR 0: Verification tooling
 - [ ] PR 1: Engine and Range round trip
 - [ ] PR 2: Hero island round trip
 - [ ] PR 3: World palette and library
