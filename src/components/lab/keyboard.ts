@@ -95,6 +95,12 @@ export function setUpKeyboard(lab: Lab, stage: Stage, scene: SceneMode, object: 
   let holds = 0;
 
   frame.addEventListener('keydown', (e) => {
+    // Escape during a pointer stroke takes the stroke back. It's checked
+    // before endGroup() below closes the stroke's undo group.
+    if (lab.kind === 'object' && e.key === 'Escape' && object.cancelStroke()) {
+      e.preventDefault();
+      return;
+    }
     const mod = e.ctrlKey || e.metaKey;
     const key = e.key;
     // A held key repeats. Its first press and every repeat share a group, so

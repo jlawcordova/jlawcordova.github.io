@@ -504,6 +504,10 @@
 .lab-step:hover {
   background: var(--color-page);
 }
+.lab-step[aria-disabled="true"] {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
 
 #lab-placement-note {
   margin-top: 8px;

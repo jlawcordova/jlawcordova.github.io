@@ -539,6 +539,10 @@ export class ObjectMode {
     for (const input of fields.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-field]')) {
       if (document.activeElement !== input) input.value = String(this.fieldValue(input.dataset.field!) ?? '');
     }
+    for (const b of fields.querySelectorAll<HTMLButtonElement>('[data-step-field]')) {
+      const next = Number(this.fieldValue(b.dataset.stepField!)) + Number(b.dataset.delta);
+      b.setAttribute('aria-disabled', String(next < Number(b.dataset.min) || next > Number(b.dataset.max)));
+    }
     $('lab-object-note').textContent = doc.extends
       ? `Rows painted here override ${doc.extends}'s rows. A row painted back to match is dropped.`
       : this.isBlock
@@ -575,7 +579,13 @@ export class ObjectMode {
       const step = (delta: number, text: string, aria: string) => {
         const b = Object.assign(document.createElement('button'), { type: 'button', className: 'lab-step', textContent: text });
         b.setAttribute('aria-label', aria);
-        b.addEventListener('click', () => this.setField(field, Number(this.fieldValue(field)) + delta, min, max));
+        // At a limit the stepper is marked off (renderObjectPanel), and says so.
+        Object.assign(b.dataset, { stepField: field, delta: String(delta), min: String(min), max: String(max) });
+        b.addEventListener('click', () => {
+          const next = Number(this.fieldValue(field)) + delta;
+          if (next < min || next > max) return this.lab.announce(`${label} is already at its ${delta > 0 ? 'most' : 'least'}, ${next - delta}`);
+          this.setField(field, next, min, max);
+        });
         return b;
       };
       input.addEventListener('change', () => this.setField(field, Number(input.value), min, max));

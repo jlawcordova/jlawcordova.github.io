@@ -762,6 +762,79 @@ describe('object painting (R17)', () => {
     await context.close();
   });
 
+  test('R17: Escape during a pointer stroke takes the whole stroke back', async () => {
+    const { context, page } = await openLab();
+    await pickObject(page, 'tree');
+    const site = await sourceOf('object', 'tree');
+    await page.getByRole('button', { name: swatch('roof-2') }).click();
+    const [x0, y0] = await pixel(page, 0, 27);
+    const [x1] = await pixel(page, 6, 27);
+    await page.mouse.move(x0, y0);
+    await page.mouse.down();
+    await page.mouse.move(x1, y0, { steps: 6 });
+    await page.keyboard.press('Escape');
+    await page.mouse.up();
+    assert.equal(await exportText(page), site, 'the stroke is gone');
+    // And the next stroke still works, as its own undo step.
+    await clickPixel(page, 0, 27);
+    assert.equal((await mapOf(await exportText(page)))[27][0], 'r');
+    await context.close();
+  });
+
+  test('R27: the meter is plain up to 8 colors and warns from 9', async () => {
+    const { context, page } = await openLab();
+    await pickObject(page, 'tree');
+    await page.getByText('Colors used: 7 of 12').waitFor();
+    await page.getByRole('button', { name: swatch('roof-2') }).click();
+    await clickPixel(page, 0, 0);
+    assert.doesNotMatch(await page.getByText('Colors used: 8 of 12').getAttribute('class'), /is-warning/);
+    await page.getByRole('button', { name: swatch('water-2') }).click();
+    await clickPixel(page, 1, 0);
+    assert.match(await page.getByText('Colors used: 9 of 12').getAttribute('class'), /is-warning/);
+    await context.close();
+  });
+
+  test('R17: layer visibility and onion skin change only the editor, never the export', async () => {
+    const { context, page } = await openLab();
+    const canvas = () => page.locator('#lab-canvas').evaluate((c) => c.toDataURL());
+    await pickObject(page, 'tree');
+    const site = await sourceOf('object', 'tree');
+    const shown = await canvas();
+    const toggle = page.getByRole('button', { name: 'Show Layer 1' });
+    await toggle.click();
+    assert.equal(await toggle.getAttribute('aria-pressed'), 'false');
+    assert.notEqual(await canvas(), shown, 'the hidden layer is gone from the stage');
+    assert.equal(await exportText(page), site, 'but not from the export');
+    await toggle.click();
+    assert.equal(await canvas(), shown);
+
+    await pickObject(page, 'waterfall');
+    const fall = await load(await sourceOf('object', 'waterfall'));
+    await page.getByRole('button', { name: `Layer ${fall.layers.findIndex((l) => l.frames) + 1} · loop wf, 5 frames` }).click();
+    await page.getByRole('button', { name: 'Frame w2' }).click();
+    const plain = await canvas();
+    await page.getByRole('button', { name: 'Onion skin' }).click();
+    assert.equal(await page.getByRole('button', { name: 'Onion skin' }).getAttribute('aria-pressed'), 'true');
+    assert.notEqual(await canvas(), plain, 'frame w1 shows under w2');
+    assert.equal(await exportText(page), await sourceOf('object', 'waterfall'));
+    await context.close();
+  });
+
+  test('R27: a stepper at its limit is marked off, and does nothing', async () => {
+    const { context, page } = await openLab();
+    await pickObject(page, 'tree');
+    const width = page.getByRole('spinbutton', { name: 'Width' });
+    await width.fill('64');
+    await width.press('Enter');
+    await page.getByText('20 × 28').waitFor({ state: 'detached' });
+    const more = page.getByRole('button', { name: 'Increase width' });
+    assert.equal(await more.getAttribute('aria-disabled'), 'true');
+    await more.dispatchEvent('click');
+    assert.equal((await mapOf(await exportText(page)))[0].length, 64, 'still 64 wide, the cap');
+    assert.equal(await page.getByRole('button', { name: 'Decrease width' }).getAttribute('aria-disabled'), 'false');
+    await context.close();
+  });
+
   test('R27: the usage meter warns from 9 colors, and at 12 turns off every color not in use', async () => {
     const { context, page } = await openLab();
     await pickObject(page, 'outfit-security-governance');
