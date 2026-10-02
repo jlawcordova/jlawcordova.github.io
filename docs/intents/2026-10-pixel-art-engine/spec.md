@@ -563,7 +563,7 @@ There's no motion beyond frame playback: no panel transitions and no animated se
 ### D11. Docs
 
 - **README:** the layout table rows for `src/assets/pixel-art/`, `scripts/optimize-pixel-art.mjs` and the new folders. Add a "Pixel art" section covering the formats (D2–D5), the editor URL and the "export → commit → `npm run art`" loop.
-- **`CLAUDE.md`:** the Conventions line becomes "Edit pixel art only in `src/assets/pixel-art/source/**/*.mjs` (or on the editor page), then run `npm run art`. Never hand-edit the generated SVGs." Add the editor to Commands and the Architecture paragraph. Add one Conventions line for the design language: "New pixel art uses the world palette, the 32×16 tile, the light direction and the size caps (pixel-art engine spec R26–R28). Check it with `npm run art -- --preview <name>`."
+- **`CLAUDE.md`:** the Conventions line becomes "Edit pixel art only in `src/assets/pixel-art/source/**/*.mjs` (or on the editor page), then run `npm run art`. Never hand-edit the generated SVGs." Add the editor to Commands and the Architecture paragraph. Add a Conventions note that `src/styles/lab.css` is imported by the editor page only, an approved exception to the `global.css` cascade (A5). Add one Conventions line for the design language: "New pixel art uses the world palette, the 32×16 tile, the light direction and the size caps (pixel-art engine spec R26–R28). Check it with `npm run art -- --preview <name>`."
 - **`CLAUDE.md` also gains:** `npm run e2e` under Commands; a "Verifying your work" line saying browser checks must show `# fail 0`, and that a "NOT RUN" result counts as not verified; and a step 5 under "How changes flow": an independent verifier session checks each PR with the `verify-change` skill and reports as a PR comment.
 - **README:** a "Skills" line in the layout table pointing at `.claude/skills/`.
 - **Code comments** that mention `source/*.src.svg` are updated. The redesign's `spec.md` and `plan.md` keep their wording, since `CLAUDE.md` says not to rewrite them. Their §8 describes how the art was first extracted, which is still true.
@@ -760,53 +760,77 @@ The transcript's mistakes feed back into the skill before the change closes.
 
 ### A1. "Pixel-exact" for the island means the visible image
 
-The extracted island's static layer paints 1,492 pixels more than once, and 1,411 of those repaints are in a different color. Those hidden pixels can't be seen today, but the redesign's lossless check counts them, because it compares every fill group. The engine stores what's visible, so the per-fill-group check can't hold for the island. **R11** therefore compares each layer's visible image. The Range sprite has no hidden pixels, so **R10** keeps the stricter test. The island's rendered output is unchanged, and the file gets slightly smaller. **Owner:** confirm that "pixel for pixel" means the visible image for the island.
+The extracted island's static layer paints 1,492 pixels more than once, and 1,411 of those repaints are in a different color. Those hidden pixels can't be seen today, but the redesign's lossless check counts them, because it compares every fill group. The engine stores what's visible, so the per-fill-group check can't hold for the island. **R11** therefore compares each layer's visible image. The Range sprite has no hidden pixels, so **R10** keeps the stricter test. The island's rendered output is unchanged, and the file gets slightly smaller.
+
+**Resolved (owner, 2026-10-02):** Accepted. For the island, "pixel for pixel" means each layer's visible image. The Range sprite keeps the per-fill-group check.
 
 ### A2. The island moves in as one large map
 
-The extracted art is grouped by color, not by thing. Trees, roofs and the ground are mixed together in each color group, so the importer can't split the island into library objects. "Moved into the engine" therefore starts as `island-base`, one pixel map of up to 225×212, plus the animated pieces as their own objects. Breaking the base into blocks, water and trees is manual editor work afterwards. Each piece should be a visible no-op, or a deliberate change reviewed on its own. **Owner:** accept this as the end state of this change, with any splitting as later work.
+The extracted art is grouped by color, not by thing. Trees, roofs and the ground are mixed together in each color group, so the importer can't split the island into library objects. "Moved into the engine" therefore starts as `island-base`, one pixel map of up to 225×212, plus the animated pieces as their own objects. Breaking the base into blocks, water and trees is manual editor work afterwards. Each piece should be a visible no-op, or a deliberate change reviewed on its own.
+
+**Resolved (owner, 2026-10-02):** Accepted. The island ends this change as `island-base` plus its animated pieces. Splitting it into library objects is later work.
 
 ### A3. Unlisted isn't private
 
-Anyone with `/lab/pixel-art/` can open the editor, and the repo is public, so the URL is easy to find. `noindex` keeps it out of search results, but it doesn't keep anyone out. The page shows only art and sources already in the public repo, sends nothing anywhere, and drafts stay in the visitor's own browser, so there's nothing sensitive to expose. **Owner:** accept a public, unadvertised page. The alternative is a dev-only page, which the intent ruled out.
+Anyone with `/lab/pixel-art/` can open the editor, and the repo is public, so the URL is easy to find. `noindex` keeps it out of search results, but it doesn't keep anyone out. The page shows only art and sources already in the public repo, sends nothing anywhere, and drafts stay in the visitor's own browser, so there's nothing sensitive to expose.
+
+**Resolved (owner, 2026-10-02):** Accepted. The editor is public but unlisted.
 
 ### A4. Accessibility of a pixel painter
 
-R21 and D9 cover the WCAG requirements: a keyboard path for everything, no required dragging, labeled controls, 44px buttons, the focus ring, live announcements and reduced motion. Even so, painting pixels is visual work, so the canvas's accessible model is the item list and the cursor announcements, not a description of the image. On a 390px phone, the stage zoom limits precise painting. The page works there, but it's best for scene layout and review, and detailed painting is best on a desktop. **Owner:** accept that scope for small screens.
+R21 and D9 cover the WCAG requirements: a keyboard path for everything, no required dragging, labeled controls, 44px buttons, the focus ring, live announcements and reduced motion. Even so, painting pixels is visual work, so the canvas's accessible model is the item list and the cursor announcements, not a description of the image. On a 390px phone, the stage zoom limits precise painting. The page works there, but it's best for scene layout and review, and detailed painting is best on a desktop.
+
+**Resolved (owner, 2026-10-02):** Accepted. Phones are for scene layout and review, and detailed painting is for desktops.
 
 ### A5. Editor CSS outside `global.css`
 
-`CLAUDE.md` says the import order in `global.css` is the cascade order, which implies every stylesheet goes through `global.css`. Doing that with `lab.css` would ship the editor's styles to every page, against R24 and redesign §12's 8 KB CSS budget. D9 imports `lab.css` from the editor page only. It's still one CSS file per area, it's still built from tokens, and it loads after `global.css`. **Owner:** approve this exception. The alternative is putting it in `global.css` and accepting a few KB on every page.
+`CLAUDE.md` says the import order in `global.css` is the cascade order, which implies every stylesheet goes through `global.css`. Doing that with `lab.css` would ship the editor's styles to every page, against R24 and redesign §12's 8 KB CSS budget. D9 imports `lab.css` from the editor page only. It's still one CSS file per area, it's still built from tokens, and it loads after `global.css`.
+
+**Resolved (owner, 2026-10-02):** Accepted. `lab.css` loads only on the editor page. D11's `CLAUDE.md` changes include a note on this exception.
 
 ### A6. Drafts can drift from the repo
 
-A draft in `localStorage` can be older than what's deployed, for example after you commit a change from another device. D9 stores the site version a draft started from, and it warns before mixing them. It can't merge them. **Owner:** accept "keep draft or load site version" as the only choice for now.
+A draft in `localStorage` can be older than what's deployed, for example after you commit a change from another device. D9 stores the site version a draft started from, and it warns before mixing them. It can't merge them.
+
+**Resolved (owner, 2026-10-02):** Accepted. "Keep draft" or "Load site version" is the only choice for now.
 
 ### A7. One-time byte churn in committed art
 
 Slices 1 and 2 rewrite `hero-island.svg` and `range-sprite.svg` with no visible change (D7). The diffs are large and can't be read. The proof is the round-trip tests and screenshots, not the diff.
 
+**Resolved (owner, 2026-10-02):** Accepted. Reviewers check the round-trip tests and the browser pixel comparison, not the SVG diff.
+
 ### A8. Two palettes side by side
 
-New art must use the 32 world colors, but the hero island and the five outfits keep their 81 legacy colors, because the exact rebuild (R10, R11) needs them. Until legacy art is moved to world colors, new pieces placed next to old ones can differ slightly in shade, for example a world `grass-2` tile beside an island grass that was one of 11 near-identical greens. R31 limits this by picking world colors from the island's own shades. **Owner:** accept that moving legacy art to world colors is later, deliberate and visible work, done one object at a time.
+New art must use the 32 world colors, but the hero island and the five outfits keep their 81 legacy colors, because the exact rebuild (R10, R11) needs them. Until legacy art is moved to world colors, new pieces placed next to old ones can differ slightly in shade, for example a world `grass-2` tile beside an island grass that was one of 11 near-identical greens. R31 limits this by picking world colors from the island's own shades.
+
+**Resolved (owner, 2026-10-02):** Accepted. Moving legacy art to world colors is later work, done one object at a time.
 
 ### A9. Wireframes are a starting point
 
 D9.3's wireframes fix the regions, their order and the breakpoints. They don't fix exact spacing or icon drawings. Those are settled in the editor PRs against screenshots. A change that moves a region, or drops one at a breakpoint, comes back to this spec first.
 
+**Resolved (owner, 2026-10-02):** Accepted. Regions, order and breakpoints are fixed. Spacing and icons are settled against screenshots.
+
 ### A10. Browser checks depend on the environment
 
-Using the environment's Playwright keeps it out of the dependencies (Decision #11), but the checks then only run where Playwright is installed. That's true in cloud sessions. On your own machine it means a global `npm install -g playwright`, which is outside the repo. Global versions also drift, so the scripts use only Playwright's long-stable core API: launching, pages, keyboard, `evaluate` and screenshots. A missing Playwright gives "NOT RUN" and exit code 2, never a pass. **Owner:** accept that browser checks are verified in cloud sessions, or by you after a global install.
+Using the environment's Playwright keeps it out of the dependencies (Decision #11), but the checks then only run where Playwright is installed. That's true in cloud sessions. On your own machine it means a global `npm install -g playwright`, which is outside the repo. Global versions also drift, so the scripts use only Playwright's long-stable core API: launching, pages, keyboard, `evaluate` and screenshots. A missing Playwright gives "NOT RUN" and exit code 2, never a pass.
+
+**Resolved (owner, 2026-10-02):** Accepted. Browser checks are verified in cloud sessions, or locally after a global install.
 
 ### A11. The verifier costs a session per PR
 
-That's seven slices and at least seven verifier sessions, plus re-checks. Depth scales with risk: slices 0–4 are mostly gates, traceability and mutation checks, and slices 5–6 get the full browser and try-to-break pass. Disagreements about what the spec means don't loop between the two sessions. They go to you as spec gaps. **Owner:** accept the cost, or say which slices can skip L7.
+That's seven slices and at least seven verifier sessions, plus re-checks. Depth scales with risk: slices 0–4 are mostly gates, traceability and mutation checks, and slices 5–6 get the full browser and try-to-break pass. Disagreements about what the spec means don't loop between the two sessions. They go to you as spec gaps.
+
+**Resolved (owner, 2026-10-02):** Accepted. Every slice gets a verifier, lighter on 0–4 and full on 5–6.
 
 ### A12. Part of the skill eval is taste
 
 Validation, caps and tiers are objective. "Looks right" isn't, so R37 ends with your judgment of the preview. A failed eval improves the skill. It doesn't block the engine.
 
-No two standards contradict each other outright. A5 is the closest, and the spec resolves it in favor of the performance budget.
+**Resolved (owner, 2026-10-02):** Accepted. The eval's look is the owner's call, and a failed eval improves the skill without blocking the engine.
+
+No two standards contradict each other outright. A5 is the closest, and the owner resolved it in favor of the performance budget. All twelve concerns were resolved on 2026-10-02.
 
 ## Open questions
 
