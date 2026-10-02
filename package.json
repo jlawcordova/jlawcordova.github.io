@@ -12,6 +12,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "fetch-accomplishments": "node scripts/fetch-accomplishments.mjs",
+    "art": "node scripts/optimize-pixel-art.mjs",
     "test": "node --test \"scripts/*.test.mjs\""
   },
   "dependencies": {

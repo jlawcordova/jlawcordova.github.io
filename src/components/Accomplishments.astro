@@ -1,46 +1,37 @@
 ---
-import { formatDateRange, getAccomplishments, linkLabel } from '../lib/accomplishments';
+import AccomplishmentCard from './AccomplishmentCard.astro';
+import { getAccomplishments } from '../lib/accomplishments';
 
+const VISIBLE = 8;
 const { status, items } = getAccomplishments();
+const shown = items.slice(0, VISIBLE);
+const more = items.slice(VISIBLE);
 ---
 
-<section class="accomplishments-section-container" id="accomplishments">
-  <div class="accomplishments-section-wrapper">
-    <h2 class="accomplishments-heading">Accomplishments</h2>
-    {
-      status === 'unavailable' ? (
-        <p class="accomplishments-note">Accomplishments couldn't be loaded right now. Check back soon.</p>
-      ) : items.length === 0 ? (
-        <p class="accomplishments-note">Nothing here yet.</p>
-      ) : (
-        <ol class="accomplishments-list">
-          {items.map((item) => (
-            <li class="accomplishment">
-              <p class="category-pre-heading accomplishment-date">{formatDateRange(item)}</p>
-              <h3 class="accomplishment-title">{item.title}</h3>
-              <p class="accomplishment-description">{item.description}</p>
-              {item.tags.length > 0 && (
-                <ul class="accomplishment-tags">
-                  {item.tags.map((tag) => (
-                    <li>{tag}</li>
-                  ))}
-                </ul>
-              )}
-              {item.links.length > 0 && (
-                <ul class="accomplishment-links">
-                  {item.links.map((link) => (
-                    <li>
-                      <a href={link} target="_blank" rel="noopener noreferrer">
-                        {linkLabel(link)}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
+{
+  status === 'ok' && items.length > 0 && (
+    <section id="accomplishments" class="accomplishments" aria-labelledby="accomplishments-title">
+      <div class="accomplishments__inner">
+        <header class="accomplishments__head">
+          <p class="label">Achievements unlocked</p>
+          <h2 id="accomplishments-title">Accomplishments</h2>
+        </header>
+        <ol class="accomplishments__list" role="list">
+          {shown.map((item) => (
+            <AccomplishmentCard item={item} />
           ))}
         </ol>
-      )
-    }
-  </div>
-</section>
+        {more.length > 0 && (
+          <details class="accomplishments__more">
+            <summary class="btn btn--ghost">Show {more.length} more</summary>
+            <ol class="accomplishments__list" role="list">
+              {more.map((item) => (
+                <AccomplishmentCard item={item} />
+              ))}
+            </ol>
+          </details>
+        )}
+      </div>
+    </section>
+  )
+}

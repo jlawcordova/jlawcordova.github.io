@@ -1,0 +1,199 @@
+.range {
+  background: var(--color-forest);
+  color: var(--color-on-forest);
+  padding: 96px var(--gutter) 112px;
+}
+
+/* Focus on the dark ground: light outline, forest halo. The stage inside
+   the panel is light, so it keeps the default ring. */
+.range :where(a, button):focus-visible {
+  outline-color: var(--color-on-forest);
+  box-shadow: 0 0 0 5px var(--color-forest);
+}
+.range__stage :where(a, button):focus-visible {
+  outline-color: var(--color-ink);
+  box-shadow: 0 0 0 5px var(--color-card);
+}
+
+/* The section supplies the gutter, so this isn't .container. */
+.range__inner {
+  max-width: var(--content-max);
+  margin-inline: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 56px;
+}
+
+.range__panel {
+  flex: 1 1 460px;
+  min-width: 0;
+  border-radius: var(--radius-panel);
+  padding: 20px;
+  background: var(--color-on-forest-surface);
+  border: 1px solid var(--color-on-forest-border);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+.range__stage {
+  border-radius: var(--radius-stage);
+  background-color: var(--color-card);
+  padding: 28px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: var(--color-ink);
+}
+
+.range__nameplate {
+  margin: 0;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  background: var(--color-ink);
+  color: var(--color-page);
+  font: 18px/1 var(--font-pixel);
+  letter-spacing: 1px;
+  box-shadow: 4px 4px 0 var(--class-shadow);
+}
+
+.range__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  max-width: 100%;
+}
+
+.range__arrow,
+.range__toggle {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.range__arrow {
+  width: 56px;
+  height: 56px;
+}
+
+/* The auto-advance nudge on the Next arrow, as in the mock. */
+.range__arrow.is-pulsing {
+  transform: translateX(4px) scale(0.88);
+  color: var(--color-accent);
+}
+
+.range__sprite {
+  margin: 0;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.range__sprite-art {
+  width: 309px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+/* Show only the current outfit. Without JS, data-current stays "0". */
+.range__sprite g[data-class] {
+  display: none;
+}
+.range[data-current="0"] .range__sprite g[data-class="0"],
+.range[data-current="1"] .range__sprite g[data-class="1"],
+.range[data-current="2"] .range__sprite g[data-class="2"],
+.range[data-current="3"] .range__sprite g[data-class="3"],
+.range[data-current="4"] .range__sprite g[data-class="4"] {
+  display: inline;
+}
+
+.range__pager {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.range__dot {
+  width: 10px;
+  height: 10px;
+  background: rgba(90, 62, 43, 0.25);
+}
+.range__dot.is-current {
+  background: var(--color-ink);
+}
+
+.range__toggle {
+  width: 44px;
+  height: 44px;
+  margin-left: 8px;
+}
+
+.range__toggle[aria-pressed="true"] .range__icon-pause,
+.range__toggle[aria-pressed="false"] .range__icon-play {
+  display: none;
+}
+
+/* Without JS the controls do nothing, so hide them without moving anything. */
+.range:not(.is-ready) .range__arrow,
+.range:not(.is-ready) .range__toggle {
+  visibility: hidden;
+}
+
+.range__copy {
+  flex: 1 1 380px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.range__copy h2 {
+  margin: 0;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1.04;
+  letter-spacing: -1px;
+  color: var(--color-on-forest);
+}
+
+.range__copy .gold {
+  color: var(--color-gold);
+}
+
+.range__copy p {
+  margin: 0;
+  max-width: 480px;
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--color-on-forest-muted);
+}
+
+@media (max-width: 480px) {
+  .range {
+    padding: 64px var(--gutter) 72px;
+  }
+  /* Give the sprite as much of the narrow stage as the 44px arrows allow. */
+  .range__panel {
+    padding: 12px;
+  }
+  .range__stage {
+    padding-inline: 12px;
+  }
+  .range__controls {
+    gap: 4px;
+  }
+  .range__arrow {
+    width: 44px;
+  }
+}

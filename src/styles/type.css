@@ -81,3 +81,11 @@ a[href^="#fnref:"] {
   margin-top: 2rem;
   font-size: 85%;
 }
+
+/* Small pixel label: kickers, dates, categories. */
+.label {
+  font: 12px/1.4 var(--font-pixel);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
