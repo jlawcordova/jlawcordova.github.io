@@ -108,7 +108,7 @@ Decided by the owner on 2026-10-02.
 | 10 | How does editor work get into the repo? | **Download or copy the source.** The owner commits it, or hands it to Claude. The page never writes to GitHub. |
 | 11 | How are browser checks run? | **Scripts in the repo, run with the environment's own Playwright.** No `@playwright/test` dependency. They stay out of `npm test`. |
 | 12 | What may the verifier do? | **Recommend only.** It reports as a PR comment and never pushes. The implementer makes the fixes. |
-| 13 | Are agent skills in scope? | **Yes.** Skills for making pixel art and for verifying a change ship with this change. |
+| 13 | Are agent skills in scope? | **Yes.** Skills for making pixel art and for verifying a change ship with this change. The pixel-art skill doesn't need the editor: an agent can write the sources and generate the output files on its own. |
 
 ## Sequencing
 
