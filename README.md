@@ -32,6 +32,7 @@ npm test         # tests for the fetch and pixel-art scripts (Node built-ins, no
 | `scripts/optimize-pixel-art.mjs` | Merges each color group's rects into one `<path>`, keeping classes, variants and order, then checks that no pixel changed. Run it after editing a source. |
 | `src/site.ts` | Site title, description, author links, posts per page. |
 | `docs/intents/YYYY-MM-<slug>/` | One directory per planned change, holding its `intent.md`, `spec.md` and `plan.md`. |
+| `.claude/skills/` | Project skills for the AI-native SDLC: `write-intent`, `write-spec` and `write-plan`. See `CLAUDE.md`. |
 | `docs/references/` | Public-safe reference material shared across changes, such as `profile.md`. |
 | `static/` | Copied to the site root as-is. `static/public/*` is served at `/public/*` (images, favicons, resume). |
 
