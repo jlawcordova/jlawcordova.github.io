@@ -143,8 +143,8 @@ describe('pixel-art skill (R32)', () => {
   it('R32: the skill\'s examples are canonical and compile against today\'s sources', async () => {
     const skill = await readFile(join(ROOT, '.claude/skills/pixel-art/SKILL.md'), 'utf8');
     const blocks = [...skill.matchAll(/```js\n([\s\S]*?)```/g)].map((m) => m[1]);
-    assert.equal(blocks.length, 3, 'an object, an outfit and a scene');
-    const [rock, outfit, scene] = await Promise.all(
+    assert.equal(blocks.length, 4, 'an object, a block, an outfit and a scene');
+    const [rock, stone, outfit, scene] = await Promise.all(
       blocks.map(async (text) => {
         const data = (await import(`data:text/javascript,${encodeURIComponent(text)}`)).default;
         assert.equal(serialize(data), text, 'the example is in canonical form');
@@ -155,7 +155,7 @@ describe('pixel-art skill (R32)', () => {
     const objects = Object.fromEntries(sources.objects);
     const withExamples = loadSources({
       palette,
-      objects: { ...objects, 'small-rock': rock, 'outfit-example': outfit },
+      objects: { ...objects, 'small-rock': rock, 'stone-block': stone, 'outfit-example': outfit },
       scenes: { example: scene },
     });
     assert.deepEqual(validate(withExamples), []);

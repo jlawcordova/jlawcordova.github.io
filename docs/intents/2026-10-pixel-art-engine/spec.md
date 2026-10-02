@@ -30,11 +30,11 @@ Each requirement traces to the intent's Scope (S*n*) or Acceptance criteria (AC)
 These rules keep new art in one world, and keep sources small enough for a person or an AI to read and edit as text. They were set by the owner on 2026-10-02, after measuring today's art (see [D2](#d2-palette) and [D4](#d4-isometric-grid)).
 
 - **R26. Palette tiers.**
-  - The **world** palette has at most 32 colors: 7 material ramps of 4 shades (highlight, light, mid, shadow), plus ink, cream and 2 skin tones.
+  - The **world** palette has at most 32 colors: 7 material ramps of 4 shades (`-1` highlight to `-4` shadow), plus ink, cream and 2 skin tones.
   - The **outfit** palette adds at most 16 clothing colors.
   - The **legacy** palette is today's 81 extracted colors, frozen. Only imported art may use it.
   - The engine fails any new object that uses a legacy color, and any palette that goes over a cap.
-- **R27. Size caps.** The tile is 32×16 pixels and one level is 16 pixels high. A character's figure, the pixels it actually paints, is at most 16×24, whatever the size of its map. An object's map is at most 64×64 and uses at most 12 colors (aim for 6–8). A block uses 3–4 (top, left, right and an optional edge). Imported legacy maps are exempt. The engine enforces every cap except the 6–8 target.
+- **R27. Size caps.** The tile is 32×16 pixels and one level is 16 pixels high. A character's figure, the pixels it actually paints, is at most 16×24, whatever the size of its map. An object's map is at most 64×64 and uses at most 12 colors (aim for 6–8). A block's faces use 1–4 colors (the top, then the left and right when it has levels, and an optional edge), and its surface adds its own; the whole object stays within the 12-color cap. A block is at most 64×64 pixels. Imported legacy maps are exempt. The engine enforces every cap except the 6–8 target.
 - **R28. Light direction.** Every block and every new object is lit from the same side as the island: the top is the light shade, the left face the mid shade and the right face the shadow shade.
 - **R29. Previews.** `npm run art -- --preview <name>` writes a PNG of any object or scene at 1×, 2×, 3× and 4× to a git-ignored folder, using Node built-ins only. The same images go in PRs, and anyone editing a source, whether a person or an AI, checks the change by looking at the picture.
 - **R30. Precise errors.** Every validation error names the file, layer, frame, row and column, and the rule broken. Examples: "row 7 is 31 wide, expected 32", "key `q` is not in `keys`" and "`c-6f8a55` is a legacy color".
@@ -227,14 +227,15 @@ export default {
 export default {
   kind: 'block',
   size: [1, 1, 0],              // tiles wide, tiles deep, levels high (0 = flat tile)
-  faces: { top: 'water-1', left: 'water-2', right: 'water-3', edge: 'water-4' },  // R28: light, mid, shadow
-  surface: { loop: 'wf', prefix: 'w', frames: [ /* top-face sprite maps */ ] },  // optional
+  faces: { top: 'water-2' },    // a flat block has a top only; with levels: top, left, right (R28)
+  surface: { keys: { h: 'water-1', d: 'water-3' }, loop: 'wf', prefix: 'w', frames: [ /* one-tile (32×16) maps */ ] },  // optional
 };
 ```
 
-- It draws the top, left and right faces in their three tones, with an optional 1px edge, on the 2:1 grid in [D4](#d4-isometric-grid). The light comes from the same side as on the island: top light, left mid, right shadow (R28). A block uses 3–4 colors.
+- It draws the top, left and right faces in their three tones, with an optional 1px edge, on the 2:1 grid in [D4](#d4-isometric-grid). The light comes from the same side as on the island: top light, left mid, right shadow (R28). In a ramp that is shade 1, 2 and 3 (`grass-2` top, `soil-2` left and `soil-3` right is a typical block), and across materials the top is always lighter than the left, and the left lighter than the right. A flat block has no left or right face, and the engine refuses them. A block's faces use 1–4 colors, and its surface colors count toward the object's 12-color cap.
+- **Placement.** `at` is the top-face center of the block's first tile, and the sides hang `levels × 16` pixels below it. A `[w, d]` footprint covers `w × d` tiles from there. The left face is the part left of the vertical line through the top's lowest corner, and the right face the rest. The optional edge is a 1-pixel outline around the whole silhouette, drawn last.
 - `size` is in tiles and levels, so a block is described by numbers rather than drawn. That makes blocks the easiest objects to place and change, for a person or an AI.
-- An optional `surface` sprite, which can have frames, is laid over the top face. That's how water ripples or grass detail work.
+- An optional `surface` sprite, which can have frames, is laid over the top face. That's how water ripples or grass detail work. It carries its own `keys`, each map is exactly one tile (32×16), and it's clipped to each tile's own diamond and repeated on every tile of a larger block.
 
 New objects of either kind are data only (R4). A third kind, such as slopes, means engine code and its own tests, and is added only when an asset needs it (Decision #6).
 

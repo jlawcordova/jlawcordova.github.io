@@ -14,7 +14,7 @@ New art must fit the existing world. The engine enforces every rule here except 
 
 - **Grid.** A tile is 32×16 pixels, 2:1 dimetric: every edge steps 2 pixels across for 1 down. One level is 16 pixels high, so a one-level block is 32×32 and reads as a cube. A tile at `[col, row, level]` has its top-face center at `x = (col − row) × 16 + ox`, `y = (col + row) × 8 − level × 16 + oy`, where `[ox, oy]` is the scene's `origin`.
 - **Palette tiers** (`source/palette.mjs`):
-  - **world**: at most 32 colors, as seven material ramps of 4 shades (`grass-1` highlight … `grass-4` shadow, and the same for soil, wood, path, water, roof and gold), plus `ink`, `cream` and two skin tones. For now it holds only the brand entries (`ink`, `cream`, `gold-2`, `soil-3`); the ramps arrive with the library objects.
+  - **world**: exactly 32 colors, as seven material ramps of 4 shades (`grass-1` highlight … `grass-4` shadow, and the same for soil, wood, path, water, roof and gold), plus `ink`, `cream`, `skin-1` and `skin-2`. They were picked from the island's own shades. `npm run art -- --preview palette` writes the swatch sheet: a row per material, shade 1 to 4 across. The tier is full, so a new color means dropping one.
   - **outfit**: at most 16 clothing colors, only for objects that extend `character`.
   - **legacy**: the 81 colors extracted from the redesign's art (`c-<hex>`), frozen. **Only imported art (`legacy: true`) may use them.** Never use one in new art, and never set `legacy: true` yourself.
   - Colors are added to the palette by hand, in a reviewed commit. Brand entries keep their `src/styles/variables.css` values.
@@ -25,11 +25,11 @@ New art must fit the existing world. The engine enforces every rule here except 
 
 Every source is a `.mjs` file whose default export is plain data, in the **canonical format**: the header comment, two-space indentation, single quotes, one map row per line and trailing commas. A test fails if a file isn't canonical, so start from `--new` or copy an existing file's layout exactly.
 
-The three examples below compile together against today's sources, as `objects/small-rock.mjs`, `objects/outfit-example.mjs` and `scenes/example.mjs` (a test checks this).
+The examples below compile together against today's sources, as `objects/small-rock.mjs`, `objects/stone-block.mjs`, `objects/outfit-example.mjs` and `scenes/example.mjs` (a test checks this).
 
 ### Objects (`source/objects/<name>.mjs`)
 
-Names are lowercase kebab-case. Only the `sprite` kind exists so far; blocks come later.
+Names are lowercase kebab-case. There are two kinds: `sprite` (pixel maps) and `block` (boxes on the isometric grid, drawn from numbers).
 
 ```js
 // Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md
@@ -58,6 +58,32 @@ export default {
 - **`layers`** paint bottom to top, and every map in an object has the same size. A layer can carry `class: 'cbob'` (or any fixed class), which puts it in its own group for CSS to move.
 - **Frame loops:** a layer `{ loop: 'wf', prefix: 'w', frames: [map, map, …] }` compiles to groups `class="wf w0"`, `class="wf w1"` and so on. Frame 0 is what reduced motion shows. The loops the site's CSS animates are `wf` (w0–w4), `ff` (f0–f3) and `hf` (h0–h5).
 - **Paint order inside a layer** follows `keys`: each color is drawn in the order its key is listed.
+
+### Blocks (`kind: 'block'`)
+
+A block is described by numbers, not drawn. Use one for ground, walls and water. `block`, `tile` and `water` in `source/objects/` are the library, and `scenes/library-demo.mjs` places them with `tree`. This example is `objects/stone-block.mjs` in the skill's test.
+
+```js
+// Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md
+export default {
+  kind: 'block',
+  size: [1, 1, 1],
+  faces: {
+    top: 'grass-2',
+    left: 'soil-2',
+    right: 'soil-3',
+    edge: 'soil-4',
+  },
+};
+```
+
+- **`size`** is `[tiles wide, tiles deep, levels high]`. `[1, 1, 0]` is a flat tile and `[1, 1, 1]` a cube. A block is at most 64×64 pixels, so `[2, 2, 0]` fits and `[3, 3, 0]` doesn't.
+- **`faces`**: `top` is the light shade, `left` the mid shade and `right` the shadow shade (R28). `left` and `right` are required when there are levels, and refused on a flat block. `edge` is optional: a 1-pixel outline around the whole block, drawn last. The faces use 1–4 colors (a flat block just its top), and the whole object, surface included, stays within 12.
+- **Placement.** `at` is the top-face center of the block's first tile. The sides hang `levels × 16` pixels *below* it, so a cube on the ground is placed at `[col, row, 0]` and its sides reach one level under the ground. To sit a cube on top of a tile, place it at level 1: `[col, row, 1]`. A `[2, 1, 2]` block covers the tiles `[col, row]` and `[col + 1, row]`.
+- **Paint order.** Items paint in order, so list a scene back to front: by `col + row`, smallest first.
+- **A tile is 30 pixels wide at its widest row,** not 32: pixel centers never land on an edge, so neighbouring tiles share no pixel and leave no gap. Don't nudge blocks by a pixel to hide a seam; there isn't one.
+- **`surface`** (optional) paints a one-tile (32×16) sprite over each tile of the top face, clipped to each tile's own diamond. It's `{ keys, map }`, or `{ keys, loop, prefix, frames }` for a loop. `water` uses five frames of `wf w0`…`w4`, which is what the site's CSS animates. Frame 0 is the reduced-motion frame. Surface colors count toward the 12-color cap.
+- `npm run art -- --new object <name> --kind block` writes a starter block.
 
 ### Outfits (`extends`)
 
@@ -120,10 +146,10 @@ export default {
 
 You don't need the editor or a browser.
 
-1. **Start from a valid file.** `npm run art -- --new object <name> --size 16x16` (a sprite with an empty map), `--new object <name> --extends character` (an outfit) or `--new scene <name>`, or open an existing source. Choose the smallest object that does the job, and prefer placing objects in a scene over drawing large maps. `--new` refuses to overwrite a file.
-2. **Edit whole rows**, and keep every row the same width. Add each color you use to `keys`, from the world palette.
+1. **Start from a valid file.** `npm run art -- --new object <name> --size 16x16` (a sprite with an empty map), `--new object <name> --kind block` (a block), `--new object <name> --extends character` (an outfit) or `--new scene <name>`, or open an existing source. Choose the smallest object that does the job, and prefer placing objects in a scene over drawing large maps. `--new` refuses to overwrite a file.
+2. **Edit whole rows**, and keep every row the same width. For a block, change `size` and `faces` instead. Add each color you use to `keys`, from the world palette.
 3. **Check it:** `npm run art -- --check <name>`. It prints every problem with its file, layer, frame, row and column, and the rule broken, or a one-line summary (size, colors against the cap, layers, frames). Fix each problem where it points.
-4. **Look at it:** `npm run art -- --preview <name>` writes `.art-preview/<name>@1x.png` to `@4x.png` (git-ignored). **Open the PNG and look at it.** An object stands on one tile outline; a scene shows its viewBox at frame 0. The picture, not the text, decides whether the art is right.
+4. **Look at it:** `npm run art -- --preview <name>` (or `--preview palette` for the world palette's swatch sheet) writes `.art-preview/<name>@1x.png` to `@4x.png` (git-ignored). **Open the PNG and look at it.** An object stands on one tile outline; a scene shows its viewBox at frame 0. The picture, not the text, decides whether the art is right.
 5. **Generate the output:** `npm run art` writes the SVGs for scenes with an `output`, then run `npm test`. A test fails if a committed SVG is stale against its sources.
 
 A name can be written `objects/<name>` or `scenes/<name>` when an object and a scene share it.

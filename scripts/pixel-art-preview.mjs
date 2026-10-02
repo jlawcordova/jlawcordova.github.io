@@ -86,6 +86,42 @@ export function renderPreview(sources, target, { card, grid }) {
   return { image: { width, height, rgba }, origin: [box.minX, box.minY] };
 }
 
+export const MATERIALS = ['grass', 'soil', 'wood', 'path', 'water', 'roof', 'gold'];
+const SWATCH = 16;
+const GAP = 2;
+
+/**
+ * The world palette's swatch sheet (spec R31): one row per material with its
+ * four shades, highlight to shadow, then a row for ink, cream and the skin
+ * tones. A name that's missing leaves its swatch as the card color.
+ * @param {import('../src/lib/pixel-art/engine.mjs').Sources} sources
+ * @param {{ card: number[], grid: number[] }} colors
+ * @returns {{ image: { width: number, height: number, rgba: Buffer } }}
+ */
+export function renderPalette(sources, { card, grid }) {
+  const line = grid.map((v) => Math.round(v * 0.75));
+  const rows = [...MATERIALS.map((m) => [1, 2, 3, 4].map((n) => `${m}-${n}`)), ['ink', 'cream', 'skin-1', 'skin-2']];
+  const width = GAP + 4 * (SWATCH + GAP);
+  const height = GAP + rows.length * (SWATCH + GAP);
+  const rgba = Buffer.alloc(width * height * 4);
+  for (let i = 0; i < width * height; i++) rgba.set([...card, 255], i * 4);
+  rows.forEach((names, r) => {
+    names.forEach((name, c) => {
+      const hex = sources.colors.get(name)?.hex;
+      if (!hex) return;
+      const rgb = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+      for (let y = 0; y < SWATCH; y++) {
+        for (let x = 0; x < SWATCH; x++) {
+          // A 1-pixel line in the grid's color keeps a swatch as light as the card visible.
+          const edge = x === 0 || y === 0 || x === SWATCH - 1 || y === SWATCH - 1;
+          rgba.set([...(edge ? line : rgb), 255], ((GAP + r * (SWATCH + GAP) + y) * width + GAP + c * (SWATCH + GAP) + x) * 4);
+        }
+      }
+    });
+  });
+  return { image: { width, height, rgba } };
+}
+
 /**
  * An RGBA PNG of the image, scaled up by whole-pixel repetition.
  * @param {{ width: number, height: number, rgba: Buffer }} image

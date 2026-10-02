@@ -65,8 +65,9 @@ The post is published at `/<categories>/<YYYY>/<MM>/<DD>/<slug>/`, the same sche
 
 The home page's art is compiled from text sources in `src/assets/pixel-art/source/`. The `pixel-art` skill (`.claude/skills/pixel-art/SKILL.md`) is the full guide, and `docs/intents/2026-10-pixel-art-engine/spec.md` is the design.
 
-- **Palette** (`palette.mjs`): named colors in three tiers. *World* (at most 32) is for new art, *outfit* (at most 16) is for clothing on objects that extend `character`, and *legacy* holds the 81 colors extracted from the original art, which only imported art may use.
+- **Palette** (`palette.mjs`): named colors in three tiers. *World* (32: seven 4-shade material ramps, from highlight to shadow, plus `ink`, `cream` and two skin tones, picked from the island's own shades) is for new art, *outfit* (at most 16) is for clothing on objects that extend `character`, and *legacy* holds the 81 colors extracted from the original art, which only imported art may use.
 - **Objects** (`objects/<name>.mjs`): a `sprite` is a pixel map, one string per row, with `keys` mapping each character to a palette name (`.` is transparent). It can have several layers, a layer `class` (such as `cbob`), and frame loops (`wf`, `ff`, `hf`) that compile to the groups `pixel-art.css` animates. An object can `extends` another and replace whole rows or recolor its keys: every Range outfit extends `character`, and the hero island's green truck extends `truck`.
+- A `block` is a box on the isometric grid, drawn from its `size` (`[tiles wide, tiles deep, levels high]`) and three face shades: top light, left mid, right shadow. An optional one-tile `surface`, which can loop, is painted over its top. The library (`block`, `tile`, `water`, `tree`) is in `objects/`, and `scenes/library-demo.mjs` places all of it on a 3×3 island.
 - **Scenes** (`scenes/<name>.mjs`): objects placed on the 32×16 isometric grid (`at: { tile: [col, row, level] }`) or at pixel offsets (`at: { px: [x, y] }`), in paint order, inside optional groups with `class` or `data-*` attributes. A scene with an `output` is written to `src/assets/pixel-art/<output>`.
 - **Rules:** new art uses world colors only, at most 12 colors and 64×64 pixels, and a character's figure is at most 16×24. Every error names the file, layer, frame, row and column.
 
@@ -74,7 +75,8 @@ The home page's art is compiled from text sources in `src/assets/pixel-art/sourc
 npm run art                                   # validate, compile and write every output SVG
 npm run art -- --check <name>                 # validate one object or scene and what it uses
 npm run art -- --preview <name>               # PNGs at 1×–4× in .art-preview/ (git-ignored)
-npm run art -- --new object <name> [--size WxH] [--extends character]
+npm run art -- --preview palette              # the world palette's swatch sheet
+npm run art -- --new object <name> [--kind sprite|block] [--size WxH] [--extends character]
 npm run art -- --new scene <name>             # a valid, canonical starter source
 ```
 

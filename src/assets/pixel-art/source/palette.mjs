@@ -3,9 +3,10 @@
 // reviewed commit.
 //
 // - world: at most 32. Seven 4-shade material ramps (1 = highlight … 4 =
-//   shadow), plus ink, cream and two skin tones. Brand entries keep their
-//   variables.css values, and a test keeps them in step. For now it holds
-//   only the brand entries the art already uses; the ramps come later.
+//   shadow), plus ink, cream and two skin tones. They're picked from the
+//   hero island's own shades, so new art looks like the same world; a ramp
+//   uses exact legacy values wherever the island has a good one. Brand
+//   entries keep their variables.css values, and a test keeps them in step.
 // - outfit: at most 16 clothing colors, only for objects that extend
 //   character.
 // - legacy: the 81 colors extracted from the redesign's art, frozen. Only
@@ -13,10 +14,38 @@
 //   another tier; names are unique.
 export default {
   world: {
-    'gold-2': '#D8B66A', // --color-gold
+    'grass-1': '#B5C79C',
+    'grass-2': '#8FA56E',
+    'grass-3': '#6F8F55',
+    'grass-4': '#4E6B3A',
+    'soil-1': '#9C6B42',
+    'soil-2': '#8A5A34',
     'soil-3': '#5A3E2B', // --color-earth
+    'soil-4': '#3F2B1E',
+    'wood-1': '#C8A27A',
+    'wood-2': '#A07A52',
+    'wood-3': '#7A4E2D',
+    'wood-4': '#4A3324',
+    'path-1': '#E9DCC6',
+    'path-2': '#C9B79A',
+    'path-3': '#A8957A',
+    'path-4': '#8A7A60',
+    'water-1': '#C9DDD3',
+    'water-2': '#9DC1B4',
+    'water-3': '#5F8C7E',
+    'water-4': '#3E5E55',
+    'roof-1': '#C25A6A',
+    'roof-2': '#9E3B4B',
+    'roof-3': '#7B2D3B',
+    'roof-4': '#5A2230',
+    'gold-1': '#E3C57E',
+    'gold-2': '#D8B66A', // --color-gold
+    'gold-3': '#B08F48',
+    'gold-4': '#7A5E2A',
     ink: '#2E2418', // --color-ink
     cream: '#F4EDE0', // --color-page
+    'skin-1': '#E9B98A',
+    'skin-2': '#A0524A',
   },
   outfit: {},
   legacy: {

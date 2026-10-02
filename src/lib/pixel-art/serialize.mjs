@@ -32,10 +32,12 @@ function stringRecord(record, depth) {
 }
 
 /**
+ * A layer's properties, one per entry, for an object whose lines sit at `depth` + 1.
  * @param {any} layer
  * @param {number} depth
+ * @returns {string[]}
  */
-function layerText(layer, depth) {
+function layerLines(layer, depth) {
   const lines = [];
   if ('frames' in layer) {
     lines.push(`loop: ${str(layer.loop)}`, `prefix: ${str(layer.prefix)}`);
@@ -45,8 +47,14 @@ function layerText(layer, depth) {
     if (layer.class !== undefined) lines.push(`class: ${str(layer.class)}`);
     lines.push(`map: ${stringList(layer.map, depth + 1)}`);
   }
-  return `{\n${lines.map((l) => `${pad(depth + 1)}${l},\n`).join('')}${pad(depth)}}`;
+  return lines;
 }
+
+/**
+ * @param {any} layer
+ * @param {number} depth
+ */
+const layerText = (layer, depth) => `{\n${layerLines(layer, depth).map((l) => `${pad(depth + 1)}${l},\n`).join('')}${pad(depth)}}`;
 
 /**
  * @param {any} obj  a sprite object
@@ -54,6 +62,7 @@ function layerText(layer, depth) {
  */
 export function serializeObject(obj) {
   const lines = [`kind: ${str(obj.kind)}`];
+  if (obj.kind === 'block') return serializeBlock(obj, lines);
   if (obj.legacy) lines.push('legacy: true');
   if (obj.extends !== undefined) lines.push(`extends: ${str(obj.extends)}`);
   if (obj.anchor !== undefined) lines.push(`anchor: ${nums(obj.anchor)}`);
@@ -65,6 +74,22 @@ export function serializeObject(obj) {
   }
   if (obj.layers !== undefined) {
     lines.push(`layers: [\n${obj.layers.map((/** @type {any} */ l) => `${pad(2)}${layerText(l, 2)},\n`).join('')}${pad(1)}]`);
+  }
+  return wrap(OBJECT_HEADER, lines);
+}
+
+/**
+ * A block: its size, faces and optional surface, a layer with its own keys.
+ * @param {any} obj
+ * @param {string[]} lines  already holds the kind
+ * @returns {string}
+ */
+function serializeBlock(obj, lines) {
+  lines.push(`size: ${nums(obj.size)}`, `faces: ${stringRecord(obj.faces, 1)}`);
+  if (obj.surface !== undefined) {
+    const { keys, ...layer } = obj.surface;
+    const inner = [`keys: ${stringRecord(keys, 2)}`, ...layerLines(layer, 1)];
+    lines.push(`surface: {\n${inner.map((l) => `${pad(2)}${l},\n`).join('')}${pad(1)}}`);
   }
   return wrap(OBJECT_HEADER, lines);
 }
