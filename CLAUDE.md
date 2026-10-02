@@ -8,6 +8,7 @@ J. Law. Cordova's personal site and blog: Astro 7, TypeScript and plain CSS, dep
 - Dev server: `npm run dev` (http://localhost:4321)
 - Build: `npm run build` (runs `astro check`, then builds to `dist/`)
 - Test: `npm test` (Node built-ins, no network)
+- Browser checks: `npm run e2e` (serves the built `dist/` and runs `scripts/e2e/` with the environment's Playwright; run `npm run build` first)
 - Pixel art: `npm run art` (regenerates `src/assets/pixel-art/*.svg` from `source/`)
 - Accomplishments: `npm run fetch-accomplishments` (overwrites `src/data/accomplishments.json`; never commit the result)
 
@@ -16,6 +17,7 @@ J. Law. Cordova's personal site and blog: Astro 7, TypeScript and plain CSS, dep
 - Build: `npm run build` must end with `- 0 errors`, `- 0 warnings`, `- 0 hints` and `[build] Complete!`
 - Test: `npm test` must show `# fail 0`. Never skip or delete a failing test.
 - Pixel art: after changing a source, `npm run art` must report every file `lossless` and none `OVER BUDGET`.
+- Browser checks: `npm run e2e` must show `# fail 0`. "NOT RUN" (exit code 2, no Playwright) means not verified, never passed.
 - UI: screenshot each changed page at 1440px and 390px wide, and confirm there's no horizontal scroll.
 
 Run these before reporting any task complete, and paste the output. If a test fails, fix the code, not the test.
@@ -31,7 +33,7 @@ Run these before reporting any task complete, and paste the output. If a test fa
 
 ## Architecture
 
-The README's project layout table maps every folder. In short: routes in `src/pages/`, components in `src/components/` (home sections in `home/`), one CSS file per area in `src/styles/`, scripts with `node:test` tests in `scripts/`, and `static/public/*` served at `/public/*`.
+The README's project layout table maps every folder. In short: routes in `src/pages/`, components in `src/components/` (home sections in `home/`), one CSS file per area in `src/styles/`, scripts with `node:test` tests in `scripts/`, browser checks in `scripts/e2e/`, and `static/public/*` served at `/public/*`.
 
 ## How changes flow
 
@@ -41,6 +43,7 @@ Planned work follows Anthropic's [AI-native SDLC playbook](https://claude.com/bl
 2. **`spec.md`:** requirements and design from the accepted intent, with areas of concern flagged. Use `write-spec`. The owner approves it by merging.
 3. **`plan.md`:** files, order of work, risks and proof, written before any code. Use `write-plan`. Implement only against an approved plan, and update `plan.md` in the same commit when the work departs from it.
 4. **Code and tests,** then a PR that cites the plan and pastes the verification output.
+5. **Independent verification:** a fresh session, given only "Use the `verify-change` skill on PR #<n>.", checks the PR against its intent, spec and plan and reports as a PR comment. It never pushes or commits. Fix its blocking findings before the owner merges.
 
 A small, self-contained fix can go straight to a PR.
 

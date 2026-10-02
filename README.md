@@ -13,7 +13,8 @@ npm run build    # type-check (astro check) and build to dist/
 npm run preview  # serve the built site
 npm run fetch-accomplishments  # refresh src/data/accomplishments.json from AT Protocol
 npm run art      # regenerate the optimized pixel art from its sources
-npm test         # tests for the fetch and pixel-art scripts (Node built-ins, no network)
+npm test         # tests for the fetch, pixel-art and e2e-runner scripts (Node built-ins, no network)
+npm run e2e      # browser checks against the built dist/ (run npm run build first)
 ```
 
 ## Project layout
@@ -30,9 +31,10 @@ npm test         # tests for the fetch and pixel-art scripts (Node built-ins, no
 | `src/data/home.ts` | The Range carousel's classes. Entry *i* matches outfit variant `data-class="i"` in the sprite. |
 | `src/assets/pixel-art/` | Pixel art inlined on the home page. `source/*.src.svg` is the art as drawn on the design canvas, one `<rect>` per run; the files beside it are generated from those by `npm run art` and committed. |
 | `scripts/optimize-pixel-art.mjs` | Merges each color group's rects into one `<path>`, keeping classes, variants and order, then checks that no pixel changed. Run it after editing a source. |
+| `scripts/e2e/` | Browser checks, run by `npm run e2e` with the environment's own Playwright (it's not a dependency). It serves `dist/` with `astro preview` and runs `*.e2e.mjs` with `node --test`. Without Playwright it prints "browser checks NOT RUN" and exits 2. Screenshots go to the git-ignored `.e2e-output/`. |
 | `src/site.ts` | Site title, description, author links, posts per page. |
 | `docs/intents/YYYY-MM-<slug>/` | One directory per planned change, holding its `intent.md`, `spec.md` and `plan.md`. |
-| `.claude/skills/` | Project skills for the AI-native SDLC: `write-intent`, `write-spec` and `write-plan`. See `CLAUDE.md`. |
+| `.claude/skills/` | Project skills for the AI-native SDLC: `write-intent`, `write-spec`, `write-plan` and `verify-change` (an independent, report-only check of a PR). See `CLAUDE.md`. |
 | `docs/references/` | Public-safe reference material shared across changes, such as `profile.md`. |
 | `static/` | Copied to the site root as-is. `static/public/*` is served at `/public/*` (images, favicons, resume). |
 
@@ -57,7 +59,7 @@ The post is published at `/<categories>/<YYYY>/<MM>/<DD>/<slug>/`, the same sche
 
 ## Deploy
 
-Pushing to `master` runs `.github/workflows/deploy.yml`, which fetches the accomplishments, builds the site, and deploys it to GitHub Pages. Pull requests are built but not deployed. The workflow also deploys `master` when the accomplishments MCP server sends a `repository_dispatch` of type `atproto-updated` (after an add or delete), and daily at 03:17 UTC to catch a missed dispatch. The repository's Pages source must be set to **GitHub Actions** (Settings → Pages → Build and deployment → Source).
+Pushing to `master` runs `.github/workflows/deploy.yml`, which runs `npm test`, fetches the accomplishments, builds the site, and deploys it to GitHub Pages. Pull requests are tested and built but not deployed. The workflow also deploys `master` when the accomplishments MCP server sends a `repository_dispatch` of type `atproto-updated` (after an add or delete), and daily at 03:17 UTC to catch a missed dispatch. The repository's Pages source must be set to **GitHub Actions** (Settings → Pages → Build and deployment → Source).
 
 ## License
 

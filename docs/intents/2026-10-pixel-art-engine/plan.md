@@ -126,8 +126,8 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
    - If `dist/` is missing: print `Run npm run build first` and exit 1.
    - Otherwise:
      1. Find a free port (`net.createServer().listen(0)`).
-     2. Spawn `node_modules/.bin/astro preview --port <p>`, and wait for HTTP 200 on `/`.
-     3. Run `node --test scripts/e2e/` with `E2E_BASE_URL` set, piping its output and returning its exit code.
+     2. Spawn `node_modules/.bin/astro preview --ignore-lock --port <p>`, and wait for HTTP 200 on `/`. Astro 7 backgrounds `astro preview` when it detects an AI agent, and refuses to start beside a running one. `--ignore-lock` keeps the server in the foreground and owned by the runner, and leaves any server you have running alone.
+     3. Run `node --test "scripts/e2e/*.e2e.mjs"` (or the files passed after `--`) with `E2E_BASE_URL` set, piping its output and returning its exit code. The glob keeps `browser.mjs` and `run.mjs` out of the run.
      4. Kill the server in `finally`.
 4. **`scripts/e2e/art.e2e.mjs`.** For each pair (fixture `.src.svg` → committed `.svg`; in PR 0 the fixtures are still in `source/`), render both with `page.setContent`, then compare `getImageData` pixel by pixel:
    - **States compared:**
@@ -151,7 +151,7 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
 
 **PR 0's own checks:**
 - `npm run e2e` passes with Playwright present.
-- `scripts/e2e-runner.test.mjs` (new, part of `npm test`, no browser and no network) spawns `run.mjs` with `E2E_PLAYWRIGHT_ROOT` pointing at an empty temp directory. It expects exit code 2 and the NOT RUN message (R35).
+- `scripts/e2e-runner.test.mjs` (new, part of `npm test`, no browser and no network) spawns `run.mjs` with `E2E_PLAYWRIGHT_ROOT` pointing at an empty temp directory. It expects exit code 2 and the NOT RUN message (R35). A second case gives it a stand-in Playwright and no `dist/`, and expects exit code 1 and "Run npm run build first".
 - A local mutation (one rect removed from the committed `hero-island.svg`) turns `art.e2e.mjs` red, and is reverted.
 
 ### PR 1: Engine and Range round trip (slice 1)
@@ -326,7 +326,7 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
 
 Tick these as PRs merge.
 
-- [ ] PR 0: Verification tooling
+- [x] PR 0: Verification tooling
 - [ ] PR 1: Engine and Range round trip
 - [ ] PR 2: Hero island round trip
 - [ ] PR 3: World palette and library
