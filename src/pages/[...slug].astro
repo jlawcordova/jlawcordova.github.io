@@ -2,6 +2,7 @@
 import type { GetStaticPaths } from 'astro';
 import { render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHead from '../components/PageHead.astro';
 import { formatDate, getPosts, toXmlSchema, type Post } from '../lib/posts';
 
 export const getStaticPaths = (async () => {
@@ -31,36 +32,39 @@ const { Content } = await render(post.entry);
     imageAlt: post.featuredImageAlt,
   }}
 >
-  <div class="article-container">
-    <div class="article-wrapper">
-      <article class="post">
-        <h1 class="post-title">{post.title}</h1>
-        <time datetime={toXmlSchema(post.date)} class="post-date">{formatDate(post.date)}</time>
+  <article class="post">
+    <PageHead title={post.title} reading>
+      <time slot="label" datetime={toXmlSchema(post.date)}>{formatDate(post.date)}</time>
+    </PageHead>
+    <div class="page-body page-body--reading">
+      <div class="page-body__inner post-body">
         <Content />
-      </article>
-
-      {
-        related.length > 0 && (
-          <aside class="related">
-            <h3>Related posts</h3>
-            <ul class="related-posts">
-              {related.map((r) => (
-                <li class="recent-blog-container">
-                  <a href={r.url}>
-                    <img class="featured-blog-image" src={r.featuredImage} alt={r.featuredImageAlt} />
-                  </a>
-                  <div class="blog-content-container">
-                    <p class="category-pre-heading">{r.category}</p>
-                    <h3 class="blog-heading">
-                      <a href={r.url}>{r.title}</a>
-                    </h3>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </aside>
-        )
-      }
+      </div>
     </div>
-  </div>
+  </article>
+
+  {
+    related.length > 0 && (
+      <aside class="page-body page-body--reading related" aria-labelledby="related-title">
+        <div class="page-body__inner">
+          <h2 id="related-title" class="label related__title">
+            Related posts
+          </h2>
+          <ul class="related__list" role="list">
+            {related.map((r) => (
+              <li>
+                <a class="card related-card" href={r.url}>
+                  <img src={r.featuredImage} alt="" />
+                  <span class="related-card__body">
+                    <span class="label">{r.category}</span>
+                    <span class="related-card__title">{r.title}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+    )
+  }
 </BaseLayout>
