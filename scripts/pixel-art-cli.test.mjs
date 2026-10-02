@@ -157,6 +157,16 @@ describe('--new (R38)', () => {
     for (const color of Object.values(obj.keys)) assert.ok(color in palette.world || color in palette.outfit, `${color} is a world or outfit color`);
   });
 
+  it('R38: --new object --kind block writes a canonical starter block that validates', async () => {
+    const dir = await workspace();
+    const { code, out } = art(dir, '--new', 'object', 'stone', '--kind', 'block');
+    assert.equal(code, 0, out);
+    assert.match(out, /objects\/stone\.mjs: ok · block 1×1×1 · 30×32 · 3 colors \(of 12\) · 1 frame/);
+    const path = join(dir, 'source/objects/stone.mjs');
+    assert.equal(serialize(await load(path)), await readFile(path, 'utf8'));
+    assert.deepEqual(await load(path), { kind: 'block', size: [1, 1, 1], faces: { top: 'grass-2', left: 'soil-2', right: 'soil-3' } });
+  });
+
   it('R38: --new scene writes a preview-only scene that validates', async () => {
     const dir = await workspace();
     const { code, out } = art(dir, '--new', 'scene', 'rock-demo');
@@ -174,7 +184,8 @@ describe('--new (R38)', () => {
       [['--new', 'object', 'character'], 'objects/character.mjs already exists; edit it, or pick another name\n'],
       [['--new', 'object', 'Big_Rock'], '--new object: name "Big_Rock" must be lowercase kebab-case, like small-rock\n'],
       [['--new', 'object', 'a'.repeat(65)], '--new object: name is 65 characters long, max 64\n'],
-      [['--new', 'object', 'rock', '--kind', 'slope'], "--kind slope isn't supported yet; only sprite\n"],
+      [['--new', 'object', 'rock', '--kind', 'slope'], "--kind slope isn't supported; use sprite or block\n"],
+      [['--new', 'object', 'rock', '--kind', 'block', '--size', '4x4'], "--kind block doesn't take --size or --extends; a block's size is in its file, in tiles and levels\n"],
       [['--new', 'object', 'rock', '--size', '65x2'], '--size 65x2: give WxH, each from 1 to 64\n'],
       [['--new', 'thing', 'rock'], '--new takes object or scene, then a name\n'],
     ];
@@ -208,6 +219,26 @@ describe('--preview (R29, R38)', () => {
     assert.equal(art(dir, '--preview', 'range-sprite').code, 0);
     const buf = await readFile(join(dir, '.art-preview/range-sprite@2x.png'));
     assert.deepEqual([buf.readUInt32BE(16), buf.readUInt32BE(20)], [206, 144]);
+  });
+
+  it('R31: --preview palette writes the world palette\'s swatch sheet, four shades across and a row per material', async () => {
+    const dir = await workspace();
+    const { code, out } = art(dir, '--preview', 'palette');
+    assert.equal(code, 0, out);
+    assert.deepEqual((await readdir(join(dir, '.art-preview'))).sort(), ['palette@1x.png', 'palette@2x.png', 'palette@3x.png', 'palette@4x.png']);
+    const buf = await readFile(join(dir, '.art-preview/palette@1x.png'));
+    // 4 swatches of 16 across, 8 rows (7 materials, then ink, cream and the skin tones), 2-pixel gaps.
+    assert.deepEqual([buf.readUInt32BE(16), buf.readUInt32BE(20)], [2 + 4 * 18, 2 + 8 * 18]);
+  });
+
+  it('R31: a palette with problems gets no swatch sheet, and exits 1', async () => {
+    const dir = await workspace();
+    const path = join(dir, 'source/palette.mjs');
+    await writeFile(path, (await readFile(path, 'utf8')).replace("'#B5C79C'", "'#b5c79c'"));
+    const { code, err } = art(dir, '--preview', 'palette');
+    assert.equal(code, 1);
+    assert.match(err, /^palette\.mjs: world 'grass-1': '#b5c79c' must be uppercase #RRGGBB, with no alpha$/m);
+    assert.ok(!existsSync(join(dir, '.art-preview')));
   });
 
   it('R29: an object with problems gets no preview, and exits 1', async () => {

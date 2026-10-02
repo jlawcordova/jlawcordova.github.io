@@ -4,7 +4,7 @@
 // layer trees. It uses no Node or DOM APIs, so `npm run art` and the editor
 // run the same code.
 
-import { tileToPx } from './iso.mjs';
+import { blockFaces, footprint, TILE_H, TILE_W, tileToPx } from './iso.mjs';
 
 /**
  * @typedef {{ class?: string, map: string[] }} MapLayer
@@ -17,8 +17,10 @@ import { tileToPx } from './iso.mjs';
  *   objects: Map<string, any>,
  *   scenes: Map<string, any>,
  * }} Sources
+ * @typedef {{ size: number[], faces: Record<string, string>, surface?: any }} Block
  * @typedef {{
  *   name: string,
+ *   block?: Block,
  *   legacy: boolean,
  *   character: boolean,
  *   anchor: [number, number],
@@ -94,7 +96,9 @@ export function validate(sources) {
     if (problems.length > before) broken.add(name);
   }
   for (const name of sources.objects.keys()) {
-    if (!broken.has(name)) validateResolved(sources, name, broken, problems);
+    if (broken.has(name)) continue;
+    if (sources.objects.get(name).kind === 'block') validateBlockResolved(sources, name, problems);
+    else validateResolved(sources, name, broken, problems);
   }
   /** @type {Map<string, string>} */
   const outputs = new Map();
@@ -138,6 +142,8 @@ function validatePalette({ palette }, problems) {
 }
 
 const OBJECT_PROPS = ['kind', 'legacy', 'extends', 'anchor', 'keys', 'rows', 'layers'];
+const BLOCK_PROPS = ['kind', 'size', 'faces', 'surface'];
+const FACES = ['top', 'left', 'right', 'edge'];
 const MAP_LAYER_PROPS = ['class', 'map'];
 const FRAME_LAYER_PROPS = ['loop', 'prefix', 'frames'];
 
@@ -153,8 +159,9 @@ function validateObjectShape(sources, name, problems) {
   const obj = sources.objects.get(name);
   if (!NAME.test(name)) add('names are lowercase kebab-case');
   if (!isRecord(obj)) return add('must export an object');
+  if (obj.kind === 'block') return validateBlockShape(sources, obj, add);
   for (const key of Object.keys(obj)) if (!OBJECT_PROPS.includes(key)) add(`unknown property ${q(key)}`);
-  if (obj.kind !== 'sprite') add(`kind must be 'sprite', got ${q(obj.kind)}`);
+  if (obj.kind !== 'sprite') add(`kind must be 'sprite' or 'block', got ${q(obj.kind)}`);
   if ('legacy' in obj && obj.legacy !== true) add('legacy is either true or left out');
   if ('anchor' in obj && !isWhole(obj.anchor, 2)) add('anchor must be two whole numbers');
 
@@ -169,6 +176,7 @@ function validateObjectShape(sources, name, problems) {
 
   if ('extends' in obj) {
     if (typeof obj.extends !== 'string' || !sources.objects.has(obj.extends)) add(`extends ${q(obj.extends)}, which does not exist`);
+    else if (sources.objects.get(obj.extends)?.kind === 'block') add(`extends ${q(obj.extends)}, which is a block; only a sprite can be extended`);
     if ('layers' in obj) add('an object that extends another gives rows, not layers');
     const rowsShape = 'rows must be an object of layer: { row: string }';
     if (!('rows' in obj)) return;
@@ -223,6 +231,92 @@ function validateObjectShape(sources, name, problems) {
       checkRow(row, keys, (col, msg) => add(`${at}, row ${ri}, column ${col}: ${msg}`));
     });
   }
+}
+
+
+/**
+ * Checks a block on its own: its size, faces and surface (spec D3).
+ * @param {Sources} sources
+ * @param {any} obj
+ * @param {(msg: string) => void} add
+ */
+function validateBlockShape(sources, obj, add) {
+  for (const key of Object.keys(obj)) if (!BLOCK_PROPS.includes(key)) add(`unknown property ${q(key)}`);
+  const sized = isWhole(obj.size, 3) && obj.size[0] >= 1 && obj.size[1] >= 1 && obj.size[2] >= 0;
+  if (!sized) add('size must be three whole numbers: tiles wide, tiles deep (both at least 1) and levels high (0 is a flat tile)');
+  if (!isRecord(obj.faces)) add('faces must be an object of face: color name');
+  else {
+    for (const [face, color] of Object.entries(obj.faces)) {
+      if (!FACES.includes(face)) add(`faces: unknown face ${q(face)}; use top, left, right or edge`);
+      else if (typeof color !== 'string' || !sources.colors.has(color)) add(`faces.${face}: ${q(color)} is not in the palette`);
+    }
+    if (!('top' in obj.faces)) add('faces.top is missing');
+    if (sized) {
+      const flat = obj.size[2] === 0;
+      for (const face of ['left', 'right']) {
+        if (!flat && !(face in obj.faces)) add(`faces.${face} is missing; a block with levels needs a left and a right face`);
+        if (flat && face in obj.faces) add(`faces.${face}: a flat block (0 levels) has no ${face} face`);
+      }
+    }
+  }
+  if (!('surface' in obj)) return;
+  const surface = obj.surface;
+  const where = 'surface';
+  if (!isRecord(surface)) return add(`${where}: must be { keys, map } or { keys, loop, prefix, frames }`);
+  const looped = 'frames' in surface;
+  for (const key of Object.keys(surface)) {
+    if (!['keys', ...(looped ? FRAME_LAYER_PROPS : ['map'])].includes(key)) add(`${where}: unknown property ${q(key)}`);
+  }
+  const keys = surface.keys;
+  if (!isRecord(keys)) add(`${where}: keys must be an object of key: color name`);
+  else {
+    for (const [key, color] of Object.entries(keys)) {
+      if (!isKey(key)) add(`${where}, key ${q(key)}: keys are one printable character, not space or '.'`);
+      if (typeof color !== 'string' || !sources.colors.has(color)) add(`${where}, key ${q(key)}: ${q(color)} is not in the palette`);
+    }
+  }
+  /** @type {any[]} */
+  let maps;
+  if (looped) {
+    if (typeof surface.loop !== 'string' || !CLASS_TOKEN.test(surface.loop)) add(`${where}: loop must be one lowercase class name`);
+    if (typeof surface.prefix !== 'string' || !CLASS_TOKEN.test(surface.prefix)) add(`${where}: prefix must be one lowercase class name`);
+    if (!Array.isArray(surface.frames) || surface.frames.length === 0) return add(`${where}: frames must be a list of at least one map`);
+    maps = surface.frames;
+  } else maps = [surface.map];
+  maps.forEach((map, fi) => {
+    const at = looped ? `${where}, frame ${fi}` : where;
+    if (!Array.isArray(map) || !map.every((row) => typeof row === 'string')) return add(`${at}: map must be a list of strings`);
+    if (map.length !== TILE_H) add(`${at}: ${map.length} rows, expected ${TILE_H}, one tile`);
+    map.forEach((row, ri) => {
+      if (row.length !== TILE_W) add(`${at}, row ${ri}: ${row.length} wide, expected ${TILE_W}, one tile`);
+      checkRow(row, isRecord(keys) ? keys : {}, (col, msg) => add(`${at}, row ${ri}, column ${col}: ${msg}`));
+    });
+  });
+}
+
+/**
+ * Checks a block against the design language: world colors only, at most 12
+ * colors, at most 64×64 pixels (R26, R27).
+ * @param {Sources} sources
+ * @param {string} name
+ * @param {string[]} problems
+ */
+function validateBlockResolved(sources, name, problems) {
+  const add = (/** @type {string} */ msg) => problems.push(`${objectFile(name)}: ${msg}`);
+  const resolved = resolve(sources, name);
+  const block = /** @type {Block} */ (resolved.block);
+  /** @type {[string, string][]} */
+  const named = Object.entries(block.faces).map(([face, color]) => [`faces.${face}`, color]);
+  const surfaceKeys = usedKeys(resolved);
+  for (const key of surfaceKeys) named.push([`surface, key ${q(key)}`, resolved.keys[key]]);
+  for (const [where, color] of named) {
+    const tier = sources.colors.get(color)?.tier;
+    if (tier === 'legacy') add(`${where}: ${q(color)} is a legacy color; only imported art may use it`);
+    if (tier === 'outfit') add(`${where}: ${q(color)} is an outfit color; only objects that extend character may use it`);
+  }
+  if (resolved.width > CAPS.size || resolved.height > CAPS.size) add(`${resolved.width}×${resolved.height}, max ${CAPS.size}×${CAPS.size}`);
+  const colors = usedColors(sources, resolved).length;
+  if (colors > CAPS.colors) add(`uses ${colors} colors, max ${CAPS.colors}`);
 }
 
 /**
@@ -399,6 +493,7 @@ export function resolve(sources, name, seen = []) {
   const obj = sources.objects.get(name);
   if (!obj) throw new Error(`object ${q(name)} does not exist`);
   if (seen.includes(name)) throw new Error(`extends cycle: ${[...seen, name].join(' → ')}`);
+  if (obj.kind === 'block') return resolveBlock(name, obj);
   /** @type {[number, number] | undefined} */
   const anchor = obj.anchor ? [obj.anchor[0], obj.anchor[1]] : undefined;
   if (!obj.extends) {
@@ -438,6 +533,32 @@ export function resolve(sources, name, seen = []) {
     layers,
     width: base.width,
     height: base.height,
+  };
+}
+
+/**
+ * A block as a Resolved: its surface is the one layer, and its size is the
+ * silhouette's, so the caps and `--check` treat it like any object.
+ * @param {string} name
+ * @param {any} obj
+ * @returns {Resolved}
+ */
+function resolveBlock(name, obj) {
+  const { surface } = obj;
+  /** @type {SpriteLayer[]} */
+  const layers = surface ? [isFrames(surface) ? { loop: surface.loop, prefix: surface.prefix, frames: surface.frames } : { map: surface.map }] : [];
+  const { top, left, right } = blockFaces(obj.size, [0, 0]);
+  const box = bounds([...top, ...left, ...right]);
+  return {
+    name,
+    block: { size: obj.size, faces: { ...obj.faces }, surface },
+    legacy: false,
+    character: false,
+    anchor: [0, 0],
+    keys: { ...surface?.keys },
+    layers,
+    width: box ? box.maxX - box.minX + 1 : 0,
+    height: box ? box.maxY - box.minY + 1 : 0,
   };
 }
 
@@ -490,7 +611,8 @@ export function paintedSize(resolved) {
  * @param {Resolved} resolved
  */
 export function usedColors(sources, resolved) {
-  return [...new Set(usedKeys(resolved).map((k) => sources.colors.get(resolved.keys[k])?.hex ?? resolved.keys[k]))];
+  const names = [...Object.values(resolved.block?.faces ?? {}), ...usedKeys(resolved).map((k) => resolved.keys[k])];
+  return [...new Set(names.map((n) => sources.colors.get(n)?.hex ?? n))];
 }
 
 /**
@@ -500,9 +622,13 @@ export function usedColors(sources, resolved) {
  */
 export function describeObject(sources, resolved) {
   const colors = usedColors(sources, resolved).length;
-  const frames = Math.max(...resolved.layers.map((l) => layerMaps(l).length));
+  const frames = Math.max(1, ...resolved.layers.map((l) => layerMaps(l).length));
   const plural = (/** @type {number} */ n, /** @type {string} */ word) => `${n} ${word}${n === 1 ? '' : 's'}`;
   const cap = resolved.legacy ? 'legacy, no cap' : `of ${CAPS.colors}`;
+  if (resolved.block) {
+    const [w, d, h] = resolved.block.size;
+    return [`block ${w}×${d}×${h}`, `${resolved.width}×${resolved.height}`, `${plural(colors, 'color')} (${cap})`, plural(frames, 'frame')].join(' · ');
+  }
   return [
     `${resolved.width}×${resolved.height}`,
     `${plural(colors, 'color')} (${cap})`,
@@ -537,14 +663,15 @@ function openLayer(group) {
  * @param {Record<string, string>} keys
  * @param {number} ox
  * @param {number} oy
+ * @param {Set<string>} [clip]  paint only these pixels
  */
-function paint(layer, map, keys, ox, oy) {
+function paint(layer, map, keys, ox, oy, clip) {
   /** @type {Map<string, string[]>} */
   const byKey = new Map();
   map.forEach((row, y) => {
     for (let x = 0; x < row.length; x++) {
       const ch = row[x];
-      if (ch === '.') continue;
+      if (ch === '.' || (clip && !clip.has(`${ox + x},${oy + y}`))) continue;
       let list = byKey.get(ch);
       if (!list) byKey.set(ch, (list = []));
       list.push(`${ox + x},${oy + y}`);
@@ -559,6 +686,44 @@ function paint(layer, map, keys, ox, oy) {
 }
 
 /**
+ * Draws a block with its first tile's top-face center at (cx, cy): the three
+ * faces, then the surface on every tile's top, then the edge over everything.
+ * @param {Block} block
+ * @param {Record<string, string>} keys  the surface's keys
+ * @param {number} cx
+ * @param {number} cy
+ * @param {Group} group
+ */
+function drawBlock({ size, faces, surface }, keys, cx, cy, group) {
+  const shapes = blockFaces(size, [cx, cy]);
+  const base = openLayer(group);
+  for (const face of /** @type {const} */ (['top', 'left', 'right'])) {
+    if (!faces[face]) continue;
+    base.colors.add(faces[face]);
+    for (const p of shapes[face]) base.pixels.set(p, faces[face]);
+  }
+  if (surface) {
+    const top = new Set(shapes.top);
+    /** @param {Layer} layer @param {string[]} map */
+    const lay = (layer, map) => {
+      for (const [tx, ty] of footprint(size, [cx, cy])) paint(layer, map, keys, tx - TILE_W / 2, ty - TILE_H / 2, top);
+    };
+    if (isFrames(surface)) {
+      surface.frames.forEach((/** @type {string[]} */ map, /** @type {number} */ i) => {
+        const layerOut = newLayer();
+        group.children.push({ attrs: [['class', `${surface.loop} ${surface.prefix}${i}`]], frame: i, children: [layerOut] });
+        lay(layerOut, map);
+      });
+    } else lay(openLayer(group), surface.map);
+  }
+  if (faces.edge) {
+    const edge = openLayer(group);
+    edge.colors.add(faces.edge);
+    for (const p of shapes.edge) edge.pixels.set(p, faces.edge);
+  }
+}
+
+/**
  * Draws a resolved object with its map's top-left pixel at (ox, oy).
  * @param {Resolved} obj
  * @param {number} ox
@@ -566,6 +731,7 @@ function paint(layer, map, keys, ox, oy) {
  * @param {Group} group
  */
 function draw(obj, ox, oy, group) {
+  if (obj.block) return drawBlock(obj.block, obj.keys, ox, oy, group);
   for (const layer of obj.layers) {
     if (isFrames(layer)) {
       const { loop, prefix, frames } = /** @type {FrameLayer} */ (layer);

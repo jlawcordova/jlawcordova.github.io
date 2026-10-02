@@ -15,7 +15,8 @@
 //                                        then write the scenes with an output
 //   npm run art -- --check <name>        validate one object or scene
 //   npm run art -- --preview <name>      write .art-preview/<name>@{1,2,3,4}x.png
-//   npm run art -- --new object <name> [--kind sprite] [--extends character] [--size WxH]
+//                                        (name palette: the world palette's swatch sheet)
+//   npm run art -- --new object <name> [--kind sprite|block] [--extends character] [--size WxH]
 //   npm run art -- --new scene <name>    write a starter source
 // --source <dir> and --out <dir> replace source/ and the output folder.
 // A name can be qualified as objects/<name> or scenes/<name>.
@@ -41,7 +42,7 @@ import {
 } from '../src/lib/pixel-art/engine.mjs';
 import { serializeObject, serializeScene } from '../src/lib/pixel-art/serialize.mjs';
 import { toRectSvg } from '../src/lib/pixel-art/svg.mjs';
-import { encodePng, previewColors, renderPreview } from './pixel-art-preview.mjs';
+import { encodePng, previewColors, renderPalette, renderPreview } from './pixel-art-preview.mjs';
 
 const ART_DIR = fileURLToPath(new URL('../src/assets/pixel-art/', import.meta.url));
 const SOURCE_DIR = join(ART_DIR, 'source');
@@ -357,11 +358,17 @@ function check(sources, problems, query) {
 const countItems = (items) => items.reduce((n, item) => n + (item.group ? countItems(item.items) : 1), 0);
 
 async function preview(sources, problems, query) {
-  if (!check(sources, problems, query)) return false;
-  const target = find(sources, problems, query);
-  const { image } = renderPreview(sources, target, await previewColors());
+  // The swatch sheet of the world palette (R31), not an object or a scene.
+  const sheet = query === 'palette';
+  if (sheet) {
+    const mine = problems.filter((p) => p.startsWith('palette.mjs: '));
+    if (mine.length) return printProblems(mine), false;
+  } else if (!check(sources, problems, query)) return false;
+  const target = sheet ? undefined : find(sources, problems, query);
+  const colors = await previewColors();
+  const { image } = target ? renderPreview(sources, target, colors) : renderPalette(sources, colors);
   await mkdir(PREVIEW_DIR, { recursive: true });
-  const name = target.object ?? target.scene;
+  const name = target ? (target.object ?? target.scene) : 'palette';
   for (const scale of [1, 2, 3, 4]) {
     const file = join(PREVIEW_DIR, `${name}@${scale}x.png`);
     await writeFile(file, encodePng(image, scale));
@@ -393,8 +400,11 @@ async function create(sources, dir, kind, name, opts) {
   let text;
   if (kind === 'scene') {
     text = serializeScene({ viewBox: [-64, -64, 128, 128], origin: [0, 0], items: [] });
-  } else if (opts.kind && opts.kind !== 'sprite') {
-    throw new Problem(`--kind ${opts.kind} isn't supported yet; only sprite`);
+  } else if (opts.kind && opts.kind !== 'sprite' && opts.kind !== 'block') {
+    throw new Problem(`--kind ${opts.kind} isn't supported; use sprite or block`);
+  } else if (opts.kind === 'block') {
+    if (opts.size || opts.extends) throw new Problem("--kind block doesn't take --size or --extends; a block's size is in its file, in tiles and levels");
+    text = serializeObject({ kind: 'block', size: [1, 1, 1], faces: { top: 'grass-2', left: 'soil-2', right: 'soil-3' } });
   } else if (opts.extends) {
     if (opts.size) throw new Problem('--size and --extends don\'t mix: an object that extends another has its size');
     if (!sources.objects.has(opts.extends)) throw new Problem(`--extends ${opts.extends}: no such object`);

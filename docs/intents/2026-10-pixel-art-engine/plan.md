@@ -65,6 +65,8 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
 - `palette.mjs`: the 32 world colors (R31)
 - `src/lib/pixel-art/iso.mjs`: block faces
 - `src/lib/pixel-art/engine.mjs`: the `block` kind
+- `src/lib/pixel-art/serialize.mjs`: blocks in the canonical format
+- `scripts/optimize-pixel-art.mjs`, `scripts/pixel-art-preview.mjs`: `--preview palette` and `--new object --kind block`
 - `source/objects/block.mjs`, `tile.mjs`, `water.mjs`, `tree.mjs` (new)
 - `source/scenes/library-demo.mjs` (new)
 - Tests, the `pixel-art` skill and the README
@@ -265,6 +267,15 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
 5. **Objects:** `block`, `tile`, `water` (with a `wf`-style surface loop) and `tree` (a sprite of at most 64×64 and 12 colors), all in world colors only. Scene `library-demo`: a 3×3 island using every object.
 6. **Previews and docs:** `--preview` for each new object and `library-demo` in the PR. A README "Pixel art" note on the palette tiers. The skill gains block examples.
 
+**How PR 3 departs from the steps above** (recorded in the PR 3 commit):
+
+- **No half-open rule is needed.** A pixel's center is at (x + ½, y + ½) and a tile's center is a whole number, so `|dx|/16 + |dy|/8` is never exactly 1 and no pixel lies on an edge. Tiles partition the plane with the plain `< 1` test, and the seeded tiling test (L4) proves it. The cost: a tile's widest rows are 30 pixels wide, not 32 (rows of 2, 6 … 30, 30 … 6, 2), so a cube is 30×32. The 32×16 grid spacing is unchanged.
+- **Placement semantics (D4 left them open).** `at` is the top-face center of the block's first tile, and the sides hang `levels × 16` pixels below it. A footprint of `[w, d]` covers the tiles `[col … col + w − 1, row … row + d − 1]`; the left face is the part left of the vertical line through the top's lowest corner, and the right face the rest. The edge is the 1-pixel outline of the whole silhouette.
+- **A block's `surface` carries its own `keys`.** D3's example had none, but a surface sprite needs a key-to-color map. It is `{ keys, map }`, or `{ keys, loop, prefix, frames }`, with each map exactly one tile (32×16), clipped to the top face and repeated on every tile of a larger block.
+- **A block is at most 64×64** pixels, like a sprite, so `[2, 2, 0]` fits and `[3, 3, 0]` doesn't. Surface colors count toward the 12-color cap.
+- **World palette picks.** The island has no path or water of its own, and its wood is a single brown, so `water-1` to `water-4` and `path-1` to `path-3` come from the Range's and outfits' legacy colors. 28 of the 32 are exact legacy values; `wood-1`, `wood-2`, `path-4` and `gold-4` are new, to fill the ends of ramps the legacy colors don't cover (a test keeps at least 24 exact).
+- **`--preview palette`** writes the swatch sheet, and **`--new object --kind block`** writes a starter block. Both are small additions the plan didn't list.
+
 ### PR 4: Security and governance outfit (slice 4)
 
 1. **Tests first:**
@@ -349,7 +360,7 @@ Tick these as PRs merge.
 - [x] PR 0: Verification tooling
 - [x] PR 1: Engine and Range round trip
 - [x] PR 2: Hero island round trip
-- [ ] PR 3: World palette and library
+- [x] PR 3: World palette and library
 - [ ] PR 4: Security and governance outfit
 - [ ] PR 5: Editor, scene mode
 - [ ] PR 6: Editor, object mode
@@ -363,7 +374,7 @@ Tick these as PRs merge.
 | 1 | **The island rebuild differs, or the file grows.** Dropping 1,492 hidden pixels changes how runs merge, so the path data changes. | R11 compares the visible image, and `art.e2e.mjs` compares in the browser. If the output grows past 83.5 KB, emit colors in the fixture's group order (the importer records it as the key order), which keeps the original run structure. |
 | 2 | **The cap conflicts with props.** Legacy outfits include props (a board, screens) in their variant groups, so they're wider than 16×24. | Legacy outfits are exempt. New outfits keep the figure within 16×24 and put any prop in its own object (PR 4). |
 | 3 | **Little to factor into `character`.** The five outfits may share few whole rows (Q5). | Still valid: an outfit can override most rows. The round-trip test is the gate, not the size of the saving. |
-| 4 | **Diamond rasterization leaves gaps or overlaps.** | The half-open center rule (PR 3, step 3), plus the seeded random tiling test (L4). |
+| 4 | **Diamond rasterization leaves gaps or overlaps.** | Pixel centers at (x + ½, y + ½) never lie on an edge (PR 3, step 3, and its departures), plus the seeded random tiling test (L4). |
 | 5 | **`astro check` flags the `@ts-check` engine code** under `astro/tsconfigs/strict`. | Run `npm run build` right after the first engine file lands in PR 1, and fix types in JSDoc. Never turn checking off. |
 | 6 | **Editor JS goes over 30 KB gzip.** | No framework, and one shared engine import. Check after PR 5 step 3. If it's over, lazy-load object mode with a dynamic import of a bundled module (not of user content). |
 | 7 | **Editor code leaks onto other pages,** for example through a shared chunk. | The R24 grep in PR 5, plus the unchanged home bundle check. |
