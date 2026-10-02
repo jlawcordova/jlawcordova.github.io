@@ -271,12 +271,19 @@ export function compileScene(sources, name) {
   return { output, over, report: `${kb(srcRaw)} / ${kb(srcGz)} gzip → ${kb(raw)} / ${kb(gz)} gzip, lossless${over ? ' — OVER BUDGET' : ''}` };
 }
 
-/** Finds an object or scene by name, or by objects/<name> or scenes/<name>. */
-function find(sources, query) {
+/**
+ * Finds an object or scene by name, or by objects/<name> or scenes/<name>.
+ * A file that exists but didn't load is found too, so its load error is what
+ * gets reported.
+ */
+function find(sources, problems, query) {
   const m = /^(objects|scenes)\/(.+?)(?:\.mjs)?$/.exec(query);
   const name = m ? m[2] : query;
-  const isObject = (!m || m[1] === 'objects') && sources.objects.has(name);
-  const isScene = (!m || m[1] === 'scenes') && sources.scenes.has(name);
+  const failed = (file) => problems.some((p) => p.startsWith(`${file}: cannot be loaded: `));
+  const asObject = !m || m[1] === 'objects';
+  const asScene = !m || m[1] === 'scenes';
+  const isObject = asObject && (sources.objects.has(name) || failed(objectFile(name)));
+  const isScene = asScene && (sources.scenes.has(name) || failed(sceneFile(name)));
   if (isObject && isScene) throw new Problem(`${name} is both an object and a scene; say objects/${name} or scenes/${name}`);
   if (!isObject && !isScene) throw new Problem(`no object or scene named ${query}`);
   return isObject ? { object: name, file: objectFile(name) } : { scene: name, file: sceneFile(name) };
@@ -285,8 +292,9 @@ function find(sources, query) {
 /** The files a check of one object or scene covers: it, and everything it uses. */
 function dependencies(sources, target) {
   const files = new Set(['palette.mjs']);
+  // A name is added even when its file didn't load, so its load error shows.
   const addObject = (name) => {
-    for (let n = name; typeof n === 'string' && sources.objects.has(n) && !files.has(objectFile(n)); n = sources.objects.get(n)?.extends) {
+    for (let n = name; typeof n === 'string' && !files.has(objectFile(n)); n = sources.objects.get(n)?.extends) {
       files.add(objectFile(n));
     }
   };
@@ -327,7 +335,7 @@ async function compileAll(sources, out) {
 }
 
 function check(sources, problems, query) {
-  const target = find(sources, query);
+  const target = find(sources, problems, query);
   const files = dependencies(sources, target);
   const mine = problems.filter((p) => files.has(p.slice(0, p.indexOf(': '))));
   if (mine.length) {
@@ -350,7 +358,7 @@ const countItems = (items) => items.reduce((n, item) => n + (item.group ? countI
 
 async function preview(sources, problems, query) {
   if (!check(sources, problems, query)) return false;
-  const target = find(sources, query);
+  const target = find(sources, problems, query);
   const { image } = renderPreview(sources, target, await previewColors());
   await mkdir(PREVIEW_DIR, { recursive: true });
   const name = target.object ?? target.scene;
@@ -377,6 +385,7 @@ function nearest(sources, hex, tiers) {
 }
 
 async function create(sources, dir, kind, name, opts) {
+  if (name && name.length > 64) throw new Problem(`--new ${kind}: name is ${name.length} characters long, max 64`);
   if (!name || !isName(name)) throw new Problem(`--new ${kind}: name ${JSON.stringify(name ?? '')} must be lowercase kebab-case, like small-rock`);
   const file = kind === 'object' ? objectFile(name) : sceneFile(name);
   const path = join(dir, file);

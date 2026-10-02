@@ -112,6 +112,20 @@ describe('--check (R38)', () => {
     assert.equal(art(dir, '--check', 'range-island').code, 0, 'an unrelated object is not');
   });
 
+  it('R38: --check and --preview report a source that does not load, by its file', async () => {
+    const dir = await workspace();
+    const path = join(dir, 'source/objects/range-island.mjs');
+    await writeFile(path, `${await readFile(path, 'utf8')}export default {`);
+    for (const args of [['--check', 'range-island'], ['--check', 'objects/range-island'], ['--preview', 'range-island'], ['--check', 'range-sprite']]) {
+      const { code, err } = art(dir, ...args);
+      assert.equal(code, 1, args.join(' '));
+      assert.match(err, /^objects\/range-island\.mjs: cannot be loaded: /m, args.join(' '));
+      assert.doesNotMatch(err, /no object or scene named/, args.join(' '));
+    }
+    assert.ok(!existsSync(join(dir, '.art-preview')));
+    assert.equal(art(dir, '--check', 'outfit-front-end').code, 0, 'an object that does not use it still checks');
+  });
+
   it('R38: an unknown name exits 1', async () => {
     const dir = await workspace();
     const { code, err } = art(dir, '--check', 'nope');
@@ -159,6 +173,7 @@ describe('--new (R38)', () => {
     const cases = [
       [['--new', 'object', 'character'], 'objects/character.mjs already exists; edit it, or pick another name\n'],
       [['--new', 'object', 'Big_Rock'], '--new object: name "Big_Rock" must be lowercase kebab-case, like small-rock\n'],
+      [['--new', 'object', 'a'.repeat(65)], '--new object: name is 65 characters long, max 64\n'],
       [['--new', 'object', 'rock', '--kind', 'slope'], "--kind slope isn't supported yet; only sprite\n"],
       [['--new', 'object', 'rock', '--size', '65x2'], '--size 65x2: give WxH, each from 1 to 64\n'],
       [['--new', 'thing', 'rock'], '--new takes object or scene, then a name\n'],
