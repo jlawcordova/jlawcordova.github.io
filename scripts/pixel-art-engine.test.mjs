@@ -8,7 +8,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import { describe, it } from 'node:test';
 import { inflateSync } from 'node:zlib';
 
-import { composite, describeObject, loadSources, renderObject, renderScene, resolve, usedKeys, validate } from '../src/lib/pixel-art/engine.mjs';
+import { composite, describeObject, loadSources, paintedSize, renderObject, renderScene, resolve, usedKeys, validate } from '../src/lib/pixel-art/engine.mjs';
 import { blockFaces, tilePixels, tileToPx } from '../src/lib/pixel-art/iso.mjs';
 import { serialize } from '../src/lib/pixel-art/serialize.mjs';
 import { toRectSvg } from '../src/lib/pixel-art/svg.mjs';
@@ -949,6 +949,57 @@ describe('library (R13, R31)', () => {
     const items = demo.items.filter((i) => i.object);
     assert.deepEqual([...new Set(items.map((i) => i.object))].sort(), ['block', 'tile', 'tree', 'water']);
     assert.ok(items.every((i) => i.at.tile.slice(0, 2).every((n) => n >= 0 && n <= 2)), 'every item sits within a 3×3 grid');
+  });
+});
+
+describe('security and governance outfit (R14, Q6)', () => {
+  const dir = new URL('../src/assets/pixel-art/source/', import.meta.url);
+  const committed = async () => {
+    const read = async (sub) => {
+      const out = {};
+      for (const file of (await readdir(new URL(`${sub}/`, dir))).filter((f) => f.endsWith('.mjs'))) {
+        out[file.slice(0, -4)] = (await import(new URL(`${sub}/${file}`, dir).href)).default;
+      }
+      return out;
+    };
+    return loadSources({ palette: (await import(new URL('palette.mjs', dir).href)).default, objects: await read('objects'), scenes: await read('scenes') });
+  };
+  const NAME = 'outfit-security-governance';
+
+  it('R14: the outfit validates, extends character and is not legacy', async () => {
+    const sources = await committed();
+    assert.deepEqual(validate(sources), []);
+    const outfit = sources.objects.get(NAME);
+    assert.equal(outfit.extends, 'character');
+    assert.equal(resolve(sources, NAME).legacy, false);
+  });
+
+  it('R27: the figure stays within 16×24', async () => {
+    const sources = await committed();
+    const [w, h] = paintedSize(resolve(sources, NAME));
+    assert.ok(w <= 16 && h <= 24, `the figure is ${w}×${h}`);
+  });
+
+  it('Q6: it uses world colors plus at most 4 outfit colors, and no legacy ones', async () => {
+    const sources = await committed();
+    const resolved = resolve(sources, NAME);
+    const tiers = [...new Set(usedKeys(resolved).map((k) => resolved.keys[k]))].map((c) => sources.colors.get(c).tier);
+    assert.ok(!tiers.includes('legacy'), 'no legacy colors');
+    assert.ok(tiers.filter((t) => t === 'outfit').length <= 4, 'at most 4 outfit colors');
+    const { outfit } = (await import('../src/assets/pixel-art/source/palette.mjs')).default;
+    assert.ok(Object.keys(outfit).length <= 4, 'the outfit tier has at most 4 colors so far');
+  });
+
+  it('R14: it is not part of range-sprite, and outfit-preview shows all six outfits', async () => {
+    const sources = await committed();
+    const placed = (name) => JSON.stringify(sources.scenes.get(name).items);
+    assert.ok(!placed('range-sprite').includes(NAME), 'not in the carousel');
+    assert.equal(sources.scenes.get('range-sprite').output, 'range-sprite.svg');
+    const preview = sources.scenes.get('outfit-preview');
+    assert.equal(preview.output, undefined, 'a preview-only scene');
+    const outfits = preview.items.filter((i) => i.object?.startsWith('outfit-')).map((i) => i.object).sort();
+    assert.deepEqual(outfits, [...sources.objects.keys()].filter((n) => n.startsWith('outfit-')).sort());
+    assert.equal(outfits.length, 6);
   });
 });
 
