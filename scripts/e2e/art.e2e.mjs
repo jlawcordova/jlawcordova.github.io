@@ -1,9 +1,8 @@
 // Browser check: each committed pixel-art SVG renders exactly like its fixture
 // (pixel-art engine spec D17, R10, R11). Both are drawn at their viewBox size
-// × 1 on a white page and compared with getImageData pixel by pixel, in three
-// kinds of state: every group with no CSS, each data-class variant alone, and
-// frame 0 of each loop (what reduced motion shows). Later animation frames
-// are only seen through the all-groups state, where they overlap. No
+// × 1 on a white page and compared with getImageData pixel by pixel, in each
+// state the site can show: every group visible, each data-class variant alone,
+// frame 0 of the loops, each animation frame alone, and .it2 alone. No
 // committed baseline images.
 //
 // Run with `npm run e2e`. On a failure, a screenshot of the pair goes to
@@ -57,7 +56,8 @@ after(async () => {
 
 /**
  * The states to compare: everything with no CSS, each data-class variant
- * alone (as range.css shows them), and frame 0 if the art has loops.
+ * alone (as range.css shows them), and, if the art has loops, frame 0, each
+ * animation frame alone (as the loops show them) and .it2 alone.
  */
 function statesFor(...svgs) {
   const states = [{ name: 'every group visible, no CSS', css: '' }];
@@ -67,6 +67,15 @@ function statesFor(...svgs) {
   }
   if (svgs.some((svg) => /class="[^"]*\b(?:wf|ff|hf|it2)\b/.test(svg))) {
     states.push({ name: 'frame 0 of each loop, .it2 hidden', css: FRAME_ZERO_CSS });
+  }
+  // Later frames cover earlier ones when every group is visible, so each one
+  // is also compared on its own.
+  const frames = new Set(svgs.flatMap((svg) => [...svg.matchAll(/class="(?:wf|ff|hf) ([wfh]\d+)"/g)].map((m) => m[1])));
+  for (const f of [...frames].sort()) {
+    states.push({ name: `.${f} alone`, css: `.wf,.ff,.hf{opacity:0}.${f}{opacity:1}` });
+  }
+  if (svgs.some((svg) => /class="[^"]*\bit2\b/.test(svg))) {
+    states.push({ name: '.it2 alone', css: '.it1{opacity:0}' });
   }
   return states;
 }

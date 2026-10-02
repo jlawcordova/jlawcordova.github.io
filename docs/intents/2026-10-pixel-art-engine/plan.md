@@ -128,12 +128,13 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
      1. Find a free port (`net.createServer().listen(0)`).
      2. Spawn `node_modules/.bin/astro preview --ignore-lock --port <p>`, and wait for HTTP 200 on `/`. Astro 7 backgrounds `astro preview` when it detects an AI agent, and refuses to start beside a running one. `--ignore-lock` keeps the server in the foreground and owned by the runner, and leaves any server you have running alone.
      3. Run `node --test "scripts/e2e/*.e2e.mjs"` (or the files passed after `--`) with `E2E_BASE_URL` set, piping its output and returning its exit code. The glob keeps `browser.mjs` and `run.mjs` out of the run.
-     4. Kill the server in `finally`.
+     4. Kill the server in `finally`, and on SIGINT or SIGTERM before exiting.
 4. **`scripts/e2e/art.e2e.mjs`.** For each pair (fixture `.src.svg` → committed `.svg`; in PR 0 the fixtures are still in `source/`), render both with `page.setContent`, then compare `getImageData` pixel by pixel:
    - **States compared:**
      - every group visible, with no CSS;
      - each `data-class="N"` alone;
      - frame 0 of each loop, with only `.w0`, `.f0`, `.h0` showing and `.it2` hidden.
+     - each animation frame alone (and `.it2` alone): one state per `.wN`, `.fN` and `.hN` with every other loop frame hidden, and one with `.it1` hidden.
    - **Render setup:** each SVG at its viewBox size × 1, on a white page.
    - **Test name:** `R11: hero island renders identically to its fixture` (and `R10:` for the sprite).
 

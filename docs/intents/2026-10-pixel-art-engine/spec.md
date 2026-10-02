@@ -726,7 +726,7 @@ Independent, report-only. PR head <sha> · spec <sha> · slice <n>.
 - **`npm run e2e`** runs `node scripts/e2e/run.mjs`. It's a `scripts` entry in `package.json`, not a dependency.
 - **Finding Playwright.** `run.mjs` first tries `import('playwright')`. If that fails, it resolves Playwright from the global install (`npm root -g`), and it uses the environment's Chromium (`PLAYWRIGHT_BROWSERS_PATH`). If neither works, it prints "Playwright not found: browser checks NOT RUN" and exits 2.
 - **What it serves.** It serves the existing `dist/` with `astro preview` on a free port (it doesn't build; run `npm run build` first), runs the suites with `node --test` so the output matches `npm test` (`# fail 0`), then stops the server.
-- **`art.e2e.mjs`.** It renders each fixture SVG and its compiled SVG in the same page at 1×, with animations paused and frame 0 showing, and compares `getImageData` pixel by pixel. That makes the "looks identical" check exact, with no committed baseline images.
+- **`art.e2e.mjs`.** It renders each fixture SVG and its compiled SVG in the same page at 1×, with animations paused, in each state the site can show: every group visible, frame 0 showing, and each animation frame alone (and `.it2` alone). It compares `getImageData` pixel by pixel. That makes the "looks identical" check exact, with no committed baseline images.
 - **`editor.e2e.mjs`.** It holds the flows in D15 for R15–R22, each run once with the pointer and once keyboard-only. It finds controls only by their accessible names and roles, never by pixel coordinates.
 - **Output.** Screenshots go to `.e2e-output/`, which is git-ignored.
 
