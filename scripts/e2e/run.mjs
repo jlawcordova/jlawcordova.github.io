@@ -20,6 +20,16 @@ import { loadPlaywright } from './browser.mjs';
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));
 const START_TIMEOUT_MS = 30_000;
 
+// The server and test processes, stopped if this one is interrupted, since
+// `finally` doesn't run on a signal.
+const children = new Set();
+for (const [signal, code] of [['SIGINT', 130], ['SIGTERM', 143]]) {
+  process.once(signal, () => {
+    for (const child of children) child.kill();
+    process.exit(code);
+  });
+}
+
 async function main() {
   if (!(await loadPlaywright())) {
     console.error('Playwright not found: browser checks NOT RUN');
@@ -40,6 +50,7 @@ async function main() {
     ['preview', '--ignore-lock', '--host', '127.0.0.1', '--port', String(port)],
     { cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'] },
   );
+  children.add(server);
   let serverLog = '';
   server.stdout.on('data', (chunk) => (serverLog += chunk));
   server.stderr.on('data', (chunk) => (serverLog += chunk));
@@ -50,11 +61,15 @@ async function main() {
       return 1;
     }
     const patterns = process.argv.length > 2 ? process.argv.slice(2) : ['scripts/e2e/*.e2e.mjs'];
+    // Without NODE_TEST_CONTEXT: inherited from a parent `node --test`, it makes
+    // this run skip every file and exit 0, a silent pass.
+    const { NODE_TEST_CONTEXT, ...env } = process.env;
     const tests = spawn(process.execPath, ['--test', ...patterns], {
       cwd: ROOT,
       stdio: 'inherit',
-      env: { ...process.env, E2E_BASE_URL: baseUrl },
+      env: { ...env, E2E_BASE_URL: baseUrl },
     });
+    children.add(tests);
     const [code, signal] = await new Promise((done) => tests.on('exit', (...args) => done(args)));
     return signal ? 1 : code;
   } finally {

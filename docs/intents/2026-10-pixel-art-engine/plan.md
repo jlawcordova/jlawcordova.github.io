@@ -151,7 +151,7 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
 
 **PR 0's own checks:**
 - `npm run e2e` passes with Playwright present.
-- `scripts/e2e-runner.test.mjs` (new, part of `npm test`, no browser and no network) spawns `run.mjs` with `E2E_PLAYWRIGHT_ROOT` pointing at an empty temp directory. It expects exit code 2 and the NOT RUN message (R35). A second case gives it a stand-in Playwright and no `dist/`, and expects exit code 1 and "Run npm run build first".
+- `scripts/e2e-runner.test.mjs` (new, part of `npm test`, no browser and no network) spawns `run.mjs` with `E2E_PLAYWRIGHT_ROOT` pointing at an empty temp directory. It expects exit code 2 and the NOT RUN message (R35). More cases, from the PR 0 verifier's report: a stand-in global module that isn't Playwright (exit 2, NOT RUN); a stand-in Playwright and no `dist/` (exit 1, "Run npm run build first"); and a stand-in `astro preview` with a waiting check, where SIGTERM to the runner must exit 143 and stop both. That last case runs under `npm test`'s own `node --test`, so it also proves `run.mjs` drops the inherited `NODE_TEST_CONTEXT`, which otherwise makes the checks skip every file and exit 0.
 - A local mutation (one rect removed from the committed `hero-island.svg`) turns `art.e2e.mjs` red, and is reverted.
 
 ### PR 1: Engine and Range round trip (slice 1)

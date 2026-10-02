@@ -1,7 +1,10 @@
 // Browser check: each committed pixel-art SVG renders exactly like its fixture
 // (pixel-art engine spec D17, R10, R11). Both are drawn at their viewBox size
-// × 1 on a white page, in every state the site can show, and compared with
-// getImageData pixel by pixel. No committed baseline images.
+// × 1 on a white page and compared with getImageData pixel by pixel, in three
+// kinds of state: every group with no CSS, each data-class variant alone, and
+// frame 0 of each loop (what reduced motion shows). Later animation frames
+// are only seen through the all-groups state, where they overlap. No
+// committed baseline images.
 //
 // Run with `npm run e2e`. On a failure, a screenshot of the pair goes to
 // .e2e-output/.
