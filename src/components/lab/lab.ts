@@ -34,14 +34,25 @@ const UNDO_LIMIT = 200;
 
 const copy = <T>(value: T): T => JSON.parse(JSON.stringify(value));
 
+/** A draft's view can be at most this wide or tall, a few times the largest committed scene. */
+const MAX_VIEW = 2048;
+
 const isRecord = (v: unknown): v is Record<string, any> => typeof v === 'object' && v !== null && !Array.isArray(v);
 const wholes = (v: unknown, n: number) => Array.isArray(v) && v.length === n && v.every((x) => Number.isInteger(x));
 
 /** An item the lab can draw and edit: a placement, or a group of them. */
 function usableItem(item: unknown): boolean {
   if (!isRecord(item)) return false;
-  if ('group' in item) return isRecord(item.group) && Array.isArray(item.items) && item.items.every(usableItem);
+  if ('group' in item) {
+    return (
+      isRecord(item.group) &&
+      Object.values(item.group).every((v) => typeof v === 'string') &&
+      Array.isArray(item.items) &&
+      item.items.every(usableItem)
+    );
+  }
   const at = item.at;
+  if (item.class !== undefined && typeof item.class !== 'string') return false;
   return typeof item.object === 'string' && isRecord(at) && (wholes(at.tile, 3) || wholes(at.px, 2));
 }
 
@@ -51,8 +62,11 @@ function usableItem(item: unknown): boolean {
  * problems, which Export lists.
  */
 export function usableScene(doc: unknown): boolean {
-  if (!isRecord(doc)) return false;
-  if (!wholes(doc.viewBox, 4) || doc.viewBox[2] <= 0 || doc.viewBox[3] <= 0) return false;
+  // A `kind` would make serialize() treat the draft as an object.
+  if (!isRecord(doc) || 'kind' in doc) return false;
+  if (!wholes(doc.viewBox, 4)) return false;
+  const [, , w, h] = doc.viewBox;
+  if (w <= 0 || h <= 0 || w > MAX_VIEW || h > MAX_VIEW) return false;
   if ('origin' in doc && !wholes(doc.origin, 2)) return false;
   if ('output' in doc && typeof doc.output !== 'string') return false;
   return Array.isArray(doc.items) && doc.items.every(usableItem);
@@ -127,7 +141,16 @@ export class Lab {
     const key = `scene:${name}`;
     const site = this.data.scenes[name];
     const stored = this.storage ? readDraft(key) : null;
-    const draft = stored && usableScene(stored.doc) && serialize(stored.doc) !== serialize(site) ? stored : null;
+    // Any throw while reading the draft also makes it unusable, so a shape
+    // usableScene misses still can't stop the scene from opening.
+    const differs = (doc: unknown) => {
+      try {
+        return serialize(doc) !== serialize(site);
+      } catch {
+        return false;
+      }
+    };
+    const draft = stored && usableScene(stored.doc) && differs(stored.doc) ? stored : null;
     if (stored && !draft) removeDraft(key);
     // Nothing above can throw, so the name and the document change together.
     this.name = name;

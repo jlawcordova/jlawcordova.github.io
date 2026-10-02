@@ -324,6 +324,29 @@ describe('scene editing (R16)', () => {
     await context.close();
   });
 
+  test('R21: a held arrow key is one undo step', async () => {
+    const { context, page, errors } = await openLab();
+    await pickScene(page, SCENE);
+    const stage = page.getByRole('group', { name: 'Scene stage' });
+    await page.getByRole('button', { name: 'tree', exact: true }).click();
+    await stage.click();
+    let { item } = await newItem(await exportText(page));
+    const [col, row, level] = item.at.tile;
+
+    await stage.focus();
+    await page.keyboard.down('ArrowRight');
+    for (let i = 0; i < 2; i++) await stage.dispatchEvent('keydown', { key: 'ArrowRight', repeat: true, bubbles: true });
+    await page.keyboard.up('ArrowRight');
+    ({ item } = await newItem(await exportText(page)));
+    assert.deepEqual(item.at.tile, [col + 3, row, level], 'a held arrow moves a tile per keydown');
+    await stage.focus();
+    await page.keyboard.press('Control+z');
+    ({ item } = await newItem(await exportText(page)));
+    assert.deepEqual(item.at.tile, [col, row, level], 'one Ctrl+Z takes back the whole hold');
+    assert.deepEqual(errors, []);
+    await context.close();
+  });
+
   test('R21: the toolbar is one tab stop, with arrow keys inside it', async () => {
     const { context, page } = await openLab();
     await tabTo(page, 'button', 'Scene');
@@ -456,10 +479,14 @@ describe('drafts (R20)', () => {
   });
 
   test("R20: a draft the lab can't use is dropped, and its scene opens as on the site", async () => {
+    const draft = (doc) => JSON.stringify({ version: 'x', saved: 0, doc });
+    const tree = { object: 'tree', at: { tile: [0, 0, 0] } };
     const bad = {
-      'pixel-lab:scene:range-sprite': JSON.stringify({ version: 'x', saved: 0, doc: {} }),
-      'pixel-lab:scene:hero-island': JSON.stringify({ version: 'x', saved: 0, doc: { viewBox: [0, 0, 8, 8], items: [null] } }),
-      'pixel-lab:scene:outfit-preview': JSON.stringify({ version: 'x', saved: 0, doc: { viewBox: [0, 0, 8, 8], items: 'x' } }),
+      // hero-island opens first, so the page itself has to come up.
+      'pixel-lab:scene:hero-island': draft({ viewBox: [0, 0, 8, 8], items: [{ ...tree, class: 5 }] }),
+      'pixel-lab:scene:range-sprite': draft({}),
+      'pixel-lab:scene:outfit-preview': draft({ viewBox: [0, 0, 100000, 100000], items: [null] }),
+      'pixel-lab:scene:library-demo': draft({ viewBox: [0, 0, 8, 8], items: [{ group: { 'data-class': 7 }, items: [tree] }] }),
     };
     const init = [
       (drafts) => {
@@ -473,8 +500,8 @@ describe('drafts (R20)', () => {
       bad,
     ];
     const { context, page, errors } = await openLab({ init });
-    for (const name of ['hero-island', 'range-sprite', 'outfit-preview']) {
-      await pickScene(page, name);
+    for (const name of ['hero-island', 'range-sprite', 'outfit-preview', 'library-demo']) {
+      if (name !== 'hero-island') await pickScene(page, name);
       const site = await readFile(join(ROOT, `src/assets/pixel-art/source/scenes/${name}.mjs`), 'utf8');
       await page.getByRole('button', { name: 'Export' }).click();
       const dialog = page.getByRole('dialog', { name: 'Export' });
