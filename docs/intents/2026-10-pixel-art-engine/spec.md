@@ -5,7 +5,7 @@ Status: approved.
 | --- | --- |
 | **Intent** | [`intent.md`](intent.md) |
 | **Builds on** | [Redesign spec](../2026-10-redesign/spec.md) §8 (pipeline), §11 (responsive), §12 (budgets) and §13 (verification) |
-| **Plan** | `plan.md`, written after this spec is approved |
+| **Plan** | [`plan.md`](plan.md) |
 
 This spec turns the intent into buildable detail. The intent says *what* and *why*, and this says *how*. If the two disagree, the intent wins and this spec gets fixed.
 
