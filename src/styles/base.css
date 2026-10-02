@@ -29,6 +29,14 @@ body {
   color: var(--color-ink);
   font: 400 17px/1.6 var(--font-text);
   overflow-x: clip;
+  /* Keep the footer at the bottom of short pages such as the 404. */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
 }
 
 a {
