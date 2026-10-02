@@ -1,44 +1,36 @@
-/* Inline and block-level code snippets. */
+/* Inline code and code blocks. Token colors are in syntax.css. */
 code,
 pre {
-  word-wrap: break-word;
-  font-family: var(--code-font-family);
+  font-family: var(--font-code);
 }
 
 code {
-  padding: .25em .5em;
-  font-size: 85%;
-  color: var(--code-color);
-  background-color: #f9f9f9;
-  border-radius: 3px;
+  padding: 0.1em 0.35em;
+  font-size: 0.9em;
+  background: var(--color-card);
+  color: var(--color-ink);
+  border-radius: 6px;
+  overflow-wrap: anywhere;
 }
 
+/* Long lines scroll inside the block instead of wrapping. */
 pre {
-  margin-top: 0;
-  margin-bottom: 1rem;
+  background: var(--color-ink);
+  color: var(--color-page);
+  border-radius: var(--radius-button);
+  padding: 16px 20px;
+  overflow-x: auto;
+  box-shadow: 4px 4px 0 var(--color-accent);
+  font-size: 14px;
+  line-height: 1.6;
+  tab-size: 4;
 }
 
 pre code {
   padding: 0;
-  font-size: 100%;
+  font-size: inherit;
+  background: none;
   color: inherit;
-  background-color: transparent;
-}
-
-figcaption {
-  font-size: 0.75rem;
-  font-style: italic;
-}
-
-/* Highlighted code blocks (Prism). Long lines wrap instead of overflowing on
-   narrow screens. */
-pre[class*="language-"] {
-  padding: 1rem;
-  margin: 0 0 1rem;
-  font-size: .8rem;
-  line-height: 1.4;
-  background-color: #f9f9f9;
-  border-radius: .25rem;
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
+  border-radius: 0;
+  overflow-wrap: normal;
 }

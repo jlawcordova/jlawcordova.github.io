@@ -1,8 +1,6 @@
 /*
  * Site styles, in cascade order: later files override earlier ones.
- * Interim list for the redesign (docs/intents/2026-10-redesign/plan.md): the spec's
- * order for the files that exist so far, then the legacy layer and the old
- * styles that PR 3 removes.
+ * variables.css holds the design tokens.
  */
 @import "./variables.css";
 @import "./base.css";
@@ -22,7 +20,3 @@
 @import "./blog-item.css";
 @import "./posts.css";
 @import "./page.css";
-
-@import "./legacy-aliases.css";
-@import "./masthead.css";
-@import "./message.css";

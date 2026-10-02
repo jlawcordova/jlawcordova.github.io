@@ -1,4 +1,6 @@
-.range {
+/* section.range, not .range: Prism marks C#'s ".." operator as
+   <span class="token range"> in code blocks. */
+section.range {
   background: var(--color-forest);
   color: var(--color-on-forest);
   padding: 96px var(--gutter) 112px;
@@ -180,7 +182,7 @@
 }
 
 @media (max-width: 480px) {
-  .range {
+  section.range {
     padding: 64px var(--gutter) 72px;
   }
   /* Give the sprite as much of the narrow stage as the 44px arrows allow. */

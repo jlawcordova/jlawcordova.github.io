@@ -1,0 +1,25 @@
+---
+interface Props {
+  title: string;
+  /** Small pixel label above the title. Pass a `label` slot instead for markup such as <time>. */
+  label?: string;
+  /** Align with the reading column (posts, 404) instead of the content width. */
+  reading?: boolean;
+}
+
+const { title, label, reading = false } = Astro.props;
+const hasLabel = label !== undefined || Astro.slots.has('label');
+---
+
+<header class:list={['page-head', 'isogrid', { 'page-head--reading': reading }]}>
+  <div class="page-head__inner">
+    {
+      hasLabel && (
+        <p class="label">
+          <slot name="label">{label}</slot>
+        </p>
+      )
+    }
+    <h1>{title}</h1>
+  </div>
+</header>

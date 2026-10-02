@@ -223,12 +223,12 @@ Silkscreen is loaded at 400 only, because the mock never uses 700.
 
 ## 4. Global styles
 
-- **`body`:** `background: var(--color-page); color: var(--color-ink); font: 400 17px/1.6 var(--font-text); overflow-x: clip;`. This guards against the hero art's `overflow: visible`. It uses `clip`, not `hidden`, because `clip` doesn't create a scroll container, so the sticky header keeps working.
+- **`body`:** `background: var(--color-page); color: var(--color-ink); font: 400 17px/1.6 var(--font-text); overflow-x: clip;`. This guards against the hero art's `overflow: visible`. It uses `clip`, not `hidden`, because `clip` doesn't create a scroll container, so the sticky header keeps working. `body` is also `min-height: 100vh; display: flex; flex-direction: column` with `main { flex: 1 0 auto }`, so the footer sits at the bottom of short pages such as the 404.
 - **Links:** `color: var(--color-accent)`; on hover `var(--color-accent-hover)`. Underline them in post bodies and not in UI chrome.
 - **Focus:** `:where(a, button):focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; box-shadow: 0 0 0 5px var(--color-page); }`. On forest and footer grounds, the outline is `var(--color-on-forest)` and the halo is the section ground.
 - **Anchors:** `[id] { scroll-margin-top: var(--header-offset); }` and `html { scroll-behavior: smooth; }`, with the smooth scroll removed under reduced motion.
 - **`.isogrid` utility:** `background-image: linear-gradient(26.57deg, var(--color-grid) 1px, transparent 1px), linear-gradient(-26.57deg, var(--color-grid) 1px, transparent 1px); background-size: 32px 16px;`
-- **`.container`:** `max-width: var(--content-max); margin-inline: auto; padding-inline: var(--gutter);`
+- **No `.container` utility.** Every full-width band (hero, Range, Accomplishments, page title band, page body) supplies the gutter in its own padding, and its inner wrapper is `max-width: var(--content-max)` (or `--reading-max`) with `margin-inline: auto`. A shared `.container` with its own padding would add the gutter twice, so it was removed in PR 3 as unused.
 - **`.visually-hidden`:** the standard clip pattern, for screen-reader-only text.
 
 ## 5. Buttons
@@ -352,6 +352,8 @@ The hero, Range and Accomplishments sections already supply the side gutter in t
 **Copy** (right, `flex: 1 1 380px; display: flex; flex-direction: column; gap: 20px`):
 - `<h2 id="range-title">`: "Many hats." plus `<span class="gold">One craftsman.</span>`.
 - `<p>`: the lede, `max-width: 480px`, `var(--color-on-forest-muted)`.
+
+**Class name.** The section's own rules use `section.range`, not `.range`: Prism marks C#'s `..` operator as `<span class="token range">`, which would otherwise pick up the forest ground and padding inside code blocks.
 
 **Sprite variants.** `range-sprite.svg` contains the island and five `<g data-class="0..4">` variant groups. The mock's `display: {{vis.vN}}` holes are replaced by the `data-class` attributes. CSS shows a variant only when it matches the section's state: `.range[data-current="2"] .range__sprite g[data-class="2"] { display: inline }`, with all other variants `display: none`. The character's `cbob` groups stay as they are in the source.
 
@@ -529,7 +531,6 @@ Everything else comes from the records. Records are published on the site at the
 
 | Keyframes | Applied with |
 | --- | --- |
-| `bob` | — |
 | `idrive` | `.itruck` 13s step-end infinite, `.it2` delayed -6.5s |
 | `wfk` | `.wf` 1.0s, delays w0…w4 = 0 / -0.8 / -0.6 / -0.4 / -0.2s |
 | `ffk` | `.ff` 0.6s, delays f0…f3 = 0 / -0.45 / -0.3 / -0.15s |
@@ -548,7 +549,7 @@ These pages have no mock. They use the tokens, type and surfaces above and inven
 
 - Every page uses the new header and footer.
 - The page ground is `--color-page`.
-- Content sits in `.container`. Reading content sits in a `max-width: var(--reading-max)` column.
+- Content sits in a `.page-body` band (`padding: 48px var(--gutter) 96px`) whose `.page-body__inner` is the content width. With `.page-body--reading`, it's the `max-width: var(--reading-max)` reading column. `PageHead` takes the same `reading` option so the title lines up with the column.
 - **Page title band:** a `.page-head isogrid` band with `background-color: var(--color-hero); padding: 56px var(--gutter) 40px`. It holds:
   - the page's `<h1>`, styled like the post H1;
   - an optional pixel label above it, 12px, ink-muted.
@@ -568,7 +569,7 @@ These pages have no mock. They use the tokens, type and surfaces above and inven
 
 ### 9.3 Post
 
-- **Title band:** the post title as H1, with the date as a pixel label, `<time>`, uppercase, e.g. `DEC 26, 2023`. Use the existing `formatDate`; uppercase it in CSS.
+- **Title band:** the post title as H1, with the date as a pixel label, `<time>`, uppercase, e.g. `26 DEC 2023`. Use the existing `formatDate` ("26 Dec 2023"); uppercase it in CSS.
 - **Body:** a reading column in post-body type.
   - Headings are Sora 700. Paragraph spacing is `1.1em`.
   - Lists are indented 1.4em.

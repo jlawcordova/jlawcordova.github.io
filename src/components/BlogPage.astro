@@ -1,4 +1,5 @@
 ---
+import PageHead from './PageHead.astro';
 import PostListItem from './PostListItem.astro';
 import type { Post } from '../lib/posts';
 
@@ -11,75 +12,71 @@ interface Props {
 
 const { posts, page, totalPages, totalPosts } = Astro.props;
 const pagePath = (n: number) => (n === 1 ? '/blog/' : `/blog/page${n}/`);
-const [highlight, ...rest] = posts;
+// Page 1 leads with the newest post as a featured card.
+const featured = page === 1 ? posts[0] : undefined;
+const rest = featured ? posts.slice(1) : posts;
+const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 ---
 
-{
-  page > 1 ? (
-    <div class="blog-container">
-      <ol class="posts-container">
-        {posts.map((post) => (
-          <PostListItem post={post} />
-        ))}
-      </ol>
-    </div>
-  ) : (
-    <div class="blog-container">
-      <div class="overall-posts-container">
-        {highlight && (
-          <ol class="highlight-posts-container">
-            <li class="highlight-post-container">
-              <a href={highlight.url}>
-                <img class="highlight-featured-post-image" src={highlight.featuredImage} alt={highlight.featuredImageAlt} />
-              </a>
-              <div class="highlight-post-content-container">
-                <p class="category-pre-heading">{highlight.category}</p>
-                <h3 class="highlight-post-heading">
-                  <a href={highlight.url}>{highlight.title}</a>
-                </h3>
-                <p class="highlight-post-description">{highlight.description}</p>
-                <a class="read-more" href={highlight.url}>
-                  Read more
-                </a>
-              </div>
-            </li>
-          </ol>
-        )}
-        <p class="page-info">
-          {totalPosts} blog posts &middot; Page {page} of {totalPages}
-        </p>
-        <ol class="posts-container">
+<PageHead title="Blog" label={`${totalPosts} posts · Page ${page} of ${totalPages}`} />
+
+<div class="page-body">
+  <div class="page-body__inner blog">
+    {
+      featured && (
+        <article class="featured-post">
+          <a class="featured-post__image" href={featured.url} tabindex="-1" aria-hidden="true">
+            <img src={featured.featuredImage} alt="" />
+          </a>
+          <div class="featured-post__body">
+            <p class="label">{featured.category}</p>
+            <h2 class="featured-post__title">
+              <a href={featured.url}>{featured.title}</a>
+            </h2>
+            {featured.description && <p class="featured-post__description">{featured.description}</p>}
+            <a class="btn btn--primary" href={featured.url}>
+              Read more<span class="visually-hidden">: {featured.title}</span>
+            </a>
+          </div>
+        </article>
+      )
+    }
+
+    {
+      rest.length > 0 && (
+        <ol class="post-list" role="list">
           {rest.map((post) => (
             <PostListItem post={post} />
           ))}
         </ol>
-      </div>
-    </div>
-  )
-}
+      )
+    }
 
-<div class="blog-pagination-container">
-  <div class="blog-pagination-wrapper">
-    <div class="blog-pagination">
-      {
-        page > 1 && (
-          <>
-            <a class="pagination-item pagination-previous" href={pagePath(page - 1)}>prev</a>
-            <a class="pagination-item pagination-previous" href={pagePath(page - 1)}>{page - 1}</a>
-          </>
-        )
-      }
-
-      <p class="pagination-item current-page">{page}</p>
-
-      {
-        page < totalPages && (
-          <>
-            <a class="pagination-item pagination-next" href={pagePath(page + 1)}>{page + 1}</a>
-            <a class="pagination-item pagination-next" href={pagePath(page + 1)}>next</a>
-          </>
-        )
-      }
-    </div>
+    {
+      totalPages > 1 && (
+        <nav class="pagination" aria-label="Blog pages">
+          {page > 1 && (
+            <a class="pagination__link" href={pagePath(page - 1)} rel="prev">
+              Prev
+            </a>
+          )}
+          {pages.map((n) => (
+            <a
+              class="pagination__link"
+              href={pagePath(n)}
+              aria-current={n === page ? 'page' : undefined}
+              aria-label={`Page ${n}`}
+            >
+              {n}
+            </a>
+          ))}
+          {page < totalPages && (
+            <a class="pagination__link" href={pagePath(page + 1)} rel="next">
+              Next
+            </a>
+          )}
+        </nav>
+      )
+    }
   </div>
 </div>
