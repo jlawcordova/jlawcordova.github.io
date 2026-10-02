@@ -1,5 +1,5 @@
 # Spec: Isometric pixel-art engine (from intent.md 2026-10-01, amended 2026-10-02)
-Status: draft.
+Status: approved.
 
 | | |
 | --- | --- |
@@ -834,13 +834,13 @@ No two standards contradict each other outright. A5 is the closest, and the owne
 
 ## Open questions
 
-Intent decisions 1–10 are all answered in the intent and adopted here as written. Decision #5 (the sixth class going live) is still a separate follow-up, and #7 (palette swaps) is still no.
+Intent decisions 1–13 are all answered in the intent and adopted here as written. Everything this change leaves for later is collected in the [follow-ups intent](../2026-10-pixel-art-follow-ups/intent.md): moving legacy art to world colors (A8), splitting the island (A2), opening files in the editor (Q2), draft diffs (A6), the sixth class going live (Decision #5) and palette swaps (Decision #7). Decision #5 (the sixth class going live) is still a separate follow-up, and #7 (palette swaps) is still no.
 
-| # | Question | Proposal |
+| # | Question | Answer |
 | --- | --- | --- |
 | Q1 | ~~Tile size in art pixels.~~ | **Closed:** 32×16, with a 16-pixel level, measured from the island's grass grid (D4, R27). |
-| Q2 | **Opening a downloaded file in the editor.** Sources are `.mjs`, so opening one means running it as code. | Not in this change. The library comes from the deployed site and work in progress lives in drafts. If you need it later, accept only the canonical format and parse it as data, never `import()` it. |
-| Q3 | **Palette names** for the 81 extracted colors. | The importer names them `c-<hex>` in the legacy tier. Rename them as they're touched, which changes no output. |
-| Q6 | **Outfit colors.** The five outfits already use 51 distinct colors between them, 41 of which the Range island doesn't use, all legacy. The new outfit can use at most 16 outfit colors on top of the world palette. | The Security and governance outfit uses world colors plus at most 4 new outfit colors (for example a steel-blue ramp). The remaining 12 are left for later outfits. |
-| Q4 | **Editor URL.** | `/lab/pixel-art/`, which leaves room for other tools under `/lab/`. Post URLs have at least four segments (`[category/]YYYY/MM/DD/slug`), so it can't collide with one. |
-| Q5 | **Outfit inheritance fit.** If the five extracted outfits share little of their base, `character` plus row overrides gives little saving. | Factor what's shared in slice 1. If an outfit overrides most rows, that's still valid. The format doesn't change. |
+| Q2 | **Opening a downloaded file in the editor.** Deferred to the [follow-ups intent](../2026-10-pixel-art-follow-ups/intent.md). Sources are `.mjs`, so opening one means running it as code. | Not in this change. The library comes from the deployed site and work in progress lives in drafts. If you need it later, accept only the canonical format and parse it as data, never `import()` it. **Adopted** (owner, 2026-10-02). |
+| Q3 | **Palette names** for the 81 extracted colors. | The importer names them `c-<hex>` in the legacy tier. Rename them as they're touched, which changes no output. **Adopted** (owner, 2026-10-02). |
+| Q4 | **Editor URL.** | `/lab/pixel-art/`, which leaves room for other tools under `/lab/`. Post URLs have at least four segments (`[category/]YYYY/MM/DD/slug`), so it can't collide with one. **Adopted** (owner, 2026-10-02). |
+| Q5 | **Outfit inheritance fit.** If the five extracted outfits share little of their base, `character` plus row overrides gives little saving. | Factor what's shared in slice 1. If an outfit overrides most rows, that's still valid. The format doesn't change. **Adopted** (owner, 2026-10-02). |
+| Q6 | **Outfit colors.** The five outfits already use 51 distinct colors between them, 41 of which the Range island doesn't use, all legacy. The new outfit can use at most 16 outfit colors on top of the world palette. | The Security and governance outfit uses world colors plus at most 4 new outfit colors (for example a steel-blue ramp). The remaining 12 are left for later outfits. **Adopted** (owner, 2026-10-02). |
