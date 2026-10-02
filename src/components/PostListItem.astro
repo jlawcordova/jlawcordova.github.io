@@ -8,9 +8,9 @@ interface Props {
 const { post } = Astro.props;
 ---
 
-<li class="post-container">
-  <div class="post-content-container">
-    <p class="category-pre-heading">{post.category}</p>
-    <h3 class="post-heading"><a href={post.url}>{post.title}</a></h3>
-  </div>
+<li>
+  <a class="card post-card" href={post.url}>
+    <span class="label">{post.category}</span>
+    <h2 class="post-card__title">{post.title}</h2>
+  </a>
 </li>
