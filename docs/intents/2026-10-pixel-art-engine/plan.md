@@ -291,6 +291,12 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
 3. **Scene `outfit-preview`:** all six outfits side by side, on tiles.
 4. **Evidence:** previews at 1×–4× in the PR. The owner judges the look (L8).
 
+**How PR 4 departs from the steps above** (recorded in the PR 4 commit):
+
+- **No prop object.** The figure is a steel-blue cap and jacket with a gold shield on the chest, and it needs no prop beside it, so the optional object isn't made.
+- **Four outfit colors,** the `steel-1` to `steel-4` ramp (Q6), in `palette.mjs`. The shield is the world's `gold-2`. The outfit uses 9 colors of the 12-color cap, and the trousers reuse the steel shades.
+- **`outfit-preview` spaces the six figures 64 pixels apart,** on tiles two apart, because the legacy outfits' props are wider than a tile and crowded each other at one tile's spacing. It's a preview-only scene, so nothing is written to `src/assets/`.
+
 ### PR 5: Editor, scene mode (slice 5)
 
 1. **Page:**
@@ -362,7 +368,7 @@ Tick these as PRs merge.
 - [x] PR 1: Engine and Range round trip
 - [x] PR 2: Hero island round trip
 - [x] PR 3: World palette and library
-- [ ] PR 4: Security and governance outfit
+- [x] PR 4: Security and governance outfit
 - [ ] PR 5: Editor, scene mode
 - [ ] PR 6: Editor, object mode
 

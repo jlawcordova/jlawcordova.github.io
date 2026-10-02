@@ -47,7 +47,12 @@ export default {
     'skin-1': '#E9B98A',
     'skin-2': '#A0524A',
   },
-  outfit: {},
+  outfit: {
+    'steel-1': '#A9BCCB',
+    'steel-2': '#7C97AD',
+    'steel-3': '#58748D',
+    'steel-4': '#3A5168',
+  },
   legacy: {
     'c-1f2226': '#1F2226',
     'c-2e2418': '#2E2418',
