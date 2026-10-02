@@ -54,7 +54,7 @@ const { Content } = await render(post.entry);
             {related.map((r) => (
               <li>
                 <a class="card related-card" href={r.url}>
-                  <img src={r.featuredImage} alt="" />
+                  <img src={r.featuredImage} alt="" loading="lazy" decoding="async" />
                   <span class="related-card__body">
                     <span class="label">{r.category}</span>
                     <span class="related-card__title">{r.title}</span>
