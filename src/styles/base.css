@@ -62,29 +62,4 @@ img {
   display: block;
   max-width: 100%;
   height: auto;
-  margin: 0 0 1rem;
-  border-radius: var(--radius-button);
-  border: 1px solid var(--color-border);
-}
-
-table {
-  margin-bottom: 1rem;
-  width: 100%;
-  font-size: 85%;
-  border-collapse: collapse;
-}
-
-td,
-th {
-  padding: 0.25rem 0.5rem;
-  border: 1px solid var(--color-border);
-}
-
-th {
-  text-align: left;
-}
-
-tbody tr:nth-child(odd) td,
-tbody tr:nth-child(odd) th {
-  background-color: var(--color-surface);
 }
