@@ -3,10 +3,10 @@
 | | |
 | --- | --- |
 | **Status** | Draft |
-| **Intent** | [`docs/intents/intent-redesign.md`](../intents/intent-redesign.md) |
+| **Intent** | [`intent.md`](intent.md) |
 | **Design source** | [J. Law Portfolio canvas](https://claude.ai/artifact/JhKbkNZP9qGWHMaWE8USbR), artboard "Prototype B — isometric" (`project/Isometric.dc.html`) |
-| **Content source** | [`docs/references/profile.md`](../references/profile.md) |
-| **Plan** | [`docs/plans/plan-redesign.md`](../plans/plan-redesign.md) |
+| **Content source** | [`docs/references/profile.md`](../../references/profile.md) |
+| **Plan** | [`plan.md`](plan.md) |
 | **Created** | 2026-10-01 |
 
 This spec turns the intent into buildable detail: files, tokens, components, behavior, budgets and checks. The intent says *what* and *why*; this says *how*. If the spec and the intent conflict, the intent wins and this spec gets fixed.

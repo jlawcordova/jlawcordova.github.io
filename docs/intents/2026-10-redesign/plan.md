@@ -3,8 +3,8 @@
 | | |
 | --- | --- |
 | **Status** | Draft |
-| **Intent** | [`docs/intents/intent-redesign.md`](../intents/intent-redesign.md) |
-| **Spec** | [`docs/specs/spec-redesign.md`](../specs/spec-redesign.md) |
+| **Intent** | [`intent.md`](intent.md) |
+| **Spec** | [`spec.md`](spec.md) |
 | **Created** | 2026-10-01 |
 
 This plan turns the spec into an ordered set of pull requests and tasks. The spec says *what to build*; this says *in what order, in which PR, and how each step is checked*. When the plan and the spec disagree on a detail, the spec wins and the plan gets fixed. The one exception is where this plan says it changes the spec's slicing, and why.
@@ -199,7 +199,7 @@ Used by T1.2. It lists every old custom property still referenced in `src/styles
 
 ## 8. Follow-ups (not in this plan)
 
-- A sixth Range class, **Security & Governance**, with new outfit art (intent decision #7).
+- A sixth Range class, **Security & Governance**, with new outfit art (intent decision #7). The art is made with the pixel-art engine in [`2026-10-pixel-art-engine/intent.md`](../2026-10-pixel-art-engine/intent.md).
 - A nav link to Accomplishments once there are enough records (decision #11).
 - Refreshing the résumé PDF against the profile (decision #4).
 - A skills strip from the profile's inventory (decision #8).
@@ -209,6 +209,6 @@ Used by T1.2. It lists every old custom property still referenced in `src/styles
 Update this checklist as PRs merge.
 
 - [x] PR 1: Foundation
-- [ ] PR 2: Home
-- [ ] PR 3: Pages
-- [ ] PR 4: Brand marks and final verification
+- [x] PR 2: Home
+- [x] PR 3: Pages
+- [x] PR 4: Brand marks and final verification
