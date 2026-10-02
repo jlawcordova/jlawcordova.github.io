@@ -1,0 +1,24 @@
+---
+import HeroIsland from './HeroIsland.astro';
+import { site } from '../../site';
+---
+
+<section id="top" class="hero isogrid">
+  <div class="hero__inner">
+    <div class="hero__copy">
+      <p class="hero__pretitle">Hi, I’m J. Law. Cordova.</p>
+      <h1 class="hero__title">I ship whole products, <span class="accent">not handoffs.</span></h1>
+      <p class="hero__lede">
+        Senior developer and tech lead at Netzon in Davao City. I lead full-stack teams, design data platforms, and take
+        releases safely to production.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="#range">Press start</a>
+        <a class="btn btn--ghost" href={site.author.linkedin}>Get in touch</a>
+      </div>
+    </div>
+    <div class="hero__art floaty">
+      <HeroIsland />
+    </div>
+  </div>
+</section>

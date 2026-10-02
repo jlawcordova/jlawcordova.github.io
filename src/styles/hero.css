@@ -1,0 +1,81 @@
+.hero {
+  background-color: var(--color-hero);
+  padding: 72px var(--gutter) 96px;
+  overflow: hidden;
+}
+
+/* The section supplies the gutter, so this isn't .container. */
+.hero__inner {
+  max-width: var(--content-max);
+  margin-inline: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.hero__copy {
+  flex: 1 1 480px;
+  min-width: 0;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.hero__copy > * {
+  margin: 0;
+}
+
+.hero__pretitle {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-ink-muted);
+}
+
+.hero__title {
+  font-size: clamp(44px, 5.6vw, 76px);
+  line-height: 1.02;
+  letter-spacing: -1.5px;
+}
+
+.hero__title .accent {
+  color: var(--color-accent);
+}
+
+.hero__lede {
+  max-width: 540px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--color-ink-muted);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding-top: 6px;
+}
+
+.hero__art {
+  flex: 1 1 460px;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-island {
+  width: 675px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 48px var(--gutter) 64px;
+  }
+}

@@ -265,7 +265,7 @@ Silkscreen is loaded at 400 only, because the mock never uses 700.
   - Where `backdrop-filter` isn't supported, fall back to `background: var(--color-page)`, using `@supports not (backdrop-filter: blur(1px))`.
 - **Brand:** the brand link is `font: 18px var(--font-pixel); letter-spacing: 1px; color: var(--color-ink)` with a 10px gap to the mark. Off the home page it links to `/`; on the home page it links to `#top`.
 - **Text links:** `display: inline-flex; align-items: center; min-height: 44px; padding: 0 14px; font-size: 14px; color: var(--color-ink)`, which gives a 44px target. (Vertical padding alone isn't enough: at line height 1, `12px` padding gives 38px.) The brand link also gets `min-height: 44px`.
-- **Small screens:** the nav wraps, and there's no drawer. Below 480px the link group takes the full width, the pill keeps its size, and the nav takes `border-radius: var(--radius-panel)` so the two-row bar doesn't become a tall stadium.
+- **Small screens:** the nav wraps, and there's no drawer. Below 480px the link group takes the full width with the text links on the left and the pill pushed right (`margin-left: auto`), the pill keeps its size, and the nav takes `border-radius: var(--radius-panel)` so the two-row bar doesn't become a tall stadium.
 - **Removed:** the drawer button and its script.
 
 ### 6.2 JL mark
@@ -297,7 +297,7 @@ It's flat, with no isometric faces, no earth side and no shading. It stays two l
 
 The hero is a `<section id="top" class="hero isogrid">` with `background-color: var(--color-hero); padding: 72px var(--gutter) 96px; overflow: hidden`.
 
-- **`.hero__inner`:** `.container` plus `display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 40px`.
+- **`.hero__inner`:** `max-width: var(--content-max); margin-inline: auto` plus `display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 40px`.
 - **Copy column:** `flex: 1 1 480px; max-width: 600px; display: flex; flex-direction: column; gap: 22px`. In order:
   1. `<p class="hero__pretitle">`: pre-title.
   2. `<h1>`: the H1, with its second clause in `<span class="accent">`.
@@ -330,7 +330,9 @@ The frosted card from the mock's highlight cards is kept as a generic surface fo
 
 The Range section is `<section id="range" class="range" aria-labelledby="range-title">`, with `background: var(--color-forest); color: var(--color-on-forest); padding: 96px var(--gutter) 112px`.
 
-**Layout.** `.range__inner` is `.container` plus `display: flex; flex-wrap: wrap; align-items: center; gap: 56px`.
+**Layout.** `.range__inner` is `max-width: var(--content-max); margin-inline: auto` plus `display: flex; flex-wrap: wrap; align-items: center; gap: 56px`.
+
+The hero, Range and Accomplishments sections already supply the side gutter in their own padding, so their inner wrappers don't use `.container`. It would add the gutter a second time and narrow the content to 1112px, where the mock's is 1160px.
 
 **Panel** (left, `flex: 1 1 460px`):
 - **Outer frame:** `border-radius: var(--radius-panel); padding: 20px; background: var(--color-on-forest-surface); border: 1px solid var(--color-on-forest-border); backdrop-filter: blur(16px)`.
@@ -345,7 +347,7 @@ The Range section is `<section id="range" class="range" aria-labelledby="range-t
      - Arrows are 56×56, with no border or background. The icon is the mock's 7×9 pixel chevron (an inline SVG drawn at 28×36), filled with `var(--color-ink)`.
   3. **Pager row** (`display: flex; align-items: center; gap: 8px`):
      - Five dots `<span class="range__dot" aria-hidden="true">`, 10×10, `background: rgba(90,62,43,.25)`. The current dot is `background: var(--color-ink)`.
-     - Then, 8px later, the pause/play toggle **(D1)**: `<button type="button" class="range__toggle" aria-pressed="false" aria-label="Pause class rotation">`. It's 44×44 with a pixel pause icon (two 2×7 bars) or a play icon (pixel triangle), filled with `var(--color-ink)`, and no background.
+     - Then, 8px later, the pause/play toggle **(D1)**: `<button type="button" class="range__toggle" aria-pressed="false" aria-label="Pause class rotation">`. It's 44×44 with a pixel pause icon (two 2×7 bars) or a play icon (pixel triangle), filled with `var(--color-ink)`, and no background. The label stays "Pause class rotation" in both states. `aria-pressed="true"` means paused, and the icon then shows play.
 
 **Copy** (right, `flex: 1 1 380px; display: flex; flex-direction: column; gap: 20px`):
 - `<h2 id="range-title">`: "Many hats." plus `<span class="gold">One craftsman.</span>`.
@@ -362,7 +364,7 @@ The Range section is `<section id="range" class="range" aria-labelledby="range-t
 - **Prev and next.** They step by −1 or +1 (mod 5) and restart the 2200ms timer.
   - The nameplate's `aria-live` switches to `polite` for user-triggered changes and back to `off` for auto-advance, so autoplay doesn't keep announcing.
 - **Pause and play.**
-  - The toggle flips `playing`, `aria-pressed`, its `aria-label` ("Pause class rotation" / "Play class rotation") and its icon.
+  - The toggle flips `playing`, `aria-pressed` and its icon. Its `aria-label` doesn't change: a toggle button whose label also flips would be announced as, for example, "Play class rotation, pressed", which reads backwards.
   - Autoplay also pauses while the pointer is over the panel or focus is inside it (`mouseenter`/`mouseleave`, `focusin`/`focusout`), and resumes afterwards unless the user pressed pause.
 - **Reduced motion.** If `matchMedia('(prefers-reduced-motion: reduce)')` matches, `playing` starts as `false`, the toggle shows "play", and no pulse runs. The media query is listened to for changes.
 - **Hidden tab.** On `visibilitychange`, the timer stops while the document is hidden.
@@ -384,7 +386,7 @@ Not in the mock (D6). It uses only the brand's existing tokens, type, card surfa
 
 ```html
 <section id="accomplishments" class="accomplishments" aria-labelledby="accomplishments-title">
-  <div class="container">
+  <div class="accomplishments__inner">
     <header class="accomplishments__head">
       <p class="label">Achievements unlocked</p>
       <h2 id="accomplishments-title">Accomplishments</h2>
@@ -640,7 +642,7 @@ These replace the current `apple-touch-icon-precomposed` and `shortcut icon` lin
 | ≥ 960px | As in the mock. Hero and Range are two columns. Accomplishments are two cards per row. |
 | 720–959px | Hero and Range wrap to one column (copy first, then art or panel). |
 | < 720px | One column throughout. The hero art is 100% of the content width. The blog featured card stacks. Accomplishments are one card per row. |
-| < 480px | Gutter is 16px. Hero padding is `48px 16px 64px`. Range and Accomplishments padding is `64px 16px 72px`. The nav links wrap under the brand. |
+| < 480px | Gutter is 16px. Hero padding is `48px 16px 64px`. Range and Accomplishments padding is `64px 16px 72px`. The nav links wrap under the brand. The Range panel padding is 12px, the stage's side padding is 12px, the arrows are 44px wide and the controls gap is 4px, which leaves the sprite about 212px at 390px wide. |
 
 At every width from 320px up there's no horizontal scroll. All tap targets are at least 44×44.
 

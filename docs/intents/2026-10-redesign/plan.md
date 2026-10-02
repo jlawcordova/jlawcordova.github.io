@@ -113,7 +113,7 @@ Used by T1.2. It lists every old custom property still referenced in `src/styles
 | T2.7 | **Range.** Follow spec §6.6, with copy from §7.3. The sprite is inlined the same way as the hero. The variant `display` rules key off `data-current` on the section, and the server renders `data-current="0"` so the no-JS state is correct. The script handles state, timer, pulse, prev/next, the pause toggle, hover/focus pause, reduced motion and visibility, as one `<script>` under 60 lines. | `src/components/home/Range.astro`, `src/styles/range.css` (new) | Every behavior in §6.6 works (see the Verify list). |
 | T2.8 | **Accomplishments restyle.** Follow spec §6.8: render nothing for `"unavailable"` or zero items; cap at 8 with a `<details>` for the rest; pixel star badge; tags and links. `src/lib/accomplishments.ts` is unchanged. | `src/components/Accomplishments.astro`, `src/styles/accomplishments.css` | Fixture checks pass (see Verify). |
 | T2.9 | **Compose the page.** `index.astro` renders `Hero`, `Range` and `Accomplishments`, in that order. Remove the old intro, bio and recent posts sections and the skill-rotator script. The nav gains the **Range** link (`/#range`), and the brand links to `#top` on the home page. Update `site.description` per spec §7.4. | `src/pages/index.astro`, `src/components/Navigation.astro`, `src/site.ts` | The home page has exactly three sections between the header and footer. |
-| T2.10 | **Delete the old home.** Remove `intro.css`, `bio.css`, `recent-blogs.css` and `home.css` and their imports. Move the related-posts rules that currently live in `recent-blogs.css` into `posts.css` unchanged, as a holding place until PR 3 restyles them. Delete `jlawcordova-cogs.svg`, `graph-background.png` and `graph-background.webp`. | `src/styles/*`, `static/public/*` | Nothing references the deleted files. Post pages' related posts still render. |
+| T2.10 | **Delete the old home.** Remove `intro.css`, `bio.css`, `recent-blogs.css` and `home.css` and their imports. (The related-posts rules that post pages use, such as `.recent-blog-container`, were already in `posts.css`. `recent-blogs.css` only styled the old home section, so nothing needed moving.) Delete `jlawcordova-cogs.svg`, `graph-background.png` and `graph-background.webp`. | `src/styles/*`, `static/public/*` | Nothing references the deleted files. Post pages' related posts still render. |
 | T2.11 | **README.** Add `src/data/home.ts`, `src/assets/pixel-art/`, `scripts/optimize-pixel-art.mjs` and `docs/` to the project layout table, and `npm run art` to the commands. | `README.md` | — |
 
 ### Verify (spec §13 rows for the home page)
@@ -208,7 +208,7 @@ Used by T1.2. It lists every old custom property still referenced in `src/styles
 
 Update this checklist as PRs merge.
 
-- [ ] PR 1: Foundation
+- [x] PR 1: Foundation
 - [ ] PR 2: Home
 - [ ] PR 3: Pages
 - [ ] PR 4: Brand marks and final verification
