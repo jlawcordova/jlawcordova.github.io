@@ -68,6 +68,15 @@ These rules keep new art in one world, and keep sources small enough for a perso
 - **R24. Budgets.** Each shipped SVG stays ≤ 100 KB raw and ≤ 25 KB gzip, and is no bigger than today's. The home page's weight doesn't grow, and none of the editor's code, CSS or data loads on any other page (intent constraint).
 - **R25. Docs.** The README and `CLAUDE.md` describe the source formats, the editor and `npm run art`. Every mention of `source/*.src.svg` is updated (AC; `CLAUDE.md` "When a doc moves").
 
+### Skills and verification
+
+- **R32. Pixel-art skill.** `.claude/skills/pixel-art/SKILL.md` teaches any AI agent to make and change pixel art without this conversation's context. It covers objects, scenes, outfits, the design language (R26–R28), previews, validation errors and the editor. Each slice that changes how art is made updates it in the same PR (S11).
+- **R33. Verify-change skill.** `.claude/skills/verify-change/SKILL.md` runs an independent, report-only check of any PR against its change's intent, spec and plan. It isn't specific to pixel art (S11, S12, Decision #12).
+- **R34. Traceability.** Every requirement in this spec maps to at least one test whose name starts with its ID (for example `R27: rejects a 13th color`), or to a named check in [D15](#d15-traceability) (S12, AC).
+- **R35. Browser checks.** Browser checks are scripts in `scripts/e2e/`, run by `npm run e2e` with the environment's own Playwright. They're not a dependency and not part of `npm test`. If Playwright isn't available, the run prints "browser checks NOT RUN" and exits 2. It never passes silently (S12, Decision #11).
+- **R36. Independent verification.** Every PR in this change gets a verifier report as a PR comment, from a session that didn't build it. The verifier never pushes, and it never edits committed files (S12, Decision #12, AC).
+- **R37. Skill eval.** A fresh session, given only the pixel-art skill and a one-line request ("add a small rock to the library"), produces an object that passes validation and whose preview the owner accepts (S11, AC).
+
 ## Design
 
 ### D1. Files
@@ -113,6 +122,14 @@ scripts/
   pixel-art-roundtrip.test.mjs
   pixel-art-preview.mjs           PNG previews (R29): engine pixels → PNG via node:zlib
 .art-preview/                     git-ignored output of the previews
+scripts/e2e/
+  run.mjs                         finds Playwright, serves dist/, runs the suites (D17)
+  art.e2e.mjs                     fixture vs compiled art, rendered in the browser
+  editor.e2e.mjs                  editor flows, widths, keyboard-only, reduced motion, storage off
+.e2e-output/                      git-ignored screenshots from the browser checks
+.claude/skills/
+  pixel-art/SKILL.md              making and changing pixel art (D18)
+  verify-change/SKILL.md          independent, report-only verification (D16)
 ```
 
 The engine is plain ES modules with JSDoc types and `// @ts-check`, not TypeScript. `node scripts/…` imports it without a build step (the repo supports Node ≥ 22.12, which doesn't strip types by default), and Astro bundles the same files into the editor. The engine uses no Node or DOM APIs, so it runs unchanged in both.
@@ -517,6 +534,8 @@ There's no motion beyond frame playback: no panel transitions and no animated se
 
 - **README:** the layout table rows for `src/assets/pixel-art/`, `scripts/optimize-pixel-art.mjs` and the new folders. Add a "Pixel art" section covering the formats (D2–D5), the editor URL and the "export → commit → `npm run art`" loop.
 - **`CLAUDE.md`:** the Conventions line becomes "Edit pixel art only in `src/assets/pixel-art/source/**/*.mjs` (or on the editor page), then run `npm run art`. Never hand-edit the generated SVGs." Add the editor to Commands and the Architecture paragraph. Add one Conventions line for the design language: "New pixel art uses the world palette, the 32×16 tile, the light direction and the size caps (pixel-art engine spec R26–R28). Check it with `npm run art -- --preview <name>`."
+- **`CLAUDE.md` also gains:** `npm run e2e` under Commands; a "Verifying your work" line saying browser checks must show `# fail 0`, and that a "NOT RUN" result counts as not verified; and a step 5 under "How changes flow": an independent verifier session checks each PR with the `verify-change` skill and reports as a PR comment.
+- **README:** a "Skills" line in the layout table pointing at `.claude/skills/`.
 - **Code comments** that mention `source/*.src.svg` are updated. The redesign's `spec.md` and `plan.md` keep their wording, since `CLAUDE.md` says not to rewrite them. Their §8 describes how the art was first extracted, which is still true.
 
 ### D12. Verification
@@ -536,21 +555,175 @@ There's no motion beyond frame playback: no panel transitions and no animated se
 | Design language | Engine tests for each cap and tier (D8). The world palette's swatch sheet preview in its PR. The library objects and the new outfit pass validation with no legacy colors |
 | Previews | `npm run art -- --preview tree` writes four PNGs to `.art-preview/`, and they are git-ignored |
 | Editor layout | Screenshots of Scene and Object mode at 1440px and 390px, compared against the D9.3 wireframes |
+| Pixel-art skill eval | R37, run once at the end of slice 6 (D18) |
+| Independent reports and traceability | A verifier comment on every PR in this change (D16). The verifier's traceability check finds no requirement without evidence (D15) |
 | Tests, build, no dependencies | `npm test` shows `# fail 0`. `npm run build` ends with 0 errors, warnings and hints. `package.json` and the lockfile have no new entries |
 | README documents it | Review D11 |
 
 ### D13. Delivery slices
 
-Each slice is one PR. Each one leaves the site deployable and looking exactly as it does today.
+Each slice is one PR. Each one leaves the site deployable and looking exactly as it does today. Every slice ends with the implementer's own levels L1–L6 passing, then an independent verifier report (D14, D16).
 
-1. **Engine and Range round trip:** the palette tiers with today's colors as legacy, object and scene formats (sprite kind only), validation with the design-language caps (R26–R30), the compiler step, the serializer, PNG previews, the importer, the fixtures moved, the Range sprite rebuilt from source, tests, and docs for what exists so far.
+0. **Verification tooling:** the `verify-change` skill, the `scripts/e2e/` harness with `art.e2e.mjs` (it already works on today's art), `npm run e2e`, and the `.gitignore` entries. This slice is verified with its own skill, as the skill's first run.
+
+1. **Engine and Range round trip:** the first version of the `pixel-art` skill, the palette tiers with today's colors as legacy, object and scene formats (sprite kind only), validation with the design-language caps (R26–R30), the compiler step, the serializer, PNG previews, the importer, the fixtures moved, the Range sprite rebuilt from source, tests, and docs for what exists so far.
 2. **Hero island round trip:** the island imported and rebuilt from source, with before and after screenshots.
 3. **World palette and library:** the first 32 world colors (R31) with a swatch sheet, then the `block` kind, the `block`, `tile`, `water` and `tree` objects in world colors only, and the `library-demo` scene.
 4. **Security and governance outfit:** the outfit object, `outfit-preview` and the preview images.
 5. **Editor, scene mode:** the page, `noindex`, data embedding, stage, library, item list, keyboard model, export and drafts.
-6. **Editor, object mode:** painting tools, layers, frames, variants and the full Playwright round trip.
+6. **Editor, object mode:** painting tools, layers, frames, variants, the full browser round trip, the editor section of the `pixel-art` skill, and the skill eval (R37).
 
 Slices 1 and 2 can merge into one PR if you'd rather review the round trip once. Slices 3 and 4 can run alongside 5.
+
+### D14. Verification levels
+
+Each level says who runs it. The implementer covers L1–L6 in its own session before asking for verification. The verifier then repeats L1, re-runs L6, and adds L7. The owner closes with L8.
+
+| Level | What | Who | Where it lives | Slices |
+| --- | --- | --- | --- | --- |
+| **L1 Gates** | `npm test`, `npm run build`, `npm run art` (every file `lossless`, none `OVER BUDGET`), no new entries in `package.json` or the lockfile | Implementer; verifier re-runs | `CLAUDE.md` "Verifying your work" | All |
+| **L2 Unit** | Tests written before the code, named by requirement ID | Implementer | `scripts/pixel-art-engine.test.mjs` | All |
+| **L3 Exact rebuild** | Fixture comparisons (R10, R11), the staleness check, and two builds giving byte-identical output | Implementer | `scripts/pixel-art-roundtrip.test.mjs` | 1, 2, then every slice |
+| **L4 Randomized** | Seeded, repeatable random inputs (a small generator, Node built-ins only): save and reload give the same bytes; random block sizes tile with no gaps or overlaps; random invalid inputs each fail with their exact error | Implementer | `scripts/pixel-art-engine.test.mjs`, seed printed on failure | 1, 3 |
+| **L5 Visual** | Compiled art rendered in the browser against its fixture; PNG previews; screenshots at 1440px and 390px | Implementer captures; verifier compares | `scripts/e2e/art.e2e.mjs`, `.art-preview/` | 2–6 |
+| **L6 Browser end to end** | Editor flows, done with the pointer and again keyboard-only; widths 320, 390 and 1440 with no horizontal scroll; reduced motion; storage turned off; the `noindex` meta | Implementer writes; verifier runs and adds its own | `scripts/e2e/editor.e2e.mjs` | 5, 6 |
+| **L7 Independent** | A fresh, report-only session: traceability, test-strength (mutation) checks, attempts to break it, and the diff against the plan | Verifier | `verify-change` skill, PR comment | All |
+| **L8 Owner** | Using the editor and judging how the art looks. Merging | Owner | Merging the PR | All; essential for 4–6 |
+
+The implementer doesn't tick acceptance criteria. Its report says what it ran and what it saw. The verifier's report says whether the spec is met.
+
+### D15. Traceability
+
+Every requirement, with the levels that cover it and where the evidence lives. Tests are named `R<n>: …`, so `grep -r "R27:" scripts/` finds them. The verifier checks this table against the tests at the start of every run (R34).
+
+| Req | Levels | Evidence |
+| --- | --- | --- |
+| R1 Objects | L2 | Engine tests load and validate objects |
+| R2 Outfits are objects | L2, L3 | Six `outfit-*.mjs` files that extend `character`; Range round trip |
+| R3 Scenes | L2 | Scene tests: order, groups, classes, placement |
+| R4 Extensible library | L2, L7 | `library-demo` places every library object; the verifier adds a throwaway object in its working copy and places it |
+| R5 Frames and classes | L2, L6 | Group class tests; reduced-motion browser check |
+| R6 Named palette | L2 | Palette tests |
+| R7 Compiler | L1 | `npm run art` output |
+| R8 Deterministic | L3 | Two builds byte-identical; staleness test |
+| R9 Canonical format | L2, L4 | Serializer round trip on every committed source and on random objects |
+| R10 Range sprite | L3 | Round-trip test, per fill group |
+| R11 Hero island | L3, L5 | Round-trip test (visible image); `art.e2e.mjs` browser render comparison |
+| R12 Source of truth | L7 | Fixtures moved; no `.src.svg` read by `npm run art`; docs updated |
+| R13 Library objects | L2, L5 | Block tests; previews |
+| R14 Security outfit | L5, L8 | Preview at 1×–4×; owner's review |
+| R15 Route, unlisted | L6 | Robots meta present; no link to `/lab/` anywhere else in `dist/` |
+| R16 Scene editing | L6 | Editor flow: add, move, change level and order, remove |
+| R17 Object painting | L6 | Editor flow: pencil, eraser, fill, picker, layers, frames, undo and redo |
+| R18 Same render | L6 | Export → compile → compare with the canvas's `getImageData` |
+| R19 Export | L6 | Clipboard text and download file both equal `serialize()` output |
+| R20 Drafts | L6 | Reload keeps the draft; the stale-draft banner; storage-off mode |
+| R21 No dragging | L6 | Keyboard-only run of every flow; tap-tap placement |
+| R22 Responsive | L6 | `scrollWidth <= innerWidth` at 320, 390 and 1440 |
+| R23 No dependencies | L1 | `package.json` and lockfile diff |
+| R24 Budgets | L1, L6 | `npm run art` report; the editor bundle is referenced only by `lab/pixel-art/index.html` |
+| R25 Docs | L7 | The verifier reads the README and `CLAUDE.md` changes against D11 |
+| R26 Palette tiers | L2 | Tier, cap and uniqueness tests |
+| R27 Size caps | L2, L4 | Cap tests; random oversize inputs |
+| R28 Light direction | L2 | Block tests check each face's shade |
+| R29 Previews | L2 | PNG writer test; the `--preview` command |
+| R30 Precise errors | L2, L4 | Exact-message tests; random invalid inputs |
+| R31 World palette | L5, L8 | Swatch sheet; owner's review |
+| R32 Pixel-art skill | L7 | Skill eval (R37); the verifier checks that each slice updated the skill |
+| R33 Verify-change skill | L7 | Used on every PR from slice 0 |
+| R34 Traceability | L7 | The verifier's grep finds no requirement without evidence |
+| R35 Browser checks | L1, L7 | `npm run e2e` exits 2 with "NOT RUN" when Playwright is missing; the verifier checks this |
+| R36 Independent verification | L7 | A report comment on every PR |
+| R37 Skill eval | L7, L8 | The eval session's object, preview and validation output |
+
+### D16. Independent verifier
+
+**Starting it.** When L1–L6 pass, the implementer asks for verification by starting a new session (for example `create_session` in Claude Code on the web). The prompt is only: "Use the `verify-change` skill on PR #<n>." It passes on none of its own notes, summaries or opinions. The owner can start one the same way.
+
+**Inputs.** The PR head, checked out fresh; the change's `intent.md`, `spec.md` and `plan.md`; `CLAUDE.md`. Nothing from the implementer's session.
+
+**Steps** (the skill's body):
+
+1. **Pin the evidence.** Record the PR head commit and the spec commit the work claims to follow.
+2. **Scope.** From `plan.md`, list this slice's requirements and acceptance criteria.
+3. **L1 gates.** Run them and paste the exact output.
+4. **Traceability (R34).** For each requirement in scope, find its `R<n>:` tests or its named check in D15. Missing evidence is a blocking finding.
+5. **Test strength.** Make at least three mutations in the working copy that should turn a test red, and confirm each one does. Examples: change one pixel in a source, add a 13th color, make a row one character short, or swap two scene items. Revert each mutation, and never commit one. A test that stays green is a blocking finding.
+6. **Browser checks (L5, L6)** for UI slices. Run `npm run e2e`. Take its own screenshots at 320, 390 and 1440. A "NOT RUN" result means those criteria are reported as **not verified**, never as passed.
+7. **Try to break it.** Work through the slice's list from the skill, then anything else the spec suggests. For the editor: keyboard only, 320px, storage off, reduced motion, a 64×64 object at Fit, export with problems present, a stale draft, and very long names.
+8. **Against the plan.** Look for files changed outside the plan, departures not recorded in `plan.md`, and spec text the code contradicts.
+9. **Report.** Post one PR comment in the format below, then stop.
+
+**Rules:**
+- Recommend only. The verifier never pushes, never commits and never edits committed files. Suggested tests or fixes go in the comment as code blocks.
+- When the spec's meaning is unclear, that goes under "Spec gaps" for the owner. The verifier doesn't pick a reading.
+- A re-check after fixes covers only the failed items and the L1 gates. It's posted as a new comment that links the previous one.
+- The comment ends with the Claude Code attribution footer.
+
+**Report format** (one PR comment):
+
+```markdown
+## Verification: <PR title>
+Independent, report-only. PR head <sha> · spec <sha> · slice <n>.
+**Result: PASS | FAIL** (<n> blocking, <n> suggestions, <n> not verified)
+
+### Gates (L1)
+<exact output of npm test, npm run build, npm run art; dependency diff>
+
+### Acceptance criteria
+| Criterion | Result | Evidence |
+
+### Requirements in scope
+| Req | Result | Evidence |
+
+### Test strength
+| Mutation | Expected | Result |
+
+### Attempts to break it
+<what was tried, what happened>
+
+### Recommendations
+1. **Blocking:** …
+2. **Suggestion:** …
+
+### Spec gaps
+<questions for the owner, or "None">
+```
+
+### D17. Browser checks
+
+- **`npm run e2e`** runs `node scripts/e2e/run.mjs`. It's a `scripts` entry in `package.json`, not a dependency.
+- **Finding Playwright.** `run.mjs` first tries `import('playwright')`. If that fails, it resolves Playwright from the global install (`npm root -g`), and it uses the environment's Chromium (`PLAYWRIGHT_BROWSERS_PATH`). If neither works, it prints "Playwright not found: browser checks NOT RUN" and exits 2.
+- **What it serves.** It serves the existing `dist/` with `astro preview` on a free port (it doesn't build; run `npm run build` first), runs the suites with `node --test` so the output matches `npm test` (`# fail 0`), then stops the server.
+- **`art.e2e.mjs`.** It renders each fixture SVG and its compiled SVG in the same page at 1×, with animations paused and frame 0 showing, and compares `getImageData` pixel by pixel. That makes the "looks identical" check exact, with no committed baseline images.
+- **`editor.e2e.mjs`.** It holds the flows in D15 for R15–R22, each run once with the pointer and once keyboard-only. It finds controls only by their accessible names and roles, never by pixel coordinates.
+- **Output.** Screenshots go to `.e2e-output/`, which is git-ignored.
+
+### D18. Agent skills
+
+Both skills follow the repo's existing skill format (YAML front matter with `name` and `description`, then steps). They're plain Markdown, so any agent that can read files can follow them.
+
+**`pixel-art`.** It triggers when someone asks to make, change or review pixel art, an outfit, a library object or a scene, or to use the lab. The body covers:
+- **The design language,** as hard rules: the 32×16 tile, 16px levels, palette tiers and caps, light direction, and the object and character size limits.
+- **Formats** for objects (`sprite`, `block`), layers, frames, `extends`, scenes and placements, each with a minimal example that compiles.
+- **The text loop:**
+  1. Choose the smallest object that does the job, and prefer placing objects and blocks over drawing large maps.
+  2. Edit whole rows and keep their widths.
+  3. Run `npm run art -- --preview <name>` and **look at the PNG**.
+  4. Fix errors by the file, row and column they name.
+  5. Run `npm run art` and `npm test`.
+- **Driving the editor:** open `/lab/pixel-art/` (or the dev server), drive it through accessible names and the keyboard map (D9.7), export, and save the file at the path the Export dialog shows.
+- **Pitfalls:** `.` is transparent; keys are case-sensitive; long runs of one character are easy to miscount, so count against the preview, not the text; legacy colors are off-limits for new art.
+- **Before opening a PR:** previews attached, caps and tiers pass, no legacy colors, light direction checked, the art is generic and public-safe (`CLAUDE.md`), and the skill itself updated if the formats changed.
+
+**`verify-change`.** It triggers on "verify PR #n" or "use verify-change". The body is D16's inputs, steps, rules and report format, written for any change rather than this one. A change's own "try to break it" list comes from its spec. For this change, that's D16 step 7.
+
+**Skill eval (R37).** Once, at the end of slice 6, a fresh session receives only "Use the `pixel-art` skill to add a small rock to the library and place it in `library-demo`." The run passes if:
+- the new object validates;
+- it stays within the caps and uses world colors only;
+- its preview PNG is posted for the owner, and the owner accepts it.
+
+The transcript's mistakes feed back into the skill before the change closes.
 
 ## Areas of concern
 
@@ -589,6 +762,18 @@ New art must use the 32 world colors, but the hero island and the five outfits k
 ### A9. Wireframes are a starting point
 
 D9.3's wireframes fix the regions, their order and the breakpoints. They don't fix exact spacing or icon drawings. Those are settled in the editor PRs against screenshots. A change that moves a region, or drops one at a breakpoint, comes back to this spec first.
+
+### A10. Browser checks depend on the environment
+
+Using the environment's Playwright keeps it out of the dependencies (Decision #11), but the checks then only run where Playwright is installed. That's true in cloud sessions. On your own machine it means a global `npm install -g playwright`, which is outside the repo. Global versions also drift, so the scripts use only Playwright's long-stable core API: launching, pages, keyboard, `evaluate` and screenshots. A missing Playwright gives "NOT RUN" and exit code 2, never a pass. **Owner:** accept that browser checks are verified in cloud sessions, or by you after a global install.
+
+### A11. The verifier costs a session per PR
+
+That's seven slices and at least seven verifier sessions, plus re-checks. Depth scales with risk: slices 0–4 are mostly gates, traceability and mutation checks, and slices 5–6 get the full browser and try-to-break pass. Disagreements about what the spec means don't loop between the two sessions. They go to you as spec gaps. **Owner:** accept the cost, or say which slices can skip L7.
+
+### A12. Part of the skill eval is taste
+
+Validation, caps and tiers are objective. "Looks right" isn't, so R37 ends with your judgment of the preview. A failed eval improves the skill. It doesn't block the engine.
 
 No two standards contradict each other outright. A5 is the closest, and the spec resolves it in favor of the performance budget.
 
