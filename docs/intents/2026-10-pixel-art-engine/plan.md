@@ -293,8 +293,8 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
 
 **How PR 4 departs from the steps above** (recorded in the PR 4 commit):
 
-- **No prop object.** The figure is a steel-blue cap and jacket with a gold shield on the chest, and it needs no prop beside it, so the optional object isn't made.
-- **Four outfit colors,** the `steel-1` to `steel-4` ramp (Q6), in `palette.mjs`. The shield is the world's `gold-2`. The outfit uses 9 colors of the 12-color cap, and the trousers reuse the steel shades.
+- **A medieval knight, not a steel-blue uniform** (owner, 2026-10-02). The figure is a warrior in silver plate armor, with a plumed helmet, a sword raised at the right and a red kite shield with a gold cross at the left. Sword and shield are held, so they are part of the figure and fit its 16×24 cap (exactly 16 wide, 23 high). No separate prop object is made.
+- **Four outfit colors,** the `silver-1` to `silver-4` ramp (Q6), in `palette.mjs`. The plume and shield are the world's `roof-2`, the cross, crossguard and buckle `gold-2`, and the grip `soil-4`. The outfit uses 10 colors of the 12-color cap.
 - **`outfit-preview` spaces the six figures 64 pixels apart,** on tiles two apart, because the legacy outfits' props are wider than a tile and crowded each other at one tile's spacing. It's a preview-only scene, so nothing is written to `src/assets/`.
 
 ### PR 5: Editor, scene mode (slice 5)

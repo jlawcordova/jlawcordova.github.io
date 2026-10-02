@@ -15,7 +15,7 @@ New art must fit the existing world. The engine enforces every rule here except 
 - **Grid.** A tile is 32×16 pixels, 2:1 dimetric: every edge steps 2 pixels across for 1 down. One level is 16 pixels high, so a one-level block is 32×32 and reads as a cube. A tile at `[col, row, level]` has its top-face center at `x = (col − row) × 16 + ox`, `y = (col + row) × 8 − level × 16 + oy`, where `[ox, oy]` is the scene's `origin`.
 - **Palette tiers** (`source/palette.mjs`):
   - **world**: exactly 32 colors, as seven material ramps of 4 shades (`grass-1` highlight … `grass-4` shadow, and the same for soil, wood, path, water, roof and gold), plus `ink`, `cream`, `skin-1` and `skin-2`. They were picked from the island's own shades. `npm run art -- --preview palette` writes the swatch sheet: a row per material, shade 1 to 4 across. The tier is full, so a new color means dropping one.
-  - **outfit**: at most 16 clothing colors (four so far, the `steel-1` to `steel-4` ramp), only for objects that extend `character`.
+  - **outfit**: at most 16 clothing colors (four so far, the `silver-1` to `silver-4` ramp), only for objects that extend `character`.
   - **legacy**: the 81 colors extracted from the redesign's art (`c-<hex>`), frozen. **Only imported art (`legacy: true`) may use them.** Never use one in new art, and never set `legacy: true` yourself.
   - Colors are added to the palette by hand, in a reviewed commit. Brand entries keep their `src/styles/variables.css` values.
 - **Light** comes from the same side as on the island: tops are the light shade, left faces the mid shade, right faces the shadow shade.
