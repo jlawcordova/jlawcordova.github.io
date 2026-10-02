@@ -1,41 +1,44 @@
-/* Syntax highlighting for Prism tokens, using the same palette as the
-   previous Pygments/Rouge theme. */
+/* Prism tokens on the ink ground. Every color has at least 4.5:1 contrast
+   against #2E2418 (spec §9.4). Unlisted tokens use the block's page color. */
 .token.comment,
 .token.prolog,
 .token.doctype,
-.token.cdata { color: #999; }
+.token.cdata { color: #A8957A; font-style: italic; }
 
 .token.keyword,
 .token.boolean,
-.token.constant { color: #069; }
-
-.token.operator { color: #555; }
-.token.number { color: #f60; }
+.token.constant { color: #D8B66A; }
 
 .token.string,
 .token.char,
-.token.attr-value { color: #c30; }
+.token.attr-value { color: #B5C79C; }
 
-.token.regex { color: #3aa; }
-.token.symbol { color: #fc3; }
-.token.builtin { color: #366; }
-.token.class-name { color: #0a8; }
-.token.function { color: #c0f; }
-.token.namespace { color: #0cf; }
-.token.variable { color: #033; }
-.token.entity { color: #999; }
+.token.number,
+.token.regex { color: #E6B8A8; }
+
+.token.function,
 .token.decorator,
-.token.annotation { color: #99f; }
+.token.annotation { color: #9DC1B4; }
+
+.token.class-name,
+.token.builtin,
+.token.namespace,
+.token.symbol { color: #E3C57E; }
 
 .token.tag,
 .token.property,
-.token.selector { color: #2f6f9f; }
+.token.selector,
+.language-json .token.property { color: #C9DDD3; }
 
 .token.attr-name,
-.token.key { color: #4f9fcf; }
-.language-json .token.property { color: #99f; }
+.token.key,
+.token.variable { color: #8FAEA5; }
 
-.token.deleted { background-color: #fcc; }
-.token.inserted { background-color: #cfc; }
+.token.operator,
+.token.punctuation,
+.token.entity { color: #D9C9AE; }
+
+.token.deleted { background-color: rgba(201, 147, 156, 0.2); }
+.token.inserted { background-color: rgba(159, 208, 138, 0.2); }
 .token.bold { font-weight: bold; }
 .token.italic { font-style: italic; }
