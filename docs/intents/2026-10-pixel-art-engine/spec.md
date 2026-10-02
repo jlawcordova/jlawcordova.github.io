@@ -70,12 +70,19 @@ These rules keep new art in one world, and keep sources small enough for a perso
 
 ### Skills and verification
 
-- **R32. Pixel-art skill.** `.claude/skills/pixel-art/SKILL.md` teaches any AI agent to make and change pixel art without this conversation's context. It covers objects, scenes, outfits, the design language (R26–R28), previews, validation errors and the editor. Each slice that changes how art is made updates it in the same PR (S11).
+- **R32. Pixel-art skill.** `.claude/skills/pixel-art/SKILL.md` teaches any AI agent to make and change pixel art without this conversation's context. It covers objects, scenes, outfits, the design language (R26–R28), previews, validation errors and the editor. Its main path needs **no editor and no browser**: the agent writes or changes sources, runs `npm run art`, and gets the output SVGs and PNG previews. The editor is an optional extra. Each slice that changes how art is made updates the skill in the same PR (S11, Decision #13).
 - **R33. Verify-change skill.** `.claude/skills/verify-change/SKILL.md` runs an independent, report-only check of any PR against its change's intent, spec and plan. It isn't specific to pixel art (S11, S12, Decision #12).
 - **R34. Traceability.** Every requirement in this spec maps to at least one test whose name starts with its ID (for example `R27: rejects a 13th color`), or to a named check in [D15](#d15-traceability) (S12, AC).
 - **R35. Browser checks.** Browser checks are scripts in `scripts/e2e/`, run by `npm run e2e` with the environment's own Playwright. They're not a dependency and not part of `npm test`. If Playwright isn't available, the run prints "browser checks NOT RUN" and exits 2. It never passes silently (S12, Decision #11).
 - **R36. Independent verification.** Every PR in this change gets a verifier report as a PR comment, from a session that didn't build it. The verifier never pushes, and it never edits committed files (S12, Decision #12, AC).
-- **R37. Skill eval.** A fresh session, given only the pixel-art skill and a one-line request ("add a small rock to the library"), produces an object that passes validation and whose preview the owner accepts (S11, AC).
+- **R37. Skill eval.** A fresh session, given only the pixel-art skill and a one-line request ("add a small rock to the library"), produces an object that passes validation and whose preview the owner accepts. The session works headless: it doesn't open the editor or a browser (S11, AC, Decision #13).
+- **R38. Headless toolkit.** Everything the editor can do has a text-and-command equivalent, so an agent never needs the editor:
+  - `npm run art -- --new <kind> <name>` writes a valid, canonical starter source at the right path;
+  - `--check <name>` validates one object or scene;
+  - `--preview <name>` writes its PNGs (R29);
+  - plain `npm run art` compiles and writes the output SVGs.
+
+  Output SVGs only ever come from the compiler, never from hand-written SVG (Decision #13).
 
 ## Design
 
@@ -280,6 +287,29 @@ export default {
 3. Emit a rect SVG: in each layer, one `<g fill>` per color, in order of first paint, with one `<rect>` per horizontal run. Group attributes and order are kept.
 4. Hand that SVG to the existing `optimizeSvg` and `verifyLossless` unchanged, check the budget, and write `<output>`.
 5. Print each file's raw and gzip size, as today.
+
+**Command line (R38).** `npm run art` takes these options. All of them use the same engine as the build and the editor:
+
+| Command | What it does | Exit code |
+| --- | --- | --- |
+| `npm run art` | Validate and compile everything, then write the output SVGs | 0 ok, 1 on any problem |
+| `npm run art -- --check <name>` | Validate one object or scene, plus everything it uses, without writing anything. It prints every problem (R30) and, on success, a one-line summary: size, colors used against the cap, layers, frames | 0 ok, 1 on problems |
+| `npm run art -- --preview <name>` | Write `.art-preview/<name>@{1,2,3,4}x.png`. A preview shows an object standing on one tile over a 32×16 grid, and a scene at its viewBox | 0 ok, 1 on problems |
+| `npm run art -- --new object <name> [--kind sprite\|block] [--extends character] [--size WxH]` | Write a canonical starter source to `source/objects/<name>.mjs`. For a sprite that's an empty map of the given size with a starter key; for a block it's a 1×1×1 block in the `grass` ramp. It refuses to overwrite an existing file | 0 ok, 1 if it exists or the name is invalid |
+| `npm run art -- --new scene <name>` | Write a preview-only scene with an empty `items` list | Same |
+
+Each command's output is short and plain text, made to be read by a person or an agent. Every error has the file, location and rule (R30).
+
+Editor actions map to source edits like this:
+
+| Editor action | Text equivalent |
+| --- | --- |
+| Place, move or remove an item | Add, change or remove an entry in the scene's `items` |
+| Change level or paint order | Change `at.tile[2]`, or move the entry in `items` |
+| Paint, erase or fill pixels | Replace whole rows in a layer's `map` or frame |
+| Add a layer or frame | Add an entry to `layers` or `frames` |
+| Make an outfit | `--new object <name> --extends character`, then row overrides |
+| Export | Not needed. The file being edited is the source |
 
 Preview-only scenes (no `output`) go through steps 1 to 4 too, so they're held to the same checks.
 
@@ -566,7 +596,7 @@ Each slice is one PR. Each one leaves the site deployable and looking exactly as
 
 0. **Verification tooling:** the `verify-change` skill, the `scripts/e2e/` harness with `art.e2e.mjs` (it already works on today's art), `npm run e2e`, and the `.gitignore` entries. This slice is verified with its own skill, as the skill's first run.
 
-1. **Engine and Range round trip:** the first version of the `pixel-art` skill, the palette tiers with today's colors as legacy, object and scene formats (sprite kind only), validation with the design-language caps (R26–R30), the compiler step, the serializer, PNG previews, the importer, the fixtures moved, the Range sprite rebuilt from source, tests, and docs for what exists so far.
+1. **Engine and Range round trip:** the first version of the `pixel-art` skill (its headless path), the `--new`, `--check` and `--preview` commands, the palette tiers with today's colors as legacy, object and scene formats (sprite kind only), validation with the design-language caps (R26–R30), the compiler step, the serializer, PNG previews, the importer, the fixtures moved, the Range sprite rebuilt from source, tests, and docs for what exists so far.
 2. **Hero island round trip:** the island imported and rebuilt from source, with before and after screenshots.
 3. **World palette and library:** the first 32 world colors (R31) with a swatch sheet, then the `block` kind, the `block`, `tile`, `water` and `tree` objects in world colors only, and the `library-demo` scene.
 4. **Security and governance outfit:** the outfit object, `outfit-preview` and the preview images.
@@ -634,7 +664,8 @@ Every requirement, with the levels that cover it and where the evidence lives. T
 | R34 Traceability | L7 | The verifier's grep finds no requirement without evidence |
 | R35 Browser checks | L1, L7 | `npm run e2e` exits 2 with "NOT RUN" when Playwright is missing; the verifier checks this |
 | R36 Independent verification | L7 | A report comment on every PR |
-| R37 Skill eval | L7, L8 | The eval session's object, preview and validation output |
+| R37 Skill eval | L7, L8 | The eval session's object, preview and validation output, from a session with no browser |
+| R38 Headless toolkit | L2, L7 | CLI tests: `--new` output validates and is canonical, `--new` refuses to overwrite, `--check` exit codes and messages, `--preview` writes four PNGs. The verifier makes one small object headless, using only the commands |
 
 ### D16. Independent verifier
 
@@ -706,19 +737,19 @@ Both skills follow the repo's existing skill format (YAML front matter with `nam
 **`pixel-art`.** It triggers when someone asks to make, change or review pixel art, an outfit, a library object or a scene, or to use the lab. The body covers:
 - **The design language,** as hard rules: the 32×16 tile, 16px levels, palette tiers and caps, light direction, and the object and character size limits.
 - **Formats** for objects (`sprite`, `block`), layers, frames, `extends`, scenes and placements, each with a minimal example that compiles.
-- **The text loop:**
-  1. Choose the smallest object that does the job, and prefer placing objects and blocks over drawing large maps.
-  2. Edit whole rows and keep their widths.
-  3. Run `npm run art -- --preview <name>` and **look at the PNG**.
-  4. Fix errors by the file, row and column they name.
-  5. Run `npm run art` and `npm test`.
-- **Driving the editor:** open `/lab/pixel-art/` (or the dev server), drive it through accessible names and the keyboard map (D9.7), export, and save the file at the path the Export dialog shows.
+- **The main path, headless.** No editor and no browser:
+  1. **Start from a valid file:** `npm run art -- --new object <name>` (or `scene`), or open an existing source. Choose the smallest object that does the job, and prefer placing objects and blocks in a scene over drawing large maps.
+  2. **Edit whole rows** and keep their widths.
+  3. **Check it:** `npm run art -- --check <name>`. Fix each problem by the file, row and column it names.
+  4. **Look at it:** `npm run art -- --preview <name>`, then **open the PNG**. The picture, not the text, decides whether the art is right.
+  5. **Generate the output:** `npm run art` writes the SVGs, then `npm test`. Never write or edit an output SVG by hand.
+- **The editor (optional).** Use it when a person wants to work visually, or to check that the editor shows the same thing. Open `/lab/pixel-art/` (or the dev server), drive it through accessible names and the keyboard map (D9.7), export, and save the file at the path the Export dialog shows.
 - **Pitfalls:** `.` is transparent; keys are case-sensitive; long runs of one character are easy to miscount, so count against the preview, not the text; legacy colors are off-limits for new art.
 - **Before opening a PR:** previews attached, caps and tiers pass, no legacy colors, light direction checked, the art is generic and public-safe (`CLAUDE.md`), and the skill itself updated if the formats changed.
 
 **`verify-change`.** It triggers on "verify PR #n" or "use verify-change". The body is D16's inputs, steps, rules and report format, written for any change rather than this one. A change's own "try to break it" list comes from its spec. For this change, that's D16 step 7.
 
-**Skill eval (R37).** Once, at the end of slice 6, a fresh session receives only "Use the `pixel-art` skill to add a small rock to the library and place it in `library-demo`." The run passes if:
+**Skill eval (R37).** Once, at the end of slice 6, a fresh session with no browser available receives only "Use the `pixel-art` skill to add a small rock to the library and place it in `library-demo`." The run passes if:
 - the new object validates;
 - it stays within the caps and uses world colors only;
 - its preview PNG is posted for the owner, and the owner accepts it.
