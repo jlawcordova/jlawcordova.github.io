@@ -210,5 +210,5 @@ Update this checklist as PRs merge.
 
 - [x] PR 1: Foundation
 - [x] PR 2: Home
-- [ ] PR 3: Pages
+- [x] PR 3: Pages
 - [ ] PR 4: Brand marks and final verification
