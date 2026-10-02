@@ -18,6 +18,22 @@ export function tileToPx([col, row, level], [ox, oy]) {
 }
 
 /**
+ * The tile at `level` whose top face holds the pixel (x, y): the inverse of
+ * tileToPx, used by the editor to find the tile under the pointer. Inside a
+ * tile, |dx|/32 + |dy|/16 < ½, so rounding finds the column and row. `+ 0`
+ * turns a -0 into 0.
+ * @param {number[]} pixel
+ * @param {number} level
+ * @param {number[]} origin
+ * @returns {[number, number, number]}
+ */
+export function pxToTile([x, y], level, [ox, oy]) {
+  const u = (x + 0.5 - ox) / TILE_W;
+  const v = (y + 0.5 - oy + level * LEVEL_H) / TILE_H;
+  return [Math.round(v + u) + 0, Math.round(v - u) + 0, level];
+}
+
+/**
  * The pixels of the tile whose top-face center is (cx, cy), as "x,y". A pixel
  * belongs to the top face when its center, (x + ½, y + ½), satisfies
  * |dx|/16 + |dy|/8 < 1 from the tile's center. Pixel centers are half-way

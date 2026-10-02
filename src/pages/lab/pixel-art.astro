@@ -1,0 +1,81 @@
+---
+// The pixel-art lab (pixel-art engine spec D9): an unlisted editor for the
+// sources in src/assets/pixel-art/source/. Every source is embedded as JSON at
+// build time, so the page makes no fetches, and the client draws with the
+// same engine as `npm run art`. lab.css and the client script load on this
+// page only (spec A5, R24).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LabBar from '../../components/lab/LabBar.astro';
+import Toolbar from '../../components/lab/Toolbar.astro';
+import Stage from '../../components/lab/Stage.astro';
+import StatusBar from '../../components/lab/StatusBar.astro';
+import Library from '../../components/lab/Library.astro';
+import Inspector from '../../components/lab/Inspector.astro';
+import { byCodePoint } from '../../lib/pixel-art/engine.mjs';
+import { serialize } from '../../lib/pixel-art/serialize.mjs';
+import '../../styles/lab.css';
+
+const modules = import.meta.glob<{ default: unknown }>('../../assets/pixel-art/source/**/*.mjs', { eager: true });
+
+let palette: unknown = {};
+const objects: Record<string, any> = {};
+const scenes: Record<string, any> = {};
+for (const path of Object.keys(modules).sort(byCodePoint)) {
+  const doc = modules[path].default;
+  // Only kebab-case names, as the engine requires, so a stray copy such as
+  // "tree 2.mjs" never shows up in the lab.
+  const match = /\/source\/(?:(objects|scenes)\/)?([a-z0-9-]+)\.mjs$/.exec(path);
+  if (!match) continue;
+  if (!match[1] && match[2] === 'palette') palette = doc;
+  else if (match[1] === 'objects') objects[match[2]] = doc;
+  else if (match[1] === 'scenes') scenes[match[2]] = doc;
+}
+
+/** FNV-1a, as 8 hex digits: enough to tell one version of a source from another. */
+function hash(text: string) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < text.length; i++) h = Math.imul(h ^ text.charCodeAt(i), 0x01000193) >>> 0;
+  return h.toString(16).padStart(8, '0');
+}
+
+// The site version of each document, so a draft can tell that it started
+// from an older one (spec D9.9, A6).
+const siteVersion: Record<string, string> = {};
+for (const [name, doc] of Object.entries(objects)) siteVersion[`object:${name}`] = hash(serialize(doc));
+for (const [name, doc] of Object.entries(scenes)) siteVersion[`scene:${name}`] = hash(serialize(doc));
+
+// `<` is escaped so no source text can close the script element.
+const data = JSON.stringify({ palette, objects, scenes, siteVersion }).replace(/</g, '\\u003c');
+
+const sceneNames = Object.keys(scenes);
+---
+
+<BaseLayout title="Pixel-art lab" noindex>
+  <div class="lab">
+    <noscript><p class="lab__noscript">The pixel-art lab needs JavaScript.</p></noscript>
+    <div class="lab__app" hidden>
+      <LabBar scenes={sceneNames} />
+      <div class="lab__workspace">
+        <div class="lab__center">
+          <Toolbar />
+          <Stage />
+          <StatusBar />
+        </div>
+        <div class="lab__tabs" role="tablist" aria-label="Panels">
+          <button type="button" role="tab" id="lab-tab-library" aria-controls="lab-library" aria-selected="false" tabindex="-1">Library</button>
+          <button type="button" role="tab" id="lab-tab-items" aria-controls="lab-items" aria-selected="false" tabindex="-1">Items</button>
+          <button type="button" role="tab" id="lab-tab-inspector" aria-controls="lab-inspector" aria-selected="false" tabindex="-1">Inspector</button>
+        </div>
+        <Library objects={objects} />
+        <Inspector />
+      </div>
+    </div>
+  </div>
+  <script type="application/json" id="lab-data" set:html={data} />
+</BaseLayout>
+
+<script>
+  import { start } from '../../components/lab/lab';
+
+  start();
+</script>

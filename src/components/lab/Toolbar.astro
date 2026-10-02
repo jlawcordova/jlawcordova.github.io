@@ -1,0 +1,57 @@
+---
+// The toolbar (spec D9.4): the mode switch, the Scene tools, zoom, the tile
+// grid, and undo and redo. One tab stop with arrow keys inside it
+// (keyboard.ts). Icons are drawn on a 9×9 grid, like the Range chevrons.
+// Object mode arrives with the object editor; until then its button is off.
+const tools = [
+  { tool: 'select', label: 'Select', key: 'V', path: 'M1 0h1v8h-1zM2 1h1v6h-1zM3 2h1v4h-1zM4 3h1v3h-1zM5 4h1v1h-1zM4 6h1v2h-1zM5 7h1v2h-1z' },
+  { tool: 'place', label: 'Place', key: 'A', path: 'M4 1h1v7h-1zM1 4h3v1h-3zM5 4h3v1h-3z' },
+  { tool: 'pan', label: 'Pan', key: 'H', path: 'M4 0h1v9h-1zM0 4h4v1h-4zM5 4h4v1h-4zM3 1h3v1h-3zM3 7h3v1h-3zM1 3h1v3h-1zM7 3h1v3h-1z' },
+];
+const zooms = ['1', '2', '3', '4'];
+---
+
+<div class="lab-toolbar" role="toolbar" aria-label="Tools" aria-controls="lab-stage">
+  <div class="lab-toolbar__group lab-toolbar__modes">
+    <button type="button" class="lab-mode" data-mode="scene" aria-pressed="true">Scene</button>
+    <button type="button" class="lab-mode" data-mode="object" aria-pressed="false" aria-disabled="true" title="Object mode isn't available yet">Object</button>
+  </div>
+  <div class="lab-toolbar__group">
+    {
+      tools.map(({ tool, label, key, path }) => (
+        <button type="button" class="lab-tool" data-tool={tool} aria-pressed="false" aria-label={label} aria-keyshortcuts={key} title={`${label} (${key})`}>
+          <svg class="pixel-art" width="27" height="27" viewBox="0 0 9 9" aria-hidden="true">
+            <path fill="currentColor" d={path} />
+          </svg>
+        </button>
+      ))
+    }
+  </div>
+  <div class="lab-toolbar__group">
+    {
+      zooms.map((z) => (
+        <button type="button" class="lab-tool lab-tool--text" data-zoom={z} aria-pressed="false" aria-label={`Zoom ${z}×`} aria-keyshortcuts={z} title={`Zoom ${z}× (${z})`}>
+          {z}×
+        </button>
+      ))
+    }
+    <button type="button" class="lab-tool lab-tool--text" data-zoom="fit" aria-pressed="true" aria-label="Zoom to fit" aria-keyshortcuts="0" title="Zoom to fit (0)">Fit</button>
+  </div>
+  <div class="lab-toolbar__group">
+    <button type="button" class="lab-tool" data-action="grid" aria-pressed="false" aria-label="Tile grid" title="Tile grid">
+      <svg class="pixel-art" width="27" height="27" viewBox="0 0 9 9" aria-hidden="true">
+        <path fill="currentColor" d="M2 0h1v9h-1zM6 0h1v9h-1zM0 2h9v1h-9zM0 6h9v1h-9z" />
+      </svg>
+    </button>
+    <button type="button" class="lab-tool" data-action="undo" aria-label="Undo" aria-keyshortcuts="Control+Z Meta+Z" title="Undo (Ctrl+Z)">
+      <svg class="pixel-art" width="27" height="27" viewBox="0 0 9 9" aria-hidden="true">
+        <path fill="currentColor" d="M0 3h1v1h-1zM1 2h1v3h-1zM2 1h1v5h-1zM3 3h4v1h-4zM7 4h1v3h-1zM4 7h3v1h-3z" />
+      </svg>
+    </button>
+    <button type="button" class="lab-tool" data-action="redo" aria-label="Redo" aria-keyshortcuts="Shift+Control+Z Shift+Meta+Z" title="Redo (Shift+Ctrl+Z)">
+      <svg class="pixel-art" width="27" height="27" viewBox="0 0 9 9" aria-hidden="true">
+        <path fill="currentColor" d="M8 3h1v1h-1zM7 2h1v3h-1zM6 1h1v5h-1zM2 3h4v1h-4zM1 4h1v3h-1zM2 7h3v1h-3z" />
+      </svg>
+    </button>
+  </div>
+</div>

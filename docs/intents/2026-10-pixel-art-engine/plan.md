@@ -336,6 +336,18 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
    - **`CLAUDE.md`:** the editor, plus the `lab.css` exception (A5).
    - **README:** the `/lab/pixel-art/` row.
 
+**How PR 5 departs from the steps above** (recorded in the PR 5 commit):
+
+- **The focus ring is extended in `lab.css`, not `base.css`.** The same ring (2px ink outline, page-colored halo) covers the stage, the Items list, fields, tabs and Library groups. Putting it in `base.css` would change every page's CSS, and step 6 needs the home page and its bundles unchanged. Every other page in `dist/` is byte-identical to `master`'s build apart from the build timestamp.
+- **`pxToTile` in `iso.mjs`**, the inverse of `tileToPx`, finds the tile under the pointer. It's in the engine so `npm test` covers it (`R16: pxToTile finds the tile under every pixel…`).
+- **Scene mode only, as the slice says.** The picker lists scenes. The Object mode button is shown but off. "New scene…", "New object…" and the Problems popover come with `dialogs.ts` in PR 6. Until then the status bar shows the problems count, and Export lists the problems.
+- **The Items list is a `tree`,** not a listbox: its groups collapse, and listbox options can't. Up and Down move, Left and Right close and open groups, and selection follows the active item.
+- **Placement fields follow the item's placement.** A scene item is either `tile` or `px`, never both. A tile item shows Col, Row and Level. A pixel item shows X and Y (D9.4's "Nudge x and y") and a **Snap to tile** action. Shift + arrows on a tile item turns it into a pixel placement at the same point.
+- **Variants show one at a time.** On the stage, a run of sibling `data-class` groups shows only the group holding the selected item, or else the first, as the site does.
+- **Extras:** a **Reset to site version** button in the lab bar while a draft exists (R20's reset), and Space + arrows pans.
+- **Library groups** are Blocks, Objects, Characters and Legacy. The wireframe's "Nature" became "Objects".
+- **Browser checks.** The keyboard-only flow edits `hero-island`, the scene that opens first, because headless Chromium on macOS ignores keys on a closed native `<select>`. The pointer flows use `library-demo`. Dragging an item on the stage is the one check that uses positions, worked out from the stage's zoom, since a drag on a canvas is positional by nature. The R24 bundle checks run in `editor.e2e.mjs` against `dist/`.
+
 ### PR 6: Editor, object mode (slice 6)
 
 1. **Object mode** (D9.5):
@@ -369,7 +381,7 @@ Tick these as PRs merge.
 - [x] PR 2: Hero island round trip
 - [x] PR 3: World palette and library
 - [x] PR 4: Security and governance outfit
-- [ ] PR 5: Editor, scene mode
+- [x] PR 5: Editor, scene mode
 - [ ] PR 6: Editor, object mode
 
 ## Risks

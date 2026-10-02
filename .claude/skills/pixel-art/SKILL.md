@@ -154,6 +154,16 @@ You don't need the editor or a browser.
 
 A name can be written `objects/<name>` or `scenes/<name>` when an object and a scene share it.
 
+## The editor (optional)
+
+The lab at `/lab/pixel-art/` (or `npm run dev`, then http://localhost:4321/lab/pixel-art/) edits **scenes** in a browser, drawn by the same engine as `npm run art`. Use it when a person wants to work visually, or to check that the editor shows what the compiler builds. Painting objects comes in a later change; until then, edit objects as text.
+
+- **Drive it by accessible names and keys,** not pixel positions: the picker is the combobox "Open", the stage is the group "Scene stage", Library thumbnails are buttons named after their object, and the Items list is the tree "Items".
+- **Placing:** choose a thumbnail, then a tile; or focus a thumbnail and press Enter to place it at the stage cursor. New items go in back to front by `row + col`, then level.
+- **Stage keys** (only while the stage has focus): arrows move the selected item one tile (or the cursor), Shift + arrows nudge one pixel (the item is then placed by `px`), Page Up and Page Down change the level, `[` and `]` the paint order, Delete removes, Escape deselects, V, A and H pick Select, Place and Pan, 0–4 zoom, and Ctrl/Cmd+Z undoes. Fit picks the largest whole zoom that fits the stage, up to 8×, so it can go past the 4× button.
+- **Export** shows the canonical source and its path. Save it there exactly, then run `npm run art` and `npm test`. With problems, Export lists them instead.
+- **Drafts** stay in that browser's `localStorage`. They're not in the repo until someone exports and commits them.
+
 ## Legacy objects (the art that's already on the site)
 
 The redesign's art was imported with `scripts/import-pixel-art.mjs`, so it's marked `legacy: true` and uses the legacy palette. Each of these objects stays a pixel-for-pixel copy of the original until someone changes it on purpose.

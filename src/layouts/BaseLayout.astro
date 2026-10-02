@@ -14,9 +14,11 @@ interface Props {
     image: string;
     imageAlt: string;
   };
+  /** Keep the page out of search results (the unlisted lab pages). */
+  noindex?: boolean;
 }
 
-const { title, article } = Astro.props;
+const { title, article, noindex = false } = Astro.props;
 const pageTitle = title ? `${title} - ${site.title}` : site.title;
 const description = article ? article.description : site.description;
 ---
@@ -51,6 +53,7 @@ const description = article ? article.description : site.description;
       )
     }
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <title>{pageTitle}</title>
 

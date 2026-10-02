@@ -1,0 +1,20 @@
+---
+// The stage (spec D9.2): the engine's render on a canvas over .isogrid, in a
+// frame that scrolls on its own, so zoom never scrolls the page. The frame
+// is the stage's one tab stop, and its keys are in keyboard.ts.
+---
+
+<div
+  class="lab-stage"
+  id="lab-stage"
+  tabindex="0"
+  role="group"
+  aria-label="Scene stage"
+  aria-roledescription="stage"
+  aria-describedby="lab-status-position"
+>
+  <div class="lab-stage__sheet isogrid">
+    <canvas id="lab-canvas" width="1" height="1"></canvas>
+  </div>
+  <p class="lab-stage__empty" id="lab-empty" hidden>Add an object from the Library.</p>
+</div>
