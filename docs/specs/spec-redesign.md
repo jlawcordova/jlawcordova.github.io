@@ -579,7 +579,7 @@ These pages have no mock. They use the tokens, type and surfaces above and inven
 - **Tables** (if any): full width, 1px border rows, and a header in pixel 12px uppercase.
 - **Inline code:** `background: var(--color-card); color: var(--color-ink); padding: 0.1em 0.35em; border-radius: 6px; font-family: var(--font-code)`.
 - **Code blocks:** `background: var(--color-ink); color: var(--color-page); border-radius: var(--radius-button); padding: 16px 20px; overflow-x: auto; box-shadow: 4px 4px 0 var(--color-accent)`.
-- **Related posts:** an `<aside aria-labelledby="related-title">` with `<h2 id="related-title">Related posts</h2>` (pixel label style). It holds a two-column card grid (one column below 720px): image at `aspect-ratio: 16/9`, category label, title link. It replaces the `recent-blog-*` classes.
+- **Related posts:** an `<aside aria-labelledby="related-title">` with `<h2 id="related-title">Related posts</h2>` (pixel label style). It holds a two-column card grid (one column below 720px): image at `aspect-ratio: 16/9`, category label, title link. It replaces the `recent-blog-*` classes. The card images are `loading="lazy" decoding="async"`, so they don't compete with the page's CSS and text on slow connections. Lighthouse mobile performance on a long post went from 93 to 99 with this change. Images inside post Markdown stay eager: Astro 7's default Markdown processor only runs rehype plugins with `@astrojs/markdown-remark` installed, which this redesign doesn't add.
 
 ### 9.4 Syntax theme (Prism on the ink ground)
 
