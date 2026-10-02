@@ -1,0 +1,72 @@
+---
+// The right-hand column (spec D9.4): the Items list, then the Inspector's
+// Selected and Scene panels. scene-mode.ts fills them in.
+const position = [
+  { field: 'col', label: 'Col', name: 'column' },
+  { field: 'row', label: 'Row', name: 'row' },
+  { field: 'level', label: 'Level', name: 'level' },
+];
+const offset = [
+  { field: 'x', label: 'X', name: 'x' },
+  { field: 'y', label: 'Y', name: 'y' },
+];
+---
+
+<div class="lab__side">
+  <section class="lab-panel" id="lab-items" aria-labelledby="lab-items-title">
+    <h2 class="label lab-panel__title" id="lab-items-title">Items</h2>
+    <div class="lab-tree" id="lab-tree" role="tree" tabindex="0" aria-labelledby="lab-items-title"></div>
+  </section>
+
+  <section class="lab-panel" id="lab-inspector" aria-labelledby="lab-inspector-title">
+    <h2 class="visually-hidden" id="lab-inspector-title">Inspector</h2>
+
+    <div class="lab-panel__part" aria-labelledby="lab-selected-title" role="group">
+      <h3 class="label lab-panel__title" id="lab-selected-title">Selected</h3>
+      <p class="lab-panel__note" id="lab-selected-none">Nothing selected. Choose an item in Items or on the stage.</p>
+      <div id="lab-selected" hidden>
+        <div class="lab-fields" data-placement="tile">
+          {
+            position.map(({ field, label, name }) => (
+              <div class="lab-number">
+                <label for={`lab-${field}`}>{label}</label>
+                <button type="button" class="lab-step" data-field={field} data-step="-1" aria-label={`Decrease ${name}`}>−</button>
+                <input type="number" id={`lab-${field}`} data-field={field} step="1" inputmode="numeric" />
+                <button type="button" class="lab-step" data-field={field} data-step="1" aria-label={`Increase ${name}`}>+</button>
+              </div>
+            ))
+          }
+        </div>
+        <div class="lab-fields" data-placement="px">
+          {
+            offset.map(({ field, label, name }) => (
+              <div class="lab-number">
+                <label for={`lab-${field}`}>{label}</label>
+                <button type="button" class="lab-step" data-field={field} data-step="-1" aria-label={`Decrease ${name}`}>−</button>
+                <input type="number" id={`lab-${field}`} data-field={field} step="1" inputmode="numeric" />
+                <button type="button" class="lab-step" data-field={field} data-step="1" aria-label={`Increase ${name}`}>+</button>
+              </div>
+            ))
+          }
+        </div>
+        <p class="lab-panel__note" id="lab-placement-note"></p>
+        <div class="lab-field">
+          <label for="lab-class">Class</label>
+          <input type="text" id="lab-class" autocomplete="off" spellcheck="false" placeholder="none" />
+        </div>
+        <div class="lab-actions">
+          <button type="button" class="btn btn--ghost" data-item="raise">Raise</button>
+          <button type="button" class="btn btn--ghost" data-item="lower">Lower</button>
+          <button type="button" class="btn btn--ghost" data-item="snap">Snap to tile</button>
+          <button type="button" class="btn btn--ghost" data-item="duplicate">Duplicate</button>
+          <button type="button" class="btn btn--ghost" data-item="remove">Remove</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="lab-panel__part" aria-labelledby="lab-scene-title" role="group">
+      <h3 class="label lab-panel__title" id="lab-scene-title">Scene</h3>
+      <dl class="lab-facts" id="lab-scene-facts"></dl>
+    </div>
+  </section>
+</div>

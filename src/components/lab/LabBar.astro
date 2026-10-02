@@ -1,0 +1,57 @@
+---
+// The lab bar (spec D9.2): the title, the document picker, the draft status
+// and Export, then the stale-draft banner. lab.ts fills in the status.
+interface Props {
+  scenes: string[];
+}
+
+const { scenes } = Astro.props;
+---
+
+<div class="lab-bar">
+  <p class="label lab-bar__kicker">Lab</p>
+  <h1 class="lab-bar__title">Pixel-art lab</h1>
+  <label class="lab-bar__picker">
+    <span class="visually-hidden">Open</span>
+    <select id="lab-doc">
+      <optgroup label="Scenes">
+        {scenes.map((name) => <option value={`scene:${name}`}>Scene · {name}</option>)}
+      </optgroup>
+    </select>
+  </label>
+  <p class="lab-bar__draft" id="lab-draft"><span class="lab-bar__dot" aria-hidden="true"></span><span id="lab-draft-text">Site version</span></p>
+  <div class="lab-bar__actions">
+    <button type="button" class="btn btn--ghost" id="lab-reset" hidden>Reset to site version</button>
+    <button type="button" class="btn btn--primary" id="lab-export" aria-haspopup="dialog">Export</button>
+  </div>
+</div>
+
+<div class="lab-banner" id="lab-banner" role="region" aria-label="Draft" hidden>
+  <p id="lab-banner-text"></p>
+  <div class="lab-banner__actions">
+    <button type="button" class="btn btn--ghost" id="lab-keep">Keep draft</button>
+    <button type="button" class="btn btn--ghost" id="lab-load-site">Load site version</button>
+  </div>
+</div>
+
+<dialog class="lab-dialog" id="lab-export-dialog" aria-labelledby="lab-export-title">
+  <div class="lab-dialog__head">
+    <h2 class="label" id="lab-export-title">Export</h2>
+    <p class="lab-dialog__path"><code id="lab-export-path"></code></p>
+  </div>
+  <div id="lab-export-problems" class="lab-problems" hidden>
+    <p class="lab-warning"><span aria-hidden="true">!</span> Fix these problems before exporting:</p>
+    <ul id="lab-export-problem-list"></ul>
+  </div>
+  <label class="lab-dialog__source">
+    <span class="visually-hidden">Source</span>
+    <textarea id="lab-export-source" readonly rows="14" spellcheck="false"></textarea>
+  </label>
+  <p class="lab-dialog__next">Commit it, then run <code>npm run art</code>.</p>
+  <p class="lab-dialog__status" id="lab-export-status" role="status"></p>
+  <div class="lab-dialog__actions">
+    <button type="button" class="btn btn--primary" id="lab-copy">Copy source</button>
+    <button type="button" class="btn btn--ghost" id="lab-download">Download .mjs</button>
+    <button type="button" class="btn btn--ghost" id="lab-export-close">Close</button>
+  </div>
+</dialog>

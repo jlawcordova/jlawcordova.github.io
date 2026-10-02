@@ -1,0 +1,55 @@
+---
+// The Library (spec D9.2, D9.4): every object, grouped and searchable, as a
+// thumbnail button. scene-mode.ts draws the thumbnails with the engine and
+// handles choosing, dragging and Enter to place.
+interface Props {
+  objects: Record<string, any>;
+}
+
+const { objects } = Astro.props;
+
+/** Whether an object is `character` or extends it, at any depth. */
+const isCharacter = (name: string): boolean => {
+  for (let n: string | undefined = name, depth = 0; n && depth < 16; n = objects[n]?.extends, depth++) if (n === 'character') return true;
+  return false;
+};
+
+const groups = [
+  { title: 'Blocks', open: true, names: [] as string[] },
+  { title: 'Objects', open: true, names: [] as string[] },
+  { title: 'Characters', open: false, names: [] as string[] },
+  { title: 'Legacy', open: false, names: [] as string[] },
+];
+for (const name of Object.keys(objects)) {
+  const obj = objects[name];
+  const group = obj.kind === 'block' ? 0 : isCharacter(name) ? 2 : obj.legacy ? 3 : 1;
+  groups[group].names.push(name);
+}
+---
+
+<section class="lab-panel lab__library" id="lab-library" aria-labelledby="lab-library-title">
+  <h2 class="label lab-panel__title" id="lab-library-title">Library</h2>
+  <label class="lab-field lab-search">
+    <span class="visually-hidden">Search objects</span>
+    <input type="search" id="lab-search" placeholder="Search…" autocomplete="off" spellcheck="false" />
+  </label>
+  <p class="lab-library__none" id="lab-search-none" hidden></p>
+  {
+    groups.map(({ title, open, names }) => (
+      <details class="lab-library__group" open={open} data-group={title}>
+        <summary class="label">{title}</summary>
+        <ul class="lab-library__list" role="list">
+          {names.map((name) => (
+            <li data-name={name}>
+              <button type="button" class="lab-thumb" data-object={name} aria-pressed="false" draggable="true">
+                <canvas class="lab-thumb__art" width="1" height="1" aria-hidden="true" />
+                <span class="lab-thumb__name">{name}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </details>
+    ))
+  }
+  <p class="lab-library__hint">Choose an object, then a tile. Or press Enter to place it at the stage cursor.</p>
+</section>

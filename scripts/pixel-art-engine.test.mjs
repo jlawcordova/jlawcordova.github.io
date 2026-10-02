@@ -9,7 +9,7 @@ import { describe, it } from 'node:test';
 import { inflateSync } from 'node:zlib';
 
 import { composite, describeObject, loadSources, paintedSize, renderObject, renderScene, resolve, usedKeys, validate } from '../src/lib/pixel-art/engine.mjs';
-import { blockFaces, tilePixels, tileToPx } from '../src/lib/pixel-art/iso.mjs';
+import { blockFaces, pxToTile, tilePixels, tileToPx } from '../src/lib/pixel-art/iso.mjs';
 import { serialize } from '../src/lib/pixel-art/serialize.mjs';
 import { toRectSvg } from '../src/lib/pixel-art/svg.mjs';
 import { encodePng, renderPreview } from './pixel-art-preview.mjs';
@@ -347,6 +347,22 @@ describe('scenes (R3)', () => {
     const items = [{ object: 'dot', at: { tile: [1, 0, 1] } }, { object: 'ink', at: { px: [3, 4] } }];
     const sources = src({ dot, ink }, { s: scene(items, { origin: [2, 30] }) });
     assert.deepEqual([...composite(renderScene(sources, 's').root)], [['18,22', 'grass-2'], ['3,4', 'ink']]);
+  });
+
+  it('R16: pxToTile finds the tile under every pixel, at any level and origin', () => {
+    for (const origin of [[0, 0], [5, 32], [-17, 3]]) {
+      for (const level of [0, 1, -2]) {
+        for (let col = -3; col <= 3; col++) {
+          for (let row = -3; row <= 3; row++) {
+            const [cx, cy] = tileToPx([col, row, level], origin);
+            for (const p of tilePixels(cx, cy)) {
+              const [x, y] = p.split(',').map(Number);
+              assert.deepEqual(pxToTile([x, y], level, origin), [col, row, level], `pixel ${p}, origin ${origin}, level ${level}`);
+            }
+          }
+        }
+      }
+    }
   });
 
   it('R3: the root carries the scene viewBox in today\'s attribute order', () => {

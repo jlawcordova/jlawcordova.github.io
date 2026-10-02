@@ -1,0 +1,690 @@
+/*
+ * The pixel-art lab (pixel-art engine spec D9). Imported by
+ * src/pages/lab/pixel-art.astro only, after global.css, so none of it ships
+ * to other pages (spec A5, R24). Tokens only (D9.8). No motion.
+ */
+
+/* The site's focus ring (base.css), extended to the lab's other controls:
+   the stage, the Items list, fields, tabs and Library groups. It lives here,
+   not in base.css, so every other page's CSS stays byte for byte the same. */
+.lab :where([tabindex], input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--color-page);
+}
+/* The Items list keeps focus on itself; the ring marks the active row. */
+.lab .lab-tree:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+.lab-tree:focus-visible .lab-tree__row.is-active {
+  outline: 2px solid var(--color-ink);
+  outline-offset: -2px;
+}
+
+.lab {
+  padding: 16px var(--gutter) 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.lab__noscript {
+  max-width: var(--content-max);
+  margin: 48px auto;
+  padding: 24px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.lab__app {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.lab__app[hidden] {
+  display: none;
+}
+
+/* ------------------------------------------------------------ lab bar */
+
+.lab-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 8px 12px 8px 20px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.lab-bar__kicker {
+  margin: 0;
+}
+
+.lab-bar__title {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: 0;
+}
+
+.lab-bar__picker select,
+.lab-field input,
+.lab-number input {
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: var(--radius-button);
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-page);
+  color: var(--color-ink);
+  font: 500 15px var(--font-text);
+}
+
+.lab-bar__picker select {
+  max-width: 100%;
+}
+
+.lab-bar__draft {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--color-ink-muted);
+}
+
+.lab-bar__dot {
+  width: 8px;
+  height: 8px;
+  background: var(--color-border-strong);
+}
+.lab-bar__draft[data-state="draft"] .lab-bar__dot {
+  background: var(--color-accent);
+}
+.lab-bar__draft[data-state="off"] .lab-bar__dot {
+  background: var(--color-gold);
+}
+
+.lab-bar__actions {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lab .btn {
+  min-height: 44px;
+  padding: 0 16px;
+  font-size: 14px;
+}
+/* .btn sets display, which would beat the hidden attribute. */
+.lab .btn[hidden] {
+  display: none;
+}
+
+.lab-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 8px 12px 8px 20px;
+  border-radius: var(--radius-card);
+  background: var(--color-gold);
+  color: var(--color-ink);
+}
+.lab-banner[hidden] {
+  display: none;
+}
+.lab-banner p {
+  margin: 0;
+  flex: 1 1 280px;
+}
+.lab-banner__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------------------------------------------------------- workspace */
+
+.lab__workspace {
+  display: grid;
+  grid-template-columns: 264px minmax(0, 1fr) 304px;
+  grid-template-areas: "library center side";
+  gap: 12px;
+  height: calc(100dvh - var(--header-offset));
+  min-height: 640px;
+}
+
+.lab__center {
+  grid-area: center;
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.lab__library {
+  grid-area: library;
+}
+
+.lab__side {
+  grid-area: side;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lab__tabs {
+  display: none;
+}
+
+.lab-panel {
+  position: relative;
+  min-height: 0;
+  overflow: auto;
+  padding: 12px 16px 16px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+.lab-panel[hidden] {
+  display: none;
+}
+.lab__side .lab-panel {
+  flex: 1 1 0;
+}
+
+.lab-panel__title {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 1px;
+}
+
+.lab-panel__part + .lab-panel__part {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.lab-panel__note {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: var(--color-ink-muted);
+}
+
+/* ------------------------------------------------------------ toolbar */
+
+.lab-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 4px 8px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.lab-toolbar__group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.lab-tool,
+.lab-mode {
+  min-width: 44px;
+  height: 44px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-ink);
+  font: 13px/1 var(--font-pixel);
+  cursor: pointer;
+}
+.lab-tool:hover,
+.lab-mode:hover {
+  background: var(--color-card);
+}
+/* The current tool reads like the Range nameplate. */
+.lab-tool[aria-pressed="true"],
+.lab-mode[aria-pressed="true"] {
+  background: var(--color-ink);
+  color: var(--color-page);
+  box-shadow: var(--shadow-pixel);
+}
+.lab-mode[aria-disabled="true"] {
+  color: var(--color-ink-muted);
+  cursor: not-allowed;
+}
+.lab-mode[aria-disabled="true"]:hover {
+  background: transparent;
+}
+
+/* -------------------------------------------------------------- stage */
+
+.lab-stage {
+  position: relative;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  padding: 16px;
+  border-radius: var(--radius-stage);
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  overscroll-behavior: contain;
+}
+.lab-stage[data-tool="pan"] canvas {
+  cursor: grab;
+}
+.lab-stage[data-tool="place"] canvas {
+  cursor: copy;
+}
+
+/* margin: auto centers the scene without clipping it when it's bigger. */
+.lab-stage__sheet {
+  margin: auto;
+  line-height: 0;
+}
+
+.lab-stage__sheet canvas {
+  display: block;
+  image-rendering: pixelated;
+  touch-action: none;
+}
+
+.lab-stage__empty {
+  position: absolute;
+  inset: auto 16px 16px;
+  margin: 0;
+  text-align: center;
+  color: var(--color-ink-muted);
+}
+.lab-stage__empty[hidden] {
+  display: none;
+}
+
+/* --------------------------------------------------------- status bar */
+
+.lab-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+  color: var(--color-ink-muted);
+}
+
+.lab-status__item {
+  margin: 0;
+}
+
+.lab-status__problems.is-warning,
+.lab-warning {
+  padding: 0 8px;
+  background: var(--color-gold);
+  color: var(--color-ink);
+}
+
+/* ------------------------------------------------------------ library */
+
+.lab-search {
+  display: block;
+  margin-bottom: 8px;
+}
+.lab-search input {
+  width: 100%;
+}
+
+.lab-library__group {
+  margin-top: 8px;
+}
+.lab-library__group[hidden] {
+  display: none;
+}
+
+.lab-library__group summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+/* display: flex drops the marker, so it's drawn here. */
+.lab-library__group summary::before {
+  content: "▸";
+  font-family: var(--font-text);
+}
+.lab-library__group[open] summary::before {
+  content: "▾";
+}
+
+.lab-library__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 6px;
+}
+.lab-library__list li[hidden] {
+  display: none;
+}
+
+.lab-thumb {
+  width: 100%;
+  min-height: 88px;
+  padding: 6px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+  background: var(--color-card);
+  color: var(--color-ink);
+  font: 11px/1.2 var(--font-text);
+  cursor: pointer;
+}
+.lab-thumb:hover {
+  border-color: var(--color-border-strong);
+}
+.lab-thumb[aria-pressed="true"] {
+  border-color: var(--color-ink);
+  box-shadow: 0 0 0 1px var(--color-ink);
+}
+
+.lab-thumb__art {
+  margin: auto 0;
+  image-rendering: pixelated;
+}
+
+.lab-thumb__name {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.lab-library__none,
+.lab-library__hint {
+  font-size: 13px;
+  color: var(--color-ink-muted);
+}
+.lab-library__hint {
+  margin: 12px 0 0;
+}
+
+/* --------------------------------------------------------- items list */
+
+.lab-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lab-tree__row {
+  min-height: 44px;
+  padding: 4px 8px 4px calc(8px + var(--depth, 0) * 16px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 8px;
+  border-radius: var(--radius-button);
+  font-size: 14px;
+  cursor: pointer;
+}
+.lab-tree__row:hover {
+  background: var(--color-card);
+}
+.lab-tree__row[aria-selected="true"] {
+  background: var(--color-ink);
+  color: var(--color-page);
+}
+
+.lab-tree__name {
+  overflow-wrap: anywhere;
+}
+
+.lab-tree__detail {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* ---------------------------------------------------------- inspector */
+
+.lab-fields {
+  display: grid;
+  gap: 6px;
+}
+.lab-fields[hidden] {
+  display: none;
+}
+
+.lab-number {
+  display: grid;
+  grid-template-columns: 48px 44px minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+}
+.lab-number input {
+  width: 100%;
+  min-width: 0;
+  padding: 0 8px;
+  text-align: center;
+}
+
+.lab-step {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-button);
+  background: var(--color-surface-ghost);
+  color: var(--color-ink);
+  font: 18px/1 var(--font-text);
+  cursor: pointer;
+}
+.lab-step:hover {
+  background: var(--color-page);
+}
+
+#lab-placement-note {
+  margin-top: 8px;
+}
+
+.lab-field {
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+}
+.lab-field input {
+  width: 100%;
+}
+
+.lab-actions {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+.lab-actions .btn {
+  justify-content: center;
+}
+
+.lab-facts {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 4px 12px;
+  font-size: 14px;
+}
+.lab-facts dt {
+  color: var(--color-ink-muted);
+}
+.lab-facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ------------------------------------------------------------- dialog */
+
+.lab-dialog {
+  width: min(720px, calc(100vw - 2 * var(--gutter)));
+  max-height: calc(100dvh - 2 * var(--gutter));
+  padding: 20px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-page);
+  color: var(--color-ink);
+}
+.lab-dialog::backdrop {
+  background: rgba(46, 36, 24, 0.4);
+}
+
+.lab-dialog__head h2 {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 1px;
+}
+
+.lab-dialog__path {
+  margin: 0 0 12px;
+  overflow-wrap: anywhere;
+}
+
+.lab-dialog code,
+.lab-dialog textarea {
+  font: 13px/1.5 var(--font-code);
+}
+
+.lab-dialog__source {
+  display: block;
+}
+.lab-dialog__source[hidden] {
+  display: none;
+}
+.lab-dialog textarea {
+  width: 100%;
+  padding: 12px;
+  resize: vertical;
+  border-radius: var(--radius-button);
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-card);
+  color: var(--color-ink);
+}
+
+.lab-dialog__next,
+.lab-dialog__status {
+  margin: 8px 0 0;
+  font-size: 14px;
+}
+.lab-dialog__status:empty {
+  display: none;
+}
+
+.lab-dialog__actions {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.lab-dialog .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.lab-problems ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  font: 13px/1.5 var(--font-code);
+  overflow-wrap: anywhere;
+}
+
+/* -------------------------------------------- one column, below 960px */
+
+@media (max-width: 959.98px) {
+  .lab__workspace {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "center" "tabs" "library" "side";
+    height: auto;
+    min-height: 0;
+  }
+
+  .lab__center {
+    grid-template-rows: auto auto auto;
+  }
+
+  .lab-stage {
+    height: 60dvh;
+    min-height: 320px;
+  }
+
+  .lab__tabs {
+    grid-area: tabs;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+    padding: 4px;
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+  }
+
+  .lab__tabs [role="tab"] {
+    min-height: 44px;
+    border: 0;
+    border-radius: var(--radius-button);
+    background: transparent;
+    color: var(--color-ink);
+    font: 13px/1 var(--font-pixel);
+    cursor: pointer;
+  }
+  .lab__tabs [role="tab"][aria-selected="true"] {
+    background: var(--color-ink);
+    color: var(--color-page);
+  }
+
+  .lab-panel {
+    overflow: visible;
+  }
+  .lab__side .lab-panel {
+    flex: none;
+  }
+
+  .lab-bar__picker {
+    flex: 1 1 100%;
+    order: 1;
+  }
+  .lab-bar__picker select {
+    width: 100%;
+  }
+  .lab-bar__draft {
+    order: 2;
+  }
+  .lab-bar__actions {
+    order: 3;
+  }
+}
+
+@media (max-width: 480px) {
+  .lab-stage {
+    padding: 8px;
+  }
+}
