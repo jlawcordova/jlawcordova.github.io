@@ -11,7 +11,7 @@ Platform achievement lists, such as Steam achievements and Apple's Game Center c
 
 - **Steam-style list.** Each accomplishment is a row with its own icon on the left, a fun title and a short description, and the date it was accomplished on the right, as Steam shows it.
 - **A plainer heading.** "Achievements unlocked" becomes "What I've been working on lately", so the section says plainly what it is and the game stays in the rows, not the heading.
-- **Short description, then the full one.** The short description is a summary of five to seven words. The existing longer description, tags and links are kept and shown on demand: on hover on desktop, and on mobile the row expands when tapped to show them in full.
+- **Short description, then the full one.** The short description is a summary of five to seven words. The existing longer description, tags and links are kept. On a device with a mouse, hovering a row shows the longer description in a tooltip. Clicking the row, or tapping it on a phone where there's no hover, expands it to show everything, including the tags and links.
 - **The home page shows a short list.** The three most recent accomplishments, then the newest locked accomplishment. Nothing else.
 - **A separate page for the rest.** A "show more" button on the home page opens a page with every accomplishment, newest first, and the locked ones. The page is paginated.
 - **The fun title and the plain meaning both survive.** The playful name leads, but the short description makes clear what was actually done, so a recruiter or client isn't left guessing.
@@ -37,7 +37,7 @@ Platform achievement lists, such as Steam achievements and Apple's Game Center c
 
 - **The site's rules still hold:** the design language and palette, no new dependencies, inline SVG within the home page weight budget, deterministic output, and accessibility (icons are decorative, text carries the meaning, reduced motion respected, readable at 390px with no horizontal scroll).
 - **Public-safe.** Accomplishment records, locked or not, are public as soon as they're written, so fun titles and descriptions follow the same rules: no client names, no internal incidents, work described by its kind. A locked accomplishment never names unannounced work.
-- **Stardew Valley's level of playfulness.** Fun titles take their voice from Stardew Valley's achievements (such as "Greenhorn", "Cowpoke", "Gofer" or "A Big Help"): short, warm, a little folksy, with light wordplay, never a joke that needs explaining. The owner has the final say, as with every suggestion.
+- **Stardew Valley's level of playfulness.** Fun titles take their voice from Stardew Valley's achievements (such as "Greenhorn" or "Cowpoke"): one to three words, warm, a little folksy, with light wordplay, never a joke that needs explaining. The owner has the final say, as with every suggestion.
 - **Playful, not misleading.** The fun title must not overstate or obscure what the accomplishment was. A locked accomplishment is clearly not done yet, not a claim.
 - **Not a real game.** No points, rarity percentages, progress bars or "unlocked by X% of visitors" figures, unless they're true and defined.
 - **Icons are built with the engine,** inside its design-language caps and the 32-color world palette, with no legacy colors. The skill that creates icons follows the `pixel-art` skill's rules.
