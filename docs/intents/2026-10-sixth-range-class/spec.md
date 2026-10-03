@@ -1,5 +1,5 @@
 # Spec: Range class characters (from intent.md 2026-10-03)
-Status: approved.
+Status: approved. Implemented in [#49](https://github.com/jlawcordova/jlawcordova.github.io/pull/49), awaiting verification.
 
 ## Requirements
 

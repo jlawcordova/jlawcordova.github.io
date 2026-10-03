@@ -15,7 +15,7 @@ New art must fit the existing world. The engine enforces every rule here except 
 - **Grid.** A tile is 32×16 pixels, 2:1 dimetric: every edge steps 2 pixels across for 1 down. One level is 16 pixels high, so a one-level block is 32×32 and reads as a cube. A tile at `[col, row, level]` has its top-face center at `x = (col − row) × 16 + ox`, `y = (col + row) × 8 − level × 16 + oy`, where `[ox, oy]` is the scene's `origin`.
 - **Palette tiers** (`source/palette.mjs`):
   - **world**: exactly 32 colors, as seven material ramps of 4 shades (`grass-1` highlight … `grass-4` shadow, and the same for soil, wood, path, water, roof and gold), plus `ink`, `cream`, `skin-1` and `skin-2`. They were picked from the island's own shades. `npm run art -- --preview palette` writes the swatch sheet: a row per material, shade 1 to 4 across. The tier is full, so a new color means dropping one.
-  - **outfit**: at most 16 clothing colors (four so far, the `silver-1` to `silver-4` ramp), only for objects that extend `character`.
+  - **outfit**: at most 16 clothing colors (full: the `silver`, `violet`, `slate`, `orange`, `sky` and `navy` ramps, light to dark; a new color means dropping one), only for objects that extend `character`.
   - **legacy**: the 81 colors extracted from the redesign's art (`c-<hex>`), frozen. **Only imported art (`legacy: true`) may use them.** Never use one in new art, and never set `legacy: true` yourself.
   - Colors are added to the palette by hand, in a reviewed commit. Brand entries keep their `src/styles/variables.css` values.
 - **Light** comes from the same side as on the island: tops are the light shade, left faces the mid shade, right faces the shadow shade.
@@ -114,8 +114,8 @@ export default {
 
 - `rows` is `{ <layer index>: { <row index>: '<whole row>' } }`. A row override must be the full width of the base's map.
 - `keys` adds keys, or overrides the base's: the base's order comes first, then new keys.
-- `character` and the five Range outfits are imported legacy art. A new outfit inherits the character's legacy colors, so it must override those keys with world or outfit colors. `--new object <name> --extends character` writes those overrides for you, using the nearest allowed color (keys `b` to `f` above); replace them with better choices as the world palette grows.
-- `character` is a 32×35 canvas, with anchor `[0, 0]` at its top left. The figure is in its `cbob` layer, within columns 17–31, and the legacy outfits' props (a board, screens) are in layer 0, to its left. A new outfit keeps its figure, with any prop it holds, within 24×32. A larger prop is a separate `prop-<name>` object, placed beside the character in a scene.
+- `character` uses world colors only (`a` ink, `b` and `e` `soil-4`, `c` and `d` skin, `f` `wood-4`). An outfit may recolor those keys, as the knight and the suit do for armor and trousers. `--new object <name> --extends character` writes a starter outfit; it would re-key any legacy color of its base to the nearest allowed one, though `character` has none now.
+- `character` is a 32×35 canvas, with anchor `[0, 0]` at its top left. The figure (head rows 19–23, legs rows 30–34) is in its `cbob` layer, columns 18–30; each outfit draws the top of the head (row 18), any hat above it, and the torso (rows 24–29). Draw held props in the `cbob` layer too, so they bob with the character, and keep them left of the body (columns 8–17): there is no room right of column 31. A new outfit keeps its figure, with any prop it holds, within 24×32. A larger prop is a separate `prop-<name>` object, placed beside the character in a scene.
 
 ### Scenes (`source/scenes/<name>.mjs`)
 
@@ -195,7 +195,7 @@ The redesign's art was imported with `scripts/import-pixel-art.mjs`, so it's mar
   - `truck`, placed with class `itruck it1`, and `truck-green`, placed with `itruck it2`;
   - `island-front`: the trees, crane, fence and roof that are drawn in front of the trucks;
   - `cloud-a`, `cloud-b` and `cloud-c`, placed with `pcloud pc0` to `pc2`.
-- **The Range sprite** (`scenes/range-sprite.mjs`) is `range-island` plus five outfits that extend `character`, one per `data-class` group.
+- **The Range sprite** (`scenes/range-sprite.mjs`) is `range-island` (still legacy) plus seven outfits that extend `character`, one per `data-class` group, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). The outfits and `character` were redrawn in world and outfit colors by the [Range class characters](../../../docs/intents/2026-10-sixth-range-class/intent.md) change, so they're no longer legacy.
 - **Why `island-base` is exempt from the caps:** the extracted art is grouped by color, not by thing, so the importer can't split it into trees, blocks and water (spec concern A2). It moved in as one big map, which is wider than 64 and uses far more than 12 colors. Splitting it into library objects is later work, done one piece at a time. Each piece should either be a visible no-op or a deliberate change that's reviewed on its own.
 - **Recolors.** `truck-green` is `truck` with other colors: it `extends: 'truck'` and lists only the keys that differ. Use the same pattern for a variant that changes colors but not shape.
 - **Moving legacy art to world colors** changes how it looks, so do it one object at a time, in its own PR, with before and after previews. Don't do it as part of other work.

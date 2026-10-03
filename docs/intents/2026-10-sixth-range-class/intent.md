@@ -1,5 +1,5 @@
 # Intent: Range class characters
-Author: J. Law. Cordova (site owner). Status: accepted.
+Author: J. Law. Cordova (site owner). Status: accepted. Implemented in [#49](https://github.com/jlawcordova/jlawcordova.github.io/pull/49), awaiting verification.
 
 ## Problem
 
