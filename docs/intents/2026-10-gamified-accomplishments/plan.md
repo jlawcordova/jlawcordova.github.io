@@ -36,7 +36,7 @@ Plans [`spec.md`](spec.md) (R1–R21, D1–D7). The work is in two repos, so the
 - `src/components/AccomplishmentRow.astro` (new), `AccomplishmentCard.astro` (deleted), `AchievementIcons.astro` (new), `Accomplishments.astro` (the home section with the "Show more" button).
 - `src/pages/accomplishments/index.astro`, `src/pages/accomplishments/[page].astro` (new) and `src/components/AccomplishmentsPage.astro` (new).
 - `src/styles/accomplishments.css`: rewritten, including the tooltip.
-- `scripts/fixtures/accomplishments.json` (new) and `scripts/e2e/accomplishments.e2e.mjs` (new).
+- `scripts/fixtures/accomplishments.json` (new) and `scripts/e2e/accomplishments.e2e.mjs` (new). The proof's three fixtures are three files: `accomplishments.json` (30 done, 3 locked), `accomplishments-two-done.json` and `accomplishments-unavailable.json`, all in the shape the fetch script writes and with invented, public-safe text only.
 - `README.md`, `CLAUDE.md`: the routes, components and the fixture/restore note.
 
 ## Order of work

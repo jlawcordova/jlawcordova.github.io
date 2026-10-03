@@ -1,0 +1,39 @@
+{
+  "status": "ok",
+  "fetchedAt": "2026-10-03T00:00:00.000Z",
+  "items": [
+    {
+      "rkey": "3fixdone00001",
+      "title": "Released version 2 of a booking web app",
+      "description": "Shipped the second major release of a booking web app, with a faster checkout and a rebuilt calendar view.",
+      "done": true,
+      "startDate": "2026-09",
+      "funTitle": "Lift Off",
+      "shortDescription": "Shipped the new booking app release",
+      "icon": "rocket",
+      "tags": [
+        "TypeScript",
+        "Astro"
+      ],
+      "links": [
+        "https://example.com/releases/v2"
+      ],
+      "createdAt": "2026-09-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00002",
+      "title": "Fixed a login timeout that logged people out early",
+      "description": "Tracked down why sessions expired early on slow networks and fixed the token refresh so people stay signed in.",
+      "done": true,
+      "startDate": "2026-09",
+      "funTitle": "Pest Control",
+      "shortDescription": "Fixed a long-standing login timeout bug",
+      "icon": "bug",
+      "tags": [
+        "Auth"
+      ],
+      "links": [],
+      "createdAt": "2026-09-18T10:00:00.000Z"
+    }
+  ]
+}

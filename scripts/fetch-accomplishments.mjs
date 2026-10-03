@@ -82,6 +82,7 @@ function isHttpUrl(value) {
   }
 }
 
+/** @param {unknown} value @returns {value is string} */
 function nonEmptyString(value) {
   return typeof value === 'string' && value.trim() !== '';
 }
@@ -117,31 +118,24 @@ export function toItem(record) {
     return null;
   }
 
-  /**
-   * @type {{ rkey: string, title: string, description: string, done: boolean, startDate?: string,
-   *   endDate?: string, funTitle?: string, shortDescription?: string, icon?: string, tags: string[],
-   *   links: string[], createdAt: string }}
-   */
-  const item = {
+  /** @param {unknown} v */
+  const optional = (v) => (nonEmptyString(v) ? v.trim() : undefined);
+  const entries = {
     rkey,
     title: title.trim(),
     description: description.trim(),
     done,
-    tags: [],
-    links: [],
+    startDate: done ? startDate : undefined,
+    endDate: done ? endDate : undefined,
+    funTitle: optional(value.funTitle),
+    shortDescription: optional(value.shortDescription),
+    icon: optional(value.icon),
+    tags: Array.isArray(value.tags) ? value.tags.filter(nonEmptyString).map((t) => t.trim()) : [],
+    links: Array.isArray(value.links) ? value.links.filter(isHttpUrl) : [],
     createdAt,
   };
-  if (done) {
-    item.startDate = startDate;
-    if (endDate !== undefined) item.endDate = endDate;
-  }
-  if (nonEmptyString(value.funTitle)) item.funTitle = value.funTitle.trim();
-  if (nonEmptyString(value.shortDescription)) item.shortDescription = value.shortDescription.trim();
-  if (nonEmptyString(value.icon)) item.icon = value.icon.trim();
-  item.tags = Array.isArray(value.tags) ? value.tags.filter(nonEmptyString).map((t) => t.trim()) : [];
-  item.links = Array.isArray(value.links) ? value.links.filter(isHttpUrl) : [];
-  item.createdAt = createdAt;
-  return item;
+  // Leave absent fields out rather than writing them as undefined.
+  return Object.fromEntries(Object.entries(entries).filter(([, v]) => v !== undefined));
 }
 
 /**

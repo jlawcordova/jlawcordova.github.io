@@ -1,0 +1,505 @@
+{
+  "status": "ok",
+  "fetchedAt": "2026-10-03T00:00:00.000Z",
+  "items": [
+    {
+      "rkey": "3fixdone00001",
+      "title": "Released version 2 of a booking web app",
+      "description": "Shipped the second major release of a booking web app, with a faster checkout and a rebuilt calendar view.",
+      "done": true,
+      "startDate": "2026-09",
+      "funTitle": "Lift Off",
+      "shortDescription": "Shipped the new booking app release",
+      "icon": "rocket",
+      "tags": [
+        "TypeScript",
+        "Astro"
+      ],
+      "links": [
+        "https://example.com/releases/v2"
+      ],
+      "createdAt": "2026-09-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00002",
+      "title": "Fixed a login timeout that logged people out early",
+      "description": "Tracked down why sessions expired early on slow networks and fixed the token refresh so people stay signed in.",
+      "done": true,
+      "startDate": "2026-09",
+      "funTitle": "Pest Control",
+      "shortDescription": "Fixed a long-standing login timeout bug",
+      "icon": "bug",
+      "tags": [
+        "Auth"
+      ],
+      "links": [],
+      "createdAt": "2026-09-18T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00003",
+      "title": "Started an open-source habit tracker",
+      "description": "Started a small open-source habit tracker as a weekend project, with a first working version and a README.",
+      "done": true,
+      "startDate": "2026-08",
+      "funTitle": "Fresh Sprout",
+      "shortDescription": "Started a weekend open-source side project",
+      "icon": "sprout",
+      "tags": [
+        "Open source"
+      ],
+      "links": [
+        "https://example.org/habit-tracker"
+      ],
+      "createdAt": "2026-08-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00004",
+      "title": "Rewrote a legacy reporting module",
+      "description": "Replaced an old reporting module with a smaller one that is tested and easier to change. Its icon name is unknown on purpose, so it shows the fallback star.",
+      "done": true,
+      "startDate": "2026-08",
+      "funTitle": "Here Be Dragons",
+      "shortDescription": "Tamed a legacy reporting module rewrite",
+      "icon": "dragon",
+      "tags": [],
+      "links": [],
+      "createdAt": "2026-08-18T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00005",
+      "title": "Built a data pipeline for a reporting platform",
+      "description": "Designed and built a data pipeline that loads, cleans and models data for a reporting platform, from the first table to scheduled runs.",
+      "done": true,
+      "startDate": "2026-03",
+      "endDate": "2026-07",
+      "funTitle": "Barn Raiser",
+      "shortDescription": "Built a data pipeline from scratch",
+      "icon": "hammer",
+      "tags": [
+        "Data",
+        "Python",
+        "SQL"
+      ],
+      "links": [
+        "https://example.com/notes/pipeline"
+      ],
+      "createdAt": "2026-07-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00006",
+      "title": "Gave a talk on static site performance",
+      "description": "Gave a short talk on keeping static sites fast: image sizes, fonts and shipping less JavaScript. This record has none of the gamified fields, like a record from before them.",
+      "done": true,
+      "startDate": "2026-07",
+      "tags": [
+        "Speaking"
+      ],
+      "links": [
+        "https://example.com/talks/static-sites"
+      ],
+      "createdAt": "2026-07-18T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00007",
+      "title": "Hardened secret handling in a release pipeline",
+      "description": "Moved release secrets out of build logs and into scoped, short-lived credentials.",
+      "done": true,
+      "startDate": "2026-06",
+      "funTitle": "Fence Mender",
+      "shortDescription": "Hardened the release pipeline's secret handling",
+      "icon": "shield",
+      "tags": [
+        "Security",
+        "CI"
+      ],
+      "links": [],
+      "createdAt": "2026-06-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00008",
+      "title": "Added single sign-on to a dashboard",
+      "description": "Added single sign-on to an internal dashboard, so people use one account instead of a separate password.",
+      "done": true,
+      "startDate": "2026-06",
+      "funTitle": "Gatekeeper",
+      "shortDescription": "Added single sign-on to an internal dashboard",
+      "icon": "key",
+      "tags": [
+        "Auth"
+      ],
+      "links": [],
+      "createdAt": "2026-06-18T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00009",
+      "title": "Halved the page load time of a web app",
+      "description": "Profiled the slowest pages of a web app and cut their load time by half with caching and smaller bundles.",
+      "done": true,
+      "startDate": "2026-05",
+      "funTitle": "Tune-Up",
+      "shortDescription": "Cut page load time by half",
+      "icon": "wrench",
+      "tags": [
+        "Performance"
+      ],
+      "links": [
+        "https://example.com/notes/perf"
+      ],
+      "createdAt": "2026-05-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00010",
+      "title": "Wrote an onboarding guide for contributors",
+      "description": "Wrote a guide that takes a new contributor from clone to first merged change in an afternoon.",
+      "done": true,
+      "startDate": "2026-05",
+      "funTitle": "Scribe",
+      "shortDescription": "Wrote the onboarding guide for contributors",
+      "icon": "book",
+      "tags": [
+        "Docs"
+      ],
+      "links": [],
+      "createdAt": "2026-05-18T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00011",
+      "title": "Found the cause of a memory leak",
+      "description": "Investigated a slow memory leak in a background worker and traced it to a cache that never evicted entries.",
+      "done": true,
+      "startDate": "2026-04",
+      "funTitle": "Sleuth",
+      "shortDescription": "Traced a memory leak to caching",
+      "icon": "magnifier",
+      "tags": [
+        "Debugging"
+      ],
+      "links": [],
+      "createdAt": "2026-04-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00012",
+      "title": "Prototyped offline sync for a mobile app",
+      "description": "Built a prototype of offline-first sync for a mobile app to test whether conflicts could be merged automatically.",
+      "done": true,
+      "startDate": "2026-04",
+      "funTitle": "Mad Tinkerer",
+      "shortDescription": "Prototyped offline sync for a mobile app",
+      "icon": "flask",
+      "tags": [
+        "Mobile",
+        "Prototype"
+      ],
+      "links": [],
+      "createdAt": "2026-04-18T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00013",
+      "title": "Mentored two junior developers",
+      "description": "Paired with two junior developers each week until both shipped their first feature to production.",
+      "done": true,
+      "startDate": "2026-03",
+      "funTitle": "Good Teacher",
+      "shortDescription": "Mentored two juniors through their first release",
+      "icon": "apple",
+      "tags": [
+        "Mentoring"
+      ],
+      "links": [],
+      "createdAt": "2026-03-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00014",
+      "title": "Covered weekend support for a launch",
+      "description": "Took the weekend support shift during a launch so the rest of the team could rest.",
+      "done": true,
+      "startDate": "2026-03",
+      "funTitle": "Neighborly",
+      "shortDescription": "Covered weekend support during a launch",
+      "icon": "heart",
+      "tags": [],
+      "links": [],
+      "createdAt": "2026-03-18T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00015",
+      "title": "Planned a quarterly roadmap",
+      "description": "Ran the planning sessions for the team's quarterly roadmap and wrote it up as a one-page plan.",
+      "done": true,
+      "startDate": "2026-02",
+      "funTitle": "Trailblazer",
+      "shortDescription": "Planned the quarter's roadmap with the team",
+      "icon": "signpost",
+      "tags": [
+        "Leadership"
+      ],
+      "links": [],
+      "createdAt": "2026-02-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00016",
+      "title": "Organised a library of design assets",
+      "description": "Sorted years of scattered design files into one searchable library with consistent names.",
+      "done": true,
+      "startDate": "2026-02",
+      "funTitle": "Packrat",
+      "shortDescription": "Organised years of design assets neatly",
+      "icon": "chest",
+      "tags": [
+        "Design"
+      ],
+      "links": [],
+      "createdAt": "2026-02-18T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00017",
+      "title": "Reached 1,000 automated tests",
+      "description": "Grew a project test suite past a thousand automated tests, all passing on every change.",
+      "done": true,
+      "startDate": "2026-01",
+      "funTitle": "Big Harvest",
+      "shortDescription": "Reached a thousand automated tests passing",
+      "icon": "trophy",
+      "tags": [
+        "Testing"
+      ],
+      "links": [],
+      "createdAt": "2026-01-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00018",
+      "title": "Presented a system architecture at a meetup",
+      "description": "Presented how a small team structured a web platform at a local developer meetup.",
+      "done": true,
+      "startDate": "2026-01",
+      "funTitle": "Town Crier",
+      "shortDescription": "Presented the architecture at a meetup",
+      "icon": "speech",
+      "tags": [
+        "Speaking"
+      ],
+      "links": [
+        "https://example.org/meetup/architecture"
+      ],
+      "createdAt": "2026-01-18T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00019",
+      "title": "Built a self-hosted photo gallery",
+      "description": "Built a small self-hosted photo gallery with albums, thumbnails and private sharing links.",
+      "done": true,
+      "startDate": "2025-09",
+      "endDate": "2025-12",
+      "funTitle": "Homesteader",
+      "shortDescription": "Built a self-hosted photo gallery",
+      "icon": "hammer",
+      "tags": [
+        "Side project"
+      ],
+      "links": [
+        "https://example.org/gallery"
+      ],
+      "createdAt": "2025-12-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00020",
+      "title": "Launched a newsletter signup flow",
+      "description": "Launched a double opt-in newsletter signup with a welcome email.",
+      "done": true,
+      "startDate": "2025-11",
+      "funTitle": "Full Steam",
+      "shortDescription": "Launched a newsletter signup flow",
+      "icon": "rocket",
+      "tags": [],
+      "links": [],
+      "createdAt": "2025-11-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00021",
+      "title": "Fixed a flaky CI test",
+      "description": "Found the race condition behind a test that failed one run in twenty and made it deterministic.",
+      "done": true,
+      "startDate": "2025-10",
+      "funTitle": "Bug Catcher",
+      "shortDescription": "Squashed a flaky test in CI",
+      "icon": "bug",
+      "tags": [
+        "CI",
+        "Testing"
+      ],
+      "links": [],
+      "createdAt": "2025-10-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00022",
+      "title": "Automated dependency updates",
+      "description": "Set up weekly automated dependency updates with tests, so upgrades arrive as small reviewed changes.",
+      "done": true,
+      "startDate": "2025-09",
+      "funTitle": "Well Oiled",
+      "shortDescription": "Automated the weekly dependency update chores",
+      "icon": "wrench",
+      "tags": [
+        "Automation"
+      ],
+      "links": [],
+      "createdAt": "2025-09-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00023",
+      "title": "Documented a public API",
+      "description": "Wrote reference docs and examples for every endpoint of a public API.",
+      "done": true,
+      "startDate": "2025-08",
+      "funTitle": "Bookworm",
+      "shortDescription": "Documented the public API end to end",
+      "icon": "book",
+      "tags": [
+        "Docs",
+        "API"
+      ],
+      "links": [
+        "https://example.com/docs/api"
+      ],
+      "createdAt": "2025-08-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00024",
+      "title": "Made a first open-source contribution",
+      "description": "Had a first pull request merged into an open-source library: a small fix with a test.",
+      "done": true,
+      "startDate": "2025-07",
+      "funTitle": "First Bloom",
+      "shortDescription": "Merged a first open-source contribution upstream",
+      "icon": "sprout",
+      "tags": [
+        "Open source"
+      ],
+      "links": [],
+      "createdAt": "2025-07-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00025",
+      "title": "Ran an accessibility audit",
+      "description": "Audited a marketing site for accessibility and fixed contrast, focus order and missing labels.",
+      "done": true,
+      "startDate": "2025-06",
+      "funTitle": "Keen Eye",
+      "shortDescription": "Audited accessibility across the marketing site",
+      "icon": "magnifier",
+      "tags": [
+        "Accessibility"
+      ],
+      "links": [],
+      "createdAt": "2025-06-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00026",
+      "title": "Set up automatic credential rotation",
+      "description": "Set up automatic rotation for service credentials so none lives longer than a month.",
+      "done": true,
+      "startDate": "2025-05",
+      "funTitle": "Night Watch",
+      "shortDescription": "Set up automatic credential rotation everywhere",
+      "icon": "shield",
+      "tags": [
+        "Security"
+      ],
+      "links": [],
+      "createdAt": "2025-05-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00027",
+      "title": "Migrated records to a data warehouse",
+      "description": "Moved years of old records into a data warehouse, checked row by row against the source.",
+      "done": true,
+      "startDate": "2025-01",
+      "endDate": "2025-04",
+      "funTitle": "Root Cellar",
+      "shortDescription": "Migrated old records to a warehouse",
+      "icon": "chest",
+      "tags": [
+        "Data"
+      ],
+      "links": [],
+      "createdAt": "2025-04-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00028",
+      "title": "Ran a lunch-and-learn series",
+      "description": "Organised a weekly lunch-and-learn where team members took turns teaching a topic.",
+      "done": true,
+      "startDate": "2025-03",
+      "funTitle": "Study Buddy",
+      "shortDescription": "Ran a weekly lunch-and-learn series",
+      "icon": "apple",
+      "tags": [
+        "Mentoring"
+      ],
+      "links": [],
+      "createdAt": "2025-03-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00029",
+      "title": "Five years as a professional developer",
+      "description": "Reached five years of writing and shipping software professionally.",
+      "done": true,
+      "startDate": "2025-02",
+      "funTitle": "Milestone",
+      "shortDescription": "Hit five years of shipping code",
+      "icon": "trophy",
+      "tags": [],
+      "links": [],
+      "createdAt": "2025-02-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixdone00030",
+      "title": "Helped a friend build a portfolio site",
+      "description": "Spent a few evenings pairing with a friend to build and publish their first portfolio site.",
+      "done": true,
+      "startDate": "2024-11",
+      "funTitle": "Helping Hand",
+      "shortDescription": "Paired with a friend on their portfolio",
+      "icon": "heart",
+      "tags": [],
+      "links": [],
+      "createdAt": "2024-11-22T10:00:00.000Z"
+    },
+    {
+      "rkey": "3fixlock00001",
+      "title": "Publish a blog series on testing",
+      "description": "Write and publish a three-part blog series on testing web apps.",
+      "done": false,
+      "funTitle": "Serial Author",
+      "shortDescription": "Publish a three-part series on testing",
+      "icon": "book",
+      "tags": [],
+      "links": [],
+      "createdAt": "2026-09-28T09:00:00.000Z"
+    },
+    {
+      "rkey": "3fixlock00002",
+      "title": "Ship a side project every month",
+      "description": "Ship one small side project every month for a quarter.",
+      "done": false,
+      "funTitle": "Marathoner",
+      "shortDescription": "Ship a side project every month",
+      "icon": "trophy",
+      "tags": [],
+      "links": [],
+      "createdAt": "2026-09-20T09:00:00.000Z"
+    },
+    {
+      "rkey": "3fixlock00003",
+      "title": "Give a conference talk",
+      "description": "Give a talk at a developer conference.",
+      "done": false,
+      "funTitle": "Stage Fright",
+      "shortDescription": "Give a talk at a conference",
+      "icon": "speech",
+      "tags": [],
+      "links": [],
+      "createdAt": "2026-09-10T09:00:00.000Z"
+    }
+  ]
+}

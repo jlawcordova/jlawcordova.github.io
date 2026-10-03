@@ -12,6 +12,7 @@ J. Law. Cordova's personal site and blog: Astro 7, TypeScript and plain CSS, dep
 - Pixel art: `npm run art` (compiles the scenes in `src/assets/pixel-art/source/` to `src/assets/pixel-art/*.svg`). `npm run art -- --check <name>` validates one object or scene, `--preview <name>` writes PNGs to `.art-preview/`, and `--new object|scene <name>` writes a starter source. The `pixel-art` skill has the details. Accomplishment icons (`icon-<id>` objects and the `achievement-icons` sheet) are added with the `achievement-icon` skill.
 - Pixel-art lab: `npm run dev`, then http://localhost:4321/lab/pixel-art/ (unlisted). It edits scenes, paints objects and exports their sources.
 - Accomplishments: `npm run fetch-accomplishments` (overwrites `src/data/accomplishments.json`; never commit the result)
+- Fixture accomplishments: `cp scripts/fixtures/accomplishments.json src/data/accomplishments.json` (or `-two-done`, `-unavailable`), build, then `git checkout src/data/accomplishments.json`
 
 ## Verifying your work
 
