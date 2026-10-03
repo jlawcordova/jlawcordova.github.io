@@ -6,7 +6,7 @@
 | **Intent** | [`intent.md`](intent.md) (accepted) |
 | **Spec** | [`spec.md`](spec.md) (approved). R*n* and C*n* below refer to its requirements and concerns |
 
-The change ships as **ten PRs**, merged in order. After each one `master` is deployable and the carousel shows only finished classes. The spec says *what*, and this plan says in which order, in which files, and how each step is proved. If they disagree, the spec wins and this plan gets fixed in the same commit.
+The change ships as **six PRs**, merged in order. After each one `master` is deployable and the carousel shows only finished classes. The spec says *what*, and this plan says in which order, in which files, and how each step is proved. If they disagree, the spec wins and this plan gets fixed in the same commit.
 
 ## Files that change
 
@@ -39,7 +39,7 @@ Grouped by PR. "(new)" and "(deleted)" are marked. Anything else is edited.
 - `src/assets/pixel-art/range-sprite.svg` (regenerated)
 - `src/styles/range.css`: only if the nameplate wraps at 390px (C3)
 
-**PRs 4 to 9: one per class (R2, R3a, R3c, R14).** Each has the same files:
+**PR 4: The six class outfits (R2, R3a, R3c, R14).** One PR, with these files for each class:
 - `src/assets/pixel-art/source/objects/outfit-<class>.mjs`: redrawn in place, or `outfit-back-end.mjs` (new)
 - `src/assets/pixel-art/source/objects/prop-<name>.mjs` (new), only when a prop is a scene object
 - `src/assets/pixel-art/source/scenes/range-sprite.mjs`: for a redrawn class, its prop objects only. For Back-end, a new group at index 1 (every later `data-class` shifts up by one in this one PR)
@@ -47,9 +47,9 @@ Grouped by PR. "(new)" and "(deleted)" are marked. Anything else is edited.
 - `src/data/home.ts`: the `shadow` for that class. For Back-end, a new entry at index 1
 - `src/assets/pixel-art/range-sprite.svg` (regenerated)
 - `scripts/pixel-art-cli.test.mjs`: the scene check's item and object counts (line 87) and any outfit-specific `--check` strings
-- 4 Front-end (mage). 5 Back-end (hacker). 6 UX Design (painter). 7 Cloud & DevOps (engineer). 8 Data Engineering (alchemist). 9 Project Management (suit)
+- Front-end (mage), Back-end (hacker), UX Design (painter), Cloud & DevOps (engineer), Data Engineering (alchemist) and Project Management (suit). Back-end's new entry and group at index 1 are the only change to the class list and the `data-class` order
 
-**PR 10: Documents (R13)**
+**PR 5: Documents (R13)**
 - `docs/intents/2026-10-redesign/intent.md`: a note on decision #7
 - `docs/intents/2026-10-redesign/spec.md`: §7.3's block and a note
 - `.claude/skills/pixel-art/SKILL.md`: any remaining mention of five outfits or of the legacy outfits
@@ -69,16 +69,17 @@ Grouped by PR. "(new)" and "(deleted)" are marked. Anything else is edited.
    - **Canvas:** `character` is a 32×35 canvas whose figure fills columns 18–29 of the `cbob` layer (the figure is ink at columns 18–29 and rows 19–34), so there is free room to the left and above but **none to the right of column 31**. A prop held on the right needs a wider canvas. If a class needs that, widening is a mechanical right-padding of every outfit row (a row override must be the base's full width, per the skill), done in that class's PR and recorded as a departure here.
    - **Clipping (spec C4 risk a):** the map's top is at y = −6 and the `viewBox` starts at −9, and the map is 35 rows, so nothing inside the existing canvas can clip. A prop object taller than 35 rows, or placed above the map, is what could.
 3. **Security & Governance live.** Add the entry and the group (the knight is built). Measure the nameplate at 390px for the 21-character name (C3). If it wraps, apply the owner's recommended fix: a smaller nameplate font at narrow widths for all classes in `range.css`.
-4. **Front-end (mage)** first, since it sets the bar for how much detail a character gets. The owner approves its preview before the other five are drawn. Then **5 Back-end**, **6 UX Design**, **7 Cloud & DevOps**, **8 Data Engineering** and **9 Project Management**, one PR each. The old outfit stays live until its replacement merges. For each class: write the outfit (`--new object outfit-<class> --extends character` writes world-color overrides for the legacy keys), place it, run `--check` and `--preview`, then `npm run art`.
-10. **Documents**, once all classes are live.
+4. **The six class outfits, in one PR, in commits of one class each** so the owner can review and the verifier can read them one at a time. Draw the mage first, since it sets the bar for how much detail a character gets, and push that commit and its previews for the owner's approval before drawing the other five. Then Back-end, UX Design, Cloud & DevOps, Data Engineering and Project Management. Because they ship together, the old outfits stay live until the PR merges. For each class: write the outfit (`--new object outfit-<class> --extends character` writes world-color overrides for the legacy keys), place it, run `--check` and `--preview`, then `npm run art`, and put its before and after previews and screenshots in the PR description. The PR isn't merged until the owner has approved every class.
+5. **Documents**, once all classes are live.
 
 ## Risks
 
 - **PR 1 changes every class at once.** Re-keying the base shifts shades in all six outfits' skin, hair and boots. It's the riskiest step for the home page, so it ships alone, with before and after previews at 1×–4× and screenshots at 1440px and 390px. If a nearest-shade mapping looks wrong, adjust the key (for example `wood-4` for `soil-4`) before merging, not after.
 - **A legacy outfit overrides a base key.** An outfit's own `keys` may already redefine `b`–`f` with legacy colors. If so, the re-keyed base won't reach its pixels and the outfit keeps the old shade. Compare the previews pixel by pixel, and fix the outfit's key in PR 1 if needed.
 - **Tests that count the old set.** `pixel-art-roundtrip` R2 (five outfits), `pixel-art-cli` (the scene's item and object counts, and legacy-color strings) and `pixel-art-engine` (the 4-color outfit tier) will fail as soon as the art changes. Each PR updates its own tests in the same commit, and `npm test` must show `# fail 0` before it merges. No test is skipped or deleted except the retired R10 Range checks (C1).
-- **Back-end shifts indices (PR 5).** Inserting at index 1 renumbers `data-class` for every later class in the scene, and the `shadow` list in `home.ts` in the same order. A mismatch would show the wrong outfit under a name. The drift test covers the count, so the PR also needs a screenshot of each of the seven classes beside its nameplate.
-- **Nameplate wrapping (C3).** Handled in PR 3 and re-checked for every later class's screenshot.
+- **Back-end shifts indices (PR 4).** Inserting at index 1 renumbers `data-class` for every later class in the scene, and the `shadow` list in `home.ts` in the same order. A mismatch would show the wrong outfit under a name. The drift test covers the count, so the PR also needs a screenshot of each of the seven classes beside its nameplate.
+- **Nameplate wrapping (C3).** Handled in PR 3 and re-checked in each class's screenshot in PR 4.
+- **PR 4 is large.** Six outfits and their props change the sprite at once, which is harder to review and to roll back than one class at a time (the intent allows it). Mitigations: one commit per class, the mage's preview approved before the rest are drawn, previews and screenshots per class in the description, and the verifier reading it class by class. If review stalls on one class, the PR can be split by reverting that class's commit to its old outfit.
 - **Platform room (C6).** A prop that doesn't fit becomes smaller or held. The measurement in PR 2 comes before any prop is drawn.
 - **Sprite size.** Seven variants and props enlarge `range-sprite.svg` (about 33 KB raw now). `npm run art` fails the budget at 100 KB raw or 25 KB gzip, and each PR reports the sizes.
 - **Legacy tier stays.** The platform (`range-island`) and the hero island are still legacy art, so the legacy palette tier and its exemptions stay in the engine. This change doesn't try to empty it.
@@ -87,7 +88,7 @@ Grouped by PR. "(new)" and "(deleted)" are marked. Anything else is edited.
 
 ### Options considered
 
-- **Redraw all outfits in one PR.** Fewer PRs, but a single large visual change that's hard to review and to roll back. Rejected for the intent's "each class is its own reviewed step".
+- **One PR per class.** Easier to review and revert, and the carousel would show new characters one at a time, but the original plan had six more PRs and verifier runs. The owner chose one PR for the six outfits (intent constraint updated), and the risk above covers it.
 - **Migrate the base character after the outfits.** The outfits extend it, so migrating later would shift every outfit twice. Rejected.
 - **Wider canvas for the base character up front.** Not needed until a class needs a right-side prop, and it touches every outfit. Deferred to PR 2's measurements.
 - **Keep the fixture comparison for the Range sprite.** Can't pass once the art changes by design (C1, decided).
@@ -110,7 +111,7 @@ Per PR:
 | 1 | Before and after previews (1×–4×) of the character and every outfit. No `c-<hex>` key left in `character.mjs`. `npm run art -- --check character` shows it non-legacy. The outfit tier has ≤ 16 colors. Screenshots of the carousel at 1440px and 390px |
 | 2 | The drift test fails when a `data-class` group or an `rangeClasses` entry is removed, and passes otherwise. The measurements are in the PR description |
 | 3 | The carousel cycles through six classes, with "class N of 6", a sixth dot, the knight's outfit and its nameplate shadow. Screenshots at 1440px and 390px with no horizontal scroll. Arrow wrap, auto-advance, pause, hover and focus pause, and reduced motion behave as before |
-| 4 to 9 | `--check` and `--preview` for the outfit and its props (figure ≤ 24×32, ≤ 12 colors, no legacy keys). Before and after screenshots of that class at 1440px and 390px, the nameplate on one line, no layout shift when the carousel advances, and the dot count and "class N of M" correct. For Back-end, screenshots of all seven classes by their names |
-| 10 | The redesign decision #7 and §7.3 notes exist, and a search for the old five-class block finds nothing left |
+| 4 | `--check` and `--preview` for the outfit and its props (figure ≤ 24×32, ≤ 12 colors, no legacy keys). Before and after screenshots of that class at 1440px and 390px, the nameplate on one line, no layout shift when the carousel advances, and the dot count and "class N of M" correct. Screenshots of all seven classes by their names, and the old five-class set no longer appears |
+| 5 | The redesign decision #7 and §7.3 notes exist, and a search for the old five-class block finds nothing left |
 
 The change is done when all seven classes show in the carousel, `grep -c "c-" src/assets/pixel-art/source/objects/character.mjs` and every outfit file returns 0, `rangeClasses.length` is 7, and every acceptance item in the intent is ticked with evidence.
