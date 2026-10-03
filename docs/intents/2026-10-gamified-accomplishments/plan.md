@@ -55,12 +55,11 @@ Three PRs, in this order, then the migration run and a small cleanup. Each leave
 
 PR 1 comes first because the lexicon's `knownValues` and the skill both need the icon IDs. PR 3 doesn't depend on PR 2 to merge, but its real data does.
 
-**PR 3 status.** PR 3 delivers the whole site side, proven against the invented fixtures only: the data layer, the rows, the home section, the tooltip, the `/accomplishments/` pages, the styles, and the unit and browser checks for R1–R3, R5–R9, R13, R17 and R20. It's opened as a draft. These wait until PR 2 is merged and the migration (step 4) has run:
+**PR 3 status.** PR 3 delivers the whole site side: the data layer, the rows, the home section, the tooltip, the `/accomplishments/` pages, the styles, and the unit and browser checks for R1–R3, R5–R9, R13, R17 and R20, proven against the invented fixtures. It was opened as a draft until PR 2 merged and the migration ran. Both are now done (`jlawcordova-atproto` #21 and #22), and the rest is settled:
 
-- Building against the real migrated records, and checking that the live build shows the same record count as before (Risks, the first item).
-- R10 and R11 (stale locked records, adding, marking done and deleting): atproto-side, proven in PR 2 and its skill run.
-- R16 (the migration): step 4's dry run, `--write` and `accomplishments list`.
-- R4, R15 and R18 (short-description length, Claude's suggestions, the voice): the skill review in PR 2.
+- **The real records (2026-10-04).** `npm run fetch-accomplishments` wrote 9 items, the same 9 the live site shows. Every one has a fun title, a short description and one of the 16 icons, and none is locked. Built with them, the home page shows 3 done rows and "Show more", and `/accomplishments/` lists all 9 ("9 accomplishments · Page 1 of 1") with no horizontal scroll at 1440px or 390px. The data file was then restored to the placeholder.
+- **R16 (the migration)** is proven in `jlawcordova-atproto` #22: the owner approved the dry run, `--write` updated all 9 records with only their three new fields, and a second dry run found nothing left.
+- **R10, R11, R4, R15 and R18** are atproto-side and need real runs of the `accomplishments` skill (that repo's S1, S3–S6). They aren't verified yet, and they don't block this PR: the site renders whatever the skill writes, locked records included, as the fixtures prove.
 
 ## Risks
 
