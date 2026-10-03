@@ -46,7 +46,6 @@ const HEADING = 'What I’ve been working on lately';
 const rich = JSON.parse(readFileSync(join(ROOT, FIXTURES.rich), 'utf8')).items;
 const richDone = rich.filter((item) => item.done !== false);
 const richLocked = rich.filter((item) => item.done === false).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-const byRkey = (rkey) => rich.find((item) => item.rkey === rkey);
 /** The record whose icon isn't in the library, and the one from before the gamified fields. */
 const unknownIcon = rich.find((item) => item.icon === 'dragon');
 const oldStyle = rich.find((item) => item.done !== false && item.funTitle === undefined && item.icon === undefined);
@@ -134,7 +133,7 @@ const TYPES = {
 /** Serves a built directory on a free port, like `astro preview` does dist/. */
 function serve(dir) {
   const server = createServer(async (req, res) => {
-    let path = decodeURIComponent(new URL(req.url ?? '/', 'http://x').pathname);
+    const path = decodeURIComponent(new URL(req.url ?? '/', 'http://x').pathname);
     const file = normalize(join(dir, path.endsWith('/') ? `${path}index.html` : path));
     if (file !== dir && !file.startsWith(dir + sep)) return void res.writeHead(403).end();
     try {
