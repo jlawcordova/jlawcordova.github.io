@@ -54,6 +54,13 @@ Three PRs, in this order, then the migration run and a small cleanup. Each leave
 
 PR 1 comes first because the lexicon's `knownValues` and the skill both need the icon IDs. PR 3 doesn't depend on PR 2 to merge, but its real data does.
 
+**PR 3 status.** PR 3 delivers the whole site side, proven against the invented fixtures only: the data layer, the rows, the home section, the tooltip, the `/accomplishments/` pages, the styles, and the unit and browser checks for R1–R3, R5–R9, R13, R17 and R20. It's opened as a draft. These wait until PR 2 is merged and the migration (step 4) has run:
+
+- Building against the real migrated records, and checking that the live build shows the same record count as before (Risks, the first item).
+- R10 and R11 (stale locked records, adding, marking done and deleting): atproto-side, proven in PR 2 and its skill run.
+- R16 (the migration): step 4's dry run, `--write` and `accomplishments list`.
+- R4, R15 and R18 (short-description length, Claude's suggestions, the voice): the skill review in PR 2.
+
 ## Risks
 
 - **Riskiest: PR 2's schema change.** The Worker validates every write, and the site's fetch drops a record that fails its own check. A bug could drop records from the site. Handled by keeping every new field optional on read, a test that today's real records still validate and parse (the nine records fetched while writing the spec, saved as a fixture without any private text), and checking the live site's build after the PR 2 deploy shows the same count.
