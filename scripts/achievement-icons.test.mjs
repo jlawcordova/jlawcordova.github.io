@@ -20,6 +20,19 @@ test('R12: every icon id is kebab-case, unique and has a meaning', () => {
   }
 });
 
+// The ids published with this PR. The lexicon's `knownValues` copies them, so
+// they stay: new icons may be added through the skill, but none of these may go.
+const PUBLISHED_IDS = [
+  'sprout', 'hammer', 'rocket', 'bug', 'shield', 'key', 'wrench', 'book',
+  'magnifier', 'flask', 'apple', 'heart', 'signpost', 'chest', 'trophy', 'speech',
+];
+
+test('R12: the 16 published icon ids stay', () => {
+  assert.equal(PUBLISHED_IDS.length, 16);
+  const ids = new Set(ICONS.map((icon) => icon.id));
+  for (const id of PUBLISHED_IDS) assert.ok(ids.has(id), `${id} is still an icon`);
+});
+
 test('R12: an icon object exists for every sheet entry, and none is unlisted', async () => {
   const files = (await readdir(new URL('objects/', SOURCE))).filter((f) => f.startsWith('icon-'));
   assert.deepEqual(
