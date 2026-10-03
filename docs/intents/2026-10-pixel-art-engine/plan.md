@@ -388,7 +388,7 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
 
 ### Progress
 
-Tick these as PRs merge.
+Each PR ticks its own line, unless it waits on the owner's sign-off. PR 6 waited for the owner to accept the skill eval's pebble (R37), and was ticked after it merged.
 
 - [x] PR 0: Verification tooling
 - [x] PR 1: Engine and Range round trip
@@ -396,7 +396,7 @@ Tick these as PRs merge.
 - [x] PR 3: World palette and library
 - [x] PR 4: Security and governance outfit
 - [x] PR 5: Editor, scene mode
-- [ ] PR 6: Editor, object mode
+- [x] PR 6: Editor, object mode
 
 ## Risks
 
