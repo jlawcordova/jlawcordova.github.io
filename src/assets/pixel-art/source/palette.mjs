@@ -8,7 +8,7 @@
 //   uses exact legacy values wherever the island has a good one. Brand
 //   entries keep their variables.css values, and a test keeps them in step.
 // - outfit: at most 16 clothing colors, only for objects that extend
-//   character.
+//   character. Each ramp is light to dark.
 // - legacy: the 81 colors extracted from the redesign's art, frozen. Only
 //   imported art (legacy: true) may use them. The same value may also be in
 //   another tier; names are unique.
@@ -52,6 +52,16 @@ export default {
     'silver-2': '#B4BCC4',
     'silver-3': '#858F99',
     'silver-4': '#5A636C',
+    'violet-1': '#B49CC8',
+    'violet-2': '#8A6AA6',
+    'violet-3': '#5F4679',
+    'slate-1': '#6B7380',
+    'slate-2': '#474E5B',
+    'slate-3': '#2F343E',
+    'orange-1': '#E8A15A',
+    'orange-2': '#C2733A',
+    'sky-1': '#C3D8E6',
+    'sky-2': '#8FB0C9',
   },
   legacy: {
     'c-1f2226': '#1F2226',

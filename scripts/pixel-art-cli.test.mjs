@@ -77,7 +77,7 @@ describe('--check (R38)', () => {
     const dir = await workspace();
     const { code, out } = art(dir, '--check', 'outfit-front-end');
     assert.equal(code, 0);
-    assert.equal(out, 'objects/outfit-front-end.mjs: ok · 32×35 · 18 colors (legacy, no cap) · 2 layers · 1 frame\n');
+    assert.equal(out, 'objects/outfit-front-end.mjs: ok · 32×35 · 15 colors (legacy, no cap) · 2 layers · 1 frame\n');
   });
 
   it('R38: prints a one-line summary for a valid scene', async () => {

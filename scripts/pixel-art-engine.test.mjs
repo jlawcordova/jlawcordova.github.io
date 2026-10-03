@@ -1006,7 +1006,7 @@ describe('security and governance outfit (R14, Q6)', () => {
     assert.ok(!tiers.includes('legacy'), 'no legacy colors');
     assert.ok(tiers.filter((t) => t === 'outfit').length <= 4, 'at most 4 outfit colors');
     const { outfit } = (await import('../src/assets/pixel-art/source/palette.mjs')).default;
-    assert.ok(Object.keys(outfit).length <= 4, 'the outfit tier has at most 4 colors so far');
+    assert.ok(Object.keys(outfit).length <= 16, 'the outfit tier has at most 16 colors');
   });
 
   it('R14: it is not part of range-sprite, and outfit-preview shows all six outfits', async () => {

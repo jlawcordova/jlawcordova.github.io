@@ -163,23 +163,9 @@ describe('pixel-art skill (R32)', () => {
   });
 });
 
-describe('Range sprite round trip (R10)', () => {
-  it('R10: the fixture has no hidden pixels, so per-fill-group equality is exact', async () => {
-    assertNoOverlaps(structure(await readFile(join(FIXTURES, 'range-sprite.src.svg'), 'utf8')));
-  });
-
-  it('R10: same group structure and order as the fixture, and the same pixels in every fill group of every layer', async () => {
-    const fixture = structure(await readFile(join(FIXTURES, 'range-sprite.src.svg'), 'utf8'));
-    const compiled = structure(rects('range-sprite'));
-    assertNoOverlaps(compiled);
-    assertSameLayers(compiled, fixture);
-  });
-
-  it('R10: the same viewBox and root attributes as the fixture', async () => {
-    const open = (svg) => /^<svg[^>]*>/.exec(svg)[0];
-    assert.equal(open(rects('range-sprite')), open(await readFile(join(FIXTURES, 'range-sprite.src.svg'), 'utf8')));
-  });
-});
+// The Range sprite's R10 round trip was retired by the Range class
+// characters change (its spec C1): its art changes on purpose. Its fixture
+// stays, as input for R12 and the import tests.
 
 describe('hero island round trip (R11)', () => {
   it('R11: the fixture\'s 1,492 repainted pixels are between its two static layers, not inside one', async () => {
