@@ -21,6 +21,8 @@ The Range carousel shows seven classes, each a recognizable character with one c
 | Project Management | A person in a suit |
 | Security & Governance | The knight in armor (already built) |
 
+*Update, 2026-10-03, from the owner's review of [#49](https://github.com/jlawcordova/jlawcordova.github.io/pull/49): Back-end became a developer with rounded hair and a slate top, holding a laptop in front, after the hoodie didn't read at this size. Data Engineering is a medieval alchemist (floppy cap, white beard, belted tunic, triangular flask).*
+
 A prop that is too big to hold, such as a house, a server rack or an easel, is its own object placed in the scene next to the character, so the character and the object both live on the Range platform. Each class has copy, its own nameplate color and a pager dot, and the carousel still works as it does today. The redesign's decision #7 and spec §7.3 carry a note that the classes changed.
 
 ## Affected users and systems

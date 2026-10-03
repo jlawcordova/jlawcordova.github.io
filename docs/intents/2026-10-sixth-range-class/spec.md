@@ -39,6 +39,8 @@ The order follows the profile's disciplines, with the knight and the suit last, 
 | 5 | Security & Governance | Knight | Armor and helmet, as built | `outfit-security-governance` (kept) |
 | 6 | Project Management | Person in a suit | A jacket and tie, a clipboard | `outfit-project-management` (redrawn) |
 
+*Update, 2026-10-03, from the owner's review of [#49](https://github.com/jlawcordova/jlawcordova.github.io/pull/49): Back-end is a developer with rounded hair and a slate top, holding a laptop with a round logo in front of the body (no hoodie). Data Engineering is a medieval alchemist: a floppy cap, a white beard and a belted tunic, with a triangular flask. See the plan's Departures.*
+
 Each outfit overrides the character's rows like `outfit-security-governance` does (`extends: 'character'`, `keys`, `rows`). The knight is the reference for how much detail a character gets: one silhouette cue, one prop.
 
 ### Palette: `src/assets/pixel-art/source/palette.mjs`
