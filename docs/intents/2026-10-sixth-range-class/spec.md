@@ -7,7 +7,8 @@ Traced to the [intent](intent.md). Each is checkable.
 
 - **R1. Seven classes.** `rangeClasses` in `src/data/home.ts` has seven entries, in the order in [Design](#classes-and-characters). The carousel shows class N of 7. *(Outcome)*
 - **R2. Each class is a character.** Every class has an outfit object that extends `character`, with one costume cue and one prop, in the shared pose and silhouette. The Security & Governance knight is kept as it is. *(Outcome; constraint: still professional)*
-- **R3. New art follows the engine.** Each redrawn or new outfit uses only world and outfit colors (no `c-<hex>` legacy keys), has at most 12 colors, and paints a figure of at most 16×24. New outfit colors are added to the palette in a reviewed commit, keeping the outfit tier at 16 colors or fewer. `npm run art` reports every file `lossless` and none `OVER BUDGET`. *(Constraint)*
+- **R3. The base character is off legacy colors.** `objects/character.mjs` no longer has `legacy: true` or any `c-<hex>` key. It uses world colors only, with its body, pose and proportions unchanged. Any shade change is to the nearest world shade and is shown in before and after previews. *(Constraint; outcome)*
+- **R3a. New art follows the engine.** Each redrawn or new outfit uses only world and outfit colors (no `c-<hex>` legacy keys), has at most 12 colors, and paints a figure of at most 16×24. New outfit colors are added to the palette in a reviewed commit, keeping the outfit tier at 16 colors or fewer. `npm run art` reports every file `lossless` and none `OVER BUDGET`. *(Constraint)*
 - **R4. The sprite has seven variants.** `src/assets/pixel-art/range-sprite.svg` has `<g data-class="0">` to `<g data-class="6">`, one per class in order. *(Outcome)*
 - **R5. Only the current outfit shows.** `range.css` shows `data-class="N"` when `data-current="N"`, for N = 0 to 6, and never two at once. *(Outcome)*
 - **R6. Pager and nameplate follow the data.** Seven dots, the class's own nameplate shadow color, "class N of 7", and the sprite's `aria-label` all come from `rangeClasses`. *(Outcome, constraint: accessibility)*
@@ -51,7 +52,9 @@ The outfit tier has 4 of 16 colors (`silver-1` to `silver-4`, used by the knight
 - Redraw the five outfits in place (same object names), and add `objects/outfit-back-end.mjs`.
 - `scenes/range-sprite.mjs`: seven groups, `data-class` `'0'` to `'6'`, each `{ object: '<outfit>', at: { px: [-24, -6] } }`, in the order above.
 - `scenes/outfit-preview.mjs` lists the outfits for previews: update it to the new set.
-- All outfits extend `character`, which is a legacy-imported base (see C2). The new outfits' own keys use world and outfit colors only.
+- **`objects/character.mjs`:** drop `legacy: true` and re-key its six colors to the palette. The base uses `ink`, `c-3b2a20`, `c-e9b98a`, `c-a0524a`, `c-3b2f26` and `c-4a3a2c`. `c-e9b98a` and `c-a0524a` are the same values as `skin-1` and `skin-2`, and `ink` is already world. The three browns map to the nearest world shades (`soil-4` for `c-3b2a20` and `c-3b2f26`, `wood-4` for `c-4a3a2c`), the nearest shades, to be confirmed in the before and after previews. The map and its layers (including the `cbob` layer) don't change.
+- All outfits extend `character`, so once it is migrated every outfit's keys use world and outfit colors only. The `--new object --extends character` CLI re-keys legacy colors (its R38 test), so check that its test still passes against the migrated base.
+- **The Range platform (`range-island`) stays legacy.** It sits under the character in the same scene, so the sprite still contains legacy colors, and the legacy tier stays until the follow-ups intent migrates the platform. This change doesn't touch it.
 
 ### Data: `src/data/home.ts`
 
@@ -79,14 +82,14 @@ No change expected. The dots, "class N of M" and the script's `count` already co
 
 ### Checks
 
-- `scripts/e2e/art.e2e.mjs` compares each `data-class` variant to a fixture (R10 of the engine spec). See C1.
+- `scripts/e2e/art.e2e.mjs` compares each `data-class` variant to a fixture (R10 of the engine spec). That comparison is retired for the Range sprite (C1). The fixture file stays where engine tests use it as input.
 - Add the drift test from R12 beside the existing art tests.
 - `npm run art`, `npm test`, `npm run build` and `npm run e2e`, as in `CLAUDE.md`.
 - Previews with `npm run art -- --preview <name>` for each outfit, and screenshots of all seven classes at 1440px and 390px.
 
 ### Delivery order
 
-One PR per step, each with its previews and screenshots: (1) palette colors, (2) the `data-class` plumbing for seven variants, the CSS and the drift test, with the knight in place, (3) one PR per redrawn or new outfit, (4) the documents' notes. The carousel never shows an unfinished class: a class goes live in its own PR, and the old outfit stays until its replacement merges.
+One PR per step, each with its previews and screenshots: (1) palette colors and the base character's migration, with before and after previews of the character (it changes every class, so it goes first and alone), (2) the `data-class` plumbing for seven variants, the CSS and the drift test, with the knight in place, (3) one PR per redrawn or new outfit, (4) the documents' notes. The carousel never shows an unfinished class: a class goes live in its own PR, and the old outfit stays until its replacement merges.
 
 ### Documents
 
@@ -97,17 +100,14 @@ One PR per step, each with its previews and screenshots: (1) palette colors, (2)
 
 ## Areas of concern
 
-**C1. The "pixel-identical" check ends for the Range sprite.** The engine promised the Range sprite would render identically to `scripts/fixtures/pixel-art/range-sprite.src.svg` (engine spec R10, and the e2e check named for it). Redrawing the outfits changes the art on purpose, so that comparison can't pass for variants whose outfit changed.
-*Decision for the owner:* retire the comparison for the Range sprite, keep the fixture file only where engine tests use it as input, and replace the promise with per-class previews, screenshots and the verifier. I recommend this. A softer option is to keep comparing the base island and character (the parts that don't change) with the fixture.
+**C1. The "pixel-identical" check ends for the Range sprite. Decided.** The engine promised the Range sprite would render identically to `scripts/fixtures/pixel-art/range-sprite.src.svg` (engine spec R10, and the e2e check named for it). Redrawing the outfits and the base character changes the art on purpose, so that comparison can't pass. *Owner's decision:* retire the comparison for the Range sprite and replace it with per-class previews, screenshots and the verifier. The fixture file stays only where engine tests use it as input. The plan removes the Range sprite's entry from the e2e comparison list and says so in its PR.
 
-**C2. The outfits sit on a legacy base.** `character` is imported legacy art (`legacy: true`, with `c-<hex>` colors) and the outfits extend it. The new outfits themselves use only world and outfit colors, but the body they extend still uses the legacy tier. The intent says the base character is out of scope, and the follow-ups intent migrates it later.
-*Decision for the owner:* accept this for now (my recommendation, since a new base would change every class at once), or add the base to this change.
+**C2. The base character moves off legacy colors. Decided.** `character` was imported legacy art that every outfit extends. *Owner's decision:* it migrates in this change (R3). It costs little: three of its six colors already have exact world equivalents (`ink`, `skin-1`, `skin-2`), and the other three are dark browns within a few shades of `soil-4` and `wood-4`. Because it changes every class at once, it ships first and alone, with before and after previews. The Range platform under the character stays legacy (see Design), so the legacy tier remains until the follow-ups intent.
 
 **C3. The nameplate may wrap at 390px.** At 18px Silkscreen, "Security & Governance" (21 characters) is longer than "Project Management" (18), the longest today. I haven't measured it. If it wraps, the nameplate grows to two lines and shifts the sprite as the carousel advances.
 *Decision for the owner:* measure it in the first PR. If it wraps, either reduce the nameplate font at narrow widths for all classes, give the nameplate a fixed two-line height on mobile, or shorten the name. I recommend the first.
 
-**C4. Detail budget per character.** A figure is at most 16×24 pixels and 12 colors. A staff, a laptop, a brush and a flask all need to read at that size. Some props may only work as a silhouette, not as detail.
-*Decision for the owner:* review each outfit's preview and approve or ask for a simpler prop. No policy conflicts here, but the first outfit sets the bar for the rest.
+**C4. Detail budget per character. Accepted.** A figure is at most 16×24 pixels and 12 colors. *Owner's decision:* that's acceptable. A staff, laptop, brush or flask may only read as a silhouette, and the owner reviews each outfit's preview and can ask for a simpler prop. The first outfit sets the bar for the rest.
 
 **C5. Seven classes slow the cycle.** At 2200ms per class, a full cycle goes from 11 seconds to 15.4 seconds. The carousel pauses on hover and focus and the visitor can pause it, so I don't propose a change.
 
@@ -124,4 +124,4 @@ Answered from the intent:
 
 New:
 
-7. **C1, C2 and C4** need the owner's decision before the plan is written.
+7. **C1, C2 and C4** are decided (above). **C3** is measured in the first PR, and **C5** needs no change.
