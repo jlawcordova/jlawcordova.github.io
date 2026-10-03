@@ -1133,25 +1133,48 @@ describe('layout (R22, R5)', () => {
     await context.close();
   });
 
-  test('R21: heading levels never skip, in either mode or in the dialogs', async () => {
-    const { context, page } = await openLab();
-    // Each visible heading is at most one level below the one before it.
-    const skips = () =>
-      page.evaluate(() => {
-        const levels = [...document.querySelectorAll('h1, h2, h3, h4, h5, h6')]
-          .filter((h) => h.checkVisibility() || h.classList.contains('visually-hidden'))
-          .map((h) => [Number(h.tagName[1]), h.textContent.trim()]);
-        return levels.filter(([level], i) => i > 0 && level > levels[i - 1][0] + 1).map(([level, text]) => `h${level} ${text}`);
-      });
-    assert.deepEqual(await skips(), [], 'Scene mode');
-    for (const name of ['tree', 'outfit-security-governance', 'island-base', 'block']) {
-      await pickObject(page, name);
-      assert.deepEqual(await skips(), [], `Object mode, ${name}`);
-    }
-    await page.getByRole('button', { name: /problems?$/ }).click();
-    assert.deepEqual(await skips(), [], 'with the problems list open');
-    await context.close();
-  });
+  // Heading order is one of the audits behind D15's "Lighthouse accessibility
+  // = 100" for the editor (R21, R22). Lighthouse only sees the page as it
+  // loads, so this walks every state it can't reach.
+  for (const width of [1440, 390]) {
+    test(`R22: heading levels never skip at ${width}px (D15's Lighthouse check): both modes, every tab, both dialogs and the problems list`, async () => {
+      const { context, page } = await openLab({ width, height: width > 900 ? 900 : 844 });
+      // Each visible heading is at most one level below the one before it.
+      const skips = () =>
+        page.evaluate(() => {
+          const levels = [...document.querySelectorAll('h1, h2, h3, h4, h5, h6')]
+            .filter((h) => h.checkVisibility() || h.classList.contains('visually-hidden'))
+            .map((h) => [Number(h.tagName[1]), h.textContent.trim()]);
+          return levels.filter(([level], i) => i > 0 && level > levels[i - 1][0] + 1).map(([level, text]) => `h${level} ${text}`);
+        });
+      // Below 960px the panels are tabs, so each one is checked open.
+      const everyTab = async (label, tabs) => {
+        if (width >= 960) return assert.deepEqual(await skips(), [], label);
+        for (const tab of tabs) {
+          await page.getByRole('tab', { name: tab }).click();
+          assert.deepEqual(await skips(), [], `${label}, ${tab} tab`);
+        }
+      };
+      await everyTab('Scene mode', ['Library', 'Items', 'Inspector']);
+      for (const name of ['tree', 'outfit-security-governance', 'island-base', 'block']) {
+        await pickObject(page, name);
+        await everyTab(`Object mode, ${name}`, ['Library', 'Palette', 'Inspector']);
+      }
+      await page.getByRole('button', { name: 'Export' }).click();
+      await page.getByRole('dialog', { name: 'Export' }).waitFor();
+      assert.deepEqual(await skips(), [], 'with Export open');
+      await page.getByRole('dialog', { name: 'Export' }).getByRole('button', { name: 'Close' }).click();
+      for (const kind of ['scene', 'object']) {
+        await page.getByRole('combobox', { name: 'Open' }).selectOption(`new:${kind}`);
+        await page.getByRole('dialog', { name: kind === 'scene' ? 'New scene' : 'New object' }).waitFor();
+        assert.deepEqual(await skips(), [], `with New ${kind} open`);
+        await page.getByRole('button', { name: 'Cancel' }).click();
+      }
+      await page.getByRole('button', { name: /problems?$/ }).click();
+      assert.deepEqual(await skips(), [], 'with the problems list open');
+      await context.close();
+    });
+  }
 
   test('R5: with reduced motion, nothing animates on the lab or the home page, and frames only step when asked', async () => {
     const { context, page } = await openLab({ reducedMotion: 'reduce' });
