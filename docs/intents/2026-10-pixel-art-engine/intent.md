@@ -75,20 +75,41 @@ The redesign's pipeline ([redesign spec §8](../2026-10-redesign/spec.md#8-pixel
 
 ## Acceptance criteria
 
-- [ ] `npm run art` builds every scene in `src/assets/pixel-art/source/` and passes the lossless check.
-- [ ] The five Range variants rebuilt from source match the extracted sprite pixel for pixel in every fill group, with the same `data-class` and `cbob` structure.
-- [ ] The hero island rebuilt from source renders pixel for pixel the same as the extracted island, with the same animation groups.
-- [ ] Each Range outfit, including the new one, is its own object source.
-- [ ] Adding a new library object (a block, water or a tree) needs only a new source file, and a scene can place it.
-- [ ] The Security and governance outfit exists as source, compiles, stays within budget, and has a preview image in its PR.
-- [ ] A small isometric prop or island built only from library objects renders on the `.isogrid` without misaligned edges at 1×, 2× and 3×.
-- [ ] Frame loops compile to groups that the existing `pixel-art.css` animates, and they show one static frame under `prefers-reduced-motion: reduce`.
-- [ ] On the editor page, the owner can place, move and remove objects in a scene, paint an object's pixels, and download or copy the source. Committing that source and running `npm run art` gives the art the editor previewed.
-- [ ] The editor page works at 1440px and 390px with no horizontal page scroll, can be used without dragging, isn't linked from the site, and is marked `noindex`.
-- [ ] `npm test` and `npm run build` pass with no new warnings, and no dependency is added.
-- [ ] The README documents the source formats, the editor page and `npm run art`.
-- [ ] A fresh agent session given only the pixel-art skill can add a new library object that passes validation and looks right in its preview.
+- [x] `npm run art` builds every scene in `src/assets/pixel-art/source/` and passes the lossless check.
+- [x] The five Range variants rebuilt from source match the extracted sprite pixel for pixel in every fill group, with the same `data-class` and `cbob` structure.
+- [x] The hero island rebuilt from source renders pixel for pixel the same as the extracted island, with the same animation groups.
+- [x] Each Range outfit, including the new one, is its own object source.
+- [x] Adding a new library object (a block, water or a tree) needs only a new source file, and a scene can place it.
+- [x] The Security and governance outfit exists as source, compiles, stays within budget, and has a preview image in its PR.
+- [x] A small isometric prop or island built only from library objects renders on the `.isogrid` without misaligned edges at 1×, 2× and 3×.
+- [x] Frame loops compile to groups that the existing `pixel-art.css` animates, and they show one static frame under `prefers-reduced-motion: reduce`.
+- [x] On the editor page, the owner can place, move and remove objects in a scene, paint an object's pixels, and download or copy the source. Committing that source and running `npm run art` gives the art the editor previewed.
+- [x] The editor page works at 1440px and 390px with no horizontal page scroll, can be used without dragging, isn't linked from the site, and is marked `noindex`.
+- [x] `npm test` and `npm run build` pass with no new warnings, and no dependency is added.
+- [x] The README documents the source formats, the editor page and `npm run art`.
+- [x] A fresh agent session given only the pixel-art skill can add a new library object that passes validation and looks right in its preview.
 - [ ] Every PR in this change has an independent verifier report as a PR comment, and every requirement in the spec traces to a test or a named check.
+
+### Evidence
+
+Checked on 2026-10-03, after all seven slices merged (PRs #29 to #36), plus the fix in #38.
+
+| Criterion | Evidence |
+| --- | --- |
+| `npm run art`, lossless | `npm run art` on `master`: every file `lossless`, none `OVER BUDGET` |
+| Range variants | `R10:` tests in `pixel-art-roundtrip.test.mjs`; `art.e2e.mjs` in the browser (#30) |
+| Hero island | `R11:` tests; `art.e2e.mjs`; before and after screenshots (#31) |
+| Each outfit is an object | Six `outfit-*.mjs` files that extend `character` (#30, #34) |
+| A new library object is only a file | `block`, `tile`, `water`, `tree` (#33), and the skill eval's `pebble` (#36) |
+| Security and governance outfit | `objects/outfit-security-governance.mjs`, with previews at 1×–4× in #34 |
+| Library objects on the grid at 1×, 2× and 3× | The block tests (#33), and editor screenshots of `library-demo` with the tile grid, on the `previews/isogrid-alignment` branch. The `.isogrid` background itself draws only faint dots at each cell's corner, on every page, so the tile grid is the alignment check |
+| Frame loops and reduced motion | Group class tests; `R5:` browser checks on `/` and the lab (#35, #36) |
+| Editor: place, move, remove, paint, export, and the same art from `npm run art` | `R16:`, `R17:`, `R18:` and `R19:` browser checks; R18 compiles the exported sources with the real command and matches the canvas pixel for pixel (#35, #36) |
+| Editor: 1440 and 390, no dragging, unlisted, `noindex` | `R15:`, `R21:` and `R22:` browser checks. Lighthouse accessibility 100 on mobile and desktop, and no axe-core violations in 20 editor states (#38) |
+| Tests, build, no dependencies | `npm test` 148/148; `npm run build` 0 errors, warnings and hints; `package.json` unchanged |
+| README | The "Pixel art" section and layout rows (#30 to #36) |
+| Skill eval | A fresh, headless session added `pebble`; it validates within the caps in world colors, and the owner accepted it (#36) |
+| A verifier report on every PR | **Open:** #36's fixes haven't had their re-check yet, and the docs-only PRs (#32, #37) and the fix in #38 had none |
 
 ## Decisions
 
