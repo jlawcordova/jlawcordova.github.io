@@ -47,9 +47,9 @@ export default {
       ],
     },
     {
-      group: { 'data-icon': 'key' },
+      group: { 'data-icon': 'door' },
       items: [
-        { object: 'icon-key', at: { px: [120, 15] } },
+        { object: 'icon-door', at: { px: [120, 15] } },
       ],
     },
     {
@@ -77,9 +77,9 @@ export default {
       ],
     },
     {
-      group: { 'data-icon': 'owl' },
+      group: { 'data-icon': 'grad-cap' },
       items: [
-        { object: 'icon-owl', at: { px: [200, 15] } },
+        { object: 'icon-grad-cap', at: { px: [200, 15] } },
       ],
     },
     {
@@ -95,9 +95,9 @@ export default {
       ],
     },
     {
-      group: { 'data-icon': 'chest' },
+      group: { 'data-icon': 'box' },
       items: [
-        { object: 'icon-chest', at: { px: [248, 15] } },
+        { object: 'icon-box', at: { px: [248, 15] } },
       ],
     },
     {

@@ -28,15 +28,15 @@ The `meaning` is what Claude reads, through `/achievement-icons.json`, to pick a
 | `rocket` | shipped or launched |
 | `bug` | fixed a bug or a problem |
 | `shield` | secured or protected |
-| `key` | unlocked access |
+| `door` | opened access or a way in |
 | `bolt` | sped up or automated something |
 | `book` | wrote or documented |
 | `magnifier` | investigated or analysed |
 | `flask` | experimented or prototyped |
-| `owl` | mentored or taught others |
+| `grad-cap` | mentored or taught others |
 | `heart` | helped, or went the extra mile |
 | `compass` | planned, led or set direction |
-| `chest` | organised or stored (data, assets) |
+| `box` | organised or stored (data, assets) |
 | `trophy` | reached a milestone |
 | `speech` | shared or presented |
 <!-- icons:end -->
