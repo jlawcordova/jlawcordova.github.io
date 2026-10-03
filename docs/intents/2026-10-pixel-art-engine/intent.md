@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Status** | Accepted |
+| **Status** | Done, 2026-10-03. Every acceptance criterion is met (see [Evidence](#evidence)). Later work is in the [follow-ups intent](../2026-10-pixel-art-follow-ups/intent.md) |
 | **Owner** | J. Law. Cordova |
 | **Created** | 2026-10-01 |
 | **Amended** | 2026-10-02: decisions taken. The hero island moves into the engine, an editor page is added on the site, agent skills are added, and every PR gets an independent verification ([Decisions](#decisions)) |
