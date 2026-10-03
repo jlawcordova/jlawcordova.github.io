@@ -1130,6 +1130,26 @@ describe('layout (R22, R5)', () => {
     await context.close();
   });
 
+  test('R21: heading levels never skip, in either mode or in the dialogs', async () => {
+    const { context, page } = await openLab();
+    // Each visible heading is at most one level below the one before it.
+    const skips = () =>
+      page.evaluate(() => {
+        const levels = [...document.querySelectorAll('h1, h2, h3, h4, h5, h6')]
+          .filter((h) => h.checkVisibility() || h.classList.contains('visually-hidden'))
+          .map((h) => [Number(h.tagName[1]), h.textContent.trim()]);
+        return levels.filter(([level], i) => i > 0 && level > levels[i - 1][0] + 1).map(([level, text]) => `h${level} ${text}`);
+      });
+    assert.deepEqual(await skips(), [], 'Scene mode');
+    for (const name of ['tree', 'outfit-security-governance', 'island-base', 'block']) {
+      await pickObject(page, name);
+      assert.deepEqual(await skips(), [], `Object mode, ${name}`);
+    }
+    await page.getByRole('button', { name: /problems?$/ }).click();
+    assert.deepEqual(await skips(), [], 'with the problems list open');
+    await context.close();
+  });
+
   test('R5: with reduced motion, nothing animates on the lab or the home page, and frames only step when asked', async () => {
     const { context, page } = await openLab({ reducedMotion: 'reduce' });
     assert.equal(await page.evaluate(() => document.getAnimations().length), 0, 'lab');
