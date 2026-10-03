@@ -11,4 +11,5 @@ export const site = {
     twitter: 'https://twitter.com/jlawcordova',
   },
   postsPerPage: 9,
+  accomplishmentsPerPage: 12,
 };

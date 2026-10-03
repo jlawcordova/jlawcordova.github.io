@@ -32,6 +32,7 @@ Plans [`spec.md`](spec.md) (R1–R21, D1–D7). The work is in two repos, so the
 
 - `scripts/fetch-accomplishments.mjs`, `scripts/fetch-accomplishments.test.mjs`: the new fields, locked records, ordering, `createdAt` kept.
 - `src/lib/accomplishments.ts`: new fields, the `done`/`locked` split, `rowFor`. `src/lib/pagination.ts`, `src/site.ts`: generalised `paginate` and `accomplishmentsPerPage: 12`.
+- `src/lib/paginate.mjs` (new) and `scripts/pagination.test.mjs` (new): the generalised `paginate(items, perPage)` and `pagePath(base, n)`, in plain `.mjs` with `// @ts-check` so the Node tests can import them (Node can't load `pagination.ts`'s extensionless import of `site`). `pagination.ts` re-exports them, and `BlogPage.astro` takes the generic page shape. The blog's built pages are unchanged.
 - `src/components/AccomplishmentRow.astro` (new), `AccomplishmentCard.astro` (deleted), `AchievementIcons.astro` (new), `Accomplishments.astro` (the home section with the "Show more" button).
 - `src/pages/accomplishments/index.astro`, `src/pages/accomplishments/[page].astro` (new) and `src/components/AccomplishmentsPage.astro` (new).
 - `src/styles/accomplishments.css`: rewritten, including the tooltip.

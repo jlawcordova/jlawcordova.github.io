@@ -2,16 +2,12 @@
 import PageHead from './PageHead.astro';
 import PostListItem from './PostListItem.astro';
 import type { Post } from '../lib/posts';
+import { pagePath as pathUnder, type Page } from '../lib/pagination';
 
-interface Props {
-  posts: Post[];
-  page: number;
-  totalPages: number;
-  totalPosts: number;
-}
+type Props = Page<Post>;
 
-const { posts, page, totalPages, totalPosts } = Astro.props;
-const pagePath = (n: number) => (n === 1 ? '/blog/' : `/blog/page${n}/`);
+const { items: posts, page, totalPages, totalItems: totalPosts } = Astro.props;
+const pagePath = (n: number) => pathUnder('/blog/', n);
 // Page 1 leads with the newest post as a featured card.
 const featured = page === 1 ? posts[0] : undefined;
 const rest = featured ? posts.slice(1) : posts;
