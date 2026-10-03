@@ -347,7 +347,7 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
 - **Variants show one at a time.** On the stage, a run of sibling `data-class` groups shows only the group holding the selected item, or else the first, as the site does.
 - **Extras:** a **Reset to site version** button in the lab bar while a draft exists (R20's reset), and Space + arrows pans.
 - **Library groups** are Blocks, Objects, Characters and Legacy. The wireframe's "Nature" became "Objects".
-- **Browser checks.** The keyboard-only flow edits `hero-island`, the scene that opens first, because headless Chromium on macOS ignores keys on a closed native `<select>`. The pointer flows use `library-demo`. Dragging an item on the stage is the one check that uses positions, worked out from the stage's zoom, since a drag on a canvas is positional by nature. The R24 bundle checks run in `editor.e2e.mjs` against `dist/`.
+- **Browser checks.** The keyboard-only flow edits `hero-island`, the scene that opens first (the editor page names it, so a scene that sorts earlier, such as `achievement-icons`, never changes the default), because headless Chromium on macOS ignores keys on a closed native `<select>`. The pointer flows use `library-demo`. Dragging an item on the stage is the one check that uses positions, worked out from the stage's zoom, since a drag on a canvas is positional by nature. The R24 bundle checks run in `editor.e2e.mjs` against `dist/`.
 
 ### PR 6: Editor, object mode (slice 6)
 
