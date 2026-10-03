@@ -35,7 +35,7 @@ A prop that is too big to hold, such as a house, a server rack or an easel, is i
 
 - **Still professional.** The characters are playful but not a game. Each has one costume cue and one prop, in the same pose and silhouette as the others. Nameplates stay plain job names, with no "Wizard" or "Hacker" labels, and there are no stats, levels or rarity styling. The knight is the bar for how far it goes.
 - **New art follows the engine's rules:** the design language (32×16 tile, light direction, size caps), the world and outfit palette tiers, and no legacy colors in the outfits or the base character. The figure's size cap is raised so each character's prop fits as drawn, not just as a silhouette. The body stays the same size, and the cap applies to characters only. New outfit colors are added to the palette by hand in a reviewed commit, within the outfit tier's 16-color limit.
-- **Each class is its own reviewed step,** with before and after previews and screenshots at 1440px and 390px.
+- **Every class is reviewed,** with before and after previews and screenshots at 1440px and 390px for each. The redrawn and new classes can ship together in one PR, as long as each class's preview and screenshots are in it.
 - **The carousel stays accessible.** Seven dots fit at 390px with no horizontal scroll. The pause control, keyboard behavior, 44px tap targets and reduced motion all work as they do today. The "class N of 7" text and the sprite's label follow the data.
 - **No heavier art.** The range sprite stays within ≤ 100 KB raw and ≤ 25 KB gzip, and the home page within its budget.
 - **Copy is public-safe** and traces to the profile's disciplines. No client names or internal incidents. The Range paragraph is not changed.
