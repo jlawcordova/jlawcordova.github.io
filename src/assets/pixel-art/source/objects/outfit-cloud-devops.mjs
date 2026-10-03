@@ -12,11 +12,13 @@ export default {
   },
   rows: {
     1: {
-      14: '.....................aaaaaa.....',
-      15: '....................akklllla....',
-      16: '...................akklllllma...',
-      17: '..................akllllllllmaaa',
-      18: '..................ammmmbcccccaa.',
+      12: '......................aaaa......',
+      13: '....................aaklllaa....',
+      14: '...................akkklllmma...',
+      15: '..................akklkllllmma..',
+      16: '..................akllkllllmma..',
+      17: '.................ammmmmmmmmmmmma',
+      18: '..................abbbbbcccccaa.',
       19: '...............a.aabbbccacccaa..',
       20: '..............ajajabbcccccccca..',
       21: '..............ajjjabbcccccdcca..',
