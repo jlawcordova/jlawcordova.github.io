@@ -1,15 +1,15 @@
 ---
+// Stopgap until AccomplishmentRow replaces the card (gamified accomplishments
+// plan, PR 3): shows the home selection with the old cards.
 import AccomplishmentCard from './AccomplishmentCard.astro';
-import { getAccomplishments } from '../lib/accomplishments';
+import { getAccomplishments, homeSelection } from '../lib/accomplishments';
 
-const VISIBLE = 8;
-const { status, items } = getAccomplishments();
-const shown = items.slice(0, VISIBLE);
-const more = items.slice(VISIBLE);
+const { visible, done, locked } = homeSelection(getAccomplishments());
+const shown = locked ? [...done, locked] : done;
 ---
 
 {
-  status === 'ok' && items.length > 0 && (
+  visible && (
     <section id="accomplishments" class="accomplishments" aria-labelledby="accomplishments-title">
       <div class="accomplishments__inner">
         <header class="accomplishments__head">
@@ -21,16 +21,6 @@ const more = items.slice(VISIBLE);
             <AccomplishmentCard item={item} />
           ))}
         </ol>
-        {more.length > 0 && (
-          <details class="accomplishments__more">
-            <summary class="btn btn--ghost">Show {more.length} more</summary>
-            <ol class="accomplishments__list" role="list">
-              {more.map((item) => (
-                <AccomplishmentCard item={item} />
-              ))}
-            </ol>
-          </details>
-        )}
       </div>
     </section>
   )
