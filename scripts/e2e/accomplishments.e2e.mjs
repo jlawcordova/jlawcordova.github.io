@@ -272,6 +272,41 @@ describe('rows', () => {
     });
   }
 
+  test('R9: a locked row dims its icon but not its text, so text contrast is unchanged', async () => {
+    const page = await open('rich', '/');
+    const locked = rowNamed(page, richLocked[0].funTitle);
+    const done = rowNamed(page, richDone[0].funTitle);
+    const icon = await locked.locator('.achievement__icon > svg').first().evaluate((el) => {
+      const s = getComputedStyle(el);
+      return { opacity: Number(s.opacity), filter: s.filter };
+    });
+    assert.ok(icon.opacity < 1 || icon.filter !== 'none', `the locked icon is dimmed (opacity ${icon.opacity}, filter ${icon.filter})`);
+
+    // The text's own look, and every ancestor's opacity and filter, which would dim it too.
+    const look = (row, selector) =>
+      row.locator(selector).evaluate((el) => {
+        const s = getComputedStyle(el);
+        let opacity = 1;
+        const filters = [];
+        for (let node = el; node && node !== document.documentElement; node = node.parentElement) {
+          const ns = getComputedStyle(node);
+          opacity *= Number(ns.opacity);
+          if (ns.filter !== 'none') filters.push(ns.filter);
+        }
+        return { color: s.color, opacity, filters };
+      });
+    for (const selector of ['.achievement__lead', '.achievement__short']) {
+      const [goal, ordinary] = [await look(locked, selector), await look(done, selector)];
+      assert.equal(goal.opacity, 1, `${selector} isn't faded`);
+      assert.deepEqual(goal.filters, [], `${selector} has no filter`);
+      assert.equal(goal.color, ordinary.color, `${selector} has the same color as in a done row`);
+    }
+    const date = await look(locked, '.achievement__date');
+    assert.equal(date.opacity, 1, '"Not done yet" isn\'t faded');
+    assert.deepEqual(date.filters, []);
+    await page.close();
+  });
+
   test('R13: a row with an unknown icon and an old-style row draw the fallback star', async () => {
     const page = await open('rich', '/accomplishments/');
     for (const item of [unknownIcon, oldStyle]) {
