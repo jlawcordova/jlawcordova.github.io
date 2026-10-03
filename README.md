@@ -15,6 +15,7 @@ npm run fetch-accomplishments  # refresh src/data/accomplishments.json from AT P
 npm run art      # compile the pixel-art sources to the optimized SVGs (see Pixel art below)
 npm test         # tests for the fetch, pixel-art and e2e-runner scripts (Node built-ins, no network)
 npm run e2e      # browser checks against the built dist/ (run npm run build first)
+npm run e2e -- scripts/e2e/accomplishments.e2e.mjs  # one suite only
 ```
 
 ## Project layout
@@ -23,10 +24,13 @@ npm run e2e      # browser checks against the built dist/ (run npm run build fir
 | --- | --- |
 | `src/content/posts/` | Blog posts in Markdown. The filename sets the date and URL slug: `YYYY-MM-DD-slug.md`. |
 | `src/content.config.ts` | Frontmatter schema for posts. |
-| `src/pages/` | Routes: home, `/blog/` (paginated as `/blog/page2/`, ...), posts, `/atom.xml`, 404, and the unlisted `/lab/pixel-art/`. |
+| `src/pages/` | Routes: home, `/blog/` (paginated as `/blog/page2/`, ...), posts, `/accomplishments/` (every accomplishment, 12 a page as `/accomplishments/page2/`, ..., with the locked ones on page 1), `/atom.xml`, 404, and the unlisted `/lab/pixel-art/`. |
 | `src/layouts/`, `src/components/` | Page shell, navigation, footer, and shared pieces. |
+| `src/components/Accomplishment*.astro`, `AchievementIcons.astro` | Accomplishments as achievement rows: `AccomplishmentRow` (one row, a `<details>` when done, plain and locked when not), `Accomplishments` (the home section: three newest done, the newest locked, "Show more"), `AccomplishmentsPage` (one page of `/accomplishments/`) and `AchievementIcons` (the icon sheet, inlined once per page, plus the tooltip's Escape script). Styles in `src/styles/accomplishments.css`. |
 | `src/styles/` | Plain CSS. `global.css` imports the rest in order; `variables.css` holds the design tokens. |
-| `src/data/accomplishments.json` | Accomplishments for the home page. The committed copy is an empty `"unavailable"` placeholder; CI overwrites it before every build. |
+| `src/data/accomplishments.json` | Accomplishments for the home page and `/accomplishments/`. The committed copy is an empty `"unavailable"` placeholder; CI overwrites it before every build. |
+| `src/lib/accomplishment-list.mjs`, `src/lib/accomplishments.ts` | The accomplishments' logic (done and locked, what a row shows, the home selection, dates), in plain `.mjs` so `npm test` can import it; `accomplishments.ts` feeds it the data file. |
+| `src/lib/paginate.mjs`, `src/lib/pagination.ts` | `paginate(items, perPage)` and page paths, shared by `/blog/` and `/accomplishments/`. |
 | `src/lib/achievement-icons.mjs` | The achievement icons (ids and meanings). `src/pages/achievement-icons.json.ts` publishes them at `/achievement-icons.json` for the accomplishments skill. |
 | `scripts/fetch-accomplishments.mjs` | Reads the public `com.jlawcordova.profile.accomplishment` records from the AT Protocol repo of `jlawcordova.com` and writes the file above. Any failure writes the placeholder and exits 0, so the build never breaks on the data. |
 | `src/data/home.ts` | The Range carousel's classes. Entry *i* matches outfit variant `data-class="i"` in the sprite. |
@@ -37,8 +41,8 @@ npm run e2e      # browser checks against the built dist/ (run npm run build fir
 | `scripts/optimize-pixel-art.mjs` | `npm run art`: validates the sources, renders each scene, merges each color group's rects into one `<path>` (keeping classes, variants and order), checks that no pixel changed and that the file is within budget, and writes it. Also `--check`, `--preview` and `--new`. |
 | `scripts/import-pixel-art.mjs`, `scripts/pixel-art-preview.mjs` | Imports extracted SVG art as legacy sources, and writes PNG previews. |
 | `scripts/fixtures/pixel-art/` | The art as first extracted (`*.src.svg`, one `<rect>` per run). Test fixtures only: the round-trip tests and `art.e2e.mjs` compare the compiled art against them. |
-| `scripts/fixtures/accomplishments*.json` | Invented accomplishments in the shape `npm run fetch-accomplishments` writes, for tests and local builds: `accomplishments.json` (30 done over three pages, 3 locked, every icon, an unknown icon and an old record without the gamified fields), `accomplishments-two-done.json` and `accomplishments-unavailable.json`. To build with one, copy it over `src/data/accomplishments.json`, then restore the placeholder with `git checkout src/data/accomplishments.json`. |
-| `scripts/e2e/` | Browser checks, run by `npm run e2e` with the environment's own Playwright (it's not a dependency). It serves `dist/` with `astro preview` and runs `*.e2e.mjs` with `node --test`. Without Playwright it prints "browser checks NOT RUN" and exits 2. Screenshots go to the git-ignored `.e2e-output/`. |
+| `scripts/fixtures/accomplishments*.json` | Invented accomplishments in the shape `npm run fetch-accomplishments` writes, for tests and local builds: `accomplishments.json` (30 done over three pages, 3 locked, every icon, an unknown icon and an old record without the gamified fields), `accomplishments-two-done.json` and `accomplishments-unavailable.json`. To build with one, copy it over `src/data/accomplishments.json`, then restore the placeholder with `git checkout src/data/accomplishments.json`. `accomplishments.e2e.mjs` builds all three by itself. |
+| `scripts/e2e/` | Browser checks, run by `npm run e2e` with the environment's own Playwright (it's not a dependency). It serves `dist/` with `astro preview` and runs `*.e2e.mjs` with `node --test`. Without Playwright it prints "browser checks NOT RUN" and exits 2. Screenshots go to the git-ignored `.e2e-output/`. `accomplishments.e2e.mjs` needs three datasets, so it builds each accomplishments fixture into `.e2e-output/accomplishments/<variant>/` itself (restoring `src/data/accomplishments.json` straight after) and serves those builds. |
 | `src/site.ts` | Site title, description, author links, posts per page. |
 | `docs/intents/YYYY-MM-<slug>/` | One directory per planned change, holding its `intent.md`, `spec.md` and `plan.md`. |
 | `.claude/skills/` | Project skills: `write-intent`, `write-spec`, `write-plan` and `verify-change` (an independent, report-only check of a PR) for the AI-native SDLC (see `CLAUDE.md`), `pixel-art` for making and changing the art, and `achievement-icon` for the accomplishment icons. |
