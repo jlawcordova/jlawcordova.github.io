@@ -121,10 +121,18 @@ test('R7: it auto-advances, and pause, hover and focus stop it', async () => {
   assert.equal((await state(page)).current, 1, 'auto-advance');
 
   await pause(page);
+  // Clicking leaves the pointer over the panel and focus on the toggle, and
+  // either one pauses it too, so clear both before each wait.
+  const release = async () => {
+    await page.mouse.move(0, 0);
+    await page.evaluate(() => /** @type {HTMLElement} */ (document.activeElement)?.blur());
+  };
+  await release();
   let at = (await state(page)).current;
   await page.waitForTimeout(STEP_MS + 400);
   assert.equal((await state(page)).current, at, 'paused');
   await page.locator('.range__toggle').click();
+  await release();
 
   await page.locator('.range__stage').hover();
   at = (await state(page)).current;
