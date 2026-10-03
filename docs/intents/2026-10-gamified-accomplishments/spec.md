@@ -11,7 +11,7 @@ Each requirement traces to the intent's Proposed outcome (PO) or Constraints (C)
 
 - **R1.** Each accomplishment renders as a row: its icon on the left, then the fun title and the short description, and on the right the date it was accomplished (a month, such as "Sep 2026").
 - **R2.** The section heading is "What I've been working on lately". "Achievements unlocked" no longer appears.
-- **R3.** A row can be opened. Opened, it shows the plain title, the full description, the tags and the links. It opens on hover (devices with a mouse), on tap or click, and with Enter or Space on the keyboard. It never depends on hover alone.
+- **R3.** A done row expands on click, on tap, and with Enter or Space. Expanded, it shows the plain title, the full description, the tags and the links. On a device with a mouse, hovering a row (or focusing it with the keyboard) also shows the full description in a tooltip. The tooltip is a convenience: nothing, including the links, is reachable only through it, and it never appears on touch.
 - **R4.** The short description is a five-to-seven-word summary. The fun title leads; the short description says plainly what was done, so the row still makes sense without the plain title.
 
 **Home and full list (PO: short list, separate page)**
@@ -54,7 +54,7 @@ Each requirement traces to the intent's Proposed outcome (PO) or Constraints (C)
 
 | Property | Type | Rule |
 | --- | --- | --- |
-| `funTitle` | string | At most 60 graphemes. The playful name that leads the row. |
+| `funTitle` | string | At most 60 graphemes. The playful name that leads the row. New writes also require one to three words (see below). |
 | `shortDescription` | string | At most 80 graphemes. The five-to-seven-word summary. |
 | `icon` | string | At most 32 graphemes, lowercase kebab-case (for example `rocket`). The lexicon lists the 16 names as `knownValues`, which doesn't reject others. |
 | `done` | boolean | Default `true`. `false` means locked. |
@@ -63,6 +63,7 @@ Each requirement traces to the intent's Proposed outcome (PO) or Constraints (C)
 - `startDate` is no longer required by the lexicon. `shared/src/index.ts` adds the rule: `startDate` is required unless `done` is `false`, and a locked record must have no `startDate` or `endDate`.
 - **New writes are stricter than the lexicon.** `add` and `update` also require `funTitle`, `shortDescription` and `icon`. Reads and the site tolerate their absence, which is what keeps old records valid (R17). Lexicon evolution rules forbid adding required fields later, so the strictness lives in `shared`, not in the lexicon.
 - Old records have no `done`, so they count as done.
+- `shared` adds the rules that a `funTitle` is one to three words, and a `shortDescription` five to seven. They apply to new writes only, like the required fields.
 
 ### D2. Operations in the Worker, CLI and MCP (`jlawcordova-atproto`)
 
@@ -91,7 +92,7 @@ There is no way to change a record today (`list`, `add`, `delete` only). Marking
   - A done row is a `<details>`. Its `<summary>` is the visible row: icon, fun title, short description, date. The opened panel holds the plain title, the full description, the tags and the links, with the markup and 44px link targets `AccomplishmentCard` has today.
   - A locked row is a plain `<li>` with the same layout, no `<details>`, a locked mark over the icon and "Not done yet" in the date slot.
   - A row with no `funTitle` leads with the plain title and has no short-description line.
-- **Hover (R3).** The click and keyboard behavior is native `<details>`, so it works without JavaScript. A script of about 0.4 KB adds hover for mouse pointers only: `pointerenter` opens the row and `pointerleave` closes it, unless the person has toggled it by click or key (then it stays as they left it). It ignores touch pointers.
+- **Expand and tooltip (R3).** A done row is a native `<details>`, so click, tap, Enter and Space work without JavaScript. On hover-capable devices only (`@media (hover: hover) and (pointer: fine)`), hovering the summary or focusing it shows a tooltip beneath the row with the full description, written as `role="tooltip"` and linked by `aria-describedby`. It follows WCAG 1.4.13: the pointer can move onto it without it closing, it stays until the pointer or focus leaves, and Escape dismisses it. It's hidden while the row is expanded, and it holds text only (no links or tags), so nothing depends on it. It is CSS, plus a script of about 0.2 KB for Escape. The list doesn't shift, because the tooltip floats over what's below.
 - **`src/components/Accomplishments.astro`** is the home section: the h2 "What I've been working on lately" (keeping `id="accomplishments"`), three done rows, the newest locked row, and a ghost button "Show more" to `/accomplishments/` (R6). The `<p class="label">` is dropped.
 - **Routes.** `src/pages/accomplishments/index.astro` (page 1) and `src/pages/accomplishments/[page].astro` (pages 2+, `/accomplishments/page2/`), mirroring the blog's routes and its `paginate`/pagination nav. `lib/pagination.ts` is generalised to take the page size and not just posts. `site.ts` gains `accomplishmentsPerPage: 12`.
 - **Page content.** Title "Accomplishments", via `PageHead` with a label such as "9 accomplishments · Page 1 of 1". Page 1 lists its 12 done rows, then, only on page 1, a labeled "Not done yet" list with every locked row. Pages 2+ have no locked rows.
@@ -135,7 +136,7 @@ There is no way to change a record today (`list`, `add`, `delete` only). Marking
 Changes to `.claude/skills/accomplishments/SKILL.md`:
 
 - **Draft (step 4).** Each draft also has `funTitle`, `shortDescription` and `icon`. The icon is chosen from `https://jlawcordova.com/achievement-icons.json` by meaning; if the file can't be fetched or nothing fits, Claude picks the closest and says so. The selector shows all three, and the owner can edit them like any field.
-- **Voice.** Fun titles are short and warm, with light wordplay, in the way Stardew Valley's achievements are: "Greenhorn" for earning 15,000g and "Cowpoke" for 50,000g, with a plain hint beneath. Claude never uses a joke that needs explaining and never overstates the work (R18). Where a fun title and the plain title disagree, the owner decides.
+- **Voice.** Fun titles are one to three words, warm, with light wordplay, in the way Stardew Valley's achievements are: "Greenhorn" for earning 15,000g and "Cowpoke" for 50,000g, with a plain hint beneath. Claude never uses a joke that needs explaining and never overstates the work (R18). Where a fun title and the plain title disagree, the owner decides.
 - **Locked accomplishments.** On request ("add a goal: …"), Claude drafts a record with `done: false`, a `title`, `description`, `funTitle`, `shortDescription` and `icon`, and no dates, and saves it with `add` after the owner approves. It follows the public-safe rules and never names unannounced work.
 - **Marking done.** When drafting, if recent activity matches a locked accomplishment, Claude offers to mark it done with `update`, which sets `done: true` and its date.
 - **Stale.** Each drafting run lists locked records whose `createdAt` is more than 14 days ago and proposes deleting them in the selector. Only confirmed ones are deleted, with `accomplishments delete`.
@@ -150,19 +151,19 @@ Changes to `.claude/skills/accomplishments/SKILL.md`:
 
 ## Areas of concern
 
-**C1. A hover-open row can contradict keyboard and touch access, and it shifts the layout.** The owner wants tags and links shown on hover. Hover alone fails keyboard and touch users (WCAG 2.1.1, 1.4.13), so D4 makes a native `<details>` the base and adds hover on top for mouse pointers. The cost: on a mouse, rows grow as the pointer passes over them, which can make the list jump under the cursor. *Decision needed:* accept hover-expands-inline as designed, or keep hover but open it as a floating card that doesn't move the rows (more CSS, clipping risks at the section's edge). Recommended: inline, with a short hover delay of about 150ms so a pass over the list doesn't open every row.
+**C1. Resolved: hover is a tooltip, click or tap expands.** Hover alone fails keyboard and touch users (WCAG 2.1.1, 1.4.13), so the tooltip carries only the full description and everything is also reachable by expanding the row. The tooltip floats, so the list doesn't jump.
 
-**C2. Home page weight.** The sheet puts 18 icons on the home page to show four. The redesign spec's budgets are 40 KB gzip of HTML, 8 KB gzip of CSS and 2 KB of JS, and the Range script already uses part of the JS budget. *Decision needed:* confirm the sheet limit of 6 KB gzip. If the sheet is bigger, the fallback is to inline only the icons used on the page. The new hover script's ~0.4 KB must be measured against the 2 KB JS budget.
+**C2. Resolved: the icon sheet is limited to 6 KB gzip.** The home page carries all 18 icons to show four. The redesign spec's budgets are 40 KB gzip of HTML, 8 KB gzip of CSS and 2 KB of JS. If the sheet goes over, only the icons used on the page get inlined. The plan measures the sheet and the new Escape script (about 0.2 KB) against the budgets, since the Range script already uses part of the JS budget.
 
-**C3. `update` widens the Worker's power.** Until now the Worker could only add and delete. `PATCH` lets a signed-in owner token rewrite a record, which marking done and the migration need. It uses the same owner-only check as the other routes and `swapRecord` to avoid overwriting. *Decision needed:* confirm that adding `update` is in scope. Without it, marking done and the migration would have to delete and re-add records, which gives them new rkeys and creation dates and would reset the staleness clock.
+**C3. Resolved: `update` is in scope.** `PATCH` lets a signed-in owner token rewrite a record, which marking done and the migration need. It uses the same owner-only check as the other routes and `swapRecord` to avoid overwriting. Without it, those would delete and re-add records, which gives them new rkeys and creation dates and resets the staleness clock.
 
-**C4. The record schema is strict for writes but lenient for reads.** The lexicon can't require the new fields, so `shared` does. That means a record written by some other client without them is valid, and shows as a plain row with the fallback icon. This is the intended behavior (R17) but it means "every record has an icon" is enforced only for writes through this CLI and Worker.
+**C4. Accepted: the new fields are optional for reads.** The lexicon can't require them later, so `shared` requires them for new writes. A record written by another client without them is valid and shows as a plain row with the fallback icon (R17). "Every record has an icon" is enforced only for writes through this CLI and Worker, which the owner accepts.
 
 **C5. Cross-repo ordering.** The two repos ship separately. The safe order is: lexicon, `shared`, Worker and CLI (`update`, new fields); then the site (reads new fields, tolerates missing ones); then the skill; then the migration. The site must ship before the skill can write new fields, or the new records would show with the fallback icon until it does. The plan will split the work into PRs in that order.
 
 **C6. Icon art quality is subjective.** An icon within the caps can still be unreadable at 16×16. The pixel-art skill's rule is that the preview picture decides, so each icon's PR carries its 1× and 4× previews and the owner reviews them. The 16 names in D5 can change at that stage without changing this spec's requirements.
 
-**C7. "Gofer" and "A Big Help" are not verified.** The intent cites them as Stardew Valley achievement names. A search confirmed "Greenhorn" and "Cowpoke" with their descriptions, but the results didn't show those two. The spec uses only the confirmed pair. If they're wrong, the intent's constraint text should change to match.
+**C7. Resolved: the Stardew examples are "Greenhorn" and "Cowpoke".** Those two were confirmed against the game's achievement list. "Gofer" and "A Big Help" couldn't be, so the intent no longer cites them, and fun titles are one to three words.
 
 ## Open questions
 
@@ -171,4 +172,4 @@ The intent has none left. It asked the spec to propose these, and D4 and D5 do:
 - **The 16 icons, the fallback and the locked look:** the table in D5, the gold `star` as the fallback, and a `lock` mark over a dimmed icon.
 - **The full-list page:** `/accomplishments/`, then `/accomplishments/page2/` and so on; the title "Accomplishments"; 12 rows per page; locked rows in their own "Not done yet" list at the bottom of page 1.
 
-New questions raised by this spec are C1 (hover behavior), C2 (the icon sheet's weight) and C3 (adding `update`).
+No new questions. C1 to C4 and C7 are resolved above; C5 and C6 are for the plan and the icon PRs.
