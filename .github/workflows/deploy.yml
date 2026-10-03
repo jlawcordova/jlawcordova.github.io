@@ -2,10 +2,10 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   # Build (but don't deploy) pull requests so a broken build is caught before merging.
   pull_request:
-    branches: [master]
+    branches: [main]
   workflow_dispatch:
   # Sent by the jlawcordova-mcp Worker after an accomplishment is added or deleted.
   repository_dispatch:
