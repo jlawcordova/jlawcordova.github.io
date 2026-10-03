@@ -1,0 +1,22 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AccomplishmentsPage from '../../components/AccomplishmentsPage.astro';
+import { getAccomplishments } from '../../lib/accomplishments';
+import { paginate } from '../../lib/pagination';
+import { site } from '../../site';
+
+// Pages 2+, like the blog's: /accomplishments/page2/, /accomplishments/page3/, ...
+// Locked accomplishments are on page 1 only.
+export const getStaticPaths = (() => {
+  return paginate(getAccomplishments().done, site.accomplishmentsPerPage)
+    .slice(1)
+    .map((props) => ({ params: { page: `page${props.page}` }, props }));
+}) satisfies GetStaticPaths;
+
+const props = Astro.props;
+---
+
+<BaseLayout title="Accomplishments">
+  <AccomplishmentsPage {...props} locked={[]} />
+</BaseLayout>

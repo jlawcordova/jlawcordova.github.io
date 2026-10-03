@@ -1,0 +1,77 @@
+---
+// One page of the full accomplishments list (gamified accomplishments spec R7,
+// D4): its done rows, newest first, and on page 1 every locked one under
+// "Not done yet". The count and the pages are of done accomplishments only.
+import PageHead from './PageHead.astro';
+import AccomplishmentRow from './AccomplishmentRow.astro';
+import AchievementIcons from './AchievementIcons.astro';
+import type { DoneAccomplishment, LockedAccomplishment } from '../lib/accomplishments';
+import { pagePath as pathUnder, type Page } from '../lib/pagination';
+
+type Props = Page<DoneAccomplishment> & { locked: LockedAccomplishment[] };
+
+const { items: done, page, totalPages, totalItems, locked } = Astro.props;
+const pagePath = (n: number) => pathUnder('/accomplishments/', n);
+const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+const noun = totalItems === 1 ? 'accomplishment' : 'accomplishments';
+---
+
+<PageHead title="Accomplishments" label={`${totalItems} ${noun} · Page ${page} of ${totalPages}`} />
+
+<div class="page-body">
+  <div class="page-body__inner achievements-page">
+    <AchievementIcons />
+
+    {
+      done.length > 0 && (
+        <ol class="achievement-list" role="list">
+          {done.map((item) => (
+            <AccomplishmentRow item={item} />
+          ))}
+        </ol>
+      )
+    }
+
+    {
+      locked.length > 0 && (
+        <section class="achievements-page__locked" aria-labelledby="locked-title">
+          <h2 id="locked-title" class="achievements-page__subtitle">
+            Not done yet
+          </h2>
+          <ul class="achievement-list" role="list">
+            {locked.map((item) => (
+              <AccomplishmentRow item={item} />
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      totalPages > 1 && (
+        <nav class="pagination" aria-label="Accomplishments pages">
+          {page > 1 && (
+            <a class="pagination__link" href={pagePath(page - 1)} rel="prev">
+              Prev
+            </a>
+          )}
+          {pages.map((n) => (
+            <a
+              class="pagination__link"
+              href={pagePath(n)}
+              aria-current={n === page ? 'page' : undefined}
+              aria-label={`Page ${n}`}
+            >
+              {n}
+            </a>
+          ))}
+          {page < totalPages && (
+            <a class="pagination__link" href={pagePath(page + 1)} rel="next">
+              Next
+            </a>
+          )}
+        </nav>
+      )
+    }
+  </div>
+</div>
