@@ -9,20 +9,24 @@ Platform achievement lists, such as Steam achievements and Apple's Game Center c
 
 ## Proposed outcome
 
-- **Steam-style list.** Each accomplishment is a row with its own icon on the left, a fun title and a short description. Tags and links are retired.
+- **Steam-style list.** Each accomplishment is a row with its own icon on the left, a fun title and a short description.
+- **A plainer heading.** "Achievements unlocked" becomes "What I've been working on lately", so the section says plainly what it is and the game stays in the rows, not the heading.
+- **Short description, then the full one.** The short description is a summary of five to seven words. The existing longer description, tags and links are kept and shown on demand: on hover on desktop, and on mobile the row expands when tapped to show them in full.
 - **The home page shows a short list.** The three most recent accomplishments, then one locked teaser. Nothing else.
-- **A separate page for the rest.** A "show more" button on the home page opens a page with every accomplishment, newest first, and the locked goals.
+- **A separate page for the rest.** A "show more" button on the home page opens a page with every accomplishment, newest first, and the locked goals. The page is paginated.
 - **The fun title and the plain meaning both survive.** The playful name leads, but the short description makes clear what was actually done, so a recruiter or client isn't left guessing.
 - **Claude suggests the fun title, short description and icon** while drafting the weekly accomplishments. The owner approves or edits them before anything is saved.
-- **A fixed library of 16 pixel-art icons,** made with the existing pixel-art engine as a new category of art next to the world and the Range outfits. A skill makes it easy to add more icons later, in the same style.
-- **Locked teasers come from goals.** Goals are future achievements the owner has set. They live in their own AT Protocol collection, apart from the accomplishments, and show as locked. A goal becomes a real accomplishment when it's achieved.
-- **Existing records get icons too.** A temporary migration script gives every current record a fun title, short description and an icon from the library, then is deleted.
+- **A fixed library of 16 pixel-art icons,** made with the existing pixel-art engine as a new category of art next to the world and the Range outfits. It's an achievement icon set of its own, not a map of the profile's disciplines. A skill makes it easy to add more icons later, in the same style.
+- **A fallback icon.** A record whose icon the site doesn't know, such as one added before the site is redeployed, or an old record before the migration, shows a fallback icon instead.
+- **Locked teasers come from goals.** Goals are future achievements the owner has set. They live in their own AT Protocol collection, apart from the accomplishments, and show as locked. Each goal carries its own text, so a locked teaser says in words what the goal is and that it's still a goal. A goal becomes a real accomplishment when it's achieved.
+- **Existing records get icons too.** A temporary migration script gives every current record a fun title, short description and an icon from the library, then is deleted. The suggestions come from the `accomplishments` skill's drafting step, so the owner approves or edits them the same way as new ones.
 
 ## Affected users and systems
 
 - **Home page visitors:** the Accomplishments section looks and reads differently, and there's a new page for the full list.
 - **The owner:** reviews and approves the suggested fun titles, descriptions and icons, and sets goals.
 - **Accomplishment records on the AT Protocol repo** and the build step that fetches them: the lexicon gains new fields (at least a fun title and an icon), and a new goals collection is added.
+- **Where the work lives:** the lexicons, the goals collection, the `accomplishments` skills and CLI, and the migration live in `jlawcordova-atproto`. The icons, the icon skill and the pages live in this repo. They ship in this order: lexicon and goals collection, then the site rendering with its fallback, then drafting and saving the new fields, then the migration.
 - **The `accomplishments` skills and CLI:** drafting suggests the new fields, and saving writes them. They also gain a way to add and manage goals.
 - **The pixel-art library and engine:** a new icon category, 16 icons, and a skill for creating icons.
 - **The Accomplishments component and its styles,** plus the new page.
@@ -41,12 +45,11 @@ Platform achievement lists, such as Steam achievements and Apple's Game Center c
 
 ## Open questions
 
-Decided with the owner: Steam-style list; the home page shows three recent plus one locked; the rest lives on a separate page with its own address and title, which may paginate; goals live in a separate AT Protocol collection; the locked teaser on the home page is the goal the owner is working toward; tags and links are retired; 16 icons from a new pixel-art category, grouped by discipline, with a skill to create more; a temporary migration script gives every old record its icon and fun title.
+Decided with the owner: Steam-style list; a five-to-seven-word short description, with the full description kept and shown on hover or tap; a fallback icon for unknown icons; migration suggestions go through the drafting skill's approval; the full-list page is paginated; goals carry their own text for the locked teaser; the home page shows three recent plus one locked; the rest lives on a separate page with its own address and title; goals live in a separate AT Protocol collection; the locked teaser on the home page is the goal the owner is working toward; tags and links are kept and shown with the full description; the heading becomes "What I've been working on lately"; 16 icons from a new pixel-art category, with a skill to create more; a temporary migration script gives every old record its icon and fun title.
 
 1. **Marking the current goal:** how does the owner say which goal they're working toward (a flag on the goal, or the first in an order), and what shows if none is marked?
 2. **Is a goal removed once achieved,** or does the accomplishment link back to it? And can a goal exist without a date?
-3. **The 16 icons:** which disciplines they cover, from `docs/references/profile.md`, and how many icons each gets.
-4. **The full-list page:** its address and title, whether it paginates or is one long list, and how locked goals sit on it (all at the end, or mixed in).
+3. **The 16 icons:** which kinds of achievement the set covers (for example a launch, a fix, a first, a milestone), and what the fallback icon looks like.
+4. **The full-list page:** its address and title, how many rows per page, and how locked goals sit on it (all at the end, or on the first page).
 5. **Dates:** does each row keep a date, and where?
 6. **Voice of the fun titles:** how playful? Who has the final say when the suggestion and the plain title disagree?
-7. **Retiring tags and links:** are the fields dropped from the lexicon, or just no longer shown? Is any existing link worth keeping in the short description?
