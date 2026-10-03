@@ -27,6 +27,7 @@ Split into more than one PR only when a step can't wait for the rest, and say wh
 
 - **Independently shippable value:** an early part is useful on its own, or must be live before the rest can be tested.
 - **A risky or hard-to-reverse step** (a migration, a data change, a deletion) that should be merged and watched before building on it.
+- **An external dependency:** a step waits on something outside the PR, such as another team's or service's change, a secret or setting configured elsewhere, a third-party release or approval. Put the work that depends on it in its own PR, so the rest isn't blocked, and name the dependency in the plan.
 - **Too large to review in one sitting,** where the parts are separable.
 
 Keep the count as low as the reasons allow: two or three PRs, each holding several commits, not one PR per step. Every merge to `master` deploys the site, so keep the site deployable after each PR. When there is more than one PR, number them in Order of work and group the steps under each, for example `PR 1: steps 1–3`.
