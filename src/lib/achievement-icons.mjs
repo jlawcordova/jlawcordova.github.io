@@ -10,7 +10,10 @@
 /** Shown for an accomplishment whose icon is missing or unknown. Not offered as a choice. */
 export const FALLBACK_ICON = 'star';
 
-/** Drawn over the icon of an accomplishment that isn't done yet. Not offered as a choice. */
+/**
+ * Drawn over the icon of an accomplishment that isn't done yet: a small padlock
+ * in the upper-right corner of its cell. Not offered as a choice.
+ */
 export const LOCK_ICON = 'lock';
 
 /**
@@ -24,15 +27,15 @@ export const ICONS = [
   { id: 'rocket', meaning: 'shipped or launched' },
   { id: 'bug', meaning: 'fixed a bug or a problem' },
   { id: 'shield', meaning: 'secured or protected' },
-  { id: 'door', meaning: 'opened access or a way in' },
-  { id: 'bolt', meaning: 'sped up or automated something' },
+  { id: 'key', meaning: 'opened access or a way in' },
+  { id: 'wrench', meaning: 'tuned, sped up or automated something' },
   { id: 'book', meaning: 'wrote or documented' },
   { id: 'magnifier', meaning: 'investigated or analysed' },
   { id: 'flask', meaning: 'experimented or prototyped' },
-  { id: 'grad-cap', meaning: 'mentored or taught others' },
+  { id: 'apple', meaning: 'mentored or taught others' },
   { id: 'heart', meaning: 'helped, or went the extra mile' },
-  { id: 'compass', meaning: 'planned, led or set direction' },
-  { id: 'box', meaning: 'organised or stored (data, assets)' },
+  { id: 'signpost', meaning: 'planned, led or set direction' },
+  { id: 'chest', meaning: 'organised or stored (data, assets)' },
   { id: 'trophy', meaning: 'reached a milestone' },
   { id: 'speech', meaning: 'shared or presented' },
 ];

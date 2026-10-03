@@ -47,15 +47,15 @@ export default {
       ],
     },
     {
-      group: { 'data-icon': 'door' },
+      group: { 'data-icon': 'key' },
       items: [
-        { object: 'icon-door', at: { px: [120, 15] } },
+        { object: 'icon-key', at: { px: [120, 15] } },
       ],
     },
     {
-      group: { 'data-icon': 'bolt' },
+      group: { 'data-icon': 'wrench' },
       items: [
-        { object: 'icon-bolt', at: { px: [136, 15] } },
+        { object: 'icon-wrench', at: { px: [136, 15] } },
       ],
     },
     {
@@ -77,9 +77,9 @@ export default {
       ],
     },
     {
-      group: { 'data-icon': 'grad-cap' },
+      group: { 'data-icon': 'apple' },
       items: [
-        { object: 'icon-grad-cap', at: { px: [200, 15] } },
+        { object: 'icon-apple', at: { px: [200, 15] } },
       ],
     },
     {
@@ -89,15 +89,15 @@ export default {
       ],
     },
     {
-      group: { 'data-icon': 'compass' },
+      group: { 'data-icon': 'signpost' },
       items: [
-        { object: 'icon-compass', at: { px: [232, 15] } },
+        { object: 'icon-signpost', at: { px: [232, 15] } },
       ],
     },
     {
-      group: { 'data-icon': 'box' },
+      group: { 'data-icon': 'chest' },
       items: [
-        { object: 'icon-box', at: { px: [248, 15] } },
+        { object: 'icon-chest', at: { px: [248, 15] } },
       ],
     },
     {

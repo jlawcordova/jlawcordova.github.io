@@ -90,7 +90,7 @@ There is no way to change a record today (`list`, `add`, `delete` only). Marking
 
 - **`src/components/AccomplishmentRow.astro`** replaces `AccomplishmentCard.astro`. It renders a `<li class="achievement">`.
   - A done row is a `<details>`. Its `<summary>` is the visible row: icon, fun title, short description, date. The opened panel holds the plain title, the full description, the tags and the links, with the markup and 44px link targets `AccomplishmentCard` has today.
-  - A locked row is a plain `<li>` with the same layout, no `<details>`, a locked mark over the icon and "Not done yet" in the date slot.
+  - A locked row is a plain `<li>` with the same layout, no `<details>`, a locked mark over the icon's upper-right corner and "Not done yet" in the date slot.
   - A row with no `funTitle` leads with the plain title and has no short-description line.
 - **Expand and tooltip (R3).** A done row is a native `<details>`, so click, tap, Enter and Space work without JavaScript. On hover-capable devices only (`@media (hover: hover) and (pointer: fine)`), hovering the summary or focusing it shows a tooltip beneath the row with the full description, written as `role="tooltip"` and linked by `aria-describedby`. It follows WCAG 1.4.13: the pointer can move onto it without it closing, it stays until the pointer or focus leaves, and Escape dismisses it. It's hidden while the row is expanded, and it holds text only (no links or tags), so nothing depends on it. It is CSS, plus a script of about 0.2 KB for Escape. The list doesn't shift, because the tooltip floats over what's below.
 - **`src/components/Accomplishments.astro`** is the home section: the h2 "What I've been working on lately" (keeping `id="accomplishments"`), three done rows, the newest locked row, and a ghost button "Show more" to `/accomplishments/` (R6). The `<p class="label">` is dropped.
@@ -113,19 +113,19 @@ There is no way to change a record today (`list`, `add`, `delete` only). Marking
 | `rocket` | shipped or launched |
 | `bug` | fixed a bug or a problem |
 | `shield` | secured or protected |
-| `door` | opened access or a way in |
-| `bolt` | sped up or automated something |
+| `key` | opened access or a way in |
+| `wrench` | tuned, sped up or automated something |
 | `book` | wrote or documented |
 | `magnifier` | investigated or analysed |
 | `flask` | experimented or prototyped |
-| `grad-cap` | mentored or taught others |
+| `apple` | mentored or taught others |
 | `heart` | helped, or went the extra mile |
-| `compass` | planned, led or set direction |
-| `box` | organised or stored (data, assets) |
+| `signpost` | planned, led or set direction |
+| `chest` | organised or stored (data, assets) |
 | `trophy` | reached a milestone |
 | `speech` | shared or presented |
 
-- **Outside the 16.** The fallback is `star`, the gold star the cards use today redrawn as a 16×16 icon (R13). The locked mark is `lock`, a small padlock drawn over the icon's corner. Both live in the same sheet and the same folder, but aren't offered to Claude as choices.
+- **Outside the 16.** The fallback is `star`, the gold star the cards use today redrawn as a 16×16 icon (R13). The locked mark is `lock`, a small padlock (7×8, solid ink outline) in the upper-right corner of its cell, drawn over the icon of a locked accomplishment, which is darkened or washed out. Both live in the same sheet and the same folder, but aren't offered to Claude as choices.
 
 ### D6. The icon skill (this repo)
 

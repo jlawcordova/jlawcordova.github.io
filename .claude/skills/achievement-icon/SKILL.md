@@ -14,7 +14,7 @@ This skill covers what's specific to icons. Everything about drawing (the palett
 - **World colors only,** at most 12 (aim for 6–8), no legacy colors. Outline it in `ink`. Light comes from the upper left: the lit side uses shade 1, the right and lower side shade 3 or 4, as on the island.
 - **Generic and public-safe.** No names, logos, brands or likenesses. A picture of a kind of work, such as a rocket for "shipped", never of a person or a client.
 - **Named for the kind of work,** not the discipline and not a specific accomplishment. The set stays small and reusable: add a new icon only when the kind of work isn't covered by any existing meaning. Check the table below first.
-- **Two icons are special** and aren't offered as choices: `star` (the fallback, shown for a missing or unknown icon) and `lock` (an 8×10 padlock in the lower-right of its cell, drawn over the icon of an accomplishment that isn't done yet).
+- **Two icons are special** and aren't offered as choices: `star` (the fallback, shown for a missing or unknown icon) and `lock` (a 7×8 padlock in the upper-right corner of its cell, with a solid ink outline, drawn over the icon of an accomplishment that isn't done yet; that icon gets a darkened or washed-out filter, which comes later).
 
 ## The set
 
@@ -28,15 +28,15 @@ The `meaning` is what Claude reads, through `/achievement-icons.json`, to pick a
 | `rocket` | shipped or launched |
 | `bug` | fixed a bug or a problem |
 | `shield` | secured or protected |
-| `door` | opened access or a way in |
-| `bolt` | sped up or automated something |
+| `key` | opened access or a way in |
+| `wrench` | tuned, sped up or automated something |
 | `book` | wrote or documented |
 | `magnifier` | investigated or analysed |
 | `flask` | experimented or prototyped |
-| `grad-cap` | mentored or taught others |
+| `apple` | mentored or taught others |
 | `heart` | helped, or went the extra mile |
-| `compass` | planned, led or set direction |
-| `box` | organised or stored (data, assets) |
+| `signpost` | planned, led or set direction |
+| `chest` | organised or stored (data, assets) |
 | `trophy` | reached a milestone |
 | `speech` | shared or presented |
 <!-- icons:end -->
