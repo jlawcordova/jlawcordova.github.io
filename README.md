@@ -94,7 +94,7 @@ Sources are kept in one canonical text format, and `npm test` fails if a source 
 
 ## Deploy
 
-Pushing to `master` runs `.github/workflows/deploy.yml`, which runs `npm test`, fetches the accomplishments, builds the site, and deploys it to GitHub Pages. Pull requests are tested and built but not deployed. The workflow also deploys `master` when the accomplishments MCP server sends a `repository_dispatch` of type `atproto-updated` (after an add or delete), and daily at 03:17 UTC to catch a missed dispatch. The repository's Pages source must be set to **GitHub Actions** (Settings → Pages → Build and deployment → Source).
+Pushing to `main` runs `.github/workflows/deploy.yml`, which runs `npm test`, fetches the accomplishments, builds the site, and deploys it to GitHub Pages. Pull requests are tested and built but not deployed. The workflow also deploys `main` when the accomplishments MCP server sends a `repository_dispatch` of type `atproto-updated` (after an add or delete), and daily at 03:17 UTC to catch a missed dispatch. The repository's Pages source must be set to **GitHub Actions** (Settings → Pages → Build and deployment → Source).
 
 ## License
 

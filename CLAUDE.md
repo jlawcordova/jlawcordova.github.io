@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-J. Law. Cordova's personal site and blog: Astro 7, TypeScript and plain CSS, deployed to GitHub Pages on every merge to `master`. `README.md` has the project layout and deploy details.
+J. Law. Cordova's personal site and blog: Astro 7, TypeScript and plain CSS, deployed to GitHub Pages on every merge to `main`. `README.md` has the project layout and deploy details.
 
 ## Commands
 
