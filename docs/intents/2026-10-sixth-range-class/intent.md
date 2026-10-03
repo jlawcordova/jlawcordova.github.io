@@ -44,13 +44,12 @@ Each class has copy, its own nameplate color and a pager dot, and the carousel s
 - **The engine's cap changes.** The pixel-art engine's character cap (16×24, engine spec R27) is raised in its own step, with the engine, its tests and the `pixel-art` skill updated together. No other cap changes.
 - **Out of scope:** the island platform under the character, the hero island and the rest of the palette migration (the follow-ups intent), and a game-style interface around the carousel.
 
-
 ## Open questions
 
 1. **The order of the seven classes.** The carousel starts on the first.
 2. **The name of the back-end class:** "Back-end", or "Software Engineering"?
 3. **The props and colors** for each character, within the new figure cap.
-7. **The new figure cap:** how large, so every prop fits without making the character tower over the island and trucks? (The spec proposes 24×32.)
 4. **Nameplate shadow colors,** one per class, from each outfit's main color.
 5. **Timing:** does the carousel's 2200ms interval still suit seven classes? A full cycle becomes 15.4 seconds.
 6. **Does the nameplate fit** the longest names at 390px?
+7. **The new figure cap:** how large, so every prop fits without making the character tower over the island and trucks? (The spec proposes 24×32.)

@@ -8,7 +8,8 @@ Traced to the [intent](intent.md). Each is checkable.
 - **R1. Seven classes.** `rangeClasses` in `src/data/home.ts` has seven entries, in the order in [Design](#classes-and-characters). The carousel shows class N of 7. *(Outcome)*
 - **R2. Each class is a character.** Every class has an outfit object that extends `character`, with one costume cue and one prop, in the shared pose and silhouette. The Security & Governance knight is kept as it is. *(Outcome; constraint: still professional)*
 - **R3. The base character is off legacy colors.** `objects/character.mjs` no longer has `legacy: true` or any `c-<hex>` key. It uses world colors only, with its body, pose and proportions unchanged. Any shade change is to the nearest world shade and is shown in before and after previews. *(Constraint; outcome)*
-- **R3a. New art follows the engine.** Each redrawn or new outfit uses only world and outfit colors (no `c-<hex>` legacy keys), has at most 12 colors, and paints a figure of at most 16×24. New outfit colors are added to the palette in a reviewed commit, keeping the outfit tier at 16 colors or fewer. `npm run art` reports every file `lossless` and none `OVER BUDGET`. *(Constraint)*
+- **R3b. The character cap is raised.** The engine's `CAPS` for a character's painted figure go from 16×24 to 24×32 (width × height), in `src/lib/pixel-art/engine.mjs`, its error message and tests, engine spec R27 (as an update note) and the `pixel-art` skill, in one step before any outfit. The body stays about the same size, and no other cap (map 64×64, 12 colors, 16 outfit colors) changes. *(Constraint: props fit)*
+- **R3a. New art follows the engine.** Each redrawn or new outfit uses only world and outfit colors (no `c-<hex>` legacy keys), has at most 12 colors, and paints a figure of at most 24×32, props included. New outfit colors are added to the palette in a reviewed commit, keeping the outfit tier at 16 colors or fewer. `npm run art` reports every file `lossless` and none `OVER BUDGET`. *(Constraint)*
 - **R4. The sprite has seven variants.** `src/assets/pixel-art/range-sprite.svg` has `<g data-class="0">` to `<g data-class="6">`, one per class in order. *(Outcome)*
 - **R5. Only the current outfit shows.** `range.css` shows `data-class="N"` when `data-current="N"`, for N = 0 to 6, and never two at once. *(Outcome)*
 - **R6. Pager and nameplate follow the data.** Seven dots, the class's own nameplate shadow color, "class N of 7", and the sprite's `aria-label` all come from `rangeClasses`. *(Outcome, constraint: accessibility)*
@@ -89,7 +90,7 @@ No change expected. The dots, "class N of M" and the script's `count` already co
 
 ### Delivery order
 
-One PR per step, each with its previews and screenshots: (1) palette colors and the base character's migration, with before and after previews of the character (it changes every class, so it goes first and alone), (2) the `data-class` plumbing for seven variants, the CSS and the drift test, with the knight in place, (3) one PR per redrawn or new outfit, (4) the documents' notes. The carousel never shows an unfinished class: a class goes live in its own PR, and the old outfit stays until its replacement merges.
+One PR per step, each with its previews and screenshots: (0) the engine's character cap, raised to 24×32 with its tests, the engine spec note and the skill, (1) palette colors and the base character's migration, with before and after previews of the character (it changes every class, so it goes first and alone), (2) the `data-class` plumbing for seven variants, the CSS and the drift test, with the knight in place, (3) one PR per redrawn or new outfit, (4) the documents' notes. The carousel never shows an unfinished class: a class goes live in its own PR, and the old outfit stays until its replacement merges.
 
 ### Documents
 
@@ -107,7 +108,8 @@ One PR per step, each with its previews and screenshots: (1) palette colors and 
 **C3. The nameplate may wrap at 390px.** At 18px Silkscreen, "Security & Governance" (21 characters) is longer than "Project Management" (18), the longest today. I haven't measured it. If it wraps, the nameplate grows to two lines and shifts the sprite as the carousel advances.
 *Decision for the owner:* measure it in the first PR. If it wraps, either reduce the nameplate font at narrow widths for all classes, give the nameplate a fixed two-line height on mobile, or shorten the name. I recommend the first.
 
-**C4. Detail budget per character. Accepted.** A figure is at most 16×24 pixels and 12 colors. *Owner's decision:* that's acceptable. A staff, laptop, brush or flask may only read as a silhouette, and the owner reviews each outfit's preview and can ask for a simpler prop. The first outfit sets the bar for the rest.
+**C4. Detail budget per character: the cap is raised.** The 16×24 cap includes props, and the body already fills about 12 of the 16 columns, so a staff, laptop, brush or flask would only fit as a silhouette. *Owner's decision:* raise the figure so props fit (R3b). I propose **24×32**: it gives about 6 pixels each side and 8 rows of height beyond today's figure, for a staff, a held laptop or a raised flask, while the body stays its present size. That keeps the character smaller than one 32-pixel tile wide, so it still sits correctly beside the island and trucks. Hat and staff tips are the tallest parts.
+*Risks to check in the step-0 PR:* (a) the sprite's `viewBox` `[-51, -9, 103, 72]` may clip a taller figure, and moving it shifts every class by a few pixels, so measure first; (b) the `character` map is 32 wide, so props may need map rows that today are empty; (c) at 3× display scale, 24 pixels is about 72px wide, which fits the 309px stage. The owner reviews each outfit's preview and can ask for a simpler prop.
 
 **C5. Seven classes slow the cycle.** At 2200ms per class, a full cycle goes from 11 seconds to 15.4 seconds. The carousel pauses on hover and focus and the visitor can pause it, so I don't propose a change.
 
@@ -124,4 +126,5 @@ Answered from the intent:
 
 New:
 
-7. **C1, C2 and C4** are decided (above). **C3** is measured in the first PR, and **C5** needs no change.
+7. **The new figure cap:** 24×32, as proposed in C4. The owner can change the number before the plan.
+8. **C1 and C2** are decided, and **C4** is decided in principle (above). **C3** is measured in the first outfit PR, and **C5** needs no change.
