@@ -55,7 +55,7 @@ These rules keep new art in one world, and keep sources small enough for a perso
 
 - **R15. Route.** The editor is at `/lab/pixel-art/`. It's a static page, deployed with the site, with `<meta name="robots" content="noindex, nofollow">`. It isn't linked from the nav, footer, any page or the Atom feed (S8, Decision #8).
 - **R16. Scene editing.** You can open any scene, add an object from the library, move it a tile or a pixel at a time, change its level and paint order, and remove it (S8).
-- **R17. Object painting.** You can open or create an object, paint and erase pixels with the shared palette, flood-fill, pick a color from the canvas, and work across layers, frames and variants. Undo and redo cover every edit (S8, Decision #9).
+- **R17. Object painting.** You can open or create an object, paint and erase pixels with the shared palette, flood-fill, pick a color from the canvas, and work across layers, frames and variants (an outfit, which extends `character` and overrides its rows). Undo and redo cover every edit (S8, Decision #9).
 - **R18. Same render.** The editor draws with the same engine code as `npm run art`. A scene or object exported from the editor, committed and compiled gives exactly the pixels the editor showed (S8, AC).
 - **R19. Export.** "Copy source" and "Download .mjs" give the canonical source of the current scene or object, and show the repo path it belongs at. Nothing is sent over the network (Decision #10).
 - **R20. Drafts.** Unsaved work is kept in the browser's `localStorage`, per scene or object, and can be reset to the site's version (S8).
@@ -445,9 +445,9 @@ The **Library** sits on the left. The **Inspector** shows three panels: **Items*
 - **On the stage:**
   - The tile under the pointer or cursor shows as an ink diamond outline at 50% opacity.
   - The selected item gets a 1px accent outline around its pixels' bounding box. The outline doesn't animate.
-- **Items panel.** A listbox of the scene's items in paint order, with the front item at the top. Groups such as `data-class="2"` show as collapsible rows. This list is the stage's accessible model: choosing a row selects the item, and the stage keys act on it.
+- **Items panel.** A tree of the scene's items in paint order, with the front item at the top. Groups such as `data-class="2"` show as collapsible rows, which is why it's a `tree` and not a listbox. This list is the stage's accessible model: choosing a row selects the item, and the stage keys act on it.
 - **Selected panel:**
-  - **Position:** Col, Row and Level as number fields with − and + buttons. Nudge x and y for pixel offsets.
+  - **Position:** a scene item is placed either on a tile or by pixel, never both. A tile item shows Col, Row and Level as number fields with − and + buttons; Shift + arrows on the stage nudge it by a pixel, which places it by pixel. A pixel item shows X and Y, and **Snap to tile**.
   - **Class:** the placement class, for example `itruck it1`.
   - **Actions:** Raise, Lower, Duplicate and Remove, each a 44px button.
 - **Scene panel:** the scene's name, its output file (or "Preview only"), `viewBox` and `origin`.
@@ -525,7 +525,7 @@ Shortcuts work only while focus is on the stage, so they never interfere with ty
 - **Undo** keeps at most 200 steps. A pencil stroke counts as one step.
 - **Announcements.** Every action is announced in the status bar's polite live region, for example "Tree moved to column 3, row 4" or "Painted 6 pixels grass-2".
 - **Tab order:** lab bar, toolbar, stage, status bar, Library, then Inspector. On small screens, the tabs come in place of the side columns. The toolbar is one `role="toolbar"` tab stop with arrow-key movement inside it. The stage is a focusable group labeled "Scene stage" or "Object stage", described by the status bar.
-- **Focus ring.** The site's focus ring (`base.css`) is extended to the stage, swatches, list rows and tabs.
+- **Focus ring.** The site's focus ring (as in `base.css`) is extended to the stage, swatches, list rows and tabs. The extension lives in `lab.css`, so no other page's CSS changes (R24).
 
 #### D9.8 Visual style
 
