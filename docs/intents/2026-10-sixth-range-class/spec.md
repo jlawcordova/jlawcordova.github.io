@@ -1,90 +1,127 @@
-# Spec: Sixth Range class (from intent.md 2026-10-03)
+# Spec: Range class characters (from intent.md 2026-10-03)
 Status: approved.
 
 ## Requirements
 
 Traced to the [intent](intent.md). Each is checkable.
 
-- **R1. Six classes.** `rangeClasses` in `src/data/home.ts` has a sixth entry, `Security & Governance`, after Project Management. The carousel shows it as class 6 of 6. *(Outcome: sixth class)*
-- **R2. Its outfit is in the sprite.** `src/assets/pixel-art/range-sprite.svg` has a `<g data-class="5">` holding the existing `outfit-security-governance` object, placed like the other five. The outfit's own art isn't changed. *(Problem: the outfit exists but isn't shown; constraint: existing outfit art as it is)*
-- **R3. Only the current outfit shows.** `range.css` shows `data-class="5"` when `data-current="5"`, and no other variant at the same time. *(Outcome)*
-- **R4. Sixth pager dot.** The pager renders six dots, and the sixth is current on class 6. It needs no markup change, since it's mapped from `rangeClasses`. *(Outcome)*
-- **R5. Its own nameplate color.** The nameplate's hard shadow uses the new entry's `shadow` value, taken from the outfit's main color like the others. *(Outcome)*
-- **R6. Behavior unchanged.** Arrows wrap in both directions across six classes, auto-advance, pause, hover and focus pause, and reduced motion behave as before. The "class N of 6" text and the sprite's `aria-label` update from the data. *(Constraint: accessibility)*
-- **R7. Fits at 390px.** Six dots, the nameplate and the controls fit with no horizontal scroll, and the 44px tap targets hold. *(Constraint)*
-- **R8. Public-safe copy.** The class name traces to the profile's discipline #6, "Security and governance". The Range paragraph is not changed. *(Constraint)*
-- **R9. Budgets hold.** The range sprite stays within ≤ 100 KB raw and ≤ 25 KB gzip, and `npm run art` reports every file `lossless` and none `OVER BUDGET`. The home page stays within the redesign spec's §12 budgets. *(Constraint)*
-- **R10. Earlier documents say so.** The redesign intent's decision #7 and the redesign spec's §7.3 get a note that the sixth class is live, and §7.3's `rangeClasses` block is updated. *(Outcome)*
-- **R11. Visible change is reviewed** with screenshots of class 6 at 1440px and 390px, and the independent verifier checks the PR. *(Constraint)*
+- **R1. Seven classes.** `rangeClasses` in `src/data/home.ts` has seven entries, in the order in [Design](#classes-and-characters). The carousel shows class N of 7. *(Outcome)*
+- **R2. Each class is a character.** Every class has an outfit object that extends `character`, with one costume cue and one prop, in the shared pose and silhouette. The Security & Governance knight is kept as it is. *(Outcome; constraint: still professional)*
+- **R3. New art follows the engine.** Each redrawn or new outfit uses only world and outfit colors (no `c-<hex>` legacy keys), has at most 12 colors, and paints a figure of at most 16×24. New outfit colors are added to the palette in a reviewed commit, keeping the outfit tier at 16 colors or fewer. `npm run art` reports every file `lossless` and none `OVER BUDGET`. *(Constraint)*
+- **R4. The sprite has seven variants.** `src/assets/pixel-art/range-sprite.svg` has `<g data-class="0">` to `<g data-class="6">`, one per class in order. *(Outcome)*
+- **R5. Only the current outfit shows.** `range.css` shows `data-class="N"` when `data-current="N"`, for N = 0 to 6, and never two at once. *(Outcome)*
+- **R6. Pager and nameplate follow the data.** Seven dots, the class's own nameplate shadow color, "class N of 7", and the sprite's `aria-label` all come from `rangeClasses`. *(Outcome, constraint: accessibility)*
+- **R7. Behavior unchanged.** Arrows wrap both ways, auto-advance, pause, hover and focus pause and reduced motion work as before. *(Constraint)*
+- **R8. Fits at 390px.** Seven dots, the nameplate and the controls fit with no horizontal scroll, and tap targets stay at 44px. The longest name doesn't shift the layout when the carousel advances. *(Constraint)*
+- **R9. Professional.** Nameplates are plain job names. No stats, levels or rarity styling. The Range heading and paragraph are unchanged. *(Constraint)*
+- **R10. Public-safe copy.** Class names trace to the profile's disciplines. *(Constraint)*
+- **R11. Budgets hold.** The range sprite is ≤ 100 KB raw and ≤ 25 KB gzip, and the home page stays within the redesign spec's §12 budgets. *(Constraint)*
+- **R12. Data and art can't drift.** A test checks that `rangeClasses.length` equals the number of `data-class` groups in the compiled sprite. *(Constraint)*
+- **R13. Earlier documents say so.** The redesign intent's decision #7 and the redesign spec's §7.3 get a note, and §7.3's `rangeClasses` block is updated. *(Outcome)*
+- **R14. Each class is its own reviewed step,** with before and after previews and screenshots at 1440px and 390px, and an independent verifier on each PR. *(Constraint)*
 
 ## Design
 
+### Classes and characters
+
+The order follows the profile's disciplines, with the knight and the suit last, and keeps the carousel's first class as Front-end. Variant index = position.
+
+| # | Class (nameplate) | Character | Costume cue and prop | Outfit object |
+| --- | --- | --- | --- | --- |
+| 0 | Front-end | Mage | A pointed hat and robe, a staff with a small glowing tip | `outfit-front-end` (redrawn) |
+| 1 | Back-end | Hacker | A hoodie with the hood down, a laptop under one arm | `outfit-back-end` (new) |
+| 2 | UX Design | Painter | A beret and smock, a palette and brush | `outfit-ux-design` (redrawn) |
+| 3 | Cloud & DevOps | Engineer | A hard hat and vest, a wrench | `outfit-cloud-devops` (redrawn) |
+| 4 | Data Engineering | Alchemist | A cap and apron, a flask | `outfit-data-engineering` (redrawn) |
+| 5 | Security & Governance | Knight | Armor and helmet, as built | `outfit-security-governance` (kept) |
+| 6 | Project Management | Person in a suit | A jacket and tie, a clipboard | `outfit-project-management` (redrawn) |
+
+Each outfit overrides the character's rows like `outfit-security-governance` does (`extends: 'character'`, `keys`, `rows`). The knight is the reference for how much detail a character gets: one silhouette cue, one prop.
+
+### Palette: `src/assets/pixel-art/source/palette.mjs`
+
+The outfit tier has 4 of 16 colors (`silver-1` to `silver-4`, used by the knight). The new outfits need up to 12 more, added in one reviewed commit before the art:
+
+- **Reuse the world ramps** wherever they fit: `gold` for the hard hat, `wood` for the staff and clipboard, `roof` red for the beret and tie, `water` teal for the alchemist's apron and flask, `ink` for outlines.
+- **Add outfit colors** only for what the world lacks: a violet for the mage's robe, a slate or charcoal for the hoodie and the suit, and a smock tone for the painter. The exact values are chosen when the art is drawn, as 2–3 shades per new color, and stay within 12 new entries.
+- Brand entries and their `variables.css` test are untouched.
+
+### Art: `src/assets/pixel-art/source/`
+
+- Redraw the five outfits in place (same object names), and add `objects/outfit-back-end.mjs`.
+- `scenes/range-sprite.mjs`: seven groups, `data-class` `'0'` to `'6'`, each `{ object: '<outfit>', at: { px: [-24, -6] } }`, in the order above.
+- `scenes/outfit-preview.mjs` lists the outfits for previews: update it to the new set.
+- All outfits extend `character`, which is a legacy-imported base (see C2). The new outfits' own keys use world and outfit colors only.
+
 ### Data: `src/data/home.ts`
 
-Add one entry to `rangeClasses`, and update its comment if it says "five":
-
 ```ts
-{ name: 'Security & Governance', shadow: '#858F99' },
+export const rangeClasses = [
+  { name: 'Front-end', shadow: '<mage main color>' },
+  { name: 'Back-end', shadow: '<hoodie main color>' },
+  { name: 'UX Design', shadow: '<smock main color>' },
+  { name: 'Cloud & DevOps', shadow: '#D8B66A' },
+  { name: 'Data Engineering', shadow: '#5F8C7E' },
+  { name: 'Security & Governance', shadow: '#858F99' },
+  { name: 'Project Management', shadow: '<suit main color>' },
+] as const;
 ```
 
-`shadow` is `silver-3` from the world palette, the outfit's main (armor) color, as the other shadows are their outfits' main colors. It's decorative, so it has no contrast requirement; it only needs to read against the light stage. See concern C2.
-
-### Art: `src/assets/pixel-art/source/scenes/range-sprite.mjs`
-
-Add a sixth group after `data-class: '4'`:
-
-```js
-{
-  group: { 'data-class': '5' },
-  items: [
-    { object: 'outfit-security-governance', at: { px: [-24, -6] } },
-  ],
-},
-```
-
-Then run `npm run art`. The object is already built and previewed in the engine's slice for it (#34). The scene's viewBox doesn't change, since the outfit extends the same 16×20 character. The headgear and armor extend above the other outfits' heads, so the preview must be checked for clipping against the `viewBox` (concern C3).
+Each `shadow` is the outfit's main color, as in the mock. `#D8B66A` (`gold-2`), `#5F8C7E` (`water-3`) and `#858F99` (`silver-3`) are taken from the planned ramps. The others are filled in when their outfit is drawn. Shadows are decorative, so they have no contrast requirement, but each must read against the light stage.
 
 ### Styles: `src/styles/range.css`
 
-Add `.range[data-current="5"] .range__sprite g[data-class="5"]` to the list that shows the current outfit. The rule has no other change. The pager, nameplate and controls need no CSS change.
+Extend the "show only the current outfit" selector list to `data-current="0"` through `"6"`. The pager, nameplate and controls need no CSS change. The dots take 7 × 10px + 6 × 8px = 118px, which fits beside the 44px pause button at 390px. The nameplate wrapping is C3.
 
 ### Component: `src/components/home/Range.astro`
 
-No change expected. The dots, "class N of M" text and the script's `count` all derive from `rangeClasses.length`, and the component's first paint is class 0.
+No change expected. The dots, "class N of M" and the script's `count` already come from `rangeClasses.length`.
 
-### Tests and checks
+### Checks
 
-- `scripts/e2e/art.e2e.mjs` compares each `data-class` variant against a fixture. Variants 0–4 stay identical to their fixtures. See concern C1 for variant 5.
-- `npm run art`, `npm test`, `npm run build` and `npm run e2e` as in `CLAUDE.md`.
-- Add a check that `rangeClasses.length` equals the number of `data-class` groups in the compiled sprite, so the data and the art can't drift apart again. Place it with the existing art tests.
-- Screenshots of all six classes at 1440px and 390px, confirming no horizontal scroll.
+- `scripts/e2e/art.e2e.mjs` compares each `data-class` variant to a fixture (R10 of the engine spec). See C1.
+- Add the drift test from R12 beside the existing art tests.
+- `npm run art`, `npm test`, `npm run build` and `npm run e2e`, as in `CLAUDE.md`.
+- Previews with `npm run art -- --preview <name>` for each outfit, and screenshots of all seven classes at 1440px and 390px.
+
+### Delivery order
+
+One PR per step, each with its previews and screenshots: (1) palette colors, (2) the `data-class` plumbing for seven variants, the CSS and the drift test, with the knight in place, (3) one PR per redrawn or new outfit, (4) the documents' notes. The carousel never shows an unfinished class: a class goes live in its own PR, and the old outfit stays until its replacement merges.
 
 ### Documents
 
-- Redesign intent, decision #7: add "Update, 2026-10: the sixth class, Security & Governance, is live (sixth-range-class intent)." Don't rewrite the decision.
+- Redesign intent, decision #7: add "Update, 2026-10: the classes were redrawn as characters and are now seven, including Security & Governance and Back-end (Range class characters intent)." Don't rewrite the decision.
 - Redesign spec §7.3: update the `rangeClasses` block and add the same note. The redesign documents predate the templates, so only these two notes change.
+- `pixel-art` skill: update any mention of the five outfits and the outfit palette's contents.
+- Follow-ups intent: already updated, since this change replaces its outfit migration.
 
 ## Areas of concern
 
-**C1. The pixel-identical fixture can't cover the new variant.** The sprite's R10 check compares the compiled SVG with `scripts/fixtures/pixel-art/range-sprite.src.svg`, the original hand-made source. That fixture only has five variants, and the compiled sprite will now have six, so the "renders identically" check fails or has to skip the new group. This isn't a policy conflict but it changes a promise the engine made ("pixel-identical").
-*Decision for the owner:* keep the fixture frozen and compare only variants 0–4 against it, adding variant 5 to the "states" list as an extra with no fixture, or extend the fixture with a rendered baseline of the new outfit. I recommend the first: the fixture stays the record of the original art, and variant 5 is verified by its own preview and the screenshots.
+**C1. The "pixel-identical" check ends for the Range sprite.** The engine promised the Range sprite would render identically to `scripts/fixtures/pixel-art/range-sprite.src.svg` (engine spec R10, and the e2e check named for it). Redrawing the outfits changes the art on purpose, so that comparison can't pass for variants whose outfit changed.
+*Decision for the owner:* retire the comparison for the Range sprite, keep the fixture file only where engine tests use it as input, and replace the promise with per-class previews, screenshots and the verifier. I recommend this. A softer option is to keep comparing the base island and character (the parts that don't change) with the fixture.
 
-**C2. The nameplate shadow is a design choice, not a rule.** The other five shadows come from the mock. There is no mock color for this class. `#858F99` (`silver-3`) is the outfit's armor color. `#B4BCC4` (`silver-2`) is lighter, and probably too faint against the light stage.
-*Decision for the owner:* approve `#858F99`, or choose another.
+**C2. The outfits sit on a legacy base.** `character` is imported legacy art (`legacy: true`, with `c-<hex>` colors) and the outfits extend it. The new outfits themselves use only world and outfit colors, but the body they extend still uses the legacy tier. The intent says the base character is out of scope, and the follow-ups intent migrates it later.
+*Decision for the owner:* accept this for now (my recommendation, since a new base would change every class at once), or add the base to this change.
 
-**C3. The nameplate may wrap at 390px.** At the 18px Silkscreen size, "Security & Governance" (21 characters) is wider than "Project Management" (18), the longest today. With the stage's padding at 390px it may not fit on one line. The nameplate has `min-height: 44px` and is a flex box, so it would wrap to two lines and move the sprite down on that class, which causes layout shift while the carousel advances.
-*Decision for the owner:* if it wraps, either shorten the name ("Security & Gov." reads poorly; "Security" alone is clear but drops "governance"), reduce the nameplate font size at narrow widths for all classes, or give the nameplate a fixed two-line height on mobile. I recommend measuring first. If it fits, nothing changes.
+**C3. The nameplate may wrap at 390px.** At 18px Silkscreen, "Security & Governance" (21 characters) is longer than "Project Management" (18), the longest today. I haven't measured it. If it wraps, the nameplate grows to two lines and shifts the sprite as the carousel advances.
+*Decision for the owner:* measure it in the first PR. If it wraps, either reduce the nameplate font at narrow widths for all classes, give the nameplate a fixed two-line height on mobile, or shorten the name. I recommend the first.
 
-**C4. The outfit's headgear may clip.** The Security outfit's helmet rows are in the preview only, not yet in the live viewBox of `[-51, -9, 103, 72]`. If it extends above the top edge, it will be cut off. This is checked with the preview and screenshots, and fixed by moving the viewBox, which would shift all six classes by a few pixels and should be avoided if possible.
+**C4. Detail budget per character.** A figure is at most 16×24 pixels and 12 colors. A staff, a laptop, a brush and a flask all need to read at that size. Some props may only work as a silhouette, not as detail.
+*Decision for the owner:* review each outfit's preview and approve or ask for a simpler prop. No policy conflicts here, but the first outfit sets the bar for the rest.
+
+**C5. Seven classes slow the cycle.** At 2200ms per class, a full cycle goes from 11 seconds to 15.4 seconds. The carousel pauses on hover and focus and the visitor can pause it, so I don't propose a change.
 
 ## Open questions
 
 Answered from the intent:
 
-1. **The name on the nameplate:** "Security & Governance", matching the profile's discipline and the existing "Cloud & DevOps" style.
-2. **The nameplate shadow color:** `#858F99` (`silver-3`), pending C2.
-3. **Timing:** keep 2200ms per class. A full cycle goes from 11 seconds to 13.2 seconds, and the carousel pauses on hover and focus and can be paused by the visitor. No change is proposed. The owner can revisit after seeing it live.
+1. **The order of the seven classes:** as in the table above, with Front-end first.
+2. **The back-end class name:** "Back-end", pairing with "Front-end".
+3. **Props and colors:** as in the table. The colors are fixed when each outfit is drawn.
+4. **Nameplate shadow colors:** each outfit's main color. Three are known (`#D8B66A`, `#5F8C7E`, `#858F99`) and four are set with their outfits.
+5. **Timing:** keep 2200ms (C5).
+6. **Nameplate fit at 390px:** measured in the first PR (C3).
 
 New:
 
-4. **C1, C2 and C3 above** need the owner's decision before the plan is written.
+7. **C1, C2 and C4** need the owner's decision before the plan is written.
