@@ -1,0 +1,25 @@
+---
+// The achievement icon sheet, inlined once on a page that shows accomplishment
+// rows (gamified accomplishments spec D5). Each row crops its icon out of it
+// with <svg viewBox="<16 × index> 0 16 16"><use href="#achievement-icons"/></svg>.
+// Hidden with a zero size, not display:none, because some browsers don't draw
+// <use> from a display:none SVG (plan, Risks).
+import sheet from '../assets/pixel-art/achievement-icons.svg?raw';
+
+const art = sheet.replace(/^\s*<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+---
+
+<svg class="achievement-icons" width="0" height="0" aria-hidden="true" focusable="false">
+  <g id="achievement-icons" set:html={art} />
+</svg>
+
+{
+  /*
+   * The rows' tooltip (spec D4, WCAG 1.4.13): CSS shows it on hover or focus;
+   * Escape hides it until the pointer or focus leaves the row. Inline and
+   * rendered once here, since this component is on every page with rows.
+   */
+}
+<script is:inline>
+  (d=>{const l=e=>{const r=e.target.closest?.('.achievement');if(r&&!r.contains(e.relatedTarget))delete r.dataset.tipHidden};d.addEventListener('keydown',e=>{if(e.key==='Escape')for(const r of d.querySelectorAll('.achievement:hover,.achievement:focus-within'))r.dataset.tipHidden=''});d.addEventListener('mouseout',l);d.addEventListener('focusout',l)})(document);
+</script>

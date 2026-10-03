@@ -1,26 +1,33 @@
 ---
-// Stopgap until AccomplishmentRow replaces the card (gamified accomplishments
-// plan, PR 3): shows the home selection with the old cards.
-import AccomplishmentCard from './AccomplishmentCard.astro';
+// The home page's accomplishments (gamified accomplishments spec R5, R6, R8):
+// the three newest done, the newest locked, and "Show more" when the full list
+// at /accomplishments/ has anything else. Nothing renders without data.
+import AccomplishmentRow from './AccomplishmentRow.astro';
+import AchievementIcons from './AchievementIcons.astro';
 import { getAccomplishments, homeSelection } from '../lib/accomplishments';
 
-const { visible, done, locked } = homeSelection(getAccomplishments());
+const { visible, done, locked, showMore } = homeSelection(getAccomplishments());
 const shown = locked ? [...done, locked] : done;
 ---
 
 {
   visible && (
     <section id="accomplishments" class="accomplishments" aria-labelledby="accomplishments-title">
+      <AchievementIcons />
       <div class="accomplishments__inner">
-        <header class="accomplishments__head">
-          <p class="label">Achievements unlocked</p>
-          <h2 id="accomplishments-title">Accomplishments</h2>
-        </header>
-        <ol class="accomplishments__list" role="list">
+        <h2 id="accomplishments-title" class="accomplishments__title">
+          What I’ve been working on lately
+        </h2>
+        <ol class="achievement-list" role="list">
           {shown.map((item) => (
-            <AccomplishmentCard item={item} />
+            <AccomplishmentRow item={item} />
           ))}
         </ol>
+        {showMore && (
+          <a class="btn btn--ghost accomplishments__more" href="/accomplishments/">
+            Show more<span class="visually-hidden"> accomplishments</span>
+          </a>
+        )}
       </div>
     </section>
   )
