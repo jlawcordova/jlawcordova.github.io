@@ -88,7 +88,7 @@ The redesign's pipeline ([redesign spec §8](../2026-10-redesign/spec.md#8-pixel
 - [x] `npm test` and `npm run build` pass with no new warnings, and no dependency is added.
 - [x] The README documents the source formats, the editor page and `npm run art`.
 - [x] A fresh agent session given only the pixel-art skill can add a new library object that passes validation and looks right in its preview.
-- [ ] Every PR in this change has an independent verifier report as a PR comment, and every requirement in the spec traces to a test or a named check.
+- [x] Every PR in this change has an independent verifier report as a PR comment, and every requirement in the spec traces to a test or a named check.
 
 ### Evidence
 
@@ -109,7 +109,7 @@ Checked on 2026-10-03, after all seven slices merged (PRs #29 to #36), plus the 
 | Tests, build, no dependencies | `npm test` 148/148; `npm run build` 0 errors, warnings and hints; `package.json` unchanged |
 | README | The "Pixel art" section and layout rows (#30 to #36) |
 | Skill eval | A fresh, headless session added `pebble`; it validates within the caps in world colors, and the owner accepted it (#36) |
-| A verifier report on every PR | **Open:** #36's fixes haven't had their re-check yet, and the docs-only PRs (#32, #37) and the fix in #38 had none |
+| A verifier report on every PR | Every slice (#29 to #36) has a report ending in PASS; #36's re-checks also cover the skill eval and, on `master`, the fix in #38. The docs-only PRs (#32, #37, #39) went straight to PR, as `CLAUDE.md` allows for small, self-contained changes. Traceability: each verifier report checks every requirement in scope against its `R<n>:` tests or a named check in D15 |
 
 ## Decisions
 

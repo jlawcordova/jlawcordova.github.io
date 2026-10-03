@@ -774,6 +774,9 @@ describe('object painting (R17)', () => {
     await page.mouse.move(x1, y0, { steps: 6 });
     await page.keyboard.press('Escape');
     await page.mouse.up();
+    // The live region is cleared, then written on the next frame, so a
+    // repeated message speaks again: wait for it rather than read it at once.
+    await page.waitForFunction(() => document.getElementById('lab-announce')?.textContent === 'Stroke cancelled');
     assert.equal(await exportText(page), site, 'the stroke is gone');
     // And the next stroke still works, as its own undo step.
     await clickPixel(page, 0, 27);
