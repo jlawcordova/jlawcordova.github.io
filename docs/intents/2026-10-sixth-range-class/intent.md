@@ -21,7 +21,7 @@ The Range carousel shows seven classes, each a recognizable character with one c
 | Project Management | A person in a suit |
 | Security & Governance | The knight in armor (already built) |
 
-Each class has copy, its own nameplate color and a pager dot, and the carousel still works as it does today. The redesign's decision #7 and spec §7.3 carry a note that the classes changed.
+A prop that is too big to hold, such as a house, a server rack or an easel, is its own object placed in the scene next to the character, so the character and the object both live on the Range platform. Each class has copy, its own nameplate color and a pager dot, and the carousel still works as it does today. The redesign's decision #7 and spec §7.3 carry a note that the classes changed.
 
 ## Affected users and systems
 
@@ -41,8 +41,9 @@ Each class has copy, its own nameplate color and a pager dot, and the carousel s
 - **Copy is public-safe** and traces to the profile's disciplines. No client names or internal incidents. The Range paragraph is not changed.
 - **An independent verifier checks each PR.**
 - **The base character changes shade slightly, not shape.** Moving it off legacy colors may nudge a hair, boot or skin shade by a step. Its body, pose and proportions stay as they are, and the change is reviewed with before and after previews.
+- **Big props are scene objects.** A prop that doesn't fit the raised figure cap is a separate object in the Range sprite's scene, drawn within the existing object caps and placed on the platform beside the character. It's shown only with its class, and it counts toward the sprite's size budget.
 - **The engine's cap changes.** The pixel-art engine's character cap (16×24, engine spec R27) is raised in its own step, with the engine, its tests and the `pixel-art` skill updated together. No other cap changes.
-- **Out of scope:** the island platform under the character, the hero island and the rest of the palette migration (the follow-ups intent), and a game-style interface around the carousel.
+- **Out of scope:** enlarging or redrawing the island platform (a prop must fit the platform as it is), the platform's legacy colors, the hero island and the rest of the palette migration (the follow-ups intent), and a game-style interface around the carousel.
 
 ## Open questions
 
@@ -53,3 +54,4 @@ Each class has copy, its own nameplate color and a pager dot, and the carousel s
 5. **Timing:** does the carousel's 2200ms interval still suit seven classes? A full cycle becomes 15.4 seconds.
 6. **Does the nameplate fit** the longest names at 390px?
 7. **The new figure cap:** how large, so every prop fits without making the character tower over the island and trucks? (The spec proposes 24×32.)
+8. **Which props are held and which stand beside the character,** and whether the platform has room for them.
