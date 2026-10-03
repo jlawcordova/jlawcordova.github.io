@@ -18,7 +18,24 @@ export const LOCK_ICON = 'lock';
  * The id is the object `icon-<id>` and the value stored in the record.
  * @type {readonly { id: string, meaning: string }[]}
  */
-export const ICONS = [{ id: 'rocket', meaning: 'shipped or launched' }];
+export const ICONS = [
+  { id: 'sprout', meaning: 'started something, or a first' },
+  { id: 'hammer', meaning: 'built something' },
+  { id: 'rocket', meaning: 'shipped or launched' },
+  { id: 'wrench', meaning: 'fixed or repaired' },
+  { id: 'shield', meaning: 'secured or protected' },
+  { id: 'key', meaning: 'unlocked access' },
+  { id: 'cog', meaning: 'automated or improved a process' },
+  { id: 'book', meaning: 'wrote or documented' },
+  { id: 'magnifier', meaning: 'investigated or analysed' },
+  { id: 'flask', meaning: 'experimented or prototyped' },
+  { id: 'watering-can', meaning: 'mentored or helped others grow' },
+  { id: 'heart', meaning: 'helped, or went the extra mile' },
+  { id: 'compass', meaning: 'planned, led or set direction' },
+  { id: 'chest', meaning: 'organised or stored (data, assets)' },
+  { id: 'trophy', meaning: 'reached a milestone' },
+  { id: 'lantern', meaning: 'lit the way (a guide, a talk, a write-up)' },
+];
 
 /** The order of the icons in achievements-icons.svg: fallback, lock, then the choices. */
 export const SHEET_ORDER = [FALLBACK_ICON, LOCK_ICON, ...ICONS.map((icon) => icon.id)];

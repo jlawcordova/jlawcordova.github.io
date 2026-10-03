@@ -23,10 +23,25 @@ The `meaning` is what Claude reads, through `/achievement-icons.json`, to pick a
 <!-- icons:start -->
 | Id | Meaning |
 | --- | --- |
+| `sprout` | started something, or a first |
+| `hammer` | built something |
 | `rocket` | shipped or launched |
+| `wrench` | fixed or repaired |
+| `shield` | secured or protected |
+| `key` | unlocked access |
+| `cog` | automated or improved a process |
+| `book` | wrote or documented |
+| `magnifier` | investigated or analysed |
+| `flask` | experimented or prototyped |
+| `watering-can` | mentored or helped others grow |
+| `heart` | helped, or went the extra mile |
+| `compass` | planned, led or set direction |
+| `chest` | organised or stored (data, assets) |
+| `trophy` | reached a milestone |
+| `lantern` | lit the way (a guide, a talk, a write-up) |
 <!-- icons:end -->
 
-The full planned set is in the spec (D5): `sprout`, `hammer`, `rocket`, `wrench`, `shield`, `key`, `cog`, `book`, `magnifier`, `flask`, `watering-can`, `heart`, `compass`, `chest`, `trophy` and `lantern`. This table lists the ones drawn so far, and a test fails if it disagrees with `achievement-icons.mjs`.
+The set is the 16 icons above, and a test fails if this table disagrees with `achievement-icons.mjs`.
 
 ## Steps
 
