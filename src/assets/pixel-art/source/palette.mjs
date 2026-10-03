@@ -62,6 +62,8 @@ export default {
     'orange-2': '#C2733A',
     'sky-1': '#C3D8E6',
     'sky-2': '#8FB0C9',
+    'navy-1': '#5B6F8E',
+    'navy-2': '#3D4C66',
   },
   legacy: {
     'c-1f2226': '#1F2226',
