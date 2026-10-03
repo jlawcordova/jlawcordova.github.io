@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Status** | Draft |
+| **Status** | Done. All four PRs merged (#21, #23, #24, #25) |
 | **Intent** | [`intent.md`](intent.md) |
 | **Spec** | [`spec.md`](spec.md) |
 | **Created** | 2026-10-01 |

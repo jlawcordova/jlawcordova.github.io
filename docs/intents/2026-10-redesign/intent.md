@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Status** | Draft |
+| **Status** | Done, 2026-10-03. Every acceptance criterion is met (see [Evidence](#evidence)). The sixth Range class and other later work are in the [follow-ups intent](../2026-10-pixel-art-follow-ups/intent.md) |
 | **Owner** | J. Law. Cordova |
 | **Created** | 2026-10-01 |
 | **Design source** | [J. Law Portfolio canvas](https://claude.ai/artifact/JhKbkNZP9qGWHMaWE8USbR), artboard **"Prototype B — isometric"** (`project/Isometric.dc.html`) |
@@ -144,20 +144,41 @@ Copy should be taken verbatim from the mock, checked against the [profile](../..
 
 ## Acceptance criteria
 
-- [ ] At 1440px wide, the home page matches Prototype B in layout, colors, type, copy and pixel art when compared side by side, apart from the deliberate changes recorded here and in the spec (JL logo, no highlights section, shorter hero and Range paragraphs, and the added Accomplishments section).
-- [ ] Every factual claim on the site (role, employer, disciplines, technologies) can be traced to `docs/references/profile.md`. No old role copy ("Enterprise Applications / Backend Systems / Automated Pipelines", "Code + Create" bio) remains.
-- [ ] No client names, project codenames or colleagues' names appear anywhere in the built site.
-- [ ] At 390px wide, the home page has no horizontal scroll, all content is reachable, and the tap targets are at least 44px.
-- [ ] Accomplishments render in the new style with one record, a few records, and many (including long, multi-line descriptions, many tags and several links), at 1440px and 390px. With no records, or with the `"unavailable"` placeholder, the section and its heading don't appear at all.
-- [ ] The Range carousel cycles through all five classes on its own and with the buttons. The nameplate, sprite colors, pager dots and text alternative all update together.
-- [ ] With `prefers-reduced-motion: reduce`, nothing moves and each animated element shows one static frame.
-- [ ] Blog index, every post, and 404 use the new tokens, fonts, nav and footer, with no leftover pink accent, Merriweather, Roboto or Font Awesome icons.
-- [ ] Code blocks in posts stay legible, with syntax colors re-tuned to the new palette if needed.
-- [ ] Every existing post URL, `/blog/pageN/` and `/atom.xml` still resolves.
-- [ ] `npm run build` passes, including `astro check`, with no new warnings.
-- [ ] Home page weight (HTML + CSS + JS + images) is no more than today's, or any increase is justified in the PR.
-- [ ] Lighthouse accessibility is 100 on the home page and a post page.
-- [ ] `variables.css` and any CSS left unused by the redesign have been removed.
+- [x] At 1440px wide, the home page matches Prototype B in layout, colors, type, copy and pixel art when compared side by side, apart from the deliberate changes recorded here and in the spec (JL logo, no highlights section, shorter hero and Range paragraphs, and the added Accomplishments section).
+- [x] Every factual claim on the site (role, employer, disciplines, technologies) can be traced to `docs/references/profile.md`. No old role copy ("Enterprise Applications / Backend Systems / Automated Pipelines", "Code + Create" bio) remains.
+- [x] No client names, project codenames or colleagues' names appear anywhere in the built site.
+- [x] At 390px wide, the home page has no horizontal scroll, all content is reachable, and the tap targets are at least 44px.
+- [x] Accomplishments render in the new style with one record, a few records, and many (including long, multi-line descriptions, many tags and several links), at 1440px and 390px. With no records, or with the `"unavailable"` placeholder, the section and its heading don't appear at all.
+- [x] The Range carousel cycles through all five classes on its own and with the buttons. The nameplate, sprite colors, pager dots and text alternative all update together.
+- [x] With `prefers-reduced-motion: reduce`, nothing moves and each animated element shows one static frame.
+- [x] Blog index, every post, and 404 use the new tokens, fonts, nav and footer, with no leftover pink accent, Merriweather, Roboto or Font Awesome icons.
+- [x] Code blocks in posts stay legible, with syntax colors re-tuned to the new palette if needed.
+- [x] Every existing post URL, `/blog/pageN/` and `/atom.xml` still resolves.
+- [x] `npm run build` passes, including `astro check`, with no new warnings.
+- [x] Home page weight (HTML + CSS + JS + images) is no more than today's, or any increase is justified in the PR.
+- [x] Lighthouse accessibility is 100 on the home page and a post page.
+- [x] `variables.css` and any CSS left unused by the redesign have been removed.
+
+### Evidence
+
+Checked in PR #25's final verification (T4.5), after all four PRs merged. Row numbers are that PR's verification table.
+
+| Criterion | Evidence |
+| --- | --- |
+| Matches Prototype B at 1440px | #25 row 1: nav, H1, hero art and sprite at the mock's positions; art pixel-identical (lossless check, #23) |
+| Facts trace to `profile.md` | #25 row 2: 0 matches for the old role copy in `dist/` |
+| No confidential names | #25 row 3: built with live records, the only organization is the employer named in the profile |
+| 390px, no scroll, 44px targets | #25 row 4: `scrollWidth == innerWidth` on every page type; one inline link uses the equivalent-control exception |
+| Accomplishments states | #25 row 5: fixtures (a) to (e) and live records at 1440px and 390px |
+| Range carousel | #25 row 6: 21 Playwright checks |
+| Reduced motion | #25 row 7: `getAnimations().length === 0`, one static frame each |
+| Secondary pages restyled | #25 row 8: 0 matches for `fa-`, Merriweather, Roboto and `#EC407A`; 0 pink pixels in the brand images |
+| Code legible | #25 row 9: every syntax token ≥ 4.5:1, reviewed in #24 |
+| URLs unchanged | #25 row 10: 17 routes plus `atom.xml` identical to the pre-redesign build |
+| Build passes | #25 row 11: 0 errors, 0 warnings, 0 hints |
+| Page weight | #25 row 12: 32.4 KB gzip total, against about 70 KB before |
+| Lighthouse accessibility 100 | #25 row 13: 100 on `/`, a post and `/blog/`, mobile and desktop |
+| Unused CSS removed | #25 row 15: every file in the spec §2.1 Delete table is gone. `variables.css` was replaced by the new token set, not dropped, as spec §2.1 says |
 
 ## Decisions
 
