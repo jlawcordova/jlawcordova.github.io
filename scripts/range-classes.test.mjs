@@ -1,13 +1,17 @@
 // The Range carousel's data and art can't drift (Range class characters spec
-// R12): src/data/home.ts lists as many classes as the compiled sprite and its
-// scene have data-class groups, numbered 0 to N − 1 in order, and range.css
-// shows each one. Node built-ins only.
+// R1, R3, R12): src/data/home.ts lists as many classes as the compiled sprite
+// and its scene have data-class groups, numbered 0 to N − 1 in order, each
+// group places the outfit named for its class, range.css shows each one, and
+// the character and its outfits stay off legacy colors. Node built-ins only.
 
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
+
+import { resolve } from '../src/lib/pixel-art/engine.mjs';
+import { readSources } from './optimize-pixel-art.mjs';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const read = (path) => readFile(join(ROOT, path), 'utf8');
@@ -18,6 +22,9 @@ export const classNames = (homeTs) => {
   assert.ok(block, 'home.ts exports rangeClasses');
   return [...block[1].matchAll(/name: '([^']+)'/g)].map((m) => m[1]);
 };
+
+/** The outfit object named for a class: 'Cloud & DevOps' → 'outfit-cloud-devops'. */
+export const outfitFor = (name) => `outfit-${name.toLowerCase().replace(/&/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
 
 /** The data-class values of a compiled SVG's groups, in document order. */
 export const svgClasses = (svg) => [...svg.matchAll(/<g data-class="(\d+)"/g)].map((m) => m[1]);
@@ -50,5 +57,29 @@ describe('Range classes (R12)', () => {
     assert.deepEqual(svgClasses(twoGroups), classNames(home).map((_, i) => String(i)));
     assert.notDeepEqual(svgClasses('<g data-class="0"></g>'), classNames(home).map((_, i) => String(i)));
     assert.notDeepEqual(svgClasses(twoGroups), classNames(home.replace("  { name: 'B', shadow: '#000' },\n", '')).map((_, i) => String(i)));
+  });
+});
+
+describe('Range class order (R1)', () => {
+  it('R1: each data-class places the outfit named for its class, in rangeClasses order', async () => {
+    const names = classNames(await read('src/data/home.ts'));
+    const scene = (await import('../src/assets/pixel-art/source/scenes/range-sprite.mjs')).default;
+    const placed = scene.items.filter((i) => i.group).map((g) => g.items.find((i) => i.object.startsWith('outfit-')).object);
+    assert.deepEqual(placed, names.map(outfitFor));
+  });
+
+  it('R1: outfitFor turns each class name into its outfit name', () => {
+    assert.equal(outfitFor('Cloud & DevOps'), 'outfit-cloud-devops');
+    assert.equal(outfitFor('Security & Governance'), 'outfit-security-governance');
+    assert.equal(outfitFor('Back-end'), 'outfit-back-end');
+  });
+});
+
+describe('Range characters off legacy colors (R3, R3a)', () => {
+  it('R3: character and every outfit resolve as non-legacy', async () => {
+    const { sources } = await readSources(join(ROOT, 'src/assets/pixel-art/source'));
+    const outfits = [...sources.objects.keys()].filter((n) => n.startsWith('outfit-'));
+    assert.equal(outfits.length, 7);
+    for (const name of ['character', ...outfits]) assert.equal(resolve(sources, name).legacy, false, `${name} is not legacy`);
   });
 });
