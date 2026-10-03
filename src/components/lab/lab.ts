@@ -20,6 +20,8 @@ export interface LabData {
   objects: Record<string, any>;
   scenes: Record<string, any>;
   siteVersion: Record<string, string>;
+  /** The scene the lab opens first and falls back to. */
+  defaultScene: string;
 }
 
 export type Kind = 'scene' | 'object';
@@ -391,7 +393,7 @@ export class Lab {
     this.workspace.delete(this.key);
     removeDraft(this.key);
     if (this.kind === 'object') this.objectRevision++;
-    const scene = this.lastScene && this.lastScene !== name ? this.lastScene : Object.keys(this.data.scenes)[0];
+    const scene = this.lastScene && this.lastScene !== name ? this.lastScene : this.data.defaultScene;
     this.doc = null;
     this.open('scene', scene);
     this.announce(`Discarded ${name}`);
@@ -479,7 +481,7 @@ function setUpModes(lab: Lab, scene: SceneMode) {
     button.addEventListener('click', () => {
       const mode = button.dataset.mode as Kind;
       if (mode === lab.kind) return;
-      if (mode === 'scene') lab.open('scene', lab.lastScene ?? Object.keys(lab.data.scenes)[0]);
+      if (mode === 'scene') lab.open('scene', lab.lastScene ?? lab.data.defaultScene);
       else lab.open('object', scene.selectedItem?.object ?? lab.current ?? lab.lastObject ?? Object.keys(lab.data.objects)[0]);
       lab.announce(`${mode === 'scene' ? 'Scene' : 'Object'} mode, ${lab.name}`);
     });

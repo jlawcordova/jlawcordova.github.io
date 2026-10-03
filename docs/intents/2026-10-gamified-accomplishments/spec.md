@@ -90,7 +90,7 @@ There is no way to change a record today (`list`, `add`, `delete` only). Marking
 
 - **`src/components/AccomplishmentRow.astro`** replaces `AccomplishmentCard.astro`. It renders a `<li class="achievement">`.
   - A done row is a `<details>`. Its `<summary>` is the visible row: icon, fun title, short description, date. The opened panel holds the plain title, the full description, the tags and the links, with the markup and 44px link targets `AccomplishmentCard` has today.
-  - A locked row is a plain `<li>` with the same layout, no `<details>`, a locked mark over the icon and "Not done yet" in the date slot.
+  - A locked row is a plain `<li>` with the same layout, no `<details>`, a locked mark over the icon's upper-right corner and "Not done yet" in the date slot.
   - A row with no `funTitle` leads with the plain title and has no short-description line.
 - **Expand and tooltip (R3).** A done row is a native `<details>`, so click, tap, Enter and Space work without JavaScript. On hover-capable devices only (`@media (hover: hover) and (pointer: fine)`), hovering the summary or focusing it shows a tooltip beneath the row with the full description, written as `role="tooltip"` and linked by `aria-describedby`. It follows WCAG 1.4.13: the pointer can move onto it without it closing, it stays until the pointer or focus leaves, and Escape dismisses it. It's hidden while the row is expanded, and it holds text only (no links or tags), so nothing depends on it. It is CSS, plus a script of about 0.2 KB for Escape. The list doesn't shift, because the tooltip floats over what's below.
 - **`src/components/Accomplishments.astro`** is the home section: the h2 "What I've been working on lately" (keeping `id="accomplishments"`), three done rows, the newest locked row, and a ghost button "Show more" to `/accomplishments/` (R6). The `<p class="label">` is dropped.
@@ -100,8 +100,8 @@ There is no way to change a record today (`list`, `add`, `delete` only). Marking
 
 ### D5. The icons (this repo)
 
-- **Where they live.** Sprite objects `src/assets/pixel-art/source/objects/icons/<name>.mjs`, each 16×16, at most 12 colors (aim for 6–8), world palette only, no legacy colors. They're flat (front-on) pictures, not isometric, lit from the upper left so the shading matches the world's top-light, left-mid, right-shadow rule.
-- **The sheet.** One scene, `scenes/achievement-icons.mjs`, places all 18 icons in a row on a 16px grid, each in a group with `data-icon="<name>"`, and writes `achievement-icons.svg`. A component, `AchievementIcons.astro`, inlines it once per page inside a hidden `<svg>` as a `<g id="achievement-icons">`. A row draws its icon with `<svg viewBox="<16 × index> 0 16 16"><use href="#achievement-icons"/></svg>`, so each page carries the art once however many rows it has. The icon-to-index map comes from one `icons.ts` list that a test keeps in step with the objects.
+- **Where they live.** Sprite objects `src/assets/pixel-art/source/objects/icon-<name>.mjs` (the engine reads `objects/` flat, so the name carries a prefix), each 16×16, at most 12 colors (aim for 6–8), world palette only, no legacy colors. They're flat (front-on) pictures, not isometric, lit from the upper left so the shading matches the world's top-light, left-mid, right-shadow rule.
+- **The sheet.** One scene, `scenes/achievement-icons.mjs`, places all 18 icons in a row on a 16px grid, each in a group with `data-icon="<name>"`, and writes `achievement-icons.svg`. A component, `AchievementIcons.astro`, inlines it once per page inside a hidden `<svg>` as a `<g id="achievement-icons">`. A row draws its icon with `<svg viewBox="<16 × index> 0 16 16"><use href="#achievement-icons"/></svg>`, so each page carries the art once however many rows it has. The icon-to-index map comes from one `achievement-icons.mjs` list that a test keeps in step with the objects.
 - **Budget.** The sheet is at most 20 KB raw and 6 KB gzip, measured in the PR.
 - **Published list.** The build also writes `/achievement-icons.json`: every icon's name and a short meaning line. The `accomplishments` skill reads it, so the icon library has one source of truth and the skill never hard-codes names.
 - **The 16 icons.** They describe what kind of thing was done, not which discipline, so they stay flexible:
@@ -111,25 +111,25 @@ There is no way to change a record today (`list`, `add`, `delete` only). Marking
 | `sprout` | started something, or a first |
 | `hammer` | built something |
 | `rocket` | shipped or launched |
-| `wrench` | fixed or repaired |
+| `bug` | fixed a bug or a problem |
 | `shield` | secured or protected |
-| `key` | unlocked access |
-| `cog` | automated or improved a process |
+| `key` | opened access or a way in |
+| `wrench` | tuned, sped up or automated something |
 | `book` | wrote or documented |
 | `magnifier` | investigated or analysed |
 | `flask` | experimented or prototyped |
-| `watering-can` | mentored or helped others grow |
+| `apple` | mentored or taught others |
 | `heart` | helped, or went the extra mile |
-| `compass` | planned, led or set direction |
+| `signpost` | planned, led or set direction |
 | `chest` | organised or stored (data, assets) |
 | `trophy` | reached a milestone |
-| `lantern` | lit the way (a guide, a talk, a write-up) |
+| `speech` | shared or presented |
 
-- **Outside the 16.** The fallback is `star`, the gold star the cards use today redrawn as a 16×16 icon (R13). The locked mark is `lock`, a small padlock drawn over the icon's corner. Both live in the same sheet and the same folder, but aren't offered to Claude as choices.
+- **Outside the 16.** The fallback is `star`, the gold star the cards use today redrawn as a 16×16 icon (R13). The locked mark is `lock`, a small padlock (7×8, solid ink outline) in the upper-right corner of its cell, drawn over the icon of a locked accomplishment, which is darkened or washed out. Both live in the same sheet and the same folder, but aren't offered to Claude as choices.
 
 ### D6. The icon skill (this repo)
 
-`.claude/skills/achievement-icon/SKILL.md` follows the `pixel-art` skill's rules and adds the icon-specific steps: start from `npm run art -- --new object icons/<name> --size 16x16`, draw, `--check`, `--preview`, add the object to the sheet scene, add its name and meaning to `icons.ts`, run `npm run art` and `npm test`, and attach the previews. It lists the 16 icons and their meanings so a new icon fills a gap rather than duplicating one.
+`.claude/skills/achievement-icon/SKILL.md` follows the `pixel-art` skill's rules and adds the icon-specific steps: start from `npm run art -- --new object icon-<name> --size 16x16`, draw, `--check`, `--preview`, add the object to the sheet scene, add its name and meaning to `achievement-icons.mjs`, run `npm run art` and `npm test`, and attach the previews. It lists the 16 icons and their meanings so a new icon fills a gap rather than duplicating one.
 
 ### D7. Drafting, locking, stale and migration (`jlawcordova-atproto`)
 

@@ -7,9 +7,9 @@ Plans [`spec.md`](spec.md) (R1–R21, D1–D7). The work is in two repos, so the
 
 **PR 1, this repo: the icons and their IDs**
 
-- `src/assets/pixel-art/source/objects/icons/*.mjs` (new): 16 icons plus `star` (the fallback) and `lock`.
+- `src/assets/pixel-art/source/objects/icon-<id>.mjs` (new): 16 icons plus `star` (the fallback) and `lock`. The engine reads `objects/` flat, so the names carry an `icon-` prefix and there is no `icons/` folder.
 - `src/assets/pixel-art/source/scenes/achievement-icons.mjs` (new) and `src/assets/pixel-art/achievement-icons.svg` (new, generated): the sheet.
-- `src/lib/achievement-icons.ts` (new): the ordered icon IDs with a meaning line each, and the fallback and lock.
+- `src/lib/achievement-icons.mjs` (new): the icon IDs with a meaning line each, the fallback and lock, and the sheet order. It is plain `.mjs` with `// @ts-check` like the other shared libs, so the Node tests can import it.
 - `src/pages/achievement-icons.json.ts` (new): publishes `/achievement-icons.json`.
 - `.claude/skills/achievement-icon/SKILL.md` (new); `.claude/skills/pixel-art/SKILL.md` gets a pointer to it.
 - `scripts/pixel-art-engine.test.mjs` and a new `scripts/achievement-icons.test.mjs`: every icon is within the caps and listed, the list and the JSON agree.
@@ -41,7 +41,7 @@ Plans [`spec.md`](spec.md) (R1–R21, D1–D7). The work is in two repos, so the
 
 Three PRs, in this order, then the migration run and a small cleanup. Each leaves the site and the Worker working on their own.
 
-1. **PR 1: the icons and their IDs (this repo).** Start with `star`, `lock` and `rocket` as a pilot, and show the previews to the owner to approve the style before drawing the other 15. Then the sheet, `achievement-icons.ts`, `/achievement-icons.json` and the `achievement-icon` skill. Nothing on a page uses them yet, so the deployed site doesn't change. Merging fixes the 16 icon IDs the lexicon needs and publishes the list the skill reads.
+1. **PR 1: the icons and their IDs (this repo).** Start with `star`, `lock` and `rocket` as a pilot, together with the sheet, `achievement-icons.mjs`, `/achievement-icons.json`, the `achievement-icon` skill and their tests, and show the previews to the owner to approve the style before drawing the other 15. Nothing on a page uses them yet, so the deployed site doesn't change. Merging fixes the 16 icon IDs the lexicon needs and publishes the list the skill reads.
 2. **PR 2: all the `jlawcordova-atproto` changes.** Lexicon, `shared`, Worker, MCP, CLI, the skill, the migration script and the intent pointer. Merging deploys the Worker. Old records and the site are unaffected, because every new field is optional on read. It needs PR 1 deployed so the skill can read the icon list.
 3. **PR 3: the site.** The data layer, the row, the home section, the tooltip script, the paginated `/accomplishments/` pages, the styles, the fixture, e2e and docs. Until records have the new fields, rows fall back to the plain title and the star, so it can merge before or after the migration.
 4. **Run the migration (the owner, after PR 2 is deployed).** Claude drafts suggestions through the skill, the owner approves them in the selector, the dry-run output is reviewed, then `--write` runs once. Claude records the output in PR 2's Verification section.
