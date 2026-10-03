@@ -100,8 +100,8 @@ There is no way to change a record today (`list`, `add`, `delete` only). Marking
 
 ### D5. The icons (this repo)
 
-- **Where they live.** Sprite objects `src/assets/pixel-art/source/objects/icons/<name>.mjs`, each 16×16, at most 12 colors (aim for 6–8), world palette only, no legacy colors. They're flat (front-on) pictures, not isometric, lit from the upper left so the shading matches the world's top-light, left-mid, right-shadow rule.
-- **The sheet.** One scene, `scenes/achievement-icons.mjs`, places all 18 icons in a row on a 16px grid, each in a group with `data-icon="<name>"`, and writes `achievement-icons.svg`. A component, `AchievementIcons.astro`, inlines it once per page inside a hidden `<svg>` as a `<g id="achievement-icons">`. A row draws its icon with `<svg viewBox="<16 × index> 0 16 16"><use href="#achievement-icons"/></svg>`, so each page carries the art once however many rows it has. The icon-to-index map comes from one `icons.ts` list that a test keeps in step with the objects.
+- **Where they live.** Sprite objects `src/assets/pixel-art/source/objects/icon-<name>.mjs` (the engine reads `objects/` flat, so the name carries a prefix), each 16×16, at most 12 colors (aim for 6–8), world palette only, no legacy colors. They're flat (front-on) pictures, not isometric, lit from the upper left so the shading matches the world's top-light, left-mid, right-shadow rule.
+- **The sheet.** One scene, `scenes/achievement-icons.mjs`, places all 18 icons in a row on a 16px grid, each in a group with `data-icon="<name>"`, and writes `achievement-icons.svg`. A component, `AchievementIcons.astro`, inlines it once per page inside a hidden `<svg>` as a `<g id="achievement-icons">`. A row draws its icon with `<svg viewBox="<16 × index> 0 16 16"><use href="#achievement-icons"/></svg>`, so each page carries the art once however many rows it has. The icon-to-index map comes from one `achievement-icons.mjs` list that a test keeps in step with the objects.
 - **Budget.** The sheet is at most 20 KB raw and 6 KB gzip, measured in the PR.
 - **Published list.** The build also writes `/achievement-icons.json`: every icon's name and a short meaning line. The `accomplishments` skill reads it, so the icon library has one source of truth and the skill never hard-codes names.
 - **The 16 icons.** They describe what kind of thing was done, not which discipline, so they stay flexible:
@@ -129,7 +129,7 @@ There is no way to change a record today (`list`, `add`, `delete` only). Marking
 
 ### D6. The icon skill (this repo)
 
-`.claude/skills/achievement-icon/SKILL.md` follows the `pixel-art` skill's rules and adds the icon-specific steps: start from `npm run art -- --new object icons/<name> --size 16x16`, draw, `--check`, `--preview`, add the object to the sheet scene, add its name and meaning to `icons.ts`, run `npm run art` and `npm test`, and attach the previews. It lists the 16 icons and their meanings so a new icon fills a gap rather than duplicating one.
+`.claude/skills/achievement-icon/SKILL.md` follows the `pixel-art` skill's rules and adds the icon-specific steps: start from `npm run art -- --new object icon-<name> --size 16x16`, draw, `--check`, `--preview`, add the object to the sheet scene, add its name and meaning to `achievement-icons.mjs`, run `npm run art` and `npm test`, and attach the previews. It lists the 16 icons and their meanings so a new icon fills a gap rather than duplicating one.
 
 ### D7. Drafting, locking, stale and migration (`jlawcordova-atproto`)
 

@@ -185,6 +185,10 @@ The lab at `/lab/pixel-art/` (or `npm run dev`, then http://localhost:4321/lab/p
 - **Export** shows the canonical source and its path. Save it there exactly, then run `npm run art` and `npm test`. With problems, Export lists them instead, and the status bar's count opens the same list, where choosing one goes to its row and column.
 - **Drafts** stay in that browser's `localStorage`. They're not in the repo until someone exports and commits them.
 
+## Achievement icons
+
+The 16×16 icons beside the accomplishments on the site are objects named `icon-<id>`, placed in the `achievement-icons` scene. They follow every rule here and have a few of their own (size, anchor, sheet order, the icon list). Use the `achievement-icon` skill to add or change one.
+
 ## Legacy objects (the art that's already on the site)
 
 The redesign's art was imported with `scripts/import-pixel-art.mjs`, so it's marked `legacy: true` and uses the legacy palette. Each of these objects stays a pixel-for-pixel copy of the original until someone changes it on purpose.
