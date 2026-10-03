@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Status** | Draft |
+| **Status** | Done. Built in PRs #21, #23, #24 and #25 |
 | **Intent** | [`intent.md`](intent.md) |
 | **Design source** | [J. Law Portfolio canvas](https://claude.ai/artifact/JhKbkNZP9qGWHMaWE8USbR), artboard "Prototype B — isometric" (`project/Isometric.dc.html`) |
 | **Content source** | [`docs/references/profile.md`](../../references/profile.md) |
