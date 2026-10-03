@@ -3,7 +3,7 @@
 // checks"): the rows, the home section, the paginated /accomplishments/ pages,
 // the tooltip, the icon crop and the site's layout rules.
 //
-// These checks need three datasets, not the one dist/ the runner serves, so
+// These checks need four datasets, not the one dist/ the runner serves, so
 // this suite builds its own. In `before` it copies each fixture in
 // scripts/fixtures/ over src/data/accomplishments.json in turn, runs
 // `astro build --outDir .e2e-output/accomplishments/<variant>/`, and puts the
@@ -37,6 +37,7 @@ const FIXTURES = {
   rich: 'scripts/fixtures/accomplishments.json',
   'two-done': 'scripts/fixtures/accomplishments-two-done.json',
   unavailable: 'scripts/fixtures/accomplishments-unavailable.json',
+  'locked-only': 'scripts/fixtures/accomplishments-locked-only.json',
 };
 /** The tooltip's 0.3 s delay plus its fade, with slack. */
 const TIP_MS = 500;
@@ -110,6 +111,8 @@ async function buildVariants() {
   assert.match(await home('two-done'), /Pest Control/, 'the two-done build has its rows');
   assert.doesNotMatch(await home('two-done'), new RegExp(richDone[2].funTitle), 'the two-done build has only two rows');
   assert.doesNotMatch(await home('unavailable'), /class="achievement/, 'the unavailable build has no rows');
+  assert.match(await home('locked-only'), /Form Fitter/, 'the locked-only build has its newest locked row');
+  assert.doesNotMatch(await home('locked-only'), /data-state="done"/, 'the locked-only build has no done rows');
 }
 
 const TYPES = {
@@ -587,6 +590,27 @@ describe('the full list', () => {
     assert.equal(await none.locator('li.achievement, nav.pagination').count(), 0);
     await none.close();
     assert.equal((await fetch(`${sites.unavailable.url}/accomplishments/page2/`)).status, 404);
+  });
+
+  test('R7, R9: with only locked records the page has no "0 accomplishments" label, and no gap where it would be', async () => {
+    const page = await open('locked-only', '/accomplishments/');
+    assert.equal(await page.locator('h1').textContent(), 'Accomplishments');
+    assert.equal(await page.locator('header.page-head p.label').count(), 0, 'no label element, empty or not');
+    assert.equal(
+      await page.locator('header.page-head .page-head__inner').evaluate((el) => el.firstElementChild?.tagName),
+      'H1',
+      'the title comes first in the page head',
+    );
+    assert.doesNotMatch(await page.locator('body').innerText(), /\b0 accomplishments\b|Page 1 of 1/);
+    assert.equal(await page.locator('.achievements-page > ol.achievement-list, li[data-state="done"], nav.pagination').count(), 0);
+    assert.deepEqual(await leads(page, 'section.achievements-page__locked'), ['Form Fitter', 'Trail Guide']);
+
+    // The title sits where it does on a page that never had a label (the "unavailable" note).
+    const titleTop = (p) => p.locator('h1').evaluate((h1) => h1.getBoundingClientRect().top);
+    const unlabelled = await open('unavailable', '/accomplishments/');
+    assert.equal(await titleTop(page), await titleTop(unlabelled), 'no layout gap above the title');
+    await unlabelled.close();
+    await page.close();
   });
 });
 

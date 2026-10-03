@@ -1,7 +1,9 @@
 ---
 // One page of the full accomplishments list (gamified accomplishments spec R7,
 // D4): its done rows, newest first, and on page 1 every locked one under
-// "Not done yet". The count and the pages are of done accomplishments only.
+// "Not done yet". The count and the pages are of done accomplishments only,
+// and with none done (only locked ones) the page has no label at all rather
+// than "0 accomplishments".
 import PageHead from './PageHead.astro';
 import AccomplishmentRow from './AccomplishmentRow.astro';
 import AchievementIcons from './AchievementIcons.astro';
@@ -14,9 +16,10 @@ const { items: done, page, totalPages, totalItems, locked } = Astro.props;
 const pagePath = (n: number) => pathUnder('/accomplishments/', n);
 const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 const noun = totalItems === 1 ? 'accomplishment' : 'accomplishments';
+const label = totalItems > 0 ? `${totalItems} ${noun} · Page ${page} of ${totalPages}` : undefined;
 ---
 
-<PageHead title="Accomplishments" label={`${totalItems} ${noun} · Page ${page} of ${totalPages}`} />
+<PageHead title="Accomplishments" label={label} />
 
 <div class="page-body">
   <div class="page-body__inner achievements-page">

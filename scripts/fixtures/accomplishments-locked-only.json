@@ -1,0 +1,30 @@
+{
+  "status": "ok",
+  "fetchedAt": "2026-10-03T00:00:00.000Z",
+  "items": [
+    {
+      "rkey": "3fixlockonly1",
+      "title": "Write a guide to accessible forms",
+      "description": "Write and publish a practical guide to building accessible web forms.",
+      "done": false,
+      "funTitle": "Form Fitter",
+      "shortDescription": "Publish a guide to accessible forms",
+      "icon": "book",
+      "tags": [],
+      "links": [],
+      "createdAt": "2026-09-30T09:00:00.000Z"
+    },
+    {
+      "rkey": "3fixlockonly2",
+      "title": "Mentor a new developer for a quarter",
+      "description": "Pair with a new developer every week for a quarter.",
+      "done": false,
+      "funTitle": "Trail Guide",
+      "shortDescription": "Mentor a new developer for months",
+      "icon": "apple",
+      "tags": [],
+      "links": [],
+      "createdAt": "2026-09-24T09:00:00.000Z"
+    }
+  ]
+}

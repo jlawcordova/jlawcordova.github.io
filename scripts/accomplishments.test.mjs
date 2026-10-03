@@ -159,7 +159,7 @@ describe('formatDateRange', () => {
 describe('fixtures (scripts/fixtures/accomplishments*.json)', () => {
   const words = (s) => s.trim().split(/\s+/).length;
 
-  for (const name of ['accomplishments.json', 'accomplishments-two-done.json']) {
+  for (const name of ['accomplishments.json', 'accomplishments-two-done.json', 'accomplishments-locked-only.json']) {
     it(`${name} is what the fetch script writes: valid items, sorted newest first`, async () => {
       const data = await fixture(name);
       assert.equal(data.status, 'ok');
@@ -196,7 +196,7 @@ describe('fixtures (scripts/fixtures/accomplishments*.json)', () => {
   });
 
   it('R4, R18: fun titles are one to three words and short descriptions five to seven', async () => {
-    const { items } = await fixture('accomplishments.json');
+    const items = [...(await fixture('accomplishments.json')).items, ...(await fixture('accomplishments-locked-only.json')).items];
     for (const item of items.filter((i) => i.funTitle)) {
       assert.ok(words(item.funTitle) >= 1 && words(item.funTitle) <= 3, item.funTitle);
       assert.ok(words(item.shortDescription) >= 5 && words(item.shortDescription) <= 7, item.shortDescription);
@@ -208,6 +208,15 @@ describe('fixtures (scripts/fixtures/accomplishments*.json)', () => {
     assert.equal(home.done.length, 2);
     assert.equal(home.locked, undefined);
     assert.equal(home.showMore, false);
+  });
+
+  it('R5, R9: the locked-only fixture has no done row and its newest locked one on the home page', async () => {
+    const data = readAccomplishments(await fixture('accomplishments-locked-only.json'));
+    assert.equal(data.done.length, 0);
+    assert.ok(data.locked.length >= 1);
+    const home = homeSelection(data);
+    assert.deepEqual(home.done, []);
+    assert.equal(home.locked?.rkey, data.locked[0].rkey);
   });
 
   it('R8: the unavailable fixture is the committed placeholder', async () => {
