@@ -200,4 +200,10 @@ section.range {
   .range__arrow {
     width: 44px;
   }
+  /* The longest class name (Security & Governance) stays on one line at
+     390px, for every class, so the nameplate never changes height. */
+  .range__nameplate {
+    padding-inline: 14px;
+    font-size: 14px;
+  }
 }

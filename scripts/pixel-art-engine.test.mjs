@@ -1009,10 +1009,10 @@ describe('security and governance outfit (R14, Q6)', () => {
     assert.ok(Object.keys(outfit).length <= 16, 'the outfit tier has at most 16 colors');
   });
 
-  it('R14: it is not part of range-sprite, and outfit-preview shows all six outfits', async () => {
+  it('R14: it is in range-sprite (Range class characters R1), and outfit-preview shows every outfit', async () => {
     const sources = await committed();
     const placed = (name) => JSON.stringify(sources.scenes.get(name).items);
-    assert.ok(!placed('range-sprite').includes(NAME), 'not in the carousel');
+    assert.ok(placed('range-sprite').includes(NAME), 'in the carousel');
     assert.equal(sources.scenes.get('range-sprite').output, 'range-sprite.svg');
     const preview = sources.scenes.get('outfit-preview');
     assert.equal(preview.output, undefined, 'a preview-only scene');

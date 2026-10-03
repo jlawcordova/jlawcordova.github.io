@@ -31,6 +31,12 @@ export default {
     {
       group: { 'data-class': '4' },
       items: [
+        { object: 'outfit-security-governance', at: { px: [-24, -6] } },
+      ],
+    },
+    {
+      group: { 'data-class': '5' },
+      items: [
         { object: 'outfit-project-management', at: { px: [-24, -6] } },
       ],
     },
