@@ -187,20 +187,21 @@ describe('design language (R26, R27)', () => {
     assert.deepEqual(validate(src({ tree: sprite(map(64, 65)) })), ['objects/tree.mjs: 64×65, max 64×64']);
   });
 
-  it('R27: rejects a 16×25 character, and an outfit that makes one', () => {
-    const body = (h) => Array.from({ length: h }, () => 'g'.repeat(16));
-    assert.deepEqual(validate(src({ character: sprite(body(24)) })), []);
-    assert.deepEqual(validate(src({ character: sprite(body(25)) })), ['objects/character.mjs: the figure is 16×25; a character is at most 16×24']);
-    const legacyBase = { character: sprite(body(25), undefined, { legacy: true }), hat: { kind: 'sprite', extends: 'character' } };
-    assert.deepEqual(validate(src(legacyBase)), ['objects/hat.mjs: the figure is 16×25; a character is at most 16×24']);
+  it('R27: rejects a 24×33 character, and an outfit that makes one', () => {
+    const body = (h, w = 24) => Array.from({ length: h }, () => 'g'.repeat(w));
+    assert.deepEqual(validate(src({ character: sprite(body(32)) })), []);
+    assert.deepEqual(validate(src({ character: sprite(body(33)) })), ['objects/character.mjs: the figure is 24×33; a character is at most 24×32']);
+    assert.deepEqual(validate(src({ character: sprite(body(32, 25)) })), ['objects/character.mjs: the figure is 25×32; a character is at most 24×32']);
+    const legacyBase = { character: sprite(body(33), undefined, { legacy: true }), hat: { kind: 'sprite', extends: 'character' } };
+    assert.deepEqual(validate(src(legacyBase)), ['objects/hat.mjs: the figure is 24×33; a character is at most 24×32']);
   });
 
   it('R27: a character\'s cap is on the figure it paints, not its canvas', () => {
-    const canvas = (figureWidth) => Array.from({ length: 30 }, (_, y) => (y < 24 ? `${'.'.repeat(10)}${'g'.repeat(figureWidth)}`.padEnd(32, '.') : '.'.repeat(32)));
-    const base = { character: sprite(canvas(16), undefined, { legacy: true }) };
+    const canvas = (figureWidth) => Array.from({ length: 38 }, (_, y) => (y < 32 ? `${'.'.repeat(10)}${'g'.repeat(figureWidth)}`.padEnd(40, '.') : '.'.repeat(40)));
+    const base = { character: sprite(canvas(24), undefined, { legacy: true }) };
     assert.deepEqual(validate(src({ ...base, coat: { kind: 'sprite', extends: 'character' } })), []);
-    const prop = { kind: 'sprite', extends: 'character', rows: { 0: { 29: 'g'.padEnd(32, '.') } } };
-    assert.deepEqual(validate(src({ ...base, coat: prop })), ['objects/coat.mjs: the figure is 26×30; a character is at most 16×24']);
+    const prop = { kind: 'sprite', extends: 'character', rows: { 0: { 37: 'g'.padEnd(40, '.') } } };
+    assert.deepEqual(validate(src({ ...base, coat: prop })), ['objects/coat.mjs: the figure is 34×38; a character is at most 24×32']);
   });
 
   it('R26: rejects a legacy color in a new object', () => {
@@ -992,10 +993,10 @@ describe('security and governance outfit (R14, Q6)', () => {
     assert.equal(resolve(sources, NAME).legacy, false);
   });
 
-  it('R27: the figure stays within 16×24', async () => {
+  it('R27: the figure stays within 24×32', async () => {
     const sources = await committed();
     const [w, h] = paintedSize(resolve(sources, NAME));
-    assert.ok(w <= 16 && h <= 24, `the figure is ${w}×${h}`);
+    assert.ok(w <= 24 && h <= 32, `the figure is ${w}×${h}`);
   });
 
   it('Q6: it uses world colors plus at most 4 outfit colors, and no legacy ones', async () => {

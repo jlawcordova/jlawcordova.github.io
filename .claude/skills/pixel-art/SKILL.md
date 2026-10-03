@@ -19,7 +19,7 @@ New art must fit the existing world. The engine enforces every rule here except 
   - **legacy**: the 81 colors extracted from the redesign's art (`c-<hex>`), frozen. **Only imported art (`legacy: true`) may use them.** Never use one in new art, and never set `legacy: true` yourself.
   - Colors are added to the palette by hand, in a reviewed commit. Brand entries keep their `src/styles/variables.css` values.
 - **Light** comes from the same side as on the island: tops are the light shade, left faces the mid shade, right faces the shadow shade.
-- **Size caps.** A map is at most 64×64. A character (`character`, or anything that extends it) paints a figure of at most 16×24; today's figures are about 14×23. An object uses at most 12 colors; aim for 6–8. Imported legacy objects are exempt.
+- **Size caps.** A map is at most 64×64. A character (`character`, or anything that extends it) paints a figure of at most 24×32 (raised from 16×24 for the Range class characters, so a held prop fits); today's figures are about 14×23. A prop too big to hold is its own `prop-<name>` scene object. An object uses at most 12 colors; aim for 6–8. Imported legacy objects are exempt.
 
 ## Formats
 
@@ -115,7 +115,7 @@ export default {
 - `rows` is `{ <layer index>: { <row index>: '<whole row>' } }`. A row override must be the full width of the base's map.
 - `keys` adds keys, or overrides the base's: the base's order comes first, then new keys.
 - `character` and the five Range outfits are imported legacy art. A new outfit inherits the character's legacy colors, so it must override those keys with world or outfit colors. `--new object <name> --extends character` writes those overrides for you, using the nearest allowed color (keys `b` to `f` above); replace them with better choices as the world palette grows.
-- `character` is a 32×35 canvas, with anchor `[0, 0]` at its top left. The figure is in its `cbob` layer, within columns 17–31, and the legacy outfits' props (a board, screens) are in layer 0, to its left. A new outfit keeps its figure within 16×24 and puts any prop in a separate object, placed beside it in a scene.
+- `character` is a 32×35 canvas, with anchor `[0, 0]` at its top left. The figure is in its `cbob` layer, within columns 17–31, and the legacy outfits' props (a board, screens) are in layer 0, to its left. A new outfit keeps its figure, with any prop it holds, within 24×32. A larger prop is a separate `prop-<name>` object, placed beside the character in a scene.
 
 ### Scenes (`source/scenes/<name>.mjs`)
 
