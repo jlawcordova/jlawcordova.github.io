@@ -35,9 +35,9 @@ export default {
       ],
     },
     {
-      group: { 'data-icon': 'wrench' },
+      group: { 'data-icon': 'bug' },
       items: [
-        { object: 'icon-wrench', at: { px: [88, 15] } },
+        { object: 'icon-bug', at: { px: [88, 15] } },
       ],
     },
     {
@@ -53,9 +53,9 @@ export default {
       ],
     },
     {
-      group: { 'data-icon': 'cog' },
+      group: { 'data-icon': 'bolt' },
       items: [
-        { object: 'icon-cog', at: { px: [136, 15] } },
+        { object: 'icon-bolt', at: { px: [136, 15] } },
       ],
     },
     {
@@ -77,9 +77,9 @@ export default {
       ],
     },
     {
-      group: { 'data-icon': 'watering-can' },
+      group: { 'data-icon': 'owl' },
       items: [
-        { object: 'icon-watering-can', at: { px: [200, 15] } },
+        { object: 'icon-owl', at: { px: [200, 15] } },
       ],
     },
     {
@@ -107,9 +107,9 @@ export default {
       ],
     },
     {
-      group: { 'data-icon': 'lantern' },
+      group: { 'data-icon': 'speech' },
       items: [
-        { object: 'icon-lantern', at: { px: [280, 15] } },
+        { object: 'icon-speech', at: { px: [280, 15] } },
       ],
     },
   ],

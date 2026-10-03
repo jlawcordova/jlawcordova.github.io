@@ -22,19 +22,19 @@ export const ICONS = [
   { id: 'sprout', meaning: 'started something, or a first' },
   { id: 'hammer', meaning: 'built something' },
   { id: 'rocket', meaning: 'shipped or launched' },
-  { id: 'wrench', meaning: 'fixed or repaired' },
+  { id: 'bug', meaning: 'fixed a bug or a problem' },
   { id: 'shield', meaning: 'secured or protected' },
   { id: 'key', meaning: 'unlocked access' },
-  { id: 'cog', meaning: 'automated or improved a process' },
+  { id: 'bolt', meaning: 'sped up or automated something' },
   { id: 'book', meaning: 'wrote or documented' },
   { id: 'magnifier', meaning: 'investigated or analysed' },
   { id: 'flask', meaning: 'experimented or prototyped' },
-  { id: 'watering-can', meaning: 'mentored or helped others grow' },
+  { id: 'owl', meaning: 'mentored or taught others' },
   { id: 'heart', meaning: 'helped, or went the extra mile' },
   { id: 'compass', meaning: 'planned, led or set direction' },
   { id: 'chest', meaning: 'organised or stored (data, assets)' },
   { id: 'trophy', meaning: 'reached a milestone' },
-  { id: 'lantern', meaning: 'lit the way (a guide, a talk, a write-up)' },
+  { id: 'speech', meaning: 'shared or presented' },
 ];
 
 /** The order of the icons in achievements-icons.svg: fallback, lock, then the choices. */

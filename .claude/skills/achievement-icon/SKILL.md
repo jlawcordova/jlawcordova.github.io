@@ -26,19 +26,19 @@ The `meaning` is what Claude reads, through `/achievement-icons.json`, to pick a
 | `sprout` | started something, or a first |
 | `hammer` | built something |
 | `rocket` | shipped or launched |
-| `wrench` | fixed or repaired |
+| `bug` | fixed a bug or a problem |
 | `shield` | secured or protected |
 | `key` | unlocked access |
-| `cog` | automated or improved a process |
+| `bolt` | sped up or automated something |
 | `book` | wrote or documented |
 | `magnifier` | investigated or analysed |
 | `flask` | experimented or prototyped |
-| `watering-can` | mentored or helped others grow |
+| `owl` | mentored or taught others |
 | `heart` | helped, or went the extra mile |
 | `compass` | planned, led or set direction |
 | `chest` | organised or stored (data, assets) |
 | `trophy` | reached a milestone |
-| `lantern` | lit the way (a guide, a talk, a write-up) |
+| `speech` | shared or presented |
 <!-- icons:end -->
 
 The set is the 16 icons above, and a test fails if this table disagrees with `achievement-icons.mjs`.

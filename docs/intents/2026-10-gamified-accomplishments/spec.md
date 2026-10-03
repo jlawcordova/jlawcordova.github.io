@@ -111,19 +111,19 @@ There is no way to change a record today (`list`, `add`, `delete` only). Marking
 | `sprout` | started something, or a first |
 | `hammer` | built something |
 | `rocket` | shipped or launched |
-| `wrench` | fixed or repaired |
+| `bug` | fixed a bug or a problem |
 | `shield` | secured or protected |
 | `key` | unlocked access |
-| `cog` | automated or improved a process |
+| `bolt` | sped up or automated something |
 | `book` | wrote or documented |
 | `magnifier` | investigated or analysed |
 | `flask` | experimented or prototyped |
-| `watering-can` | mentored or helped others grow |
+| `owl` | mentored or taught others |
 | `heart` | helped, or went the extra mile |
 | `compass` | planned, led or set direction |
 | `chest` | organised or stored (data, assets) |
 | `trophy` | reached a milestone |
-| `lantern` | lit the way (a guide, a talk, a write-up) |
+| `speech` | shared or presented |
 
 - **Outside the 16.** The fallback is `star`, the gold star the cards use today redrawn as a 16×16 icon (R13). The locked mark is `lock`, a small padlock drawn over the icon's corner. Both live in the same sheet and the same folder, but aren't offered to Claude as choices.
 
