@@ -6,7 +6,7 @@ Author: J. Law. Cordova (site owner). Status: draft.
 The [pixel-art engine change](../2026-10-pixel-art-engine/intent.md) is built to be safe: the art on the home page stays pixel-identical while its source moves into the engine. To keep that promise, its [spec](../2026-10-pixel-art-engine/spec.md) left several things for later. Once the engine and the editor ship, these gaps remain:
 
 - **Two palettes side by side.** New art uses the 32 world colors, but the hero island and the five Range outfits keep their 81 legacy colors, many of them near-duplicates. A new piece placed next to old art can differ slightly in shade. The legacy tier, and its exemption from the design-language caps, stays in the engine for as long as any art uses it (engine spec A8, Q3).
-- **The hero island is one big map.** It comes into the engine as `island-base`, a single pixel map of up to 225×212 that's exempt from the size and color caps. Its trees, houses, road and water can't be edited, moved or reused as pieces (engine spec A2).
+- **The hero island is two big maps.** It came into the engine as two legacy pixel maps, both exempt from the size and color caps. `island-base` (193×128, 33 colors) is the island itself. `island-front` (109×98, 20 colors) is the trees, crane, fence and roof drawn in front of the trucks. Its trees, houses, road and water can't be edited, moved or reused as pieces (engine spec A2).
 - **The editor can't open a file.** It only loads what's deployed on the site, plus drafts saved in the same browser. A file exported on one device and not yet committed can't be reopened anywhere else. Opening a `.mjs` file safely means reading it as data, never running it (engine spec Q2).
 - **Out-of-date drafts are all or nothing.** When a draft falls behind the site, the only choices are to keep it or replace it, without seeing what differs (engine spec A6).
 - **The sixth Range class isn't live.** The engine makes the Security and governance outfit, but the carousel still shows five classes. One of the strongest disciplines in the profile is still missing from the home page (engine intent decision #5; redesign intent decision #7).
@@ -15,7 +15,7 @@ The [pixel-art engine change](../2026-10-pixel-art-engine/intent.md) is built to
 ## Proposed outcome
 
 - **One palette.** Every piece of art uses only world and outfit colors. The legacy tier is empty and removed, along with its exemptions. The island and the outfits still read as the same world, and each change of shade is deliberate and reviewed.
-- **The island is made of pieces.** It's a scene built from library objects (blocks, water, trees, buildings and its animated pieces), each within the design-language caps. `island-base` is gone.
+- **The island is made of pieces.** It's a scene built from library objects (blocks, water, trees, buildings and its animated pieces), each within the design-language caps. `island-base` and `island-front` are gone.
 - **Files open in the editor.** You can open a source file from your device. The editor reads it as data and accepts only the canonical format. It never runs the file.
 - **Drafts show what changed.** When a draft has fallen behind, the editor shows which rows, items or settings differ before you choose.
 - **Six classes in the carousel.** The Range carousel shows Security and governance as its sixth class, with copy, a sixth pager dot and its own nameplate color.
@@ -33,7 +33,7 @@ The [pixel-art engine change](../2026-10-pixel-art-engine/intent.md) is built to
 
 ## Constraints
 
-- **Starts after the engine change.** All of its slices must be merged, and its skills and verification levels in use.
+- **Starts after the engine change,** which is now done. All seven of its slices are merged (PRs #29 to #36), and its skills and verification levels are in use.
 - **The engine's rules still hold:**
   - the design language (32×16 tile, palette tiers, caps, light direction);
   - no new dependencies;
