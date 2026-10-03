@@ -1,5 +1,5 @@
 # Spec: Gamified accomplishments (from intent.md 2026-10-03)
-Status: draft.
+Status: approved.
 
 Implements [`intent.md`](intent.md). Where they disagree, the intent wins and this spec gets fixed. The work spans two repos: this one (pages, icons, the icon skill) and `jlawcordova-atproto` (the record schema, the Worker, the CLI and the `accomplishments` skill). Paths without a repo name are in this repo.
 
