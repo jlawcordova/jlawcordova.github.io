@@ -11,6 +11,7 @@ export default {
     { object: 'block', at: { tile: [0, 2, 0] } },
     { object: 'tree', at: { tile: [0, 2, 0] } },
     { object: 'block', at: { tile: [2, 1, 0] } },
+    { object: 'pebble', at: { tile: [2, 1, 0] } },
     { object: 'block', at: { tile: [1, 2, 0] } },
     { object: 'block', at: { tile: [2, 2, 0] } },
   ],

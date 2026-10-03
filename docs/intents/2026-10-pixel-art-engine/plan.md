@@ -384,7 +384,7 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
 - **R18's comparison.** `library-demo` has no `output`, so after `npm run art`'s command validates and compiles the exported copy of `source/`, the check takes its SVG from the same `compileScene` the command uses. The keyboard-only run edits `hero-island` instead, which the command writes to its `--out` folder. Both compare with the canvas at 1×, with each loop's later frames hidden, as the editor shows frame 0.
 - **A test-helper fix.** `editor.e2e.mjs`'s `load()` now returns a copy. Node caches `data:` modules by URL, so a PR 5 test that changed a loaded scene was changing what later tests loaded.
 - **Speed on the largest map.** A pointer stroke on `island-base` (193×128) costs about 30ms a move on top of the browser's own work. Each move validates every source. Small objects aren't affected.
-- **The skill eval (R37)** needs a fresh session with only the plan's one-line prompt, so it runs after this PR is opened, and its findings go into the skill in this PR. Progress is ticked once it has run.
+- **The skill eval (R37)** ran in a fresh session with only the plan's one-line prompt, after this PR was opened. It made `objects/pebble.mjs`, a 10×7 rock in the four `path` shades (4 of 12 colors, world only, lit from the top left). It placed the rock on the block at tile [2, 1, 0] in `library-demo`, and added it to the library test's list of the demo's objects. `--check` passes, and `npm test`, `npm run art` and `npm run e2e` stay green. Its one stumble: the skill didn't say a test pins the demo's objects, so the skill now does. Progress is ticked once the owner accepts the pebble's look.
 
 ### Progress
 
