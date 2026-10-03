@@ -25,7 +25,8 @@ Plans [`spec.md`](spec.md) (R1–R21, D1–D7). The work is in two repos, so the
 - `jlawcordova-cli/src/cli.ts`: `accomplishments update <rkey>` (JSON patch on stdin), usage text, tests in `jlawcordova-cli/test/cli.test.ts`. `docs/cli-setup.md` mentions it.
 - `.claude/skills/accomplishments/SKILL.md` and `README.md`: drafting with the new fields, the voice, locked accomplishments, marking done, stale cleanup, de-duplication (D7). `.claude/settings.json` is unchanged.
 - `scripts/migrate-gamified-accomplishments.mjs` (new, removed after it has run).
-- `docs/intents/2026-10-gamified-accomplishments/intent.md` (new) pointing at this repo's intent, spec and plan, and a row in `docs/intents/README.md`, because that repo starts all work from an intent folder.
+- `docs/intents/2026-10-gamified-accomplishments/intent.md` and `spec.md` (new): a sub-intent for PR 2, and a row in `docs/intents/README.md`, because that repo starts all work from an intent folder and records test progress in it. The intent links this repo's intent, spec and plan for the why and the contracts (D1, D2, D7) rather than copying them; where they disagree, this repo's intent wins. Its spec fills in what's left there (`shared`'s read and write modes, where locked records sort and how `list --since` treats them, `PATCH` status codes, the migration's input file) and owns PR 2's acceptance tests and build order (one commit per step).
+- `jlawcordova-cli/package.json`: version 1.1.0, released with a `cli-v1.1.0` tag after the merge, so the installed CLI and the skill zip have `update`.
 
 **PR 3, this repo: the site**
 
@@ -45,7 +46,7 @@ Three PRs, in this order, then the migration run and a small cleanup. Each leave
 2. **PR 2: all the `jlawcordova-atproto` changes.** Lexicon, `shared`, Worker, MCP, CLI, the skill, the migration script and the intent pointer. Merging deploys the Worker. Old records and the site are unaffected, because every new field is optional on read. It needs PR 1 deployed so the skill can read the icon list.
 3. **PR 3: the site.** The data layer, the row, the home section, the tooltip script, the paginated `/accomplishments/` pages, the styles, the fixture, e2e and docs. Until records have the new fields, rows fall back to the plain title and the star, so it can merge before or after the migration.
 4. **Run the migration (the owner, after PR 2 is deployed).** Claude drafts suggestions through the skill, the owner approves them in the selector, the dry-run output is reviewed, then `--write` runs once. Claude records the output in PR 2's Verification section.
-5. **Clean-up commit (`jlawcordova-atproto`).** Delete the migration script, and set `Status: done` on this repo's intent, spec and plan.
+5. **Clean-up commit (`jlawcordova-atproto`).** Delete the migration script and its test, mark the atproto sub-intent and its spec **Closed**, and update that repo's index. Then set `Status: done` on this repo's intent, spec and plan.
 
 PR 1 comes first because the lexicon's `knownValues` and the skill both need the icon IDs. PR 3 doesn't depend on PR 2 to merge, but its real data does.
 
@@ -67,7 +68,7 @@ PR 1 comes first because the lexicon's `knownValues` and the skill both need the
 
 Run in each repo as it applies, and paste the output in the PR.
 
-- **PR 2, `atproto`:** `npm test` and `npm run typecheck` pass. Tests are named for the rule they check. After the PR deploys: `accomplishments list --limit 100` returns all existing records, and `accomplishments update <rkey>` on a throwaway record changes one field and leaves the rest equal (then that record is deleted).
+- **PR 2, `atproto`:** the acceptance tests in that repo's `docs/intents/2026-10-gamified-accomplishments/spec.md`, recorded in its intent and PR as they pass. In short: `npm test` and `npm run typecheck` pass. Tests are named for the rule they check. After the PR deploys: `accomplishments list --limit 100` returns all existing records, and `accomplishments update <rkey>` on a throwaway record changes one field and leaves the rest equal (then that record is deleted).
 - **PRs 1 and 3, this repo:** `npm test` shows `# fail 0`; `npm run build` ends with `- 0 errors`, `- 0 warnings`, `- 0 hints` and `[build] Complete!`; `npm run art` reports every file `lossless` and none `OVER BUDGET`; `npm run e2e` shows `# fail 0`.
 - **Icons (PR 1):** `npm run art -- --check <name>` passes for each, the 1× and 4× previews are attached, and the sheet is at most 20 KB raw and 6 KB gzip.
 - **Requirements to checks:**
