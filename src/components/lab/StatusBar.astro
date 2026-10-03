@@ -1,12 +1,20 @@
 ---
-// The status bar (spec D9.2): the cursor, the zoom, the problems count, and
-// the polite live region that announces each action.
+// The status bar (spec D9.2, D9.6): the cursor, the zoom, the problems count,
+// which opens a list of the problems, and the polite live region that
+// announces each action.
 ---
 
 <div class="lab-status">
   <p class="lab-status__item" id="lab-status-position">col 0 · row 0 · lvl 0</p>
   <p class="lab-status__item" id="lab-status-pixel"></p>
   <p class="lab-status__item" id="lab-status-zoom">1×</p>
-  <p class="lab-status__item lab-status__problems" id="lab-status-problems"><span aria-hidden="true">!</span> <span id="lab-problem-count">0</span><span class="visually-hidden"> problems</span></p>
+  <button type="button" class="lab-status__problems" id="lab-status-problems" popovertarget="lab-problems" aria-label="0 problems">
+    <span aria-hidden="true">!</span> <span id="lab-problem-count" aria-hidden="true">0</span>
+  </button>
+  <div class="lab-popover" id="lab-problems" popover aria-labelledby="lab-problems-title">
+    <h2 class="label" id="lab-problems-title">Problems</h2>
+    <p class="lab-panel__note" id="lab-problems-none">No problems.</p>
+    <ul class="lab-popover__list" id="lab-problems-list"></ul>
+  </div>
   <p class="visually-hidden" id="lab-announce" role="status" aria-live="polite"></p>
 </div>

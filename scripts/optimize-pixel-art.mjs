@@ -37,10 +37,10 @@ import {
   renderScene,
   resolve,
   sceneFile,
-  usedKeys,
   validate,
 } from '../src/lib/pixel-art/engine.mjs';
 import { serializeObject, serializeScene } from '../src/lib/pixel-art/serialize.mjs';
+import { MAX_NAME, starterBlock, starterExtends, starterScene, starterSprite } from '../src/lib/pixel-art/starter.mjs';
 import { toRectSvg } from '../src/lib/pixel-art/svg.mjs';
 import { encodePng, previewColors, renderPalette, renderPreview } from './pixel-art-preview.mjs';
 
@@ -377,53 +377,29 @@ async function preview(sources, problems, query) {
   return true;
 }
 
-/** The nearest color by value in the allowed tiers, for re-keying a legacy base. */
-function nearest(sources, hex, tiers) {
-  const rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
-  const [r, g, b] = rgb(hex);
-  let best = null;
-  for (const [name, color] of sources.colors) {
-    if (!tiers.includes(color.tier)) continue;
-    const [r2, g2, b2] = rgb(color.hex);
-    const d = (r - r2) ** 2 + (g - g2) ** 2 + (b - b2) ** 2;
-    if (!best || d < best.d) best = { name, d };
-  }
-  return best?.name;
-}
-
 async function create(sources, dir, kind, name, opts) {
-  if (name && name.length > 64) throw new Problem(`--new ${kind}: name is ${name.length} characters long, max 64`);
+  if (name && name.length > MAX_NAME) throw new Problem(`--new ${kind}: name is ${name.length} characters long, max ${MAX_NAME}`);
   if (!name || !isName(name)) throw new Problem(`--new ${kind}: name ${JSON.stringify(name ?? '')} must be lowercase kebab-case, like small-rock`);
   const file = kind === 'object' ? objectFile(name) : sceneFile(name);
   const path = join(dir, file);
   if (existsSync(path)) throw new Problem(`${file} already exists; edit it, or pick another name`);
   let text;
   if (kind === 'scene') {
-    text = serializeScene({ viewBox: [-64, -64, 128, 128], origin: [0, 0], items: [] });
+    text = serializeScene(starterScene());
   } else if (opts.kind && opts.kind !== 'sprite' && opts.kind !== 'block') {
     throw new Problem(`--kind ${opts.kind} isn't supported; use sprite or block`);
   } else if (opts.kind === 'block') {
     if (opts.size || opts.extends) throw new Problem("--kind block doesn't take --size or --extends; a block's size is in its file, in tiles and levels");
-    text = serializeObject({ kind: 'block', size: [1, 1, 1], faces: { top: 'grass-2', left: 'soil-2', right: 'soil-3' } });
+    text = serializeObject(starterBlock());
   } else if (opts.extends) {
     if (opts.size) throw new Problem('--size and --extends don\'t mix: an object that extends another has its size');
     if (!sources.objects.has(opts.extends)) throw new Problem(`--extends ${opts.extends}: no such object`);
-    // A new object may not paint legacy colors, so every legacy key it
-    // inherits is re-keyed to the nearest allowed color. Then it validates
-    // as it is, and its rows can be overridden one at a time.
-    const base = resolve(sources, opts.extends);
-    const tiers = base.character ? ['world', 'outfit'] : ['world'];
-    const keys = {};
-    for (const key of usedKeys(base)) {
-      const color = sources.colors.get(base.keys[key]);
-      if (color && !tiers.includes(color.tier)) keys[key] = nearest(sources, color.hex, tiers);
-    }
-    text = serializeObject({ kind: 'sprite', extends: opts.extends, keys, rows: {} });
+    text = serializeObject(starterExtends(sources, opts.extends));
   } else {
     const m = /^(\d+)x(\d+)$/.exec(opts.size ?? '16x16');
     const [w, h] = m ? [Number(m[1]), Number(m[2])] : [0, 0];
     if (!m || w < 1 || h < 1 || w > 64 || h > 64) throw new Problem(`--size ${opts.size}: give WxH, each from 1 to 64`);
-    text = serializeObject({ kind: 'sprite', anchor: [Math.floor(w / 2), h - 1], keys: { o: 'ink' }, layers: [{ map: Array(h).fill('.'.repeat(w)) }] });
+    text = serializeObject(starterSprite(w, h));
   }
   await mkdir(join(dir, kind === 'object' ? 'objects' : 'scenes'), { recursive: true });
   await writeFile(path, text);

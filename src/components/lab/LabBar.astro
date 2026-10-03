@@ -1,11 +1,13 @@
 ---
 // The lab bar (spec D9.2): the title, the document picker, the draft status
-// and Export, then the stale-draft banner. lab.ts fills in the status.
+// and Export, then the stale-draft banner, and the Export and New dialogs
+// (D9.6). lab.ts, export.ts and dialogs.ts fill them in.
 interface Props {
   scenes: string[];
+  objects: string[];
 }
 
-const { scenes } = Astro.props;
+const { scenes, objects } = Astro.props;
 ---
 
 <div class="lab-bar">
@@ -14,8 +16,15 @@ const { scenes } = Astro.props;
   <label class="lab-bar__picker">
     <span class="visually-hidden">Open</span>
     <select id="lab-doc">
-      <optgroup label="Scenes">
+      <optgroup label="Scenes" data-kind="scene">
         {scenes.map((name) => <option value={`scene:${name}`}>Scene · {name}</option>)}
+      </optgroup>
+      <optgroup label="Objects" data-kind="object">
+        {objects.map((name) => <option value={`object:${name}`}>Object · {name}</option>)}
+      </optgroup>
+      <optgroup label="New">
+        <option value="new:scene">New scene…</option>
+        <option value="new:object">New object…</option>
       </optgroup>
     </select>
   </label>
@@ -48,10 +57,44 @@ const { scenes } = Astro.props;
     <textarea id="lab-export-source" readonly rows="14" spellcheck="false"></textarea>
   </label>
   <p class="lab-dialog__next">Commit it, then run <code>npm run art</code>.</p>
+  <p class="lab-dialog__next" id="lab-export-drafts" hidden></p>
   <p class="lab-dialog__status" id="lab-export-status" role="status"></p>
   <div class="lab-dialog__actions">
     <button type="button" class="btn btn--primary" id="lab-copy">Copy source</button>
     <button type="button" class="btn btn--ghost" id="lab-download">Download .mjs</button>
     <button type="button" class="btn btn--ghost" id="lab-export-close">Close</button>
   </div>
+</dialog>
+
+<dialog class="lab-dialog lab-dialog--small" id="lab-new-dialog" aria-labelledby="lab-new-title">
+  <form method="dialog" id="lab-new-form" novalidate>
+    <h2 class="label" id="lab-new-title">New object</h2>
+    <div class="lab-field">
+      <label for="lab-new-name">Name</label>
+      <input type="text" id="lab-new-name" autocomplete="off" spellcheck="false" aria-describedby="lab-new-help" required />
+      <p class="lab-panel__note" id="lab-new-help" aria-live="polite"></p>
+    </div>
+    <fieldset class="lab-new__object" data-new="object">
+      <legend>Kind</legend>
+      <label class="lab-choice"><input type="radio" name="lab-new-kind" value="sprite" checked /> Sprite: a pixel map</label>
+      <label class="lab-choice"><input type="radio" name="lab-new-kind" value="block" /> Block: a box on the grid</label>
+    </fieldset>
+    <div class="lab-new__object lab-new__sprite" data-new="object">
+      <label class="lab-choice"><input type="checkbox" id="lab-new-extends" /> Extends character (an outfit)</label>
+      <div class="lab-new__size">
+        <div class="lab-field">
+          <label for="lab-new-width">Width</label>
+          <input type="number" id="lab-new-width" min="1" max="64" value="16" inputmode="numeric" />
+        </div>
+        <div class="lab-field">
+          <label for="lab-new-height">Height</label>
+          <input type="number" id="lab-new-height" min="1" max="64" value="16" inputmode="numeric" />
+        </div>
+      </div>
+    </div>
+    <div class="lab-dialog__actions">
+      <button type="submit" class="btn btn--primary" id="lab-new-create" value="create">Create</button>
+      <button type="button" class="btn btn--ghost" id="lab-new-cancel">Cancel</button>
+    </div>
+  </form>
 </dialog>

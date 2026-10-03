@@ -8,13 +8,19 @@
 // .e2e-output/.
 
 import assert from 'node:assert/strict';
-import { mkdir, readdir, readFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+import { cp, mkdir, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
 import { after, before, describe, test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
+import palette from '../../src/assets/pixel-art/source/palette.mjs';
 import { serialize } from '../../src/lib/pixel-art/serialize.mjs';
+import { starterSprite } from '../../src/lib/pixel-art/starter.mjs';
+import { resolve } from '../../src/lib/pixel-art/engine.mjs';
+import { compileScene, readSources } from '../optimize-pixel-art.mjs';
 import { launch, loadPlaywright } from './browser.mjs';
 
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));
@@ -23,7 +29,9 @@ const OUTPUT_DIR = join(ROOT, '.e2e-output');
 const BASE = process.env.E2E_BASE_URL ?? 'http://localhost:4321';
 const LAB = `${BASE}/lab/pixel-art/`;
 const SCENE = 'library-demo';
-const SCENE_FILE = join(ROOT, `src/assets/pixel-art/source/scenes/${SCENE}.mjs`);
+const SOURCE_DIR = join(ROOT, 'src/assets/pixel-art/source');
+const SCENE_FILE = join(SOURCE_DIR, `scenes/${SCENE}.mjs`);
+const sourceOf = (kind, name) => readFile(join(SOURCE_DIR, `${kind}s/${name}.mjs`), 'utf8');
 /** The editor's JS budget, engine included (spec D10). */
 const JS_BUDGET = 30 * 1024;
 
@@ -73,8 +81,12 @@ async function openLab({ width = 1440, height = 900, reducedMotion = 'no-prefere
   return { context, page, errors };
 }
 
-/** The scene's data from its source text, as `npm run art` would load it. */
-const load = async (text) => (await import(`data:text/javascript;base64,${Buffer.from(text).toString('base64')}`)).default;
+/**
+ * The data from source text, as `npm run art` would load it. Node caches
+ * modules by URL, so the same text gives the same object: each call returns
+ * its own copy, so one test changing it can't change another's.
+ */
+const load = async (text) => structuredClone((await import(`data:text/javascript;base64,${Buffer.from(text).toString('base64')}`)).default);
 
 /** Picks a scene in the document picker with the pointer. */
 async function pickScene(page, name) {
@@ -533,9 +545,538 @@ describe('drafts (R20)', () => {
 
 // ---------------------------------------------------------- responsive
 
+// -------------------------------------------------------- object mode
+
+/** A swatch's accessible name: "grass-2, #8FA56E". */
+const swatch = (name) => `${name}, ${palette.world[name] ?? palette.outfit[name] ?? palette.legacy[name]}`;
+
+/** Opens an object with the pointer. */
+const pickObject = (page, name) => page.getByRole('combobox', { name: 'Open' }).selectOption(`object:${name}`);
+
+/**
+ * Where a map pixel is on screen, from the stage's own zoom: painting on a
+ * canvas is positional by nature.
+ */
+async function pixel(page, x, y) {
+  const zoom = Number((await page.locator('#lab-status-zoom').textContent()).replace('×', ''));
+  const box = await page.locator('#lab-canvas').boundingBox();
+  return [box.x + (x + 0.5) * zoom, box.y + (y + 0.5) * zoom];
+}
+
+async function clickPixel(page, x, y) {
+  const [cx, cy] = await pixel(page, x, y);
+  await page.mouse.click(cx, cy);
+}
+
+/** The first layer's map (or a frame of a layer) from exported source text. */
+const mapOf = async (text, layer = 0, frame = null) => {
+  const doc = await load(text);
+  return frame === null ? doc.layers[layer].map : doc.layers[layer].frames[frame];
+};
+
+/** Writes exported sources into a copy of source/, and compiles it with `npm run art`'s own command. */
+async function compileCopy(files) {
+  const dir = await mkdtemp(join(tmpdir(), 'lab-r18-'));
+  await cp(SOURCE_DIR, join(dir, 'source'), { recursive: true });
+  for (const [path, text] of Object.entries(files)) await writeFile(join(dir, 'source', path), text);
+  const out = execFileSync(process.execPath, [join(ROOT, 'scripts/optimize-pixel-art.mjs'), '--source', join(dir, 'source'), '--out', join(dir, 'out')], { encoding: 'utf8' });
+  return { dir, out };
+}
+
+/**
+ * Compares the stage canvas at 1× with an SVG drawn at its viewBox size,
+ * both over white. `css` is applied to the SVG, to show frame 0 of its loops.
+ */
+async function compareCanvas(page, svg, sources) {
+  // Frame 0 of every frame loop, as the editor shows it: each loop's later
+  // frames are hidden. Placement classes (it1, pc1) stay.
+  const later = new Set();
+  for (const obj of sources.objects.values()) {
+    for (const layer of [...(obj.layers ?? []), ...(obj.surface?.frames ? [obj.surface] : [])]) {
+      for (let n = 1; n < (layer.frames?.length ?? 0); n++) later.add(`${layer.loop}.${layer.prefix}${n}`);
+    }
+  }
+  const css = [...later].map((c) => `.${c}{display:none}`).join('');
+  const styled = css ? svg.replace(/<svg\b[^>]*>/, (open) => `${open}<style>${css}</style>`) : svg;
+  return page.evaluate(async (source) => {
+    const canvas = /** @type {HTMLCanvasElement} */ (document.getElementById('lab-canvas'));
+    const [w, h] = [canvas.width, canvas.height];
+    const draw = (image) => {
+      const c = Object.assign(document.createElement('canvas'), { width: w, height: h });
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(image, 0, 0, w, h);
+      return ctx.getImageData(0, 0, w, h).data;
+    };
+    const img = new Image(w, h);
+    img.src = `data:image/svg+xml;base64,${btoa(source)}`;
+    await img.decode();
+    const [a, b] = [draw(canvas), draw(img)];
+    let diffs = 0;
+    let painted = 0;
+    let first = null;
+    for (let i = 0; i < a.length; i += 4) {
+      if (b[i] !== 255 || b[i + 1] !== 255 || b[i + 2] !== 255) painted++;
+      if (a[i] !== b[i] || a[i + 1] !== b[i + 1] || a[i + 2] !== b[i + 2]) {
+        diffs++;
+        first ??= { x: (i / 4) % w, y: Math.floor(i / 4 / w), editor: [...a.slice(i, i + 3)], compiled: [...b.slice(i, i + 3)] };
+      }
+    }
+    return { diffs, painted, first, size: [w, h] };
+  }, styled);
+}
+
+describe('object painting (R17)', () => {
+  test('R17: with the pointer: pencil, eraser, fill and picker, with undo and redo', async () => {
+    const { context, page, errors } = await openLab();
+    await pickObject(page, 'tree');
+    const site = await sourceOf('object', 'tree');
+    assert.equal(await exportText(page), site, 'tree opens as committed');
+    const before = await mapOf(site);
+
+    // Pencil: one pixel in a new color adds a key for it.
+    await page.getByRole('button', { name: swatch('roof-2') }).click();
+    await clickPixel(page, 0, 0);
+    let text = await exportText(page);
+    assert.equal((await load(text)).keys.r, 'roof-2');
+    assert.equal((await mapOf(text))[0][0], 'r');
+
+    // A stroke is one undo step.
+    const [x0, y0] = await pixel(page, 0, 27);
+    const [x1] = await pixel(page, 5, 27);
+    await page.mouse.move(x0, y0);
+    await page.mouse.down();
+    await page.mouse.move(x1, y0, { steps: 6 });
+    await page.mouse.up();
+    assert.equal((await mapOf(await exportText(page)))[27].slice(0, 6), 'rrrrrr');
+    await page.getByRole('button', { name: 'Undo' }).click();
+    assert.equal((await mapOf(await exportText(page)))[27], before[27], 'one Undo takes back the stroke');
+
+    // Eraser.
+    await page.getByRole('button', { name: 'Eraser' }).click();
+    await clickPixel(page, 0, 0);
+    assert.deepEqual(await mapOf(await exportText(page)), before);
+
+    // Fill: the transparent area around the tree, 4-connected.
+    await page.getByRole('button', { name: 'Fill' }).click();
+    await page.getByRole('button', { name: swatch('water-2') }).click();
+    await page.getByRole('button', { name: 'Fill' }).click();
+    await clickPixel(page, 0, 0);
+    const filled = await mapOf(await exportText(page));
+    const key = Object.entries((await load(await exportText(page))).keys).find(([, c]) => c === 'water-2')[0];
+    for (let y = 0; y < before.length; y++) {
+      for (let x = 0; x < before[y].length; x++) {
+        const outside = before[y][x] === '.' && (y === 0 || x === 0 || y === before.length - 1 || x === before[y].length - 1);
+        if (outside) assert.equal(filled[y][x], key, `edge pixel ${x},${y} is filled`);
+        if (before[y][x] !== '.') assert.equal(filled[y][x], before[y][x], `the tree at ${x},${y} is untouched`);
+      }
+    }
+    await page.getByRole('button', { name: 'Undo' }).click();
+    assert.deepEqual(await mapOf(await exportText(page)), before, 'Undo takes back the fill');
+    await page.getByRole('button', { name: 'Redo' }).click();
+    assert.deepEqual(await mapOf(await exportText(page)), filled, 'Redo puts it back');
+
+    // Picker: the trunk's color becomes the current one.
+    await page.getByRole('button', { name: 'Picker' }).click();
+    await clickPixel(page, 9, 22);
+    const trunk = (await load(site)).keys[before[22][9]];
+    assert.equal(await page.getByRole('button', { name: swatch(trunk) }).getAttribute('aria-pressed'), 'true');
+    assert.deepEqual(errors, []);
+    await context.close();
+  });
+
+  test('R17: layers and frames: add, paint on one, step, and delete', async () => {
+    const { context, page, errors } = await openLab();
+    await pickObject(page, 'tree');
+    const site = await sourceOf('object', 'tree');
+    await page.getByRole('button', { name: 'Add layer' }).click();
+    await page.getByRole('button', { name: swatch('ink') }).click();
+    await clickPixel(page, 1, 1);
+    let doc = await load(await exportText(page));
+    assert.equal(doc.layers.length, 2);
+    assert.equal(doc.layers[1].map[1][1], Object.keys(doc.keys).find((k) => doc.keys[k] === 'ink'), 'paint goes to the selected layer');
+    assert.deepEqual(doc.layers[0].map, (await load(site)).layers[0].map);
+    await page.getByRole('button', { name: 'Delete Layer 2' }).click();
+    doc = await load(await exportText(page));
+    assert.equal(doc.layers.length, 1);
+
+    // Frames, on the waterfall's loop.
+    await pickObject(page, 'waterfall');
+    const fall = await load(await sourceOf('object', 'waterfall'));
+    const loop = fall.layers.findIndex((l) => l.frames);
+    await page.getByRole('button', { name: `Layer ${loop + 1} · loop wf, 5 frames` }).click();
+    await page.getByRole('button', { name: 'Frame w2' }).click();
+    assert.equal(await page.getByRole('button', { name: 'Frame w2' }).getAttribute('aria-pressed'), 'true');
+    await page.getByRole('button', { name: 'Next frame' }).click();
+    assert.equal(await page.getByRole('button', { name: 'Frame w3' }).getAttribute('aria-pressed'), 'true');
+    await page.getByRole('button', { name: 'Eraser' }).click();
+    await page.getByRole('button', { name: 'Duplicate frame' }).click();
+    doc = await load(await exportText(page));
+    assert.equal(doc.layers[loop].frames.length, 6);
+    assert.deepEqual(doc.layers[loop].frames[4], fall.layers[loop].frames[3], 'the copy follows the frame');
+    await page.getByRole('button', { name: 'Delete frame' }).click();
+    doc = await load(await exportText(page));
+    assert.deepEqual(doc.layers[loop].frames, fall.layers[loop].frames);
+    assert.deepEqual(errors, []);
+    await context.close();
+  });
+
+  test("R17: painting an outfit overrides the row, and painting it back drops the override", async () => {
+    const { context, page } = await openLab();
+    await pickObject(page, 'outfit-security-governance');
+    const site = await load(await sourceOf('object', 'outfit-security-governance'));
+    // A pixel of the figure (so it stays within its 16×24 cap) on a row the
+    // outfit doesn't override yet.
+    const { sources } = await readSources(SOURCE_DIR);
+    const layers = resolve(sources, 'outfit-security-governance').layers;
+    let [layer, row] = [-1, -1];
+    for (const [i, l] of layers.entries()) {
+      if (l.frames) continue;
+      const overridden = new Set(Object.keys(site.rows[i] ?? {}).map(Number));
+      row = l.map.findIndex((r, y) => !overridden.has(y) && /[^.]/.test(r));
+      if (row >= 0) {
+        layer = i;
+        break;
+      }
+    }
+    assert.ok(layer >= 0, 'the outfit has a painted row it doesn\'t override');
+    const map = layers[layer].map;
+    const col = map[row].search(/[^.]/);
+    await page.getByRole('button', { name: new RegExp(`^Layer ${layer + 1}\\b`) }).click();
+    await page.getByRole('button', { name: swatch('roof-2') }).click();
+    await clickPixel(page, col, row);
+    let doc = await load(await exportText(page));
+    assert.ok(doc.rows[layer]?.[row], `layer ${layer}, row ${row} is now overridden`);
+    await page.getByRole('button', { name: 'Picker' }).click();
+    await page.getByRole('button', { name: 'Undo' }).click();
+    doc = await load(await exportText(page));
+    assert.equal(doc.rows[layer]?.[row], undefined, 'undone, the row matches character again, so its override is gone');
+    // Painting it back by hand drops the override too.
+    await page.getByRole('button', { name: 'Redo' }).click();
+    const name = resolve(sources, 'outfit-security-governance').keys[map[row][col]];
+    await page.getByRole('button', { name: swatch(name) }).click();
+    await clickPixel(page, col, row);
+    doc = await load(await exportText(page));
+    assert.equal(doc.rows[layer]?.[row], undefined, 'painted back, the override is gone');
+    await context.close();
+  });
+
+  test('R17: Escape during a pointer stroke takes the whole stroke back', async () => {
+    const { context, page } = await openLab();
+    await pickObject(page, 'tree');
+    const site = await sourceOf('object', 'tree');
+    await page.getByRole('button', { name: swatch('roof-2') }).click();
+    const [x0, y0] = await pixel(page, 0, 27);
+    const [x1] = await pixel(page, 6, 27);
+    await page.mouse.move(x0, y0);
+    await page.mouse.down();
+    await page.mouse.move(x1, y0, { steps: 6 });
+    await page.keyboard.press('Escape');
+    await page.mouse.up();
+    assert.equal(await exportText(page), site, 'the stroke is gone');
+    // And the next stroke still works, as its own undo step.
+    await clickPixel(page, 0, 27);
+    assert.equal((await mapOf(await exportText(page)))[27][0], 'r');
+    await context.close();
+  });
+
+  test('R27: the meter is plain up to 8 colors and warns from 9', async () => {
+    const { context, page } = await openLab();
+    await pickObject(page, 'tree');
+    await page.getByText('Colors used: 7 of 12').waitFor();
+    await page.getByRole('button', { name: swatch('roof-2') }).click();
+    await clickPixel(page, 0, 0);
+    assert.doesNotMatch(await page.getByText('Colors used: 8 of 12').getAttribute('class'), /is-warning/);
+    await page.getByRole('button', { name: swatch('water-2') }).click();
+    await clickPixel(page, 1, 0);
+    assert.match(await page.getByText('Colors used: 9 of 12').getAttribute('class'), /is-warning/);
+    await context.close();
+  });
+
+  test('R17: layer visibility and onion skin change only the editor, never the export', async () => {
+    const { context, page } = await openLab();
+    const canvas = () => page.locator('#lab-canvas').evaluate((c) => c.toDataURL());
+    await pickObject(page, 'tree');
+    const site = await sourceOf('object', 'tree');
+    const shown = await canvas();
+    const toggle = page.getByRole('button', { name: 'Show Layer 1' });
+    await toggle.click();
+    assert.equal(await toggle.getAttribute('aria-pressed'), 'false');
+    assert.notEqual(await canvas(), shown, 'the hidden layer is gone from the stage');
+    assert.equal(await exportText(page), site, 'but not from the export');
+    await toggle.click();
+    assert.equal(await canvas(), shown);
+
+    await pickObject(page, 'waterfall');
+    const fall = await load(await sourceOf('object', 'waterfall'));
+    await page.getByRole('button', { name: `Layer ${fall.layers.findIndex((l) => l.frames) + 1} · loop wf, 5 frames` }).click();
+    await page.getByRole('button', { name: 'Frame w2' }).click();
+    const plain = await canvas();
+    await page.getByRole('button', { name: 'Onion skin' }).click();
+    assert.equal(await page.getByRole('button', { name: 'Onion skin' }).getAttribute('aria-pressed'), 'true');
+    assert.notEqual(await canvas(), plain, 'frame w1 shows under w2');
+    assert.equal(await exportText(page), await sourceOf('object', 'waterfall'));
+    await context.close();
+  });
+
+  test('R27: a stepper at its limit is marked off, and does nothing', async () => {
+    const { context, page } = await openLab();
+    await pickObject(page, 'tree');
+    const width = page.getByRole('spinbutton', { name: 'Width' });
+    await width.fill('64');
+    await width.press('Enter');
+    await page.getByText('20 × 28').waitFor({ state: 'detached' });
+    const more = page.getByRole('button', { name: 'Increase width' });
+    assert.equal(await more.getAttribute('aria-disabled'), 'true');
+    await more.dispatchEvent('click');
+    assert.equal((await mapOf(await exportText(page)))[0].length, 64, 'still 64 wide, the cap');
+    assert.equal(await page.getByRole('button', { name: 'Decrease width' }).getAttribute('aria-disabled'), 'false');
+    await context.close();
+  });
+
+  test('R27: the usage meter warns from 9 colors, and at 12 turns off every color not in use', async () => {
+    const { context, page } = await openLab();
+    await pickObject(page, 'outfit-security-governance');
+    await page.getByText('Colors used: 10 of 12').waitFor();
+    // Two pixels of the outfit's most used key, so no color drops out.
+    const { sources } = await readSources(SOURCE_DIR);
+    const r = resolve(sources, 'outfit-security-governance');
+    const counts = new Map();
+    const pixels = [];
+    for (const [li, layer] of r.layers.entries()) layer.map?.forEach((row, y) => [...row].forEach((ch, x) => ch !== '.' && pixels.push({ li, x, y, ch }) && counts.set(ch, (counts.get(ch) ?? 0) + 1)));
+    // The layer that paints the most, and its most used key.
+    const byLayer = new Map();
+    for (const p of pixels) byLayer.set(p.li, (byLayer.get(p.li) ?? 0) + 1);
+    const layer = [...byLayer].sort((a, b) => b[1] - a[1])[0][0];
+    const inLayer = new Map();
+    for (const p of pixels) if (p.li === layer) inLayer.set(p.ch, (inLayer.get(p.ch) ?? 0) + 1);
+    const common = [...inLayer].sort((a, b) => b[1] - a[1])[0][0];
+    const spots = pixels.filter((p) => p.ch === common && p.li === layer).slice(0, 2);
+    assert.equal(spots.length, 2);
+    await page.getByRole('button', { name: new RegExp(`^Layer ${layer + 1}\\b`) }).click();
+    const used = new Set([...counts.keys()].map((k) => sources.colors.get(r.keys[k]).hex));
+    const fresh = Object.keys(palette.world).filter((n) => !used.has(palette.world[n])).slice(0, 3);
+    for (const [i, spot] of spots.entries()) {
+      await page.getByRole('button', { name: swatch(fresh[i]) }).click();
+      await clickPixel(page, spot.x, spot.y);
+    }
+    const meter = page.getByText('Colors used: 12 of 12');
+    await meter.waitFor();
+    assert.match(await meter.getAttribute('class'), /is-warning/);
+    const off = page.getByRole('button', { name: swatch(fresh[2]) });
+    assert.equal(await off.getAttribute('aria-disabled'), 'true');
+    // aria-disabled keeps it focusable and announced; a click does nothing.
+    await off.dispatchEvent('click');
+    assert.equal(await page.getByRole('button', { name: swatch(fresh[1]) }).getAttribute('aria-pressed'), 'true', 'a 13th color can\'t be chosen');
+    assert.equal(await page.getByRole('button', { name: swatch(fresh[0]) }).getAttribute('aria-disabled'), 'false', 'colors in use stay on');
+    await context.close();
+  });
+
+  test('R21: with the keyboard alone: open, choose a color, paint, erase, fill, pick and undo', async () => {
+    const { context, page, errors } = await openLab();
+    // The toolbar is one tab stop: Tab to it, then arrow to Object.
+    await tabTo(page, 'button', 'Scene');
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('Enter');
+    await tabTo(page, 'button', 'tree');
+    await page.keyboard.press('Enter');
+    assert.equal(await page.getByRole('combobox', { name: 'Open' }).inputValue(), 'object:tree');
+    const site = await sourceOf('object', 'tree');
+    const before = await mapOf(site);
+
+    await tabTo(page, 'button', swatch('roof-2'));
+    await page.keyboard.press('Enter');
+    await tabTo(page, 'group', 'Object stage', { back: true });
+    await page.keyboard.press('Space');
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('Enter');
+    let map = await mapOf(await exportTextByKeyboard(page));
+    assert.equal(map[0].slice(0, 2), 'rr', 'Space and Enter paint at the cursor');
+
+    await tabTo(page, 'group', 'Object stage');
+    await page.keyboard.press('Delete');
+    await page.keyboard.press('e');
+    await page.keyboard.press('ArrowLeft');
+    await page.keyboard.press('Space');
+    assert.deepEqual(await mapOf(await exportTextByKeyboard(page)), before, 'Delete and the eraser clear them');
+
+    await tabTo(page, 'group', 'Object stage');
+    await page.keyboard.press('g');
+    await page.keyboard.press('Space');
+    map = await mapOf(await exportTextByKeyboard(page));
+    assert.equal(map[0][0], 'r', 'fill at the cursor');
+    assert.equal(map.at(-1).at(-1), 'r', 'fills to the far corner');
+    await tabTo(page, 'group', 'Object stage');
+    await page.keyboard.press('Control+z');
+    assert.deepEqual(await mapOf(await exportTextByKeyboard(page)), before, 'Ctrl+Z undoes the fill');
+
+    // Shift + arrows move 8 pixels; the picker reads the trunk.
+    await tabTo(page, 'group', 'Object stage');
+    await page.keyboard.press('i');
+    await page.keyboard.press('Shift+ArrowRight');
+    for (let i = 0; i < 22; i++) await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('Space');
+    const trunk = (await load(site)).keys[before[22][9]];
+    assert.equal(await page.getByRole('button', { name: swatch(trunk) }).getAttribute('aria-pressed'), 'true');
+    assert.deepEqual(errors, []);
+    await context.close();
+  });
+
+  test('R21: Page Up and Page Down step frames, and [ and ] step layers', async () => {
+    const { context, page } = await openLab();
+    await pickObject(page, 'waterfall');
+    const fall = await load(await sourceOf('object', 'waterfall'));
+    const loop = fall.layers.findIndex((l) => l.frames);
+    await page.getByRole('group', { name: 'Object stage' }).focus();
+    for (let i = 0; i < loop; i++) await page.keyboard.press(']');
+    await page.keyboard.press('PageDown');
+    await page.keyboard.press('PageDown');
+    assert.equal(await page.getByRole('button', { name: 'Frame w2' }).getAttribute('aria-pressed'), 'true');
+    await page.keyboard.press('PageUp');
+    assert.equal(await page.getByRole('button', { name: 'Frame w1' }).getAttribute('aria-pressed'), 'true');
+    await context.close();
+  });
+});
+
+describe('same render (R18)', () => {
+  test('R18: with the pointer: paint tree, export it and library-demo, compile them, and match the canvas', async () => {
+    const { context, page, errors } = await openLab();
+    await pickObject(page, 'tree');
+    await page.getByRole('button', { name: swatch('roof-2') }).click();
+    for (const [x, y] of [[9, 3], [10, 3], [11, 4], [3, 10]]) await clickPixel(page, x, y);
+    const tree = await exportText(page);
+    await pickScene(page, SCENE);
+    await page.getByRole('button', { name: 'Zoom 1×' }).click();
+    const scene = await exportText(page);
+    assert.equal(scene, committed, 'library-demo itself is unchanged; it shows the painted tree');
+    await page.getByRole('button', { name: 'Export' }).click();
+    await page.getByRole('dialog', { name: 'Export' }).getByText('This scene uses a draft of tree. Export it too.').waitFor();
+    await page.getByRole('button', { name: 'Close' }).click();
+
+    const { dir, out } = await compileCopy({ 'objects/tree.mjs': tree, [`scenes/${SCENE}.mjs`]: scene });
+    assert.match(out, /library-demo \(preview only, not written\): .* lossless/);
+    // library-demo has no output file, so it's compiled by the same function `npm run art` uses.
+    const { sources } = await readSources(join(dir, 'source'));
+    const result = await compareCanvas(page, compileScene(sources, SCENE).output, sources);
+    await rm(dir, { recursive: true, force: true });
+    assert.ok(result.painted > 1000, 'the compiled scene drew');
+    assert.equal(result.diffs, 0, `${result.diffs} pixels differ: ${JSON.stringify(result.first)}`);
+    assert.deepEqual(errors, []);
+    await context.close();
+  });
+
+  test('R18: with the keyboard alone: paint tree, place it on hero-island, export both, compile, and match the canvas', async () => {
+    const { context, page, errors } = await openLab();
+    // The toolbar is one tab stop: Tab to it, then arrow to Object.
+    await tabTo(page, 'button', 'Scene');
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('Enter');
+    await tabTo(page, 'button', 'tree');
+    await page.keyboard.press('Enter');
+    await tabTo(page, 'button', swatch('gold-2'));
+    await page.keyboard.press('Enter');
+    await tabTo(page, 'group', 'Object stage', { back: true });
+    for (let i = 0; i < 5; i++) await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('Shift+ArrowRight');
+    await page.keyboard.press('Space');
+    await page.keyboard.press('ArrowRight');
+    await page.keyboard.press('Space');
+    const tree = await exportTextByKeyboard(page);
+
+    // Back to the scene that opened first, and the tree onto it.
+    await tabTo(page, 'button', 'Object', { back: true });
+    await page.keyboard.press('ArrowLeft');
+    await page.keyboard.press('Enter');
+    await tabTo(page, 'button', 'tree');
+    await page.keyboard.press('Enter');
+    await tabTo(page, 'group', 'Scene stage', { back: true });
+    await page.keyboard.press('Escape');
+    await page.keyboard.press('1');
+    const scene = await exportTextByKeyboard(page);
+    assert.ok((await load(scene)).items.some((i) => i.object === 'tree'), 'the tree is placed');
+    // The canvas with no cursor or selection drawn: focus off the stage.
+    await page.keyboard.press('Shift+Tab');
+
+    const { dir, out } = await compileCopy({ 'objects/tree.mjs': tree, 'scenes/hero-island.mjs': scene });
+    assert.match(out, /hero-island\.svg: .* lossless/);
+    const svg = await readFile(join(dir, 'out', 'hero-island.svg'), 'utf8');
+    const { sources } = await readSources(join(dir, 'source'));
+    const result = await compareCanvas(page, svg, sources);
+    await rm(dir, { recursive: true, force: true });
+    assert.ok(result.painted > 10000, 'the compiled scene drew');
+    assert.equal(result.diffs, 0, `${result.diffs} pixels differ: ${JSON.stringify(result.first)}`);
+    assert.deepEqual(errors, []);
+    await context.close();
+  });
+});
+
+describe('dialogs (D9.6)', () => {
+  test('R17: New object checks the name as you type, then opens a draft you can place in a scene', async () => {
+    const { context, page, errors } = await openLab();
+    await page.getByRole('combobox', { name: 'Open' }).selectOption('new:object');
+    const dialog = page.getByRole('dialog', { name: 'New object' });
+    const name = dialog.getByRole('textbox', { name: 'Name' });
+    await name.fill('Small Rock');
+    await dialog.getByText('Use lowercase letters and digits').waitFor();
+    await name.fill('tree');
+    await dialog.getByText("There's already an object or scene called tree.").waitFor();
+    await name.fill('small-rock');
+    await dialog.getByText('src/assets/pixel-art/source/objects/small-rock.mjs').waitFor();
+    await dialog.getByRole('button', { name: 'Create' }).click();
+    assert.equal(await page.getByRole('combobox', { name: 'Open' }).inputValue(), 'object:small-rock');
+    await page.getByText('New, not on the site').first().waitFor();
+    assert.equal(await exportText(page), serialize(starterSprite(16, 16)), 'the same starter as npm run art -- --new');
+
+    await page.getByRole('button', { name: swatch('path-3') }).click();
+    await clickPixel(page, 8, 15);
+    await pickScene(page, SCENE);
+    await page.getByRole('button', { name: 'small-rock', exact: true }).click();
+    await page.getByRole('group', { name: 'Scene stage' }).click();
+    const { item } = await newItem(await exportText(page));
+    assert.equal(item.object, 'small-rock');
+    await page.getByRole('button', { name: 'Export' }).click();
+    await page.getByRole('dialog', { name: 'Export' }).getByText('This scene uses a draft of small-rock. Export it too.').waitFor();
+    await page.getByRole('button', { name: 'Close' }).click();
+
+    // Discard drops the new object's draft.
+    await pickObject(page, 'small-rock');
+    await page.getByRole('button', { name: 'Discard draft' }).click();
+    assert.equal(await page.getByRole('option', { name: /small-rock/ }).count(), 0);
+    assert.deepEqual(errors, []);
+    await context.close();
+  });
+
+  test('R30: the problems count lists each problem, and choosing one goes to its row and column', async () => {
+    const doc = await load(await sourceOf('object', 'tree'));
+    doc.layers[0].map[5] = `${doc.layers[0].map[5].slice(0, 3)}q${doc.layers[0].map[5].slice(4)}`;
+    const init = [
+      ([key, value]) => {
+        try {
+          if (!sessionStorage.getItem('seeded')) {
+            localStorage.setItem(key, value);
+            sessionStorage.setItem('seeded', '1');
+          }
+        } catch {}
+      },
+      ['pixel-lab:object:tree', JSON.stringify({ version: 'x', saved: 0, doc })],
+    ];
+    const { context, page } = await openLab({ init });
+    await pickObject(page, 'tree');
+    await page.getByRole('button', { name: '1 problem' }).click();
+    await page.getByRole('button', { name: "layer 0, row 5, column 3: key 'q' is not in keys" }).click();
+    assert.equal(await page.locator('#lab-status-position').textContent(), 'x 3 · y 5');
+    assert.equal(await page.evaluate(() => document.activeElement?.getAttribute('aria-label')), 'Object stage');
+    await page.getByRole('button', { name: 'Export' }).click();
+    assert.ok(await page.getByRole('button', { name: 'Copy source' }).isDisabled());
+    await context.close();
+  });
+});
+
 describe('layout (R22, R5)', () => {
   for (const width of [320, 390, 1440]) {
-    test(`R22: no horizontal scroll at ${width}px, on every panel`, async () => {
+    test(`R22: no horizontal scroll at ${width}px, on every panel, in both modes`, async () => {
       const { context, page } = await openLab({ width, height: width > 900 ? 900 : 844 });
       const fits = () => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth);
       assert.ok(await fits(), 'on load');
@@ -556,6 +1097,27 @@ describe('layout (R22, R5)', () => {
       assert.ok(await fits(), 'with Export open');
       await page.getByRole('button', { name: 'Close' }).click();
       await screenshot(page, `editor-${width}`);
+
+      // Object mode, on the outfit (its gutter) and the largest map.
+      for (const name of ['outfit-security-governance', 'island-base']) {
+        await pickObject(page, name);
+        assert.ok(await fits(), `${name} in Object mode`);
+        if (width < 960) {
+          for (const tab of ['Library', 'Palette', 'Inspector']) {
+            await page.getByRole('tab', { name: tab }).click();
+            assert.ok(await fits(), `${name}, with ${tab} open`);
+          }
+          await page.getByRole('tab', { name: 'Library' }).click();
+        }
+        await page.getByRole('button', { name: 'Zoom 16×' }).click();
+        assert.ok(await fits(), `${name} at 16×`);
+        await page.getByRole('button', { name: 'Zoom to fit' }).click();
+      }
+      await page.getByRole('combobox', { name: 'Open' }).selectOption('new:object');
+      assert.ok(await fits(), 'with New object open');
+      await page.getByRole('button', { name: 'Cancel' }).click();
+      await pickObject(page, 'outfit-security-governance');
+      await screenshot(page, `editor-object-${width}`);
       await context.close();
     });
   }
@@ -568,9 +1130,15 @@ describe('layout (R22, R5)', () => {
     await context.close();
   });
 
-  test('R5: with reduced motion, nothing animates on the lab or the home page', async () => {
+  test('R5: with reduced motion, nothing animates on the lab or the home page, and frames only step when asked', async () => {
     const { context, page } = await openLab({ reducedMotion: 'reduce' });
     assert.equal(await page.evaluate(() => document.getAnimations().length), 0, 'lab');
+    await pickObject(page, 'waterfall');
+    const fall = await load(await sourceOf('object', 'waterfall'));
+    await page.getByRole('button', { name: `Layer ${fall.layers.findIndex((l) => l.frames) + 1} · loop wf, 5 frames` }).click();
+    await page.waitForTimeout(600);
+    assert.equal(await page.getByRole('button', { name: 'Frame w0' }).getAttribute('aria-pressed'), 'true', 'Play never starts by itself');
+    assert.equal(await page.evaluate(() => document.getAnimations().length), 0, 'object mode');
     await page.goto(`${BASE}/`);
     assert.equal(await page.evaluate(() => document.getAnimations().length), 0, 'home');
     await context.close();

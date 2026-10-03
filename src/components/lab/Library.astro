@@ -34,6 +34,10 @@ for (const name of Object.keys(objects)) {
     <input type="search" id="lab-search" placeholder="Search…" autocomplete="off" spellcheck="false" />
   </label>
   <p class="lab-library__none" id="lab-search-none" hidden></p>
+  <details class="lab-library__group" open data-group="Drafts" hidden>
+    <summary class="label">New drafts</summary>
+    <ul class="lab-library__list" role="list" id="lab-library-drafts"></ul>
+  </details>
   {
     groups.map(({ title, open, names }) => (
       <details class="lab-library__group" open={open} data-group={title}>
@@ -51,5 +55,6 @@ for (const name of Object.keys(objects)) {
       </details>
     ))
   }
-  <p class="lab-library__hint">Choose an object, then a tile. Or press Enter to place it at the stage cursor.</p>
+  <p class="lab-library__hint" data-for="scene">Choose an object, then a tile. Or press Enter to place it at the stage cursor.</p>
+  <p class="lab-library__hint" data-for="object" hidden>Choose an object to open it.</p>
 </section>

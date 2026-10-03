@@ -89,6 +89,7 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
 
 **PR 6: Editor, object mode**
 - `src/components/lab/object-mode.ts`, `palette-panel.ts`, `layers-panel.ts`, `frames-panel.ts`, `dialogs.ts` (new)
+- `src/lib/pixel-art/edit.mjs`, `starter.mjs` (new), and `scripts/optimize-pixel-art.mjs`'s `--new` (see the PR 6 departures)
 - Edits to the PR 5 components and `lab.css`
 - `scripts/e2e/editor.e2e.mjs`
 - The `pixel-art` skill
@@ -371,6 +372,19 @@ Grouped by PR. "(new)", "(moved)" and "(deleted)" are marked. Anything else is e
    1. Start a fresh session with only: "Use the `pixel-art` skill to add a small rock to the library and place it in `library-demo`. Don't use the editor or a browser."
    2. The run passes if the rock validates, stays within the caps and uses world colors only. Its preview goes to the owner.
    3. Fold any mistakes from the transcript back into the skill in this PR.
+
+**How PR 6 departs from the steps above** (recorded in the PR 6 commit):
+
+- **Two engine modules.** `src/lib/pixel-art/edit.mjs` holds the object edits (paint, fill, pick, row overrides, resize, layer and frame changes), with `R17:` tests in `npm test`. `src/lib/pixel-art/starter.mjs` holds the starter sources, which `npm run art -- --new` now uses too, so the New dialogs and `--new` write the same files. Both are plain `.mjs`, like the engine. The plan listed only client modules.
+- **A workspace of drafts.** The lab keeps every edited or new document, so a scene shows its objects as they've been painted, and a new object can be placed before it's committed. Export reminds you to export the drafted objects a scene uses. The picker lists new drafts as "(new)", and their lab bar offers **Discard draft** in place of Reset.
+- **Object mode's columns.** The right column shows the Palette first, since painting uses it most, then Layers, Frames, Object and Preview. Below 960px the middle tab reads "Palette" in Object mode and "Items" in Scene mode.
+- **Blocks and outfits.** A block opens in Object mode with its faces drawn by the engine. Its size and face colors change in the Object panel, and painting is off, since a block is described by numbers (D3). Painting a surface map is later work. An outfit takes its layers from `character`, so it can't add, reorder or delete them, and its frame loops are view-only, since the format only overrides rows of map layers.
+- **More fields than D9.5 lists.** The Object panel edits the anchor and, for a sprite with its own layers, its width and height (padding or cropping at the right and bottom, within the caps). The Layers panel has **Add layer**.
+- **Play never starts by itself,** in any motion setting, so the lab has no motion you didn't ask for (D9.8). D9.5 only requires that under reduced motion.
+- **R18's comparison.** `library-demo` has no `output`, so after `npm run art`'s command validates and compiles the exported copy of `source/`, the check takes its SVG from the same `compileScene` the command uses. The keyboard-only run edits `hero-island` instead, which the command writes to its `--out` folder. Both compare with the canvas at 1×, with each loop's later frames hidden, as the editor shows frame 0.
+- **A test-helper fix.** `editor.e2e.mjs`'s `load()` now returns a copy. Node caches `data:` modules by URL, so a PR 5 test that changed a loaded scene was changing what later tests loaded.
+- **Speed on the largest map.** A pointer stroke on `island-base` (193×128) costs about 30ms a move on top of the browser's own work. Each move validates every source. Small objects aren't affected.
+- **The skill eval (R37)** ran in a fresh session with only the plan's one-line prompt, after this PR was opened. It made `objects/pebble.mjs`, a 10×7 rock in the four `path` shades (4 of 12 colors, world only, lit from the top left). It placed the rock on the block at tile [2, 1, 0] in `library-demo`, and added it to the library test's list of the demo's objects. `--check` passes, and `npm test`, `npm run art` and `npm run e2e` stay green. Its one stumble: the skill didn't say a test pins the demo's objects, so the skill now does. Progress is ticked once the owner accepts the pebble's look.
 
 ### Progress
 

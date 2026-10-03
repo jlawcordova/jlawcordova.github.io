@@ -54,7 +54,7 @@ const sceneNames = Object.keys(scenes);
   <div class="lab">
     <noscript><p class="lab__noscript">The pixel-art lab needs JavaScript.</p></noscript>
     <div class="lab__app" hidden>
-      <LabBar scenes={sceneNames} />
+      <LabBar scenes={sceneNames} objects={Object.keys(objects)} />
       <div class="lab__workspace">
         <div class="lab__center">
           <Toolbar />

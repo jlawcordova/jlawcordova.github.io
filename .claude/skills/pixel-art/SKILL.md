@@ -61,7 +61,9 @@ export default {
 
 ### Blocks (`kind: 'block'`)
 
-A block is described by numbers, not drawn. Use one for ground, walls and water. `block`, `tile` and `water` in `source/objects/` are the library, and `scenes/library-demo.mjs` places them with `tree`. This example is `objects/stone-block.mjs` in the skill's test.
+A block is described by numbers, not drawn. Use one for ground, walls and water. `block`, `tile` and `water` in `source/objects/` are the library, and `scenes/library-demo.mjs` places them with `tree` and `pebble`. This example is `objects/stone-block.mjs` in the skill's test.
+
+**Adding to the library demo.** A test (`library (R13, R31)` in `scripts/pixel-art-engine.test.mjs`) lists the objects `library-demo` places, and checks that every item sits within its 3×3 grid (columns and rows 0 to 2). When you place a new object there, add its name to that list in the same change, and keep it on the grid. A small object can stand on a block's top: give it the block's tile and list it right after that block, so it paints on top.
 
 ```js
 // Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md
@@ -156,12 +158,31 @@ A name can be written `objects/<name>` or `scenes/<name>` when an object and a s
 
 ## The editor (optional)
 
-The lab at `/lab/pixel-art/` (or `npm run dev`, then http://localhost:4321/lab/pixel-art/) edits **scenes** in a browser, drawn by the same engine as `npm run art`. Use it when a person wants to work visually, or to check that the editor shows what the compiler builds. Painting objects comes in a later change; until then, edit objects as text.
+The lab at `/lab/pixel-art/` (or `npm run dev`, then http://localhost:4321/lab/pixel-art/) edits scenes and paints objects in a browser, drawn by the same engine as `npm run art`. Use it when a person wants to work visually, or to check that the editor shows what the compiler builds. Everything it does also has a text-and-command path, the one above, so an agent never needs it.
 
-- **Drive it by accessible names and keys,** not pixel positions: the picker is the combobox "Open", the stage is the group "Scene stage", Library thumbnails are buttons named after their object, and the Items list is the tree "Items".
-- **Placing:** choose a thumbnail, then a tile; or focus a thumbnail and press Enter to place it at the stage cursor. New items go in back to front by `row + col`, then level.
-- **Stage keys** (only while the stage has focus): arrows move the selected item one tile (or the cursor), Shift + arrows nudge one pixel (the item is then placed by `px`), Page Up and Page Down change the level, `[` and `]` the paint order, Delete removes, Escape deselects, V, A and H pick Select, Place and Pan, 0–4 zoom, and Ctrl/Cmd+Z undoes. Fit picks the largest whole zoom that fits the stage, up to 8×, so it can go past the 4× button.
-- **Export** shows the canonical source and its path. Save it there exactly, then run `npm run art` and `npm test`. With problems, Export lists them instead.
+- **Drive it by accessible names and keys,** not pixel positions:
+  - **Lab bar:** the picker is the combobox "Open". It lists scenes, objects, new drafts, "New scene…" and "New object…".
+  - **Toolbar:** one tab stop; arrow to "Scene" or "Object" inside it.
+  - **Stage:** the group "Scene stage" or "Object stage".
+  - **Library:** buttons named after their objects.
+  - **Panels:** in Scene mode, the tree "Items"; in Object mode, the swatches named like "grass-2, #8FA56E".
+- **Scene mode:** choose a thumbnail, then a tile, or focus a thumbnail and press Enter to place it at the stage cursor. On the stage:
+  - arrows move the selected item one tile, or the cursor;
+  - Shift + arrows nudge one pixel, and the item is then placed by `px`;
+  - Page Up and Page Down change the level, `[` and `]` the paint order;
+  - Delete removes, Escape deselects;
+  - V, A and H pick Select, Place and Pan, and 0–4 zoom. Fit picks the largest whole zoom that fits the stage, up to 8×, so it can go past the 4× button.
+- **Object mode:** opening an object, or choosing one in the Library while in Object mode, shows its map over a checkerboard, with its bounds dashed and its anchor marked. On the stage:
+  - B, E, G and I pick Pencil, Eraser, Fill (4-connected) and Picker;
+  - arrows move the pixel cursor (Shift: 8 pixels), and Space or Enter applies the tool there;
+  - Delete erases at the cursor, and Escape cancels a stroke in progress;
+  - Page Up and Page Down step frames, and `[` and `]` step layers;
+  - 0 is Fit, and 1–4 zoom to 4×, 8×, 12× and 16×. A pointer stroke is one undo step.
+  - **Colors:** a color the object doesn't use yet gets a new key, named after the color where it can be. The usage meter warns from 9 colors and stops new ones at 12.
+  - **Outfits:** painting an outfit writes whole-row overrides, and a row painted back to match `character` drops its override. The gutter beside the stage marks the overridden rows.
+  - **Layers and frames:** the Layers and Frames panels add, duplicate, reorder and delete them. Play never starts by itself.
+- **New documents** start from the same starters as `--new`, as drafts named "(new)". A scene can place a new object right away. Export then reminds you to export the object too.
+- **Export** shows the canonical source and its path. Save it there exactly, then run `npm run art` and `npm test`. With problems, Export lists them instead, and the status bar's count opens the same list, where choosing one goes to its row and column.
 - **Drafts** stay in that browser's `localStorage`. They're not in the repo until someone exports and commits them.
 
 ## Legacy objects (the art that's already on the site)
