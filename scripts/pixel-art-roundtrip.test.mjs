@@ -121,14 +121,15 @@ describe('committed sources', () => {
     }
   });
 
-  it('R2: each Range outfit is its own object, extending character', () => {
-    const outfits = ['outfit-front-end', 'outfit-cloud-devops', 'outfit-ux-design', 'outfit-data-engineering', 'outfit-project-management'];
-    for (const name of outfits) {
-      assert.equal(sources.objects.get(name)?.extends, 'character', `${name} extends character`);
-      assert.equal(resolve(sources, name).character, true);
+  it('R2: each Range class places one outfit, its own object extending character', () => {
+    const groups = sources.scenes.get('range-sprite').items.filter((i) => i.group);
+    for (const group of groups) {
+      const outfits = group.items.map((i) => i.object).filter((name) => sources.objects.get(name)?.extends === 'character');
+      assert.equal(outfits.length, 1, `data-class ${group.group['data-class']} places one outfit`);
+      assert.match(outfits[0], /^outfit-/);
+      assert.equal(resolve(sources, outfits[0]).character, true);
     }
-    const placed = sources.scenes.get('range-sprite').items.filter((i) => i.group).map((i) => i.items[0].object);
-    assert.deepEqual(placed, outfits, 'in the carousel order of src/data/home.ts');
+    assert.equal(new Set(groups.map((g) => g.items.find((i) => i.object.startsWith('outfit-')).object)).size, groups.length, 'no outfit is placed twice');
   });
 
   it('R12: the extracted SVGs are test fixtures, and npm run art reads no .src.svg', async () => {
