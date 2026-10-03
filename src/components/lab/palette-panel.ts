@@ -101,7 +101,8 @@ export class PalettePanel {
       return row;
     });
     if (!collapsed) {
-      const h = Object.assign(document.createElement('h4'), { className: 'label lab-palette__group', textContent: title });
+      // h3: the Palette's own heading is the panel's h2.
+      const h = Object.assign(document.createElement('h3'), { className: 'label lab-palette__group', textContent: title });
       return [h, ...body];
     }
     const details = document.createElement('details');
