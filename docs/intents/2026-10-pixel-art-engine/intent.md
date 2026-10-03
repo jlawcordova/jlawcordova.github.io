@@ -109,7 +109,7 @@ Checked on 2026-10-03, after all seven slices merged (PRs #29 to #36), plus the 
 | Tests, build, no dependencies | `npm test` 148/148; `npm run build` 0 errors, warnings and hints; `package.json` unchanged |
 | README | The "Pixel art" section and layout rows (#30 to #36) |
 | Skill eval | A fresh, headless session added `pebble`; it validates within the caps in world colors, and the owner accepted it (#36) |
-| A verifier report on every PR | Every slice (#29 to #36) has a report ending in PASS; #36's re-checks also cover the skill eval and, on `master`, the fix in #38. The docs-only PRs (#32, #37, #39) went straight to PR, as `CLAUDE.md` allows for small, self-contained changes. Traceability: each verifier report checks every requirement in scope against its `R<n>:` tests or a named check in D15 |
+| A verifier report on every PR | Every slice (#29 to #36) has a report ending in PASS; #36's re-checks also cover the skill eval and, on `master`, the fix in #38. #38's own report found that its new heading check never opened the dialogs it named; #40 fixes the check. The docs-only PRs (#32, #37, #39) went straight to PR, as `CLAUDE.md` allows for small, self-contained changes. Traceability: each verifier report checks every requirement in scope against its `R<n>:` tests or a named check in D15 |
 
 ## Decisions
 
