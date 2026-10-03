@@ -53,7 +53,7 @@ The outfit tier has 4 of 16 colors (`silver-1` to `silver-4`, used by the knight
 
 - Redraw the five outfits in place (same object names), and add `objects/outfit-back-end.mjs`.
 - `scenes/range-sprite.mjs`: seven groups, `data-class` `'0'` to `'6'`, each with the outfit `{ object: '<outfit>', at: { px: [-24, -6] } }`, in the order above, plus any prop objects for that class.
-- **Held or beside?** A prop is held (part of the outfit, within 24×32) when it's small: a staff, a brush, a wrench, a clipboard, a flask. It's a separate object when it's large or would crowd the figure: a house, a server rack, an easel, a cauldron or a desk. The first `data-class` group's items paint in order, so a prop behind the character is listed before the outfit and one in front is listed after.
+- **Held or beside?** A prop is held (part of the outfit, within 24×32) when it's small: a staff, a brush, a wrench, a clipboard, a flask. It's a separate object when it's large or would crowd the figure: a house, a server rack, an easel, a cauldron or a desk. A group's items paint in order, so a prop behind the character is listed before the outfit and one in front is listed after.
 - **Prop objects** are named `prop-<name>` (for example `prop-easel`) in `source/objects/`, so they're easy to tell from outfits and other library pieces. Place them on the platform's `px` coordinates, not tiles, since the platform is imported art without a tile grid. The `outfit-preview` scene may show them with their outfit for review.
 - **Room:** the platform (`range-island`) is 103×72 pixels in the `viewBox` and the character stands near its center. The platform isn't enlarged in this change (intent), so a prop must fit beside the character on the platform, and the plan measures free space before any prop is drawn (C6).
 - `scenes/outfit-preview.mjs` lists the outfits for previews: update it to the new set.
@@ -115,10 +115,10 @@ One PR per step, each with its previews and screenshots: (0) the engine's charac
 **C4. Detail budget per character: the cap is raised.** The 16×24 cap includes props, and the body already fills about 12 of the 16 columns, so a staff, laptop, brush or flask would only fit as a silhouette. *Owner's decision:* raise the figure so props fit (R3b). I propose **24×32**: it gives about 6 pixels each side and 8 rows of height beyond today's figure, for a staff, a held laptop or a raised flask, while the body stays its present size. That keeps the character smaller than one 32-pixel tile wide, so it still sits correctly beside the island and trucks. Hat and staff tips are the tallest parts.
 *Risks to check in the step-0 PR:* (a) the sprite's `viewBox` `[-51, -9, 103, 72]` may clip a taller figure, and moving it shifts every class by a few pixels, so measure first; (b) the `character` map is 32 wide, so props may need map rows that today are empty; (c) at 3× display scale, 24 pixels is about 72px wide, which fits the 309px stage. The owner reviews each outfit's preview and can ask for a simpler prop.
 
-**C6. Room on the platform for scene props.** Large props need floor space on the Range platform, which this change doesn't enlarge, and a prop beside the character competes with the nameplate-sized stage for attention. Props placed outside the platform would float.
-*Decision for the owner:* each class's preview shows where its prop goes. If a prop doesn't fit the platform, it becomes a smaller version or a held prop. A larger platform is a follow-up. I recommend choosing props that stand on one side of the character, at most one large prop per class.
-
 **C5. Seven classes slow the cycle.** At 2200ms per class, a full cycle goes from 11 seconds to 15.4 seconds. The carousel pauses on hover and focus and the visitor can pause it, so I don't propose a change.
+
+**C6. Room on the platform for scene props.** Large props need floor space on the Range platform, which this change doesn't enlarge, A prop placed off the platform would look like it floats.
+*Decision for the owner:* each class's preview shows where its prop goes. If a prop doesn't fit the platform, it becomes a smaller version or a held prop. A larger platform is a follow-up. I recommend choosing props that stand on one side of the character, at most one large prop per class.
 
 ## Open questions
 
