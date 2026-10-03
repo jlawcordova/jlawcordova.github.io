@@ -2,11 +2,32 @@
 
 | | |
 | --- | --- |
-| **Status** | Draft, for the owner's approval |
+| **Status** | Implemented in [#49](https://github.com/jlawcordova/jlawcordova.github.io/pull/49) as one PR (see [Departures](#departures)), awaiting independent verification and the owner's review |
 | **Intent** | [`intent.md`](intent.md) (accepted) |
 | **Spec** | [`spec.md`](spec.md) (approved). R*n* and C*n* below refer to its requirements and concerns |
 
 The change ships as **six PRs**, merged in order. After each one `master` is deployable and the carousel shows only finished classes. The spec says *what*, and this plan says in which order, in which files, and how each step is proved. If they disagree, the spec wins and this plan gets fixed in the same commit.
+
+## Departures
+
+Recorded as the work departed from this plan, per `CLAUDE.md`. The spec still holds.
+
+1. **One PR, not six.** The owner asked (2026-10-03) for every step in #49, verified in one go. Each step is still its own commit (or one commit per class in step 4), in the order below. The commits inside step 4 are not green on their own: the class commits change outfits before the wiring commit updates the sprite and the tests.
+2. **The class order follows the spec, not only a Back-end insert.** Moving to the spec's order also swaps UX Design and Cloud & DevOps (they were Cloud, then UX). The drift test and per-class screenshots cover it.
+3. **Twelve new outfit colors, not ten.** A `navy-1`/`navy-2` ramp for the suit, so its nameplate shadow isn't a third grey beside the hoodie (slate) and the knight (silver). The outfit tier is full at 16, within the spec's limit of 12 new colors.
+4. **Every prop is held.** The staff, laptop, palette, wrench, flask and clipboard all fit the 24×32 cap, drawn in the `cbob` layer (the laptop in front of the body, the others to its left), so there are no `prop-<name>` scene objects and the platform measurement (C6) didn't matter. The engineer's wrench moved from the front hand to the back hand: on the right, it vanished against the grass.
+5. **Two characters changed in the owner's review of #49 (2026-10-03).**
+   - **Back-end** is no longer "a hacker in a hoodie". A hood down, then a hood up, didn't read at this size, so the owner asked for no hoodie: a developer with rounded hair like the suit's, a slate top, and the laptop held in front with a round logo, one hand on its edge. The intent and spec tables carry a dated note. The `slate-2` shadow stays.
+   - **Data Engineering** became a medieval alchemist: a floppy cap, a white beard and a belted tunic instead of a cap and apron, with a triangular flask. The owner approved it.
+   - The engineer's hard hat and the suit's hair were made rounder in the same review.
+6. **Shadows:** Front-end `violet-2` `#8A6AA6`, Back-end `slate-2` `#474E5B`, UX Design `sky-2` `#8FB0C9` (the smock's lighter `sky-1` doesn't read on the stage), Project Management `navy-1` `#5B6F8E`. Cloud & DevOps keeps the spec's `gold-2` (the hard hat), Data Engineering `water-3`, and Security & Governance `silver-3`.
+7. **Tests added after verification.** `scripts/range-classes.test.mjs` also checks that each `data-class` places the outfit named for its class, in `rangeClasses` order (R1), and that `character` and every outfit resolve as non-legacy (R3). The plan's per-PR carousel checks (R6–R8) were done by hand, so they're now in `scripts/e2e/range.e2e.mjs`.
+
+## Measurements (step 2)
+
+- **Canvas:** `character` is 32×35. Its figure is columns 18–30 (the head's `aa` reaches column 30) and rows 19–34, so a held prop has columns 8–17 to the left within the 24-wide cap, and only column 31 to the right.
+- **Clipping:** placed at `[-24, -6]` in a `viewBox` starting at y = −9, so rows 0–34 are all visible. The tallest figure (the mage's hat tip, row 7) is 28 rows tall.
+- **Nameplate (C3):** at 390px, "Security & Governance" wrapped to two lines at 18px. With 14px type and 14px side padding below 480px, all seven names are one line at 390px. At 1440px they were already one line at 18px.
 
 ## Files that change
 

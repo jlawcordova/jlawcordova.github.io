@@ -121,14 +121,15 @@ describe('committed sources', () => {
     }
   });
 
-  it('R2: each Range outfit is its own object, extending character', () => {
-    const outfits = ['outfit-front-end', 'outfit-cloud-devops', 'outfit-ux-design', 'outfit-data-engineering', 'outfit-project-management'];
-    for (const name of outfits) {
-      assert.equal(sources.objects.get(name)?.extends, 'character', `${name} extends character`);
-      assert.equal(resolve(sources, name).character, true);
+  it('R2: each Range class places one outfit, its own object extending character', () => {
+    const groups = sources.scenes.get('range-sprite').items.filter((i) => i.group);
+    for (const group of groups) {
+      const outfits = group.items.map((i) => i.object).filter((name) => sources.objects.get(name)?.extends === 'character');
+      assert.equal(outfits.length, 1, `data-class ${group.group['data-class']} places one outfit`);
+      assert.match(outfits[0], /^outfit-/);
+      assert.equal(resolve(sources, outfits[0]).character, true);
     }
-    const placed = sources.scenes.get('range-sprite').items.filter((i) => i.group).map((i) => i.items[0].object);
-    assert.deepEqual(placed, outfits, 'in the carousel order of src/data/home.ts');
+    assert.equal(new Set(groups.map((g) => g.items.find((i) => i.object.startsWith('outfit-')).object)).size, groups.length, 'no outfit is placed twice');
   });
 
   it('R12: the extracted SVGs are test fixtures, and npm run art reads no .src.svg', async () => {
@@ -163,23 +164,9 @@ describe('pixel-art skill (R32)', () => {
   });
 });
 
-describe('Range sprite round trip (R10)', () => {
-  it('R10: the fixture has no hidden pixels, so per-fill-group equality is exact', async () => {
-    assertNoOverlaps(structure(await readFile(join(FIXTURES, 'range-sprite.src.svg'), 'utf8')));
-  });
-
-  it('R10: same group structure and order as the fixture, and the same pixels in every fill group of every layer', async () => {
-    const fixture = structure(await readFile(join(FIXTURES, 'range-sprite.src.svg'), 'utf8'));
-    const compiled = structure(rects('range-sprite'));
-    assertNoOverlaps(compiled);
-    assertSameLayers(compiled, fixture);
-  });
-
-  it('R10: the same viewBox and root attributes as the fixture', async () => {
-    const open = (svg) => /^<svg[^>]*>/.exec(svg)[0];
-    assert.equal(open(rects('range-sprite')), open(await readFile(join(FIXTURES, 'range-sprite.src.svg'), 'utf8')));
-  });
-});
+// The Range sprite's R10 round trip was retired by the Range class
+// characters change (its spec C1): its art changes on purpose. Its fixture
+// stays, as input for R12 and the import tests.
 
 describe('hero island round trip (R11)', () => {
   it('R11: the fixture\'s 1,492 repainted pixels are between its two static layers, not inside one', async () => {

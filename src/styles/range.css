@@ -117,7 +117,9 @@ section.range {
 .range[data-current="1"] .range__sprite g[data-class="1"],
 .range[data-current="2"] .range__sprite g[data-class="2"],
 .range[data-current="3"] .range__sprite g[data-class="3"],
-.range[data-current="4"] .range__sprite g[data-class="4"] {
+.range[data-current="4"] .range__sprite g[data-class="4"],
+.range[data-current="5"] .range__sprite g[data-class="5"],
+.range[data-current="6"] .range__sprite g[data-class="6"] {
   display: inline;
 }
 
@@ -197,5 +199,11 @@ section.range {
   }
   .range__arrow {
     width: 44px;
+  }
+  /* The longest class name (Security & Governance) stays on one line at
+     390px, for every class, so the nameplate never changes height. */
+  .range__nameplate {
+    padding-inline: 14px;
+    font-size: 14px;
   }
 }

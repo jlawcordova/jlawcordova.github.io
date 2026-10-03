@@ -20,14 +20,10 @@ const ROOT = fileURLToPath(new URL('../../', import.meta.url));
 const OUTPUT_DIR = join(ROOT, '.e2e-output');
 
 // Fixture (the art as extracted, one <rect> per run, kept in
-// scripts/fixtures/pixel-art/) → committed output.
+// scripts/fixtures/pixel-art/) → committed output. The Range sprite's R10
+// comparison was retired when its classes were redrawn (Range class
+// characters spec C1).
 const PAIRS = [
-  {
-    name: 'R10: Range sprite renders identically to its fixture',
-    slug: 'range-sprite',
-    fixture: 'scripts/fixtures/pixel-art/range-sprite.src.svg',
-    compiled: 'src/assets/pixel-art/range-sprite.svg',
-  },
   {
     name: 'R11: hero island renders identically to its fixture',
     slug: 'hero-island',
