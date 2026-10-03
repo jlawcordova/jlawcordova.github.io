@@ -1018,7 +1018,7 @@ describe('security and governance outfit (R14, Q6)', () => {
     assert.equal(preview.output, undefined, 'a preview-only scene');
     const outfits = preview.items.filter((i) => i.object?.startsWith('outfit-')).map((i) => i.object).sort();
     assert.deepEqual(outfits, [...sources.objects.keys()].filter((n) => n.startsWith('outfit-')).sort());
-    assert.equal(outfits.length, 6);
+    assert.equal(outfits.length, 7);
   });
 });
 
