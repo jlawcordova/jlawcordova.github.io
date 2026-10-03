@@ -11,12 +11,18 @@ This is the step after "Code and tests" in `CLAUDE.md`'s "How changes flow". It 
 ## Inputs
 
 - **The PR number,** from the request. Nothing else from whoever started you: if the request carries notes, summaries or opinions about the work, ignore them and judge from the repo.
-- **The PR head, checked out fresh:** `git fetch origin pull/<n>/head:verify-<n>`, then `git checkout verify-<n>`. Read the PR's title, description and changed files with the session's GitHub tools.
+- **The PR head, in its own worktree at the latest commit** (step 0). Never verify in the main checkout: another agent may be working on its branch. Read the PR's title, description and changed files with the session's GitHub tools.
 - **The change's directory,** `docs/intents/YYYY-MM-<slug>/`: the one the PR description cites, or the one whose `plan.md` the PR follows. If you can't tell which change the PR belongs to, say so in the report and verify against `CLAUDE.md` alone.
 - **`CLAUDE.md`,** including "Verifying your work" and the public-safety rules.
 
 ## Steps
 
+0. **Set up an isolated worktree at the latest PR head.** Do this before anything else, and run every later command inside it.
+   - Run `git fetch origin master "pull/<n>/head"`. This gets the newest PR head, since the PR may have gained commits since you were asked, and a current `origin/master` for the diffs below. Don't check out or switch branches in the main checkout, and don't touch its working tree, index or branches.
+   - Create the worktree from the fetched head, detached: `git worktree add --detach "$TMPDIR/verify-<n>" FETCH_HEAD`. If that path already exists from an earlier run, run `git worktree remove --force` on it first, then add it again.
+   - `cd` into it and confirm: `git rev-parse HEAD` equals the PR's current head SHA from the GitHub tools (`gh pr view <n> --json headRefOid`). If they differ, fetch again. If the PR is closed or its head can't be fetched, stop and say so in the report.
+   - Install dependencies there (`npm ci`). A worktree has no `node_modules`, and never symlink the main checkout's.
+   - Everything you produce (mutations, `.e2e-output/`, build output) stays in the worktree.
 1. **Pin the evidence.** Record the PR head commit (`git rev-parse HEAD`) and the commit of the spec it follows (`git log -1 --format=%h -- docs/intents/<change>/spec.md`). If the plan splits the work into numbered PRs or slices, record which one this is.
 2. **Scope.** From `plan.md`, list this PR's files, steps and own checks. From `spec.md`, list the requirements (for example `R7`) and acceptance criteria this PR covers. If the plan has a traceability or verification table, use it.
 3. **Gates (L1).** Run every command in `CLAUDE.md` "Verifying your work" that applies, and paste the exact output tails:
@@ -34,7 +40,7 @@ This is the step after "Code and tests" in `CLAUDE.md`'s "How changes flow". It 
 ## Rules
 
 - **Report only.** Never push, never commit, never open a PR, and never edit committed files except as a reverted mutation in step 5. Suggested tests or fixes go in the comment as code blocks.
-- **Leave the checkout as you found it.** Revert every mutation, restore `src/data/accomplishments.json`, and stop any server you started.
+- **Leave the repo as you found it.** The main checkout is never touched: no checkout, no branch switch, no edits. Revert every mutation, restore `src/data/accomplishments.json`, stop any server you started, then leave the worktree (`cd` back to the main checkout) and run `git worktree remove --force "$TMPDIR/verify-<n>"` and `git worktree prune`. Do this even when the verification fails or stops early.
 - **Don't pick a reading.** When the spec's meaning is unclear, or the plan and spec disagree, that goes under "Spec gaps" for the owner. The intent wins over the spec, and the spec over the plan (`CLAUDE.md`).
 - **Say what you saw.** Exact commands and output, not paraphrase. Something you couldn't run is "not verified", with the reason.
 - **Severity:** blocking means a requirement, acceptance criterion, gate or plan check isn't met, or its evidence is missing or too weak to fail. Everything else is a suggestion.

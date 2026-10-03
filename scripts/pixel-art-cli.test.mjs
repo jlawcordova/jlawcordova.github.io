@@ -77,14 +77,17 @@ describe('--check (R38)', () => {
     const dir = await workspace();
     const { code, out } = art(dir, '--check', 'outfit-front-end');
     assert.equal(code, 0);
-    assert.equal(out, 'objects/outfit-front-end.mjs: ok · 32×35 · 18 colors (legacy, no cap) · 2 layers · 1 frame\n');
+    assert.equal(out, 'objects/outfit-front-end.mjs: ok · 32×35 · 11 colors (of 12) · 2 layers · 1 frame\n');
+    const legacy = art(dir, '--check', 'range-island');
+    assert.equal(legacy.code, 0);
+    assert.equal(legacy.out, 'objects/range-island.mjs: ok · 99×62 · 21 colors (legacy, no cap) · 1 layer · 1 frame\n');
   });
 
   it('R38: prints a one-line summary for a valid scene', async () => {
     const dir = await workspace();
     const { code, out } = art(dir, '--check', 'scenes/range-sprite');
     assert.equal(code, 0);
-    assert.equal(out, 'scenes/range-sprite.mjs: ok · 103×72 · 6 items · 7 objects · output range-sprite.svg\n');
+    assert.equal(out, 'scenes/range-sprite.mjs: ok · 103×72 · 8 items · 9 objects · output range-sprite.svg\n');
   });
 
   it('R38: prints every problem with file, place and rule, and exits 1', async () => {

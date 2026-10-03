@@ -1,0 +1,138 @@
+# Plan: Range class characters (from intent.md 2026-10-03)
+
+| | |
+| --- | --- |
+| **Status** | Implemented in [#49](https://github.com/jlawcordova/jlawcordova.github.io/pull/49) as one PR (see [Departures](#departures)), awaiting independent verification and the owner's review |
+| **Intent** | [`intent.md`](intent.md) (accepted) |
+| **Spec** | [`spec.md`](spec.md) (approved). R*n* and C*n* below refer to its requirements and concerns |
+
+The change ships as **six PRs**, merged in order. After each one `master` is deployable and the carousel shows only finished classes. The spec says *what*, and this plan says in which order, in which files, and how each step is proved. If they disagree, the spec wins and this plan gets fixed in the same commit.
+
+## Departures
+
+Recorded as the work departed from this plan, per `CLAUDE.md`. The spec still holds.
+
+1. **One PR, not six.** The owner asked (2026-10-03) for every step in #49, verified in one go. Each step is still its own commit (or one commit per class in step 4), in the order below. The commits inside step 4 are not green on their own: the class commits change outfits before the wiring commit updates the sprite and the tests.
+2. **The class order follows the spec, not only a Back-end insert.** Moving to the spec's order also swaps UX Design and Cloud & DevOps (they were Cloud, then UX). The drift test and per-class screenshots cover it.
+3. **Twelve new outfit colors, not ten.** A `navy-1`/`navy-2` ramp for the suit, so its nameplate shadow isn't a third grey beside the hoodie (slate) and the knight (silver). The outfit tier is full at 16, within the spec's limit of 12 new colors.
+4. **Every prop is held.** The staff, laptop, palette, wrench, flask and clipboard all fit the 24×32 cap, drawn in the `cbob` layer (the laptop in front of the body, the others to its left), so there are no `prop-<name>` scene objects and the platform measurement (C6) didn't matter. The engineer's wrench moved from the front hand to the back hand: on the right, it vanished against the grass.
+5. **Two characters changed in the owner's review of #49 (2026-10-03).**
+   - **Back-end** is no longer "a hacker in a hoodie". A hood down, then a hood up, didn't read at this size, so the owner asked for no hoodie: a developer with rounded hair like the suit's, a slate top, and the laptop held in front with a round logo, one hand on its edge. The intent and spec tables carry a dated note. The `slate-2` shadow stays.
+   - **Data Engineering** became a medieval alchemist: a floppy cap, a white beard and a belted tunic instead of a cap and apron, with a triangular flask. The owner approved it.
+   - The engineer's hard hat and the suit's hair were made rounder in the same review.
+6. **Shadows:** Front-end `violet-2` `#8A6AA6`, Back-end `slate-2` `#474E5B`, UX Design `sky-2` `#8FB0C9` (the smock's lighter `sky-1` doesn't read on the stage), Project Management `navy-1` `#5B6F8E`. Cloud & DevOps keeps the spec's `gold-2` (the hard hat), Data Engineering `water-3`, and Security & Governance `silver-3`.
+7. **Tests added after verification.** `scripts/range-classes.test.mjs` also checks that each `data-class` places the outfit named for its class, in `rangeClasses` order (R1), and that `character` and every outfit resolve as non-legacy (R3). The plan's per-PR carousel checks (R6–R8) were done by hand, so they're now in `scripts/e2e/range.e2e.mjs`.
+
+## Measurements (step 2)
+
+- **Canvas:** `character` is 32×35. Its figure is columns 18–30 (the head's `aa` reaches column 30) and rows 19–34, so a held prop has columns 8–17 to the left within the 24-wide cap, and only column 31 to the right.
+- **Clipping:** placed at `[-24, -6]` in a `viewBox` starting at y = −9, so rows 0–34 are all visible. The tallest figure (the mage's hat tip, row 7) is 28 rows tall.
+- **Nameplate (C3):** at 390px, "Security & Governance" wrapped to two lines at 18px. With 14px type and 14px side padding below 480px, all seven names are one line at 390px. At 1440px they were already one line at 18px.
+
+## Files that change
+
+Grouped by PR. "(new)" and "(deleted)" are marked. Anything else is edited.
+
+**PR 0: Raise the character cap (R3b)**
+- `src/lib/pixel-art/engine.mjs`: `CAPS.characterWidth` 16 → 24 and `characterHeight` 24 → 32. The error message reads from `CAPS`
+- `scripts/pixel-art-engine.test.mjs`: the figure tests at lines 193–203 and `R27: the figure stays within…` (line 995) use the new numbers (a 25-wide or 33-tall figure fails, a 24×32 one passes)
+- `.claude/skills/pixel-art/SKILL.md`: the size-caps bullet and the `character` canvas note (props may now be held within 24×32; larger ones are `prop-<name>` scene objects)
+- `docs/intents/2026-10-pixel-art-engine/spec.md`: an update note beside R27 (the spec predates the templates, so no rewrite)
+- `scripts/e2e/editor.e2e.mjs`: the comment on line 729 only. The editor's figure readout reads `CAPS`, so `src/components/lab/object-mode.ts` needs no change
+
+**PR 1: Outfit palette colors and the base character off legacy colors (R3, C2)**
+- `src/assets/pixel-art/source/palette.mjs`: new outfit colors (see Order of work)
+- `scripts/pixel-art-engine.test.mjs`: the line-1008 assertion "the outfit tier has at most 4 colors so far" becomes "at most 16"
+- `src/assets/pixel-art/source/objects/character.mjs`: drop `legacy: true`, re-key `b`, `c`, `d`, `e`, `f` to world colors
+- `src/assets/pixel-art/range-sprite.svg`, and any scene that places a character: regenerated by `npm run art`
+- `scripts/pixel-art-roundtrip.test.mjs` and `scripts/e2e/art.e2e.mjs`: retire the Range sprite's "identical to its fixture" checks (C1). The `R10:` tests (lines 166–181) and the `PAIRS` entry for `range-sprite` go. The hero island's R11 checks stay. `scripts/fixtures/pixel-art/range-sprite.src.svg` stays, because `R12` and the import tests use it as input
+- `scripts/pixel-art-cli.test.mjs`: any expected `--check` output that mentions the legacy figure of an outfit (for example `outfit-front-end`, line 80)
+
+**PR 2: Seven-variant plumbing and measurements (R5, R12)**
+- `src/styles/range.css`: the "show only the current outfit" selector list covers `data-current` 0 to 6
+- `scripts/range-classes.test.mjs` (new): the drift test (R12). It reads `src/data/home.ts` as text, counts the `name:` entries in `rangeClasses`, and compares them with the number of `data-class` groups in `src/assets/pixel-art/range-sprite.svg`, and with the groups in `scenes/range-sprite.mjs`
+- `scripts/pixel-art-roundtrip.test.mjs`: test `R2` (line 124) stops hard-coding five outfit names. It checks that every placed group's object extends `character` and is named `outfit-*`, and that `home.ts` has the same count (the count itself is the new test)
+- no art or data change, so no visible change
+
+**PR 3: Security & Governance goes live (R1, R2, R4, R6, C3)**
+- `src/data/home.ts`: insert `{ name: 'Security & Governance', shadow: '#858F99' }` before Project Management
+- `src/assets/pixel-art/source/scenes/range-sprite.mjs`: a `data-class` group for `outfit-security-governance`, in the same position
+- `src/assets/pixel-art/range-sprite.svg` (regenerated)
+- `src/styles/range.css`: only if the nameplate wraps at 390px (C3)
+
+**PR 4: The six class outfits (R2, R3a, R3c, R14).** One PR, with these files for each class:
+- `src/assets/pixel-art/source/objects/outfit-<class>.mjs`: redrawn in place, or `outfit-back-end.mjs` (new)
+- `src/assets/pixel-art/source/objects/prop-<name>.mjs` (new), only when a prop is a scene object
+- `src/assets/pixel-art/source/scenes/range-sprite.mjs`: for a redrawn class, its prop objects only. For Back-end, a new group at index 1 (every later `data-class` shifts up by one in this one PR)
+- `src/assets/pixel-art/source/scenes/outfit-preview.mjs`: the new set, so its preview shows the outfit with its props
+- `src/data/home.ts`: the `shadow` for that class. For Back-end, a new entry at index 1
+- `src/assets/pixel-art/range-sprite.svg` (regenerated)
+- `scripts/pixel-art-cli.test.mjs`: the scene check's item and object counts (line 87) and any outfit-specific `--check` strings
+- Front-end (mage), Back-end (hacker), UX Design (painter), Cloud & DevOps (engineer), Data Engineering (alchemist) and Project Management (suit). Back-end's new entry and group at index 1 are the only change to the class list and the `data-class` order
+
+**PR 5: Documents (R13)**
+- `docs/intents/2026-10-redesign/intent.md`: a note on decision #7
+- `docs/intents/2026-10-redesign/spec.md`: §7.3's block and a note
+- `.claude/skills/pixel-art/SKILL.md`: any remaining mention of five outfits or of the legacy outfits
+- `README.md`: if its layout table mentions the Range classes
+- this plan: status → done, and the intent and spec's statuses
+
+## Order of work
+
+0. **Raise the cap.** Edit `CAPS`, the tests, the skill and the engine spec's R27 note. The five legacy outfits and the knight are unaffected, since their figures are already under the old cap. Run `npm test` before and after.
+1. **Palette, then the base character.**
+   1. Add outfit colors, in one reviewed commit. Proposed (names and hex are confirmed from the swatch preview, and the total outfit tier stays ≤ 16 with `silver-1` to `silver-4`): `violet-1` to `violet-3` (mage robe), `slate-1` to `slate-3` (hoodie and suit), `orange-1` and `orange-2` (hi-vis vest) and `sky-1` and `sky-2` (painter's smock). That is 10 new colors and 14 in the tier. The hard hat reuses `gold`, the beret and tie `roof`, the apron and flask `water`, and wood props `wood`. Check each with `npm run art -- --preview palette`.
+   2. Re-key the base character: `a` stays `ink`, `c` → `skin-1`, `d` → `skin-2` (same values as `c-e9b98a` and `c-a0524a`), `b` and `e` → `soil-4`, `f` → `wood-4` (the nearest world browns, to be confirmed in previews). Do not change its maps or layers.
+   3. Run `npm run art`. Each legacy outfit and the knight inherit the new shades. Write before and after previews of the character and all six outfits into the PR.
+   4. Retire the Range sprite's fixture checks (C1) in the same PR, since the output changes by design.
+2. **Plumbing and measurements.** The CSS list, the drift test and the generalized R2 test. Also take the measurements the later PRs depend on and record them in the PR description:
+   - **Platform room (C6):** the free pixels on `range-island` beside the character, in `px` coordinates, from `--preview range-island` and the scene's `[-49, -1]` placement.
+   - **Canvas:** `character` is a 32×35 canvas whose figure fills columns 18–29 of the `cbob` layer (the figure is ink at columns 18–29 and rows 19–34), so there is free room to the left and above but **none to the right of column 31**. A prop held on the right needs a wider canvas. If a class needs that, widening is a mechanical right-padding of every outfit row (a row override must be the base's full width, per the skill), done in that class's PR and recorded as a departure here.
+   - **Clipping (spec C4 risk a):** the map's top is at y = −6 and the `viewBox` starts at −9, and the map is 35 rows, so nothing inside the existing canvas can clip. A prop object taller than 35 rows, or placed above the map, is what could.
+3. **Security & Governance live.** Add the entry and the group (the knight is built). Measure the nameplate at 390px for the 21-character name (C3). If it wraps, apply the owner's recommended fix: a smaller nameplate font at narrow widths for all classes in `range.css`.
+4. **The six class outfits, in one PR, in commits of one class each** so the owner can review and the verifier can read them one at a time. Draw the mage first, since it sets the bar for how much detail a character gets, and push that commit and its previews for the owner's approval before drawing the other five. Then Back-end, UX Design, Cloud & DevOps, Data Engineering and Project Management. Because they ship together, the old outfits stay live until the PR merges. For each class: write the outfit (`--new object outfit-<class> --extends character` writes world-color overrides for the legacy keys), place it, run `--check` and `--preview`, then `npm run art`, and put its before and after previews and screenshots in the PR description. The PR isn't merged until the owner has approved every class.
+5. **Documents**, once all classes are live.
+
+## Risks
+
+- **PR 1 changes every class at once.** Re-keying the base shifts shades in all six outfits' skin, hair and boots. It's the riskiest step for the home page, so it ships alone, with before and after previews at 1×–4× and screenshots at 1440px and 390px. If a nearest-shade mapping looks wrong, adjust the key (for example `wood-4` for `soil-4`) before merging, not after.
+- **A legacy outfit overrides a base key.** An outfit's own `keys` may already redefine `b`–`f` with legacy colors. If so, the re-keyed base won't reach its pixels and the outfit keeps the old shade. Compare the previews pixel by pixel, and fix the outfit's key in PR 1 if needed.
+- **Tests that count the old set.** `pixel-art-roundtrip` R2 (five outfits), `pixel-art-cli` (the scene's item and object counts, and legacy-color strings) and `pixel-art-engine` (the 4-color outfit tier) will fail as soon as the art changes. Each PR updates its own tests in the same commit, and `npm test` must show `# fail 0` before it merges. No test is skipped or deleted except the retired R10 Range checks (C1).
+- **Back-end shifts indices (PR 4).** Inserting at index 1 renumbers `data-class` for every later class in the scene, and the `shadow` list in `home.ts` in the same order. A mismatch would show the wrong outfit under a name. The drift test covers the count, so the PR also needs a screenshot of each of the seven classes beside its nameplate.
+- **Nameplate wrapping (C3).** Handled in PR 3 and re-checked in each class's screenshot in PR 4.
+- **PR 4 is large.** Six outfits and their props change the sprite at once, which is harder to review and to roll back than one class at a time (the intent allows it). Mitigations: one commit per class, the mage's preview approved before the rest are drawn, previews and screenshots per class in the description, and the verifier reading it class by class. If review stalls on one class, the PR can be split by reverting that class's commit to its old outfit.
+- **Platform room (C6).** A prop that doesn't fit becomes smaller or held. The measurement in PR 2 comes before any prop is drawn.
+- **Sprite size.** Seven variants and props enlarge `range-sprite.svg` (about 33 KB raw now). `npm run art` fails the budget at 100 KB raw or 25 KB gzip, and each PR reports the sizes.
+- **Legacy tier stays.** The platform (`range-island`) and the hero island are still legacy art, so the legacy palette tier and its exemptions stay in the engine. This change doesn't try to empty it.
+- **Taste.** Whether a mage or hacker looks professional is a judgment. The owner reviews each outfit's preview before its PR merges, and the verifier checks it against R9.
+- **Another session in the same working tree.** Stage only named files and use a separate worktree, since an unrelated untracked file was swept into #45 once.
+
+### Options considered
+
+- **One PR per class.** Easier to review and revert, and the carousel would show new characters one at a time, but the original plan had six more PRs and verifier runs. The owner chose one PR for the six outfits (intent constraint updated), and the risk above covers it.
+- **Migrate the base character after the outfits.** The outfits extend it, so migrating later would shift every outfit twice. Rejected.
+- **Wider canvas for the base character up front.** Not needed until a class needs a right-side prop, and it touches every outfit. Deferred to PR 2's measurements.
+- **Keep the fixture comparison for the Range sprite.** Can't pass once the art changes by design (C1, decided).
+
+## Proof
+
+Every PR pastes this output, and each is checked by an independent verifier (`verify-change`, run as "Use the `verify-change` skill on PR #<n>.") before it merges:
+
+- `npm run art` reports every file `lossless` and none `OVER BUDGET`. The range sprite stays ≤ 100 KB raw and ≤ 25 KB gzip.
+- `npm test` ends with `# fail 0`.
+- `npm run build` ends with `- 0 errors`, `- 0 warnings`, `- 0 hints` and `[build] Complete!`.
+- `npm run e2e` shows `# fail 0` ("NOT RUN" is not a pass).
+- After building with fixture accomplishments, `git checkout src/data/accomplishments.json`.
+
+Per PR:
+
+| PR | Specific proof |
+| --- | --- |
+| 0 | A 24×32 figure validates and a 25×32 or 24×33 one fails, in `npm test`. The skill and the engine spec's R27 note are updated |
+| 1 | Before and after previews (1×–4×) of the character and every outfit. No `c-<hex>` key left in `character.mjs`. `npm run art -- --check character` shows it non-legacy. The outfit tier has ≤ 16 colors. Screenshots of the carousel at 1440px and 390px |
+| 2 | The drift test fails when a `data-class` group or an `rangeClasses` entry is removed, and passes otherwise. The measurements are in the PR description |
+| 3 | The carousel cycles through six classes, with "class N of 6", a sixth dot, the knight's outfit and its nameplate shadow. Screenshots at 1440px and 390px with no horizontal scroll. Arrow wrap, auto-advance, pause, hover and focus pause, and reduced motion behave as before |
+| 4 | `--check` and `--preview` for the outfit and its props (figure ≤ 24×32, ≤ 12 colors, no legacy keys). Before and after screenshots of that class at 1440px and 390px, the nameplate on one line, no layout shift when the carousel advances, and the dot count and "class N of M" correct. Screenshots of all seven classes by their names, and the old five-class set no longer appears |
+| 5 | The redesign decision #7 and §7.3 notes exist, and a search for the old five-class block finds nothing left |
+
+The change is done when all seven classes show in the carousel, `grep -c "c-" src/assets/pixel-art/source/objects/character.mjs` and every outfit file returns 0, `rangeClasses.length` is 7, and every acceptance item in the intent is ticked with evidence.

@@ -1,5 +1,5 @@
 # Spec: Range class characters (from intent.md 2026-10-03)
-Status: approved.
+Status: approved. Implemented in [#49](https://github.com/jlawcordova/jlawcordova.github.io/pull/49), awaiting verification.
 
 ## Requirements
 
@@ -21,7 +21,7 @@ Traced to the [intent](intent.md). Each is checkable.
 - **R11. Budgets hold.** The range sprite is ≤ 100 KB raw and ≤ 25 KB gzip, and the home page stays within the redesign spec's §12 budgets. *(Constraint)*
 - **R12. Data and art can't drift.** A test checks that `rangeClasses.length` equals the number of `data-class` groups in the compiled sprite. *(Constraint)*
 - **R13. Earlier documents say so.** The redesign intent's decision #7 and the redesign spec's §7.3 get a note, and §7.3's `rangeClasses` block is updated. *(Outcome)*
-- **R14. Each class is its own reviewed step,** with before and after previews and screenshots at 1440px and 390px, and an independent verifier on each PR. *(Constraint)*
+- **R14. Every class is reviewed,** with before and after previews and screenshots at 1440px and 390px for each, and an independent verifier on each PR. The redrawn and new classes can ship in one PR. *(Constraint)*
 
 ## Design
 
@@ -38,6 +38,8 @@ The order follows the profile's disciplines, with the knight and the suit last, 
 | 4 | Data Engineering | Alchemist | A cap and apron, a flask | `outfit-data-engineering` (redrawn) |
 | 5 | Security & Governance | Knight | Armor and helmet, as built | `outfit-security-governance` (kept) |
 | 6 | Project Management | Person in a suit | A jacket and tie, a clipboard | `outfit-project-management` (redrawn) |
+
+*Update, 2026-10-03, from the owner's review of [#49](https://github.com/jlawcordova/jlawcordova.github.io/pull/49): Back-end is a developer with rounded hair and a slate top, holding a laptop with a round logo in front of the body (no hoodie). Data Engineering is a medieval alchemist: a floppy cap, a white beard and a belted tunic, with a triangular flask. See the plan's Departures.*
 
 Each outfit overrides the character's rows like `outfit-security-governance` does (`extends: 'character'`, `keys`, `rows`). The knight is the reference for how much detail a character gets: one silhouette cue, one prop.
 
@@ -94,7 +96,7 @@ No change expected. The dots, "class N of M" and the script's `count` already co
 
 ### Delivery order
 
-One PR per step, each with its previews and screenshots: (0) the engine's character cap, raised to 24×32 with its tests, the engine spec note and the skill, (1) palette colors and the base character's migration, with before and after previews of the character (it changes every class, so it goes first and alone), (2) the `data-class` plumbing for seven variants, the CSS and the drift test, with the knight in place, (3) one PR per redrawn or new outfit, (4) the documents' notes. The carousel never shows an unfinished class: a class goes live in its own PR, and the old outfit stays until its replacement merges.
+One PR per step, each with its previews and screenshots: (0) the engine's character cap, raised to 24×32 with its tests, the engine spec note and the skill, (1) palette colors and the base character's migration, with before and after previews of the character (it changes every class, so it goes first and alone), (2) the `data-class` plumbing for seven variants, the CSS and the drift test, with the knight in place, (3) Security & Governance goes live, (4) one PR for the five redrawn outfits and the new Back-end outfit, each with its own previews and screenshots, (5) the documents' notes. The carousel never shows an unfinished class: the old outfits stay until the PR that replaces them merges, and that PR is not merged until the owner has approved every class's preview.
 
 ### Documents
 

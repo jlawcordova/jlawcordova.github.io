@@ -4,10 +4,11 @@
 // (D9.6). lab.ts, export.ts and dialogs.ts fill them in.
 interface Props {
   scenes: string[];
+  defaultScene?: string;
   objects: string[];
 }
 
-const { scenes, objects } = Astro.props;
+const { scenes, objects, defaultScene } = Astro.props;
 ---
 
 <div class="lab-bar">
@@ -17,7 +18,7 @@ const { scenes, objects } = Astro.props;
     <span class="visually-hidden">Open</span>
     <select id="lab-doc">
       <optgroup label="Scenes" data-kind="scene">
-        {scenes.map((name) => <option value={`scene:${name}`}>Scene · {name}</option>)}
+        {scenes.map((name) => <option value={`scene:${name}`} selected={name === defaultScene}>Scene · {name}</option>)}
       </optgroup>
       <optgroup label="Objects" data-kind="object">
         {objects.map((name) => <option value={`object:${name}`}>Object · {name}</option>)}

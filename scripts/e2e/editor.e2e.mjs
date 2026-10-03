@@ -726,7 +726,7 @@ describe('object painting (R17)', () => {
     const { context, page } = await openLab();
     await pickObject(page, 'outfit-security-governance');
     const site = await load(await sourceOf('object', 'outfit-security-governance'));
-    // A pixel of the figure (so it stays within its 16×24 cap) on a row the
+    // A pixel of the figure (so it stays within its 24×32 cap) on a row the
     // outfit doesn't override yet.
     const { sources } = await readSources(SOURCE_DIR);
     const layers = resolve(sources, 'outfit-security-governance').layers;

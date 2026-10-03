@@ -34,7 +34,7 @@ import { blockFaces, blockSize, footprint, tilePixels, TILE_H, TILE_W, tileToPx 
  */
 
 export const TIERS = /** @type {const} */ (['world', 'outfit', 'legacy']);
-export const CAPS = { world: 32, outfit: 16, size: 64, colors: 12, characterWidth: 16, characterHeight: 24 };
+export const CAPS = { world: 32, outfit: 16, size: 64, colors: 12, characterWidth: 24, characterHeight: 32 };
 
 const NAME = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 const CLASS_LIST = /^[a-z][a-z0-9-]*(?: [a-z][a-z0-9-]*)*$/;

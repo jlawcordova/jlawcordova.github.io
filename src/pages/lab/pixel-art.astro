@@ -45,16 +45,20 @@ for (const [name, doc] of Object.entries(objects)) siteVersion[`object:${name}`]
 for (const [name, doc] of Object.entries(scenes)) siteVersion[`scene:${name}`] = hash(serialize(doc));
 
 // `<` is escaped so no source text can close the script element.
-const data = JSON.stringify({ palette, objects, scenes, siteVersion }).replace(/</g, '\\u003c');
-
 const sceneNames = Object.keys(scenes);
+// The scene the lab opens first: the hero island, never whichever scene sorts
+// first (`achievement-icons` does). A site with no hero island opens the first.
+const defaultScene = 'hero-island' in scenes ? 'hero-island' : sceneNames[0];
+
+const data = JSON.stringify({ palette, objects, scenes, siteVersion, defaultScene }).replace(/</g, '\\u003c');
+
 ---
 
 <BaseLayout title="Pixel-art lab" noindex>
   <div class="lab">
     <noscript><p class="lab__noscript">The pixel-art lab needs JavaScript.</p></noscript>
     <div class="lab__app" hidden>
-      <LabBar scenes={sceneNames} objects={Object.keys(objects)} />
+      <LabBar scenes={sceneNames} defaultScene={defaultScene} objects={Object.keys(objects)} />
       <div class="lab__workspace">
         <div class="lab__center">
           <Toolbar />

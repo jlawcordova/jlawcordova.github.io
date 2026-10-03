@@ -13,7 +13,7 @@ export default {
     {
       group: { 'data-class': '1' },
       items: [
-        { object: 'outfit-cloud-devops', at: { px: [-24, -6] } },
+        { object: 'outfit-back-end', at: { px: [-24, -6] } },
       ],
     },
     {
@@ -25,11 +25,23 @@ export default {
     {
       group: { 'data-class': '3' },
       items: [
-        { object: 'outfit-data-engineering', at: { px: [-24, -6] } },
+        { object: 'outfit-cloud-devops', at: { px: [-24, -6] } },
       ],
     },
     {
       group: { 'data-class': '4' },
+      items: [
+        { object: 'outfit-data-engineering', at: { px: [-24, -6] } },
+      ],
+    },
+    {
+      group: { 'data-class': '5' },
+      items: [
+        { object: 'outfit-security-governance', at: { px: [-24, -6] } },
+      ],
+    },
+    {
+      group: { 'data-class': '6' },
       items: [
         { object: 'outfit-project-management', at: { px: [-24, -6] } },
       ],
