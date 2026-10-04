@@ -25,18 +25,21 @@ const svg = compileScene(sources, 'hero-island').output;
 
 /**
  * The objects the island may still draw from legacy colors, until their slice
- * lands: the island and its front layer (slices 3 to 8) and the waterfall
- * (slice 4). Remove each name when its slice replaces it; the test fails if a
- * name stays after the object has left the scene.
+ * lands: the island and its front layer (slices 3 to 8). Remove each name
+ * when its slice replaces it; the test fails if a name stays after the object
+ * has left the scene.
  */
-const LEGACY_ALLOWED = ['island-base', 'island-front', 'waterfall'];
+const LEGACY_ALLOWED = ['island-base', 'island-front'];
+
+/** The ground's library objects: one per position, plus a flat top laid over a front block where the river or road crosses it. */
+const GROUND = ['tile', 'block', 'river', 'path'];
 
 /** Today's island, in bytes (spec R6). */
 const MAX_RAW = 83485;
 const MAX_GZIP = 18299;
 
 /** Objects that paint behind the trucks (ground, water, road, bridge, house) and in front of them (spec, Target scene). */
-const BEHIND_TRUCKS = ['island-base', 'island-shadow', 'tile', 'block', 'water', 'waterfall', 'waterfall-face', 'path', 'bridge', 'house'];
+const BEHIND_TRUCKS = ['island-base', 'island-shadow', 'tile', 'block', 'river', 'waterfall-face', 'path', 'bridge', 'house'];
 const IN_FRONT_OF_TRUCKS = ['island-front', 'tree', 'tree-small', 'fence', 'crane-mast', 'crane-jib', 'hearth'];
 
 const indexesOf = (names) => scene.items.flatMap((item, i) => (names.includes(item.object) ? [i] : []));
@@ -83,13 +86,17 @@ describe('hero island structure', () => {
       assert.ok(item, `${cls} is placed`);
       assert.deepEqual(item.at, { px: [31, 6] }, `${cls} position`);
     }
-    for (const name of ['flag', 'hearth', 'waterfall', 'truck', 'truck-green']) assert.ok(placed.includes(name), `${name} is still in the scene`);
+    for (const name of ['flag', 'hearth', 'river', 'waterfall-face', 'truck', 'truck-green']) assert.ok(placed.includes(name), `${name} is still in the scene`);
+    assert.ok(!placed.includes('waterfall'), 'the 82×45 waterfall is retired (slice 4)');
   });
 
   it('R4: the groups the CSS animates are all there, in order, and the CSS still names them', async () => {
     const groups = [...svg.matchAll(/<g class="([^"]+)"/g)].map((m) => m[1]);
+    // Each river tile carries its own wf loop, and the falling face one more.
+    const rivers = indexesOf(['river', 'waterfall-face']).length;
+    assert.equal(rivers, 6, 'five river tiles (one a top on the front block) and the falling face');
     const want = [
-      ...[0, 1, 2, 3, 4].map((n) => `wf w${n}`),
+      ...Array.from({ length: rivers }, () => [0, 1, 2, 3, 4].map((n) => `wf w${n}`)).flat(),
       ...[0, 1, 2, 3].map((n) => `ff f${n}`),
       'itruck it1',
       'itruck it2',
@@ -118,24 +125,81 @@ describe('hero island structure', () => {
     assert.ok(svg.slice(at('<g class="itruck it2"'), at('<g class="hf h0"')).includes('</g><path'), 'something is painted over the trucks');
   });
 
-  it('R1, R3: the ground is 36 library objects on a [col, row, 0] grid: blocks on the two front edges, flat tiles elsewhere', () => {
-    const ground = scene.items.filter((item) => item.object === 'block' || item.object === 'tile');
-    assert.equal(ground.length, 36);
-    assert.deepEqual(scene.origin, [0, 8], 'the grid origin that puts the 6×6 top faces where the island stood');
-    const seen = new Set();
-    for (const item of ground) {
+  it('R1, R3: the ground is 36 library objects on a [col, row, 0] grid: blocks on the two front edges, the river along row 3, flat tiles elsewhere', () => {
+    const items = scene.items.filter((item) => GROUND.includes(item.object));
+    // The first item at a position is its ground; a later one at the same position is a flat top laid over it.
+    const seen = new Map();
+    const ground = [];
+    const tops = [];
+    for (const item of items) {
       const [col, row, level] = item.at.tile;
       assert.equal(level, 0, 'ground sits at level 0');
       assert.ok(col >= 0 && col <= 5 && row >= 0 && row <= 5, `[${col}, ${row}] is on the grid`);
-      assert.equal(item.object, col === 5 || row === 5 ? 'block' : 'tile', `[${col}, ${row}]`);
-      seen.add(`${col},${row}`);
+      const key = `${col},${row}`;
+      (seen.has(key) ? tops : ground).push(item);
+      seen.set(key, true);
     }
-    assert.equal(seen.size, 36, 'every position once');
+    assert.equal(ground.length, 36, 'every position once');
+    assert.deepEqual(scene.origin, [0, 8], 'the grid origin that puts the 6×6 top faces where the island stood');
+    for (const item of ground) {
+      const [col, row] = item.at.tile;
+      // The river runs along row 3 from the house; under the house, at [0, 3], it stays grass.
+      const want = col === 5 || row === 5 ? 'block' : row === 3 && col >= 1 ? 'river' : 'tile';
+      assert.equal(item.object, want, `[${col}, ${row}]`);
+    }
+    // Where the river crosses the front edge, the block gets a river top, listed right after it.
+    assert.deepEqual(tops.map((item) => [item.object, item.at.tile]), [['river', [5, 3, 0]]]);
+    for (const top of tops) {
+      const i = scene.items.indexOf(top);
+      assert.equal(scene.items[i - 1].object, 'block', `${top.object} is laid over the block before it`);
+      assert.deepEqual(scene.items[i - 1].at, top.at);
+    }
     const order = ground.map((item) => item.at.tile[0] + item.at.tile[1]);
     assert.deepEqual(order, [...order].sort((a, b) => a - b), 'ground paints back to front (col + row, smallest first)');
     const blockObj = resolve(sources, 'block');
     assert.deepEqual(blockObj.block.size, [1, 1, 1]);
     assert.deepEqual(resolve(sources, 'tile').block.size, [1, 1, 0]);
+    // river is the library's water with fewer ripples (two of its five rows), so six fit R6; same size, colors and loop.
+    const [water, river] = ['water', 'river'].map((name) => sources.objects.get(name));
+    assert.deepEqual(river.size, [1, 1, 0]);
+    assert.deepEqual([river.faces, river.surface.keys, river.surface.loop, river.surface.prefix], [water.faces, water.surface.keys, water.surface.loop, water.surface.prefix]);
+    river.surface.frames.forEach((frame, f) => frame.forEach((row, y) => assert.equal(row, [6, 11].includes(y) ? '.'.repeat(32) : water.surface.frames[f][y], `river frame ${f}, row ${y}`)));
+  });
+
+  it('R1, R2, R4: the waterfall-face falls down the front block at [5, 3], in world colors, with its own wf loop and the flag\'s streaks on it', () => {
+    const obj = resolve(sources, 'waterfall-face');
+    assert.equal(obj.legacy, false);
+    assert.ok(obj.width <= CAPS.size && obj.height <= CAPS.size, `${obj.width}×${obj.height}`);
+    assert.ok(usedColors(sources, obj).length <= CAPS.colors);
+    for (const color of Object.values(obj.keys)) assert.ok(color in sources.palette.world, `waterfall-face uses ${color}`);
+    // A still face, then the loop: frame 0 is what reduced motion shows over it.
+    assert.equal(obj.layers.length, 2);
+    assert.ok(obj.layers[0].map, 'the face itself is not animated');
+    assert.deepEqual([obj.layers[1].loop, obj.layers[1].prefix, obj.layers[1].frames.length], ['wf', 'w', 5]);
+    const i = indexesOf(['waterfall-face']);
+    assert.equal(i.length, 1);
+    assert.deepEqual(scene.items[i[0]].at, { tile: [5, 3, 0] });
+    assert.equal(scene.items[i[0] - 1].object, 'river', 'it follows the river top it falls from');
+    assert.ok(i[0] < indexesOf(['flag'])[0], 'the flag\'s streaks paint over it');
+    // Every streak of the flag (ff), in every frame, lands on the falling water.
+    const render = (names) => {
+      sources.scenes.set('slice-4-probe', { viewBox: scene.viewBox, origin: scene.origin, items: scene.items.filter((item) => names.includes(item.object)) });
+      return composite(renderScene(sources, 'slice-4-probe').root);
+    };
+    const face = render(['waterfall-face']);
+    const flag = resolve(sources, 'flag');
+    const [fx, fy] = scene.items.find((item) => item.object === 'flag').at.px;
+    let streaks = 0;
+    for (const frame of flag.layers[0].frames) {
+      frame.forEach((row, y) => {
+        for (let x = 0; x < row.length; x++) {
+          if (row[x] === '.') continue;
+          streaks++;
+          assert.ok(face.has(`${fx + x},${fy + y}`), `the flag paints off the waterfall at ${fx + x},${fy + y}`);
+        }
+      });
+    }
+    assert.ok(streaks > 0);
   });
 
   it('R1, R2: island-shadow is a small world-color object, painted under the ground and outside the island', () => {
@@ -145,7 +209,7 @@ describe('hero island structure', () => {
     assert.ok(usedColors(sources, obj).length <= CAPS.colors);
     for (const color of Object.values(obj.keys)) assert.match(color, /^path-[1-4]$/, `shadow color ${color}`);
     const shadows = indexesOf(['island-shadow']);
-    const ground = indexesOf(['tile', 'block']);
+    const ground = indexesOf(GROUND);
     assert.ok(shadows.length > 0);
     assert.ok(Math.max(...shadows) < Math.min(...ground), 'the shadow paints before the ground');
     // Everything the shadow paints that survives is below or beside the island, so it only shows as a rim.
@@ -153,7 +217,7 @@ describe('hero island structure', () => {
       sources.scenes.set('slice-3-probe', { viewBox: scene.viewBox, origin: scene.origin, items: scene.items.filter((item) => names.includes(item.object)) });
       return composite(renderScene(sources, 'slice-3-probe').root);
     };
-    const island = only(['tile', 'block']);
+    const island = only(GROUND);
     const shadow = only(['island-shadow']);
     const visible = [...shadow.keys()].filter((p) => !island.has(p));
     // 11 sprites of 128 checker pixels each: none overlaps another, and none hides under the ground.
@@ -181,7 +245,7 @@ describe('hero island structure', () => {
   });
 
   it('R8: island-base no longer paints the ground\'s soil, grass lip or shadow, so nothing is painted twice', () => {
-    sources.scenes.set('slice-3-ground', { viewBox: scene.viewBox, origin: scene.origin, items: scene.items.filter((item) => item.object === 'tile' || item.object === 'block') });
+    sources.scenes.set('slice-3-ground', { viewBox: scene.viewBox, origin: scene.origin, items: scene.items.filter((item) => GROUND.includes(item.object)) });
     const footprint = composite(renderScene(sources, 'slice-3-ground').root);
     const base = resolve(sources, 'island-base');
     const [ox, oy] = scene.items.find((item) => item.object === 'island-base').at.px;
@@ -207,6 +271,22 @@ describe('hero island structure', () => {
       }
     });
     assert.ok(leftover < 400, `${leftover} green and brown pixels are left in island-base`);
+  });
+
+  it('R8: island-base no longer paints the river, its fall or its spray; only the house\'s windows keep water colors', () => {
+    const base = resolve(sources, 'island-base');
+    const [ox] = scene.items.find((item) => item.object === 'island-base').at.px;
+    // The house's right wall is at x = -37; its windows are left of it.
+    const water = new Set(['c-5f8c7e', 'c-c9ddd3', 'c-e8f1ec']);
+    let windows = 0;
+    base.layers[0].map.forEach((row, y) => {
+      for (let x = 0; x < row.length; x++) {
+        if (row[x] === '.' || !water.has(base.keys[row[x]])) continue;
+        assert.ok(x + ox < -37, `island-base paints ${base.keys[row[x]]} at ${x},${y}, on the river`);
+        windows++;
+      }
+    });
+    assert.ok(windows > 0 && windows < 30, `${windows} window pixels`);
   });
 
   it('R6: the compiled island is no heavier than today\'s, raw and gzipped', async () => {

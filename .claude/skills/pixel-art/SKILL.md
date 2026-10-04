@@ -195,7 +195,7 @@ The redesign's art was imported with `scripts/import-pixel-art.mjs`, so it's mar
 
 - **The hero island** (`scenes/hero-island.mjs`, written to `hero-island.svg`) is built from:
   - `island-base`: the island itself, one 193×128 map with 33 colors;
-  - `waterfall`, `flag` and `hearth`: frame loops `wf` (5 frames), `ff` (4) and `hf` (6);
+  - the river's `river` tiles and `waterfall-face`, `flag` and `hearth`: frame loops `wf` (5 frames, one set per piece), `ff` (4) and `hf` (6);
   - `truck`, placed with class `itruck it1`, and `truck-green`, placed with `itruck it2`;
   - `island-front`: the trees, crane, fence and roof that are drawn in front of the trucks;
   - `cloud-a`, `cloud-b` and `cloud-c`, placed with `pcloud pc0` to `pc2`.
