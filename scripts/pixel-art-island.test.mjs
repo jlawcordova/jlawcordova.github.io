@@ -266,7 +266,7 @@ describe('hero island structure', () => {
     assert.deepEqual(side('block-road', 'left'), side('block', 'left').map((row) => row.map((color) => ({ 'grass-3': 'path-3', 'grass-4': 'path-4' })[color] ?? color)), 'block-road is block with a path band');
     assert.deepEqual(resolve(sources, 'tile').block.size, [1, 1, 0]);
     const path = sources.objects.get('path');
-    assert.deepEqual([path.size, path.faces, Object.values(path.surface.keys)], [[1, 1, 0], { top: 'path-2' }, ['path-1', 'path-3']], 'path is a flat path-2 tile with path-1 and path-3 specks');
+    assert.deepEqual([path.size, path.faces, Object.values(path.surface.keys)], [[1, 1, 0], { top: 'path-2' }, ['path-1', 'path-3', 'cream']], 'path is a flat path-2 tile with path-1 and path-3 wear and a cream center line (the owner\'s land review)');
     // river is the library's water with fewer ripples (two of its five rows), so six fit R6; same size, colors and loop.
     const [water, river] = ['water', 'river'].map((name) => sources.objects.get(name));
     assert.deepEqual(river.size, [1, 1, 0]);
