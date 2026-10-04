@@ -27,7 +27,7 @@ const svg = compileScene(sources, 'hero-island').output;
  * The cubes on the island's two front edges (hero island detail spec, Hidden joints): the true corner, then the edge pieces
  * that hide the joints on the left cliff, the right cliff and where the road meets the left cliff.
  */
-const BLOCKS = ['block', 'block-left', 'block-right', 'block-road'];
+const BLOCKS = ['block', 'block-left', 'block-right', 'block-road', 'block-river'];
 
 /** The ground's library objects: one per position, plus a flat top laid over a front block where the river or road crosses it. */
 const GROUND = ['tile', ...BLOCKS, 'river', 'path'];
@@ -228,8 +228,8 @@ describe('hero island structure', () => {
       // The river runs along row 3 from the house; under the house, at [0, 3], it stays grass.
       // The road runs along column 2, on the trucks' line, and crosses the river on the bridge at [2, 3].
       // The front corner is the true cube; the left cliff (row 5) takes block-left, block-road under the road's end, and the
-      // right cliff (column 5) block-right (spec, Hidden joints).
-      const edge = col === 5 && row === 5 ? 'block' : row === 5 ? (col === 2 ? 'block-road' : 'block-left') : 'block-right';
+      // right cliff (column 5) block-right, block-river under the river's end (spec, Hidden joints; the owner's land review).
+      const edge = col === 5 && row === 5 ? 'block' : row === 5 ? (col === 2 ? 'block-road' : 'block-left') : row === 3 ? 'block-river' : 'block-right';
       const want = col === 5 || row === 5 ? edge : row === 3 && col >= 1 ? 'river' : col === 2 ? 'path' : 'tile';
       assert.equal(item.object, want, `[${col}, ${row}]`);
     }
@@ -264,14 +264,20 @@ describe('hero island structure', () => {
       assert.deepEqual(column(side(name, face), corner), column(side(name, keep), face === 'right' ? 14 : 0), `${name}'s corner column copies its ${keep} face's corner`);
     }
     assert.deepEqual(side('block-road', 'left'), side('block', 'left').map((row) => row.map((color) => ({ 'grass-3': 'path-3', 'grass-4': 'path-4' })[color] ?? color)), 'block-road is block with a path band');
+    // block-river is block-right with a water band: grass becomes the water ramp, and its corner column copies its right face's.
+    const band = (map, ramp) => map.map((row) => row.map((color) => (color.startsWith(ramp) ? 'band' : color)));
+    const river = side('block-river', 'right');
+    assert.deepEqual(band(river, 'water-'), band(side('block-right', 'right'), 'grass-'), 'block-river is block-right with its right band in water');
+    assert.ok(river.flat().some((c) => c === 'water-3') && river.flat().some((c) => c === 'water-4'), 'its right band is water-3 with a water-4 last row');
+    assert.deepEqual(side('block-river', 'left').map((row) => row.filter((_, c) => c !== 14)), side('block-right', 'left').map((row) => row.filter((_, c) => c !== 14).map((color) => ({ 'grass-3': 'water-3', 'grass-4': 'water-4' })[color] ?? color)), 'its left face is block-right\'s with a water band');
+    assert.deepEqual(column(side('block-river', 'left'), 14), column(river, 0), 'block-river\'s corner column copies its right face\'s corner');
     assert.deepEqual(resolve(sources, 'tile').block.size, [1, 1, 0]);
     const path = sources.objects.get('path');
     assert.deepEqual([path.size, path.faces, Object.values(path.surface.keys)], [[1, 1, 0], { top: 'path-2' }, ['path-1', 'path-3', 'cream']], 'path is a flat path-2 tile with path-1 and path-3 wear and a cream center line (the owner\'s land review)');
-    // river is the library's water with fewer ripples (two of its five rows), so six fit R6; same size, colors and loop.
-    const [water, river] = ['water', 'river'].map((name) => sources.objects.get(name));
-    assert.deepEqual(river.size, [1, 1, 0]);
-    assert.deepEqual([river.faces, river.surface.keys, river.surface.loop, river.surface.prefix], [water.faces, water.surface.keys, water.surface.loop, water.surface.prefix]);
-    river.surface.frames.forEach((frame, f) => frame.forEach((row, y) => assert.equal(row, [6, 11].includes(y) ? '.'.repeat(32) : water.surface.frames[f][y], `river frame ${f}, row ${y}`)));
+    // river is a flat water-2 tile with five wf frames of ripples, in world colors (hero island detail spec, Tests that change).
+    const flow = sources.objects.get('river');
+    assert.deepEqual([flow.size, flow.faces, flow.surface.loop, flow.surface.prefix, flow.surface.frames.length], [[1, 1, 0], { top: 'water-2' }, 'wf', 'w', 5]);
+    for (const color of Object.values(flow.surface.keys)) assert.ok(color in sources.palette.world && color !== 'ink', `river uses ${color}`);
   });
 
   it('R1, R2, R4: the waterfall-face falls down the front block at [5, 3], in world colors, with its own wf loop and the flag\'s streaks on it', () => {

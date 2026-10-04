@@ -46,7 +46,7 @@ export default {
     { object: 'tile', at: { tile: [3, 4, 0] } },
     { object: 'block-road', at: { tile: [2, 5, 0] } },
     { object: 'path', at: { tile: [2, 5, 0] } },
-    { object: 'block-right', at: { tile: [5, 3, 0] } },
+    { object: 'block-river', at: { tile: [5, 3, 0] } },
     { object: 'river', at: { tile: [5, 3, 0] } },
     { object: 'waterfall-face', at: { tile: [5, 3, 0] } },
     { object: 'tile', at: { tile: [4, 4, 0] } },
