@@ -1,5 +1,5 @@
 # Spec: Copy that follows the design system (from intent.md 2026-10-04)
-Status: draft.
+Status: approved.
 
 ## Requirements
 
