@@ -11,6 +11,7 @@ Traced to the [intent](intent.md). Each is checkable.
 - **R2. It's public-safe.** Every committed file passes CLAUDE.md's publishing rules: its examples are made up, and name no client, colleague or employer system. *(Constraint: public-safe)*
 - **R3. Tokens can't drift.** Every token in `docs/design-system/tokens.json` whose name matches a custom property in `src/styles/variables.css` has the same value, and a `node:test` test checks it. *(Outcome 3: one source of truth)*
 - **R4. The repo points to it.** CLAUDE.md's Conventions and the README's project layout table name `docs/design-system/`. The `write-spec` skill lists it among the standards a spec loads. *(Outcome 3: "changes go through this repo")*
+- **R4a. Previews render from the repo.** Every component has a `preview.html` in `docs/design-system/`, and an unlisted page on the site renders all of them with the site's own styles. A test fails if a component has a README but no preview, or the other way round. *(Outcome 3; owner decision: rendered previews included)*
 - **R5. The artifact is retired.** The design system artifact gets one last revision matching the repo, with a line at the top of its README saying the repo is the source. After that it isn't edited. *(Outcome 3)*
 
 ### Gamified copy
@@ -43,6 +44,7 @@ docs/design-system/
   README.md                     the brand book (from the artifact's project/README.md)
   tokens.json                   tokens with usage notes (from project/tokens.json)
   components/<Name>/README.md   guidelines, one per component (12)
+  components/<Name>/preview.html  example markup, one per component (12)
 ```
 
 The 12 components are AchievementRow, Button, Card, CodeBlock, DecisionBrief, Footer, Navigation, PageHead, Pagination, Pill, Prose and Register.
@@ -50,7 +52,7 @@ The 12 components are AchievementRow, Button, Card, CodeBlock, DecisionBrief, Fo
 Left out, because the site already holds them or they only serve the artifact's page:
 
 - `components/bundle.css`: a copy of the site's CSS. The site's `src/styles/` is the implementation.
-- `components/*/preview.html` and the cover: they render only inside the artifact, from its generated `tokens.css` and uploaded assets.
+- The cover. It's a banner for the artifact's page, not a component.
 - The uploaded logo and icon sheet. The README points to them where they already live: `static/public/logo.svg`, `static/public/favicon.svg`, `static/public/logo@2x.png` and `src/assets/pixel-art/achievement-icons.svg`. The two asset READMEs fold into the README's Iconography section.
 - The artifact's index file.
 
@@ -59,6 +61,16 @@ Left out, because the site already holds them or they only serve the artifact's 
 **Which wins.** `src/styles/variables.css` holds the values the build uses. `tokens.json` adds names that are literals in the CSS (such as `radius-chip` and the `syntax-*` colors) and a usage note for each. A token change edits both in the same commit, and R3's test fails if they differ.
 
 **The test.** `scripts/design-system.test.mjs` reads `tokens.json` and the first definition of each `--<name>` in `variables.css` (outside media queries), and compares the values of every token with a matching name. The comparison ignores case and whitespace. Tokens that have no custom property, and shadows that use `var()` in the CSS, are skipped.
+
+### Rendered previews
+
+The previews render on an unlisted page, `/lab/design-system/`, like the pixel-art lab: `noindex`, not linked from the navigation, and built with `BaseLayout`.
+
+- **Markup.** Each `preview.html` holds only the example markup, the artifact preview's `<body>` contents without the document wrapper, fonts or inline padding. The page reads them all at build time and renders each one under its component's name, with a link to its README on GitHub. The order follows the README's Components list.
+- **Styles.** Previews use the site's real CSS (`global.css`), so they show exactly what ships and can't drift from it. DecisionBrief and Register aren't on the site, so their styles move from the artifact's `bundle.css` into `src/styles/design-system.css`, which only this page imports, as `lab.css` is for the pixel-art lab. It uses only the tokens.
+- **Icons.** The AchievementRow preview draws icons from the site's icon sheet (the `AchievementIcons` sheet with `<use>`, as the rows on the site do), instead of the artifact's uploaded image.
+- **Content.** The examples come over from the artifact's previews, with the edits in [Design system edits](#design-system-edits): the Button preview shows "Press start" and "Get in touch", and the AchievementRow preview uses the examples in its table. Every example stays made up (R2).
+- **The test.** `scripts/design-system.test.mjs` also checks that each `components/<Name>/` folder has both `README.md` and `preview.html`.
 
 ### Design system edits
 
@@ -130,6 +142,7 @@ The two paragraphs grow from 23 and 22 words to 27 and 28. Both sit in `max-widt
 - `npm run build` and `npm test` pass as CLAUDE.md requires, including the new token test.
 - Screenshots of the home page at 1440px and 390px, before and after, with no horizontal scroll.
 - A search of `docs/design-system/` for "Netzon" and client-style names finds nothing.
+- `/lab/design-system/` screenshotted at 1440px and 390px: every preview renders, nothing scrolls sideways, and its `<head>` has the `noindex` tag.
 - The artifact is read back after its last revision and shows the edits and the top line.
 
 ## Areas of concern
@@ -140,9 +153,13 @@ Decided with the owner: the Range heading is the one kept exception (the intent 
 
 The repo and the artifact hold the same content for one revision. R5 makes the repo the source and stops edits to the artifact, so they diverge only if someone edits it anyway. Its top line says not to.
 
-### C2. The previews don't come along
+### C2. The preview page is public
 
-Without `preview.html` files, the repo copy has no rendered examples. The live site is the rendered example of every component except DecisionBrief and Register, which aren't on the site. If rendered previews are wanted later, they're a separate change.
+An unlisted page is still reachable by anyone with its address, and `noindex` only keeps it out of search results. This is the same as the pixel-art lab. Its examples are made up, so nothing on it needs hiding.
+
+### C3. Docs read by the build
+
+The page reads files under `docs/`, outside `src/`, at build time. If the build can't import from there, the plan moves the previews, keeps `docs/design-system/` as the place people edit, and says how the two stay in step.
 
 ## Open questions
 
