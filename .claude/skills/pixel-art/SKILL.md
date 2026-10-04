@@ -189,21 +189,17 @@ The lab at `/lab/pixel-art/` (or `npm run dev`, then http://localhost:4321/lab/p
 
 The 16×16 icons beside the accomplishments on the site are objects named `icon-<id>`, placed in the `achievement-icons` scene. They follow every rule here and have a few of their own (size, anchor, sheet order, the icon list). Use the `achievement-icon` skill to add or change one.
 
-## Legacy objects (the art that's already on the site)
+## The art that's already on the site
 
-The redesign's art was imported with `scripts/import-pixel-art.mjs`, so it's marked `legacy: true` and uses the legacy palette. Each of these objects stays a pixel-for-pixel copy of the original until someone changes it on purpose.
-
-- **The hero island** (`scenes/hero-island.mjs`, written to `hero-island.svg`) is built from:
-  - `island-base`: once the island itself, a 193×128 map; empty now that its pieces are objects, and deleted next;
+- **The hero island** (`scenes/hero-island.mjs`, written to `hero-island.svg`) is built from library and island objects, all in world colors and within the caps. It has no legacy objects. Its pieces are:
   - the ground, road, bridge, `house`, back trees (`tree-small` and `pine`, three of them on a `tree-shade`) as world-color objects;
   - the river's `river` tiles and `waterfall-face`, `flag` and `hearth`: frame loops `wf` (5 frames, one set per piece), `ff` (4) and `hf` (6);
   - `truck`, placed with class `itruck it1`, and `truck-green`, placed with `itruck it2`;
   - the pieces listed after the trucks, so they paint over them: `bridge-rail`, `shed`, the crane as `crane-mast` with `crane-jib` stacked on it, `fence` and the front trees;
   - `cloud-a`, `cloud-b` and `cloud-c`, placed with `pcloud pc0` to `pc2`.
-- **The Range sprite** (`scenes/range-sprite.mjs`) is `range-island` (still legacy) plus seven outfits that extend `character`, one per `data-class` group, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). The outfits and `character` were redrawn in world and outfit colors by the [Range class characters](../../../docs/intents/2026-10-sixth-range-class/intent.md) change, so they're no longer legacy.
-- **Why `island-base` is exempt from the caps:** the extracted art is grouped by color, not by thing, so the importer can't split it into trees, blocks and water (spec concern A2). It moved in as one big map, which is wider than 64 and uses far more than 12 colors. Splitting it into library objects is later work, done one piece at a time. Each piece should either be a visible no-op or a deliberate change that's reviewed on its own.
+- **The Range sprite** (`scenes/range-sprite.mjs`) is `range-island` (the one legacy object left: imported with `scripts/import-pixel-art.mjs`, marked `legacy: true`, in the legacy palette, exempt from the caps, and a pixel-for-pixel copy of the original until someone changes it on purpose) plus seven outfits that extend `character`, one per `data-class` group, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). The outfits and `character` were redrawn in world and outfit colors by the [Range class characters](../../../docs/intents/2026-10-sixth-range-class/intent.md) change, so they're no longer legacy.
 - **Recolors.** `truck-green` is `truck` with other colors: it `extends: 'truck'` and lists only the keys that differ. Use the same pattern for a variant that changes colors but not shape.
-- **Moving legacy art to world colors** changes how it looks, so do it one object at a time, in its own PR, with before and after previews. Don't do it as part of other work.
+- **Moving legacy art to world colors** (`range-island`, and the legacy palette with it) changes how it looks, so do it one object at a time, in its own PR, with before and after previews. Don't do it as part of other work.
 - **Keep the CSS hooks.** `pixel-art.css` animates the classes on these groups (`wf w0`…, `itruck it1`, `pcloud pc0`, `cbob`). Don't rename a loop, prefix or placement class unless you change the CSS in the same PR.
 
 ## Pitfalls
@@ -212,7 +208,7 @@ The redesign's art was imported with `scripts/import-pixel-art.mjs`, so it's mar
 - Keys are case-sensitive: `g` and `G` are different colors.
 - Long runs of one character are easy to miscount. Count against the preview, not the text, and let `--check` find ragged rows.
 - Legacy colors (`c-<hex>`) are off-limits for new art, and so is `legacy: true`.
-- Don't hand-edit `src/assets/pixel-art/*.svg`, and don't add `.src.svg` files. The extracted originals live in `scripts/fixtures/pixel-art/` as test fixtures only.
+- Don't hand-edit `src/assets/pixel-art/*.svg`, and don't add `.src.svg` files. The extracted original of the Range sprite lives in `scripts/fixtures/pixel-art/` as a test fixture only.
 - `scripts/import-pixel-art.mjs` brings existing SVG art in as legacy sources. It's not for drawing new art.
 
 ## Before opening a PR

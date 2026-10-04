@@ -12,7 +12,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { loadSources, resolve, validate } from '../src/lib/pixel-art/engine.mjs';
 import { serialize } from '../src/lib/pixel-art/serialize.mjs';
-import { attr, compileScene, isRectGroup, parse, readSources, rectPixels } from './optimize-pixel-art.mjs';
+import { compileScene, readSources } from './optimize-pixel-art.mjs';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const ART_DIR = join(ROOT, 'src/assets/pixel-art');
@@ -20,45 +20,6 @@ const SOURCE_DIR = join(ART_DIR, 'source');
 const FIXTURES = join(ROOT, 'scripts/fixtures/pixel-art');
 
 const { sources, loadErrors } = await readSources(SOURCE_DIR);
-
-/**
- * The art's structure: groups with their attributes, and layers (runs of
- * <g fill>), each as a map of fill → pixels, plus how many pixels its fill
- * groups paint in total (to catch overlaps).
- */
-function structure(svg) {
-  const walk = (el) => {
-    const out = [];
-    let layer = null;
-    for (const child of el.children) {
-      if (child.text !== undefined) continue;
-      if (isRectGroup(child)) {
-        if (!layer) out.push((layer = { fills: new Map(), painted: 0, top: new Map() }));
-        const pixels = rectPixels(child.children);
-        const fill = attr(child, 'fill');
-        layer.fills.set(fill, new Set([...(layer.fills.get(fill) ?? []), ...pixels]));
-        layer.painted += pixels.size;
-        for (const p of pixels) layer.top.set(p, fill);
-        continue;
-      }
-      layer = null;
-      out.push({ attrs: child.attrs.map(([k, v]) => `${k}="${v}"`).join(' '), children: walk(child) });
-    }
-    return out;
-  };
-  return walk(parse(svg).find((n) => n.name === 'svg'));
-}
-
-/** Fill groups in a layer that don't overlap can be drawn in any order with the same result. */
-function assertNoOverlaps(layers, path = 'svg') {
-  for (const item of layers) {
-    if (item.attrs !== undefined) assertNoOverlaps(item.children, `${path} > g ${item.attrs}`);
-    else {
-      const distinct = new Set([...item.fills.values()].flatMap((s) => [...s])).size;
-      assert.equal(item.painted, distinct, `${path}: a layer paints ${item.painted - distinct} pixel(s) twice`);
-    }
-  }
-}
 
 describe('committed sources', () => {
   it('R1, R3: every object and scene loads and validates', () => {
@@ -90,7 +51,6 @@ describe('committed sources', () => {
 
   it('R12: the extracted SVGs are test fixtures, and npm run art reads no .src.svg', async () => {
     assert.ok(existsSync(join(FIXTURES, 'range-sprite.src.svg')));
-    assert.ok(existsSync(join(FIXTURES, 'hero-island.src.svg')));
     assert.deepEqual((await readdir(SOURCE_DIR)).filter((f) => f.endsWith('.svg')), []);
     assert.doesNotMatch(await readFile(join(ROOT, 'scripts/optimize-pixel-art.mjs'), 'utf8'), /\.src\.svg/);
   });
@@ -124,23 +84,13 @@ describe('pixel-art skill (R32)', () => {
 // characters change (its spec C1): its art changes on purpose. Its fixture
 // stays, as input for R12 and the import tests.
 
-describe('hero island fixture (R11, kept until the last island slice)', () => {
-  it('R11: the fixture\'s 1,492 repainted pixels are between its two static layers, not inside one', async () => {
-    const fixture = structure(await readFile(join(FIXTURES, 'hero-island.src.svg'), 'utf8'));
-    assertNoOverlaps(fixture);
-    const [back, front] = fixture.filter((l) => l.fills);
-    assert.equal([...front.top.keys()].filter((p) => back.top.has(p)).length, 1492);
-  });
-
-  it('R11: the animated pieces are their own objects, and island-base is one legacy map', () => {
+describe("the island's animated pieces (R11)", () => {
+  it('R11: the animated pieces are their own objects', () => {
     const loops = { flag: ['ff', 'f', 4], hearth: ['hf', 'h', 6] };
     for (const [name, [loop, prefix, frames]] of Object.entries(loops)) {
       const layer = sources.objects.get(name).layers[0];
       assert.deepEqual([layer.loop, layer.prefix, layer.frames.length], [loop, prefix, frames], name);
     }
-    const base = resolve(sources, 'island-base');
-    assert.equal(base.legacy, true);
-    assert.ok(base.width <= 225 && base.height <= 212);
   });
 });
 

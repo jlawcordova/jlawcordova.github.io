@@ -23,14 +23,6 @@ const scene = sources.scenes.get('hero-island');
 const placed = scene.items.map((item) => item.object);
 const svg = compileScene(sources, 'hero-island').output;
 
-/**
- * The objects the island may still draw from legacy colors, until their slice
- * lands: island-base, empty since slice 7 and deleted in slice 8. Remove each
- * name when its slice replaces it; the test fails if a name stays after the
- * object has left the scene.
- */
-const LEGACY_ALLOWED = ['island-base'];
-
 /** The ground's library objects: one per position, plus a flat top laid over a front block where the river or road crosses it. */
 const GROUND = ['tile', 'block', 'river', 'path'];
 
@@ -42,7 +34,7 @@ const MAX_GZIP = 18299;
  * Objects that paint behind the trucks (ground, water, road, bridge, house, the back trees' shade) and in front of them
  * (spec, Target scene). Trees stand on both sides: TREES are placed by depth, and the R5 test checks each one.
  */
-const BEHIND_TRUCKS = ['island-base', 'island-shadow', 'tile', 'block', 'river', 'waterfall-face', 'path', 'bridge', 'house', 'tree-shade'];
+const BEHIND_TRUCKS = ['island-shadow', 'tile', 'block', 'river', 'waterfall-face', 'path', 'bridge', 'house', 'tree-shade'];
 const IN_FRONT_OF_TRUCKS = ['bridge-rail', 'shed', 'crane-mast', 'crane-jib', 'fence', 'hearth'];
 const TREES = ['tree', 'tree-small', 'pine'];
 
@@ -61,16 +53,14 @@ const driveSteps = async () => {
 };
 
 describe('hero island structure', () => {
-  it('R2: only allow-listed objects use legacy colors; the list names only objects still in the scene', () => {
+  it('R2: no object the island places uses legacy colors, with no exceptions', () => {
     for (const name of new Set(placed)) {
       const obj = resolve(sources, name);
       const legacyKeys = Object.values(obj.keys).filter((color) => /^c-[0-9a-f]{6}$/.test(color));
-      if (LEGACY_ALLOWED.includes(name)) continue;
       assert.equal(obj.legacy, false, `${name} is marked legacy`);
       assert.deepEqual(legacyKeys, [], `${name} uses legacy colors`);
       assert.equal(sources.objects.get(name).legacy, undefined, `${name} sets legacy: true`);
     }
-    for (const name of LEGACY_ALLOWED) assert.ok(placed.includes(name), `${name} has left the scene; remove it from LEGACY_ALLOWED`);
   });
 
   it('R7: flag and hearth paint the same pixels as before, because each world key has the legacy color\'s value', () => {
@@ -136,7 +126,7 @@ describe('hero island structure', () => {
     for (const i of indexesOf(BEHIND_TRUCKS)) assert.ok(i < firstTruck, `${scene.items[i].object} paints before the trucks`);
     for (const name of IN_FRONT_OF_TRUCKS) assert.ok(placed.includes(name), `${name} is in the scene`);
     for (const i of indexesOf(IN_FRONT_OF_TRUCKS)) assert.ok(i > lastTruck, `${scene.items[i].object} paints after the trucks`);
-    // Four trees stand behind the road (they were island-base) and four in front of it (they were island-front).
+    // Four trees stand behind the road (the old island-base map drew them) and four in front of it.
     const trees = indexesOf(TREES);
     assert.deepEqual([trees.filter((i) => i < firstTruck).length, trees.filter((i) => i > lastTruck).length], [4, 4]);
   });
@@ -312,35 +302,6 @@ describe('hero island structure', () => {
     assert.deepEqual(resolve(sources, 'island-shadow').anchor, [15, 8], 'the anchor is the diamond\'s center');
   });
 
-  it('R8: island-base no longer paints the ground\'s soil, grass lip or shadow, so nothing is painted twice', () => {
-    sources.scenes.set('slice-3-ground', { viewBox: scene.viewBox, origin: scene.origin, items: scene.items.filter((item) => GROUND.includes(item.object)) });
-    const footprint = composite(renderScene(sources, 'slice-3-ground').root);
-    const base = resolve(sources, 'island-base');
-    const [ox, oy] = scene.items.find((item) => item.object === 'island-base').at.px;
-    const soil = new Set(['c-8a5a34', 'c-7a4e2d', 'c-9c6b42', 'c-4a3324', 'c-6e4d36']);
-    const shadow = 'c-d4c5a9';
-    const grass = new Set(['c-8fa56e', 'c-88a267', 'c-7e9a60', 'c-a9bd8c', 'c-77925a', 'c-6f8a55', 'c-6f8f55', 'c-4e6b3a', 'soil-3']);
-    const topOf = new Map();
-    for (const p of footprint.keys()) {
-      const [x, y] = p.split(',').map(Number);
-      topOf.set(x, Math.min(topOf.get(x) ?? Infinity, y));
-    }
-    let leftover = 0;
-    base.layers[0].map.forEach((row, y) => {
-      for (let x = 0; x < row.length; x++) {
-        if (row[x] === '.') continue;
-        const color = base.keys[row[x]];
-        assert.ok(!soil.has(color) && color !== shadow, `island-base paints ${color} at ${x},${y}`);
-        if (!grass.has(color)) continue;
-        // What is left in these greens and browns is a tree's foliage, a trunk or a door: on the island, or a treetop above it, never on its rim or below it.
-        const covered = footprint.has(`${x + ox},${y + oy}`) || y + oy < (topOf.get(x + ox) ?? Infinity);
-        assert.ok(covered, `island-base paints ${color} at ${x},${y} outside the ground`);
-        leftover++;
-      }
-    });
-    assert.ok(leftover < 400, `${leftover} green and brown pixels are left in island-base`);
-  });
-
   it('R1, R2, R3: the bridge is a small world-color object on the road where it crosses the river, painted over the ground', () => {
     const obj = resolve(sources, 'bridge');
     assert.equal(obj.legacy, false);
@@ -351,7 +312,6 @@ describe('hero island structure', () => {
     assert.equal(i.length, 1);
     assert.deepEqual(scene.items[i[0]].at, { tile: [2, 3, 0] });
     assert.ok(i[0] > Math.max(...indexesOf(GROUND)), 'it paints over the ground, both banks included');
-    assert.ok(i[0] < indexesOf(['island-base'])[0]);
   });
 
   it('R3, R4, C5: both trucks stay on the road: at every visible step of idrive, their lowest pixels sit on the path or the bridge', async () => {
@@ -385,32 +345,6 @@ describe('hero island structure', () => {
     }
   });
 
-  it('R8: island-base no longer paints the road or the bridge', () => {
-    const base = resolve(sources, 'island-base');
-    const [ox, oy] = scene.items.find((item) => item.object === 'island-base').at.px;
-    const road = new Set(['c-c9b79a', 'c-a8957a', 'c-bba88a', 'cream']);
-    const bridge = new Set(['ink', 'c-c25a6a', 'c-9e3b4b', 'c-7b2d3b', 'c-5a2230']);
-    base.layers[0].map.forEach((row, y) => {
-      for (let x = 0; x < row.length; x++) {
-        if (row[x] === '.') continue;
-        const color = base.keys[row[x]];
-        assert.ok(!road.has(color), `island-base paints the road's ${color} at ${x},${y}`);
-        const [sx, sy] = [x + ox, y + oy];
-        assert.ok(!(bridge.has(color) && sx >= -30 && sx <= 6 && sy >= 30 && sy <= 58), `island-base paints the bridge's ${color} at ${sx},${sy}`);
-      }
-    });
-  });
-
-  it('R8: island-base no longer paints the river, its fall, its spray or the house\'s window panes: no water colors at all', () => {
-    const base = resolve(sources, 'island-base');
-    const water = new Set(['c-5f8c7e', 'c-c9ddd3', 'c-e8f1ec']);
-    base.layers[0].map.forEach((row, y) => {
-      for (let x = 0; x < row.length; x++) {
-        if (row[x] !== '.') assert.ok(!water.has(base.keys[row[x]]), `island-base paints ${base.keys[row[x]]} at ${x},${y}`);
-      }
-    });
-  });
-
   it('R1, R2, R3: the house is a small world-color object, where the house stood, painted after the ground and before the trucks', () => {
     const obj = resolve(sources, 'house');
     assert.equal(obj.legacy, false);
@@ -434,23 +368,8 @@ describe('hero island structure', () => {
     for (const y of [30, 31, 32]) assert.equal(house.get(`-35,${y}`), 'ink', `the roof's right outline at -35,${y}`);
   });
 
-  it('R8: island-base no longer paints the house: none of its roof, wall or door colors', () => {
-    const base = resolve(sources, 'island-base');
-    const house = new Set(['c-9e3b4b', 'c-c25a6a', 'c-5a2230', 'c-7b2d3b', 'c-e9dcc6', 'c-d9c9ae']);
-    const [ox, oy] = scene.items.find((item) => item.object === 'island-base').at.px;
-    base.layers[0].map.forEach((row, y) => {
-      for (let x = 0; x < row.length; x++) {
-        if (row[x] === '.') continue;
-        assert.ok(!house.has(base.keys[row[x]]), `island-base paints the house's ${base.keys[row[x]]} at ${x},${y}`);
-        // Nothing of island-base is left inside the house's box (scene x -80 to -36, y 18 to 59): its door was soil-3, its outline ink.
-        assert.ok(!(x + ox >= -80 && x + ox <= -36 && y + oy >= 18 && y + oy <= 59), `island-base paints ${base.keys[row[x]]} at ${x},${y}, on the house`);
-      }
-    });
-  });
-
-  it('R1, R2: every object the island places, except the emptied island-base, is within 64×64 and 12 colors, in world colors', () => {
+  it('R1, R2: every object the island places is within 64×64 and 12 colors, in world colors', () => {
     for (const name of new Set(placed)) {
-      if (LEGACY_ALLOWED.includes(name)) continue;
       const obj = resolve(sources, name);
       assert.ok(obj.width <= CAPS.size && obj.height <= CAPS.size, `${name} is ${obj.width}×${obj.height}`);
       assert.ok(usedColors(sources, obj).length <= CAPS.colors, `${name} uses ${usedColors(sources, obj).length} colors`);
@@ -459,10 +378,11 @@ describe('hero island structure', () => {
     }
   });
 
-  it('R1, R8: island-front is deleted and island-base paints nothing, so no piece is painted twice', () => {
-    assert.ok(!sources.objects.has('island-front'), 'island-front.mjs is deleted');
-    assert.ok(!placed.includes('island-front'));
-    assert.equal(paintOf(scene.items.filter((item) => item.object === 'island-base')).size, 0, 'island-base is empty; slice 8 deletes it');
+  it('R1: the two legacy maps are deleted and the scene places neither', () => {
+    for (const name of ['island-base', 'island-front']) {
+      assert.ok(!sources.objects.has(name), `${name}.mjs is deleted`);
+      assert.ok(!placed.includes(name));
+    }
   });
 
   it('R1, R3: the crane is two stacked objects, the jib right on top of the mast, too tall for one', () => {

@@ -56,7 +56,6 @@ export default {
     { object: 'block', at: { tile: [5, 5, 0] } },
     { object: 'bridge', at: { tile: [2, 3, 0] } },
     { object: 'house', at: { px: [-59, 59] } },
-    { object: 'island-base', at: { px: [-96, -3] } },
     { object: 'tree-shade', at: { px: [-1, 19] } },
     { object: 'tree-shade', at: { px: [-25, 29] } },
     { object: 'tree-shade', at: { px: [55, 38] } },
