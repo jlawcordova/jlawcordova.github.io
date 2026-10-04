@@ -7,7 +7,7 @@ Plans [`spec.md`](spec.md) (R1–R12, slices 1–8). The work runs on a feature 
 - `src/assets/pixel-art/source/objects/`
   - `flag.mjs`, `hearth.mjs`, `cloud-a.mjs`, `cloud-b.mjs`, `cloud-c.mjs`, `truck.mjs`, `truck-green.mjs`: world keys, no `legacy: true`.
   - `path.mjs` (new): the flat road tile (spec, Target scene).
-  - `island-shadow.mjs` (new): the dithered shadow, `path-1` and `path-2`.
+  - `island-shadow.mjs` (new): the dithered shadow, in `path-2` (as built; see step 3).
   - `waterfall-face.mjs` (new): the falling face at the front-right edge, `wf` frames.
   - `bridge.mjs`, `house.mjs`, `fence.mjs`, `crane-mast.mjs`, `crane-jib.mjs` (new), plus a roof piece if the house can't carry it, and `tree-small.mjs` (new) only if a second tree size is needed.
   - `island-front.mjs` (deleted in step 7), `island-base.mjs` and `waterfall.mjs` (deleted in steps 8 and 4).

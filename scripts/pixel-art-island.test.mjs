@@ -154,8 +154,30 @@ describe('hero island structure', () => {
       return composite(renderScene(sources, 'slice-3-probe').root);
     };
     const island = only(['tile', 'block']);
-    const visible = [...only(['island-shadow']).keys()].filter((p) => !island.has(p));
-    assert.ok(visible.length > 500, 'a visible shadow rim');
+    const shadow = only(['island-shadow']);
+    const visible = [...shadow.keys()].filter((p) => !island.has(p));
+    // 11 sprites of 128 checker pixels each: none overlaps another, and none hides under the ground.
+    assert.equal(shadow.size, 11 * 128, 'the shadow sprites paint 1,408 distinct pixels');
+    assert.equal(visible.length, shadow.size, 'every shadow pixel is outside the island');
+  });
+
+  it('R3: the 11 shadow pieces are pinned under the island\'s front tiles, so moving one fails', () => {
+    const at = scene.items.filter((item) => item.object === 'island-shadow').map((item) => item.at);
+    // One per front tile, from the right and left corners in to the front corner, 32 pixels below its top face.
+    assert.deepEqual(at, [
+      { px: [80, 80] },
+      { px: [-80, 80] },
+      { px: [64, 88] },
+      { px: [-64, 88] },
+      { px: [48, 96] },
+      { px: [-48, 96] },
+      { px: [32, 104] },
+      { px: [-32, 104] },
+      { px: [16, 112] },
+      { px: [-16, 112] },
+      { px: [0, 120] },
+    ]);
+    assert.deepEqual(resolve(sources, 'island-shadow').anchor, [15, 8], 'the anchor is the diamond\'s center');
   });
 
   it('R8: island-base no longer paints the ground\'s soil, grass lip or shadow, so nothing is painted twice', () => {

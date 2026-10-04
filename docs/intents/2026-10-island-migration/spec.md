@@ -45,7 +45,7 @@ The ground is the 6×6 grid the engine spec measured (D4), about 192 pixels acro
 - **Road.** A new flat `path` tile (top `path-2`, with a surface of `path-1` and `path-3` specks like `tile`'s), placed along the road.
 - **Bridge, house, fence, crane.** New sprites, each within 64×64 and 12 colors, drawn from the existing shapes. The crane is about 44 wide and 65 tall, so it is drawn as two stacked objects (mast, then jib and hook), with no exemption from the cap.
 - **Trees.** The existing `tree` library object, with a small variant added if a second size is needed.
-- **Shadow.** A sprite of the dithered shadow under the island, in `path-1` and `path-2`.
+- **Shadow.** A sprite of the dithered shadow under the island, in `path-2` (as built in slice 3: a one-tone checker, because `path-1` is nearly the page background; see `plan.md`, step 3).
 - **Animated pieces.** `flag` and `hearth` swap their keys to world names and drop `legacy: true`. This changes no pixel (the values are equal). The `waterfall`'s 82-wide map is mostly empty. Its sparkles are carried by the river's `water` tiles and the new falling-face object, so the 82×45 sprite is retired.
 - **Trucks and clouds.** Same shapes, world keys (see below). `truck-green` stays a recolor of `truck` (`extends: 'truck'`).
 - **Order.** Ground, shadow, river, road, bridge, house, back trees, the trucks (`itruck it1`, `itruck it2`), then the front pieces (front trees, crane, fence, roof pieces, hearth, flag), then the clouds. The front pieces cannot be sorted by `col + row` with the trucks, because the trucks move. They are listed after the trucks on purpose (R5).
