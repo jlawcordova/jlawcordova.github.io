@@ -25,11 +25,11 @@ const svg = compileScene(sources, 'hero-island').output;
 
 /**
  * The objects the island may still draw from legacy colors, until their slice
- * lands: the island and its front layer (slices 3 to 8). Remove each name
- * when its slice replaces it; the test fails if a name stays after the object
- * has left the scene.
+ * lands: island-base, empty since slice 7 and deleted in slice 8. Remove each
+ * name when its slice replaces it; the test fails if a name stays after the
+ * object has left the scene.
  */
-const LEGACY_ALLOWED = ['island-base', 'island-front'];
+const LEGACY_ALLOWED = ['island-base'];
 
 /** The ground's library objects: one per position, plus a flat top laid over a front block where the river or road crosses it. */
 const GROUND = ['tile', 'block', 'river', 'path'];
@@ -38,11 +38,27 @@ const GROUND = ['tile', 'block', 'river', 'path'];
 const MAX_RAW = 83485;
 const MAX_GZIP = 18299;
 
-/** Objects that paint behind the trucks (ground, water, road, bridge, house) and in front of them (spec, Target scene). */
-const BEHIND_TRUCKS = ['island-base', 'island-shadow', 'tile', 'block', 'river', 'waterfall-face', 'path', 'bridge', 'house'];
-const IN_FRONT_OF_TRUCKS = ['island-front', 'tree', 'tree-small', 'fence', 'crane-mast', 'crane-jib', 'hearth'];
+/**
+ * Objects that paint behind the trucks (ground, water, road, bridge, house, the back trees' shade) and in front of them
+ * (spec, Target scene). Trees stand on both sides: TREES are placed by depth, and the R5 test checks each one.
+ */
+const BEHIND_TRUCKS = ['island-base', 'island-shadow', 'tile', 'block', 'river', 'waterfall-face', 'path', 'bridge', 'house', 'tree-shade'];
+const IN_FRONT_OF_TRUCKS = ['bridge-rail', 'shed', 'crane-mast', 'crane-jib', 'fence', 'hearth'];
+const TREES = ['tree', 'tree-small', 'pine'];
 
 const indexesOf = (names) => scene.items.flatMap((item, i) => (names.includes(item.object) ? [i] : []));
+
+/** What these items paint on their own, in scene pixels: a Map of 'x,y' to color name. */
+const paintOf = (items) => {
+  sources.scenes.set('island-probe', { viewBox: scene.viewBox, origin: scene.origin, items });
+  return composite(renderScene(sources, 'island-probe').root);
+};
+
+/** The visible steps of idrive in pixel-art.css, as [dx, dy]. */
+const driveSteps = async () => {
+  const css = await readFile(join(ROOT, 'src/styles/pixel-art.css'), 'utf8');
+  return [...css.match(/@keyframes idrive\{(.*?)\}\}/)[1].matchAll(/translate\((-?\d+)px,(-?\d+)px\);opacity:(\d)/g)].map((m) => m.slice(1).map(Number));
+};
 
 describe('hero island structure', () => {
   it('R2: only allow-listed objects use legacy colors; the list names only objects still in the scene', () => {
@@ -86,7 +102,9 @@ describe('hero island structure', () => {
       assert.ok(item, `${cls} is placed`);
       assert.deepEqual(item.at, { px: [31, 6] }, `${cls} position`);
     }
-    for (const name of ['flag', 'hearth', 'river', 'waterfall-face', 'truck', 'truck-green']) assert.ok(placed.includes(name), `${name} is still in the scene`);
+    for (const name of ['flag', 'hearth', 'river', 'waterfall-face', 'path', 'bridge', 'bridge-rail', 'house', 'shed', 'tree-small', 'pine', 'crane-mast', 'crane-jib', 'fence', 'truck', 'truck-green']) {
+      assert.ok(placed.includes(name), `${name} is still in the scene`);
+    }
     assert.ok(!placed.includes('waterfall'), 'the 82×45 waterfall is retired (slice 4)');
   });
 
@@ -111,18 +129,65 @@ describe('hero island structure', () => {
     assert.ok(reduced.includes('.it2 { opacity: 0; }'), 'reduced motion hides it2');
   });
 
-  it('R5: trucks paint over the ground and road, and the front pieces paint over the trucks', () => {
+  it('R5: trucks paint over the ground and road, and the front pieces paint over the trucks, in the scene', () => {
     const trucks = indexesOf(['truck', 'truck-green']);
     assert.equal(trucks.length, 2);
     const [firstTruck, lastTruck] = [Math.min(...trucks), Math.max(...trucks)];
     for (const i of indexesOf(BEHIND_TRUCKS)) assert.ok(i < firstTruck, `${scene.items[i].object} paints before the trucks`);
-    const front = indexesOf(IN_FRONT_OF_TRUCKS);
-    assert.ok(front.length > 0, 'there are front pieces');
-    for (const i of front) assert.ok(i > lastTruck, `${scene.items[i].object} paints after the trucks`);
-    // In the compiled SVG: ground paths, then the trucks, then paths drawn over them, then the roof loop.
-    const at = (text) => svg.indexOf(text);
-    assert.ok(svg.slice(0, at('<g class="itruck it1"')).includes('<path'), 'something is painted under the trucks');
-    assert.ok(svg.slice(at('<g class="itruck it2"'), at('<g class="hf h0"')).includes('</g><path'), 'something is painted over the trucks');
+    for (const name of IN_FRONT_OF_TRUCKS) assert.ok(placed.includes(name), `${name} is in the scene`);
+    for (const i of indexesOf(IN_FRONT_OF_TRUCKS)) assert.ok(i > lastTruck, `${scene.items[i].object} paints after the trucks`);
+    // Four trees stand behind the road (they were island-base) and four in front of it (they were island-front).
+    const trees = indexesOf(TREES);
+    assert.deepEqual([trees.filter((i) => i < firstTruck).length, trees.filter((i) => i > lastTruck).length], [4, 4]);
+  });
+
+  it('R5: wherever a truck crosses a tree on its drive, the one standing further forward paints over the other', async () => {
+    const trucks = indexesOf(['truck', 'truck-green']);
+    const steps = (await driveSteps()).filter(([, , shown]) => shown);
+    const map = resolve(sources, 'truck').layers[0].map;
+    const [tx, ty] = scene.items[trucks[0]].at.px;
+    const truckFoot = ty + map.length - 1;
+    let crossings = 0;
+    for (const i of indexesOf(TREES)) {
+      const item = scene.items[i];
+      const tree = paintOf([item]);
+      const treeFoot = item.at.px[1];
+      for (const [dx, dy] of steps) {
+        const overlaps = map.some((row, y) => [...row].some((c, x) => c !== '.' && tree.has(`${tx + dx + x},${ty + dy + y}`)));
+        if (!overlaps) continue;
+        crossings++;
+        const inFront = treeFoot > truckFoot + dy;
+        assert.equal(i > Math.max(...trucks), inFront, `${item.object} at ${item.at.px} with the truck at translate(${dx}px, ${dy}px)`);
+      }
+    }
+    assert.ok(crossings > 0, 'the trucks pass some trees');
+  });
+
+  it('R5: in the compiled SVG, every front piece is painted after both truck groups', () => {
+    // Everything between the end of the it2 group and the hearth's first frame, as 'x,y' to fill.
+    const it2 = svg.indexOf('<g class="itruck it2"');
+    const after = svg.slice(svg.indexOf('</g>', it2), svg.indexOf('<g class="hf h0"'));
+    const painted = new Map();
+    for (const [, fill, d] of after.matchAll(/<path fill="(#[0-9A-F]{6})" d="([^"]+)"/g)) {
+      for (const [, x, y, w, h] of d.matchAll(/M(-?\d+) (-?\d+)h(\d+)v(\d+)h-\d+z/g)) {
+        for (let j = 0; j < Number(h); j++) for (let k = 0; k < Number(w); k++) painted.set(`${Number(x) + k},${Number(y) + j}`, fill);
+      }
+    }
+    const lastTruck = Math.max(...indexesOf(['truck', 'truck-green']));
+    const front = scene.items.filter((item, i) => i > lastTruck && !item.class && item.object !== 'hearth');
+    assert.equal(front.length, 5 + 4, 'the rail, shed, mast, jib and fence, and four trees');
+    const all = paintOf(front);
+    const hex = (color) => sources.colors.get(color).hex.toUpperCase();
+    for (const item of front) {
+      let pixels = 0;
+      for (const [p, color] of paintOf([item])) {
+        if (all.get(p) !== color) continue; // covered by a later front piece
+        assert.equal(painted.get(p), hex(color), `${item.object} at ${item.at.px ?? item.at.tile}: pixel ${p} after the trucks`);
+        pixels++;
+      }
+      assert.ok(pixels > 0, `${item.object} shows`);
+    }
+    assert.equal(painted.size, all.size, 'nothing else is painted between the trucks and the hearth');
   });
 
   it('R1, R3: the ground is 36 library objects on a [col, row, 0] grid: blocks on the two front edges, the river along row 3, the road along column 2, flat tiles elsewhere', () => {
@@ -304,11 +369,17 @@ describe('hero island structure', () => {
       const [tx, ty] = scene.items.find((item) => item.object === name).at.px;
       const onRoad = (dx, dy) => feet.filter(([x, y]) => road.has(`${tx + dx + x},${ty + dy + y}`) || road.has(`${tx + dx + x},${ty + dy + y + 1}`)).length;
       for (const [dx, dy, shown] of steps) {
-        // The last steps drive off the island's front edge and fade, as they always have.
+        // The last visible steps (dx < -88) are checked below, not here.
         if (!shown || dx < -88) continue;
         const on = onRoad(dx, dy);
         assert.ok(on >= feet.length - 1, `${name} at translate(${dx}px, ${dy}px): ${on} of ${feet.length} on the road`);
       }
+      // At the last 9 visible steps the truck is still on the island, but it turns off the road onto the grass by the
+      // front edge before it fades, exactly as it did on the old road. Pin how much road is under it there, so it can't get worse.
+      const tail = steps.filter(([dx, , shown]) => shown && dx < -88).map(([dx, dy]) => onRoad(dx, dy));
+      const oldRoad = [15, 10, 9, 7, 5, 2, 1, 0, 0];
+      assert.equal(tail.length, oldRoad.length, `${name}: ${tail.length} steps past dx -88`);
+      tail.forEach((on, i) => assert.ok(on >= oldRoad[i], `${name}: road under the last steps is ${JSON.stringify(tail)}, worse than the old road's ${JSON.stringify(oldRoad)}`));
       // With reduced motion the truck rests untranslated at the road's back end, half behind the crane; the old road held 15 of 21 there too.
       assert.ok(onRoad(0, 0) >= 15, `${name} at rest: ${onRoad(0, 0)} of ${feet.length} on the road`);
     }
@@ -330,20 +401,127 @@ describe('hero island structure', () => {
     });
   });
 
-  it('R8: island-base no longer paints the river, its fall or its spray; only the house\'s windows keep water colors', () => {
+  it('R8: island-base no longer paints the river, its fall, its spray or the house\'s window panes: no water colors at all', () => {
     const base = resolve(sources, 'island-base');
-    const [ox] = scene.items.find((item) => item.object === 'island-base').at.px;
-    // The house's right wall is at x = -37; its windows are left of it.
     const water = new Set(['c-5f8c7e', 'c-c9ddd3', 'c-e8f1ec']);
-    let windows = 0;
     base.layers[0].map.forEach((row, y) => {
       for (let x = 0; x < row.length; x++) {
-        if (row[x] === '.' || !water.has(base.keys[row[x]])) continue;
-        assert.ok(x + ox < -37, `island-base paints ${base.keys[row[x]]} at ${x},${y}, on the river`);
-        windows++;
+        if (row[x] !== '.') assert.ok(!water.has(base.keys[row[x]]), `island-base paints ${base.keys[row[x]]} at ${x},${y}`);
       }
     });
-    assert.ok(windows > 0 && windows < 30, `${windows} window pixels`);
+  });
+
+  it('R1, R2, R3: the house is a small world-color object, where the house stood, painted after the ground and before the trucks', () => {
+    const obj = resolve(sources, 'house');
+    assert.equal(obj.legacy, false);
+    assert.ok(obj.width <= CAPS.size && obj.height <= CAPS.size, `${obj.width}×${obj.height}`);
+    assert.ok(usedColors(sources, obj).length <= CAPS.colors);
+    for (const color of Object.values(obj.keys)) assert.ok(color in sources.palette.world, `house uses ${color}`);
+    const i = indexesOf(['house']);
+    assert.equal(i.length, 1);
+    // Its anchor is the front corner of its walls; [-59, 59] is where the old house's front corner stood.
+    assert.deepEqual(obj.anchor, [21, 41]);
+    assert.deepEqual(scene.items[i[0]].at, { px: [-59, 59] });
+    assert.ok(i[0] > Math.max(...indexesOf(GROUND)), 'it paints over the ground');
+    // It covers the river's grass end at [0, 3], which is why that tile stays grass: all but the 2 pixels of its right corner, by the river.
+    sources.scenes.set('slice-6-probe', { viewBox: scene.viewBox, origin: scene.origin, items: [{ object: 'tile', at: { tile: [0, 3, 0] } }] });
+    const tile = composite(renderScene(sources, 'slice-6-probe').root);
+    sources.scenes.set('slice-6-probe', { viewBox: scene.viewBox, origin: scene.origin, items: [scene.items[i[0]]] });
+    const house = composite(renderScene(sources, 'slice-6-probe').root);
+    const showing = [...tile.keys()].filter((p) => !house.has(p));
+    assert.deepEqual(showing, ['-34,31', '-34,32'], 'the house hides the tile at [0, 3]');
+    // The roof's right outline, the old house's rightmost column, is the house's too.
+    for (const y of [30, 31, 32]) assert.equal(house.get(`-35,${y}`), 'ink', `the roof's right outline at -35,${y}`);
+  });
+
+  it('R8: island-base no longer paints the house: none of its roof, wall or door colors', () => {
+    const base = resolve(sources, 'island-base');
+    const house = new Set(['c-9e3b4b', 'c-c25a6a', 'c-5a2230', 'c-7b2d3b', 'c-e9dcc6', 'c-d9c9ae']);
+    const [ox, oy] = scene.items.find((item) => item.object === 'island-base').at.px;
+    base.layers[0].map.forEach((row, y) => {
+      for (let x = 0; x < row.length; x++) {
+        if (row[x] === '.') continue;
+        assert.ok(!house.has(base.keys[row[x]]), `island-base paints the house's ${base.keys[row[x]]} at ${x},${y}`);
+        // Nothing of island-base is left inside the house's box (scene x -80 to -36, y 18 to 59): its door was soil-3, its outline ink.
+        assert.ok(!(x + ox >= -80 && x + ox <= -36 && y + oy >= 18 && y + oy <= 59), `island-base paints ${base.keys[row[x]]} at ${x},${y}, on the house`);
+      }
+    });
+  });
+
+  it('R1, R2: every object the island places, except the emptied island-base, is within 64×64 and 12 colors, in world colors', () => {
+    for (const name of new Set(placed)) {
+      if (LEGACY_ALLOWED.includes(name)) continue;
+      const obj = resolve(sources, name);
+      assert.ok(obj.width <= CAPS.size && obj.height <= CAPS.size, `${name} is ${obj.width}×${obj.height}`);
+      assert.ok(usedColors(sources, obj).length <= CAPS.colors, `${name} uses ${usedColors(sources, obj).length} colors`);
+      const world = new Set(Object.values(sources.palette.world).map((hex) => hex.toUpperCase()));
+      for (const hex of usedColors(sources, obj)) assert.ok(world.has(hex.toUpperCase()), `${name} uses ${hex}, not a world color`);
+    }
+  });
+
+  it('R1, R8: island-front is deleted and island-base paints nothing, so no piece is painted twice', () => {
+    assert.ok(!sources.objects.has('island-front'), 'island-front.mjs is deleted');
+    assert.ok(!placed.includes('island-front'));
+    assert.equal(paintOf(scene.items.filter((item) => item.object === 'island-base')).size, 0, 'island-base is empty; slice 8 deletes it');
+  });
+
+  it('R1, R3: the crane is two stacked objects, the jib right on top of the mast, too tall for one', () => {
+    assert.equal(indexesOf(['crane-mast']).length, 1);
+    assert.equal(indexesOf(['crane-jib']).length, 1);
+    const [mast, jib] = ['crane-mast', 'crane-jib'].map((name) => ({ obj: resolve(sources, name), item: scene.items[indexesOf([name])[0]] }));
+    assert.ok(mast.obj.height + jib.obj.height > CAPS.size, 'as one object it would break the 64-pixel cap');
+    // The mast's top-left pixel sits right under the jib's anchor, the bottom-left of the jib's own piece of mast.
+    const top = [mast.item.at.px[0] - mast.obj.anchor[0], mast.item.at.px[1] - mast.obj.anchor[1]];
+    assert.deepEqual(jib.item.at.px, [top[0], top[1] - 1]);
+    const outline = (row, from) => [row[from], row[from + mast.obj.width - 1]].map((key) => (key === '.' ? '.' : resolve(sources, 'crane-mast').keys[key] ?? key));
+    assert.deepEqual(outline(mast.obj.layers[0].map[0], 0), ['ink', 'ink'], 'the mast starts with its two outlines');
+    assert.deepEqual(outline(jib.obj.layers[0].map[jib.obj.anchor[1]], jib.obj.anchor[0]).map((key) => jib.obj.keys[key] ?? key), ['ink', 'ink'], 'the jib ends on the same two outlines');
+    // The hearth (the crane's swinging load) hangs from the jib: the pixel above its cable is the jib's.
+    const hearth = scene.items.find((item) => item.object === 'hearth');
+    assert.ok(paintOf([jib.item]).has(`${hearth.at.px[0] + 9},${hearth.at.px[1] - 1}`), 'the jib is right above the hearth\'s cable');
+  });
+
+  it('R3: the front pieces and trees are pinned, and each stands on the grass, not on the river or the road', () => {
+    const at = (names) => scene.items.filter((item) => names.includes(item.object)).map((item) => [item.object, item.at.px ?? item.at.tile]);
+    assert.deepEqual(at(['tree-shade', ...TREES, ...IN_FRONT_OF_TRUCKS]), [
+      ['tree-shade', [-1, 19]],
+      ['tree-shade', [-25, 29]],
+      ['tree-shade', [55, 38]],
+      ['tree-small', [-1, 19]],
+      ['pine', [-25, 20]],
+      ['tree-small', [-25, 29]],
+      ['pine', [55, 38]],
+      ['bridge-rail', [2, 3, 0]],
+      ['shed', [32, 62]],
+      ['crane-mast', [59, 59]],
+      ['crane-jib', [56, 19]],
+      ['fence', [12, 75]],
+      ['tree-small', [-13, 73]],
+      ['pine', [-30, 78]],
+      ['pine', [-1, 80]],
+      ['tree-small', [-1, 90]],
+      ['hearth', [24, 17]],
+    ]);
+    // Each shade lies under a back tree's trunk.
+    for (const [, px] of at(['tree-shade'])) {
+      assert.ok(scene.items.some((item) => TREES.includes(item.object) && String(item.at.px) === String(px)), `a tree stands on the shade at ${px}`);
+    }
+    // Where each piece meets the ground: a tree's or the mast's anchor (the foot of its trunk), and the lowest pixel of every column of the shed and the fence.
+    const feet = scene.items.filter((item) => [...TREES, 'crane-mast'].includes(item.object)).map((item) => [item.object, item.at.px]);
+    for (const item of scene.items.filter((item) => ['shed', 'fence'].includes(item.object))) {
+      const lowest = new Map();
+      for (const p of paintOf([item]).keys()) {
+        const [x, y] = p.split(',').map(Number);
+        lowest.set(x, Math.max(lowest.get(x) ?? -Infinity, y));
+      }
+      for (const [x, y] of lowest) feet.push([item.object, [x, y]]);
+    }
+    const ground = paintOf(scene.items.filter((item) => GROUND.includes(item.object)));
+    const wet = paintOf(scene.items.filter((item) => ['river', 'path', 'bridge', 'waterfall-face'].includes(item.object)));
+    for (const [name, [x, y]] of feet) {
+      assert.ok(ground.has(`${x},${y}`), `${name} stands on the island at ${x},${y}`);
+      assert.ok(!wet.has(`${x},${y}`), `${name} stands on the river or the road at ${x},${y}`);
+    }
   });
 
   it('R6: the compiled island is no heavier than today\'s, raw and gzipped', async () => {

@@ -194,10 +194,11 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
 The redesign's art was imported with `scripts/import-pixel-art.mjs`, so it's marked `legacy: true` and uses the legacy palette. Each of these objects stays a pixel-for-pixel copy of the original until someone changes it on purpose.
 
 - **The hero island** (`scenes/hero-island.mjs`, written to `hero-island.svg`) is built from:
-  - `island-base`: the island itself, one 193×128 map with 33 colors;
+  - `island-base`: once the island itself, a 193×128 map; empty now that its pieces are objects, and deleted next;
+  - the ground, road, bridge, `house`, back trees (`tree-small` and `pine`, three of them on a `tree-shade`) as world-color objects;
   - the river's `river` tiles and `waterfall-face`, `flag` and `hearth`: frame loops `wf` (5 frames, one set per piece), `ff` (4) and `hf` (6);
   - `truck`, placed with class `itruck it1`, and `truck-green`, placed with `itruck it2`;
-  - `island-front`: the trees, crane, fence and roof that are drawn in front of the trucks;
+  - the pieces listed after the trucks, so they paint over them: `bridge-rail`, `shed`, the crane as `crane-mast` with `crane-jib` stacked on it, `fence` and the front trees;
   - `cloud-a`, `cloud-b` and `cloud-c`, placed with `pcloud pc0` to `pc2`.
 - **The Range sprite** (`scenes/range-sprite.mjs`) is `range-island` (still legacy) plus seven outfits that extend `character`, one per `data-class` group, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). The outfits and `character` were redrawn in world and outfit colors by the [Range class characters](../../../docs/intents/2026-10-sixth-range-class/intent.md) change, so they're no longer legacy.
 - **Why `island-base` is exempt from the caps:** the extracted art is grouped by color, not by thing, so the importer can't split it into trees, blocks and water (spec concern A2). It moved in as one big map, which is wider than 64 and uses far more than 12 colors. Splitting it into library objects is later work, done one piece at a time. Each piece should either be a visible no-op or a deliberate change that's reviewed on its own.
