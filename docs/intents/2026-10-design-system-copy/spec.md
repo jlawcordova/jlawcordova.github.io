@@ -133,7 +133,7 @@ The two paragraphs grow from 23 and 22 words to 27 and 28. Both sit in `max-widt
 
 - **Profile** (`docs/references/profile.md`), Summary: "Sets up AI-assisted delivery workflows (intent, spec, plan, build and independent verification) so each change is planned, built and checked before it ships." This is the owner's own claim, and this site's workflow is the public example.
 - **Redesign spec** §7.1, §7.3 and §7.4: *Update, 2026-10: rewritten to follow the design system ([copy intent](../2026-10-design-system-copy/intent.md)).*
-- **CLAUDE.md, Conventions:** "Copy, components and tokens follow the design system in `docs/design-system/`. Its README is the brand book. A token change edits `tokens.json` and `src/styles/variables.css` together."
+- **CLAUDE.md, Conventions:** "Copy, components and tokens follow the design system in `docs/design-system/`. Its README is the brand book. A token change edits `tokens.json` and `src/styles/variables.css` together." And under Commands: "Design system previews: `npm run dev`, then http://localhost:4321/lab/design-system/ (unlisted)."
 - **README.md** project layout table: a `docs/design-system/` row.
 - **`.claude/skills/write-spec/SKILL.md`,** step 2: add `docs/design-system/` to the standards list.
 
