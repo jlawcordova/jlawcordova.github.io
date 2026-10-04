@@ -15,7 +15,7 @@ Traced to the intent's Problem and Proposed outcome. Each is checkable.
 - **R6. Not heavier.** `hero-island.svg` is at most today's 83,485 bytes raw and 18,299 bytes gzipped, and the home page stays inside the redesign spec's §12 budget. *(Constraint: no heavier art)*
 - **R7. Legacy colors are swapped for world colors.** Each legacy color the island loses becomes the named world color in the table in [Colors](#colors). Shade changes are accepted. *(Outcome: no legacy colors on the island)*
 - **R8. One piece at a time.** Each slice in [Slices](#slices) is its own reviewed step: one commit, with before and after previews at 1× and 4× and a screenshot of the home page at 1440px and 390px (no horizontal scroll). Each slice removes the pixels it replaces from `island-base` or `island-front` in the same commit, so nothing is ever painted twice. How the slices are grouped into PRs is the plan's decision (the `write-plan` skill, "How many PRs"). The site stays deployable after each PR. *(Constraint)*
-- **R9. The proof changes with the promise.** The island stops being pixel-identical to `scripts/fixtures/pixel-art/hero-island.src.svg`, so the tests that say so (engine spec R10 and R11 for the island, and the island case in `scripts/e2e/art.e2e.mjs`) are replaced in the first slice that changes a shade. The new tests check R1 to R6 and R10, not pixels. *(Constraint; see C2)*
+- **R9. The proof changes with the promise.** The island stops being pixel-identical to `scripts/fixtures/pixel-art/hero-island.src.svg`, so the tests that say so (engine spec R10 and R11 for the island, and the island case in `scripts/e2e/art.e2e.mjs`, a suite since deleted because that was its only case) are replaced in the first slice that changes a shade. The new tests check R1 to R6 and R10, not pixels. *(Constraint; see C2)*
 - **R10. The island is still decorative and safe.** `HeroIsland.astro` still inlines the SVG with the same classes, and the SVG carries no script, link, text or external reference. *(Constraint: accessibility, public safety)*
 - **R11. The library and the skill keep up.** New objects are added to the `library-demo` test list when they appear there (skill, "Adding to the library demo"). The last slice removes the island's legacy section from `.claude/skills/pixel-art/SKILL.md` and the README mentions of `island-base` and `island-front`. *(Outcome)*
 - **R12. Independent verification** on every PR, as in `CLAUDE.md`. *(Constraint)*
@@ -90,7 +90,7 @@ The first slice that changes a shade (1) also replaces the identity tests (R9), 
 
 ### Files touched
 
-`src/assets/pixel-art/source/objects/` (new and removed objects), `scenes/hero-island.mjs`, the compiled `hero-island.svg`, `scripts/pixel-art-roundtrip.test.mjs`, `scripts/pixel-art-engine.test.mjs` (library list), `scripts/e2e/art.e2e.mjs`, `scripts/fixtures/pixel-art/hero-island.src.svg` (removed last), `.claude/skills/pixel-art/SKILL.md`, `README.md`. Not touched: `pixel-art.css`, `HeroIsland.astro`, `hero.css`, the palette, the engine.
+`src/assets/pixel-art/source/objects/` (new and removed objects), `scenes/hero-island.mjs`, the compiled `hero-island.svg`, `scripts/pixel-art-roundtrip.test.mjs`, `scripts/pixel-art-engine.test.mjs` (library list), `scripts/e2e/art.e2e.mjs` (deleted in slice 1; see the plan), `scripts/fixtures/pixel-art/hero-island.src.svg` (removed last), `.claude/skills/pixel-art/SKILL.md`, `README.md`. Not touched: `pixel-art.css`, `HeroIsland.astro`, `hero.css`, the palette, the engine.
 
 ## Areas of concern
 

@@ -127,12 +127,15 @@ describe('hero island structure', () => {
   });
 
   it('R10: the SVG is decorative and safe: no script, link, text or external reference', async () => {
-    assert.match(svg, /^<svg [^>]*aria-hidden="true"/);
-    assert.doesNotMatch(svg, /<(script|a|text|tspan|image|use|style|foreignObject|link|iframe|animate|set)\b/i);
-    assert.doesNotMatch(svg, /\b(href|src)\s*=/i);
-    assert.doesNotMatch(svg, /\bon[a-z]+\s*=/i);
-    assert.doesNotMatch(svg, /javascript:|data:|url\(/i);
-    assert.deepEqual(svg.match(/https?:\/\/[^"' )]+/g), ['http://www.w3.org/2000/svg']);
+    const committed = await readFile(join(ART_DIR, 'hero-island.svg'), 'utf8');
+    for (const [label, text] of [['compiled', svg], ['committed', committed]]) {
+      assert.match(text, /^<svg [^>]*aria-hidden="true"/, label);
+      assert.doesNotMatch(text, /<(script|a|text|tspan|image|use|style|foreignObject|link|iframe|animate|set)\b/i, label);
+      assert.doesNotMatch(text, /\b(href|src)\s*=/i, label);
+      assert.doesNotMatch(text, /\bon[a-z]+\s*=/i, label);
+      assert.doesNotMatch(text, /javascript:|data:|url\(/i, label);
+      assert.deepEqual(text.match(/https?:\/\/[^"' )]+/g), ['http://www.w3.org/2000/svg'], label);
+    }
     const component = await readFile(join(ROOT, 'src/components/home/HeroIsland.astro'), 'utf8');
     assert.match(component, /hero-island\.svg\?raw/);
     assert.match(component, /class="hero-island pixel-art"/);
