@@ -4,7 +4,7 @@
 // layer trees. It uses no Node or DOM APIs, so `npm run art` and the editor
 // run the same code.
 
-import { blockFaces, blockSize, footprint, tilePixels, TILE_H, TILE_W, tileToPx } from './iso.mjs';
+import { blockFaces, blockSize, footprint, LEVEL_H, tilePixels, TILE_H, TILE_W, tileToPx } from './iso.mjs';
 
 /**
  * @typedef {{ class?: string, map: string[] }} MapLayer
@@ -17,7 +17,8 @@ import { blockFaces, blockSize, footprint, tilePixels, TILE_H, TILE_W, tileToPx 
  *   objects: Map<string, any>,
  *   scenes: Map<string, any>,
  * }} Sources
- * @typedef {{ size: number[], faces: Record<string, string>, surface?: any }} Block
+ * @typedef {{ keys: Record<string, string>, left: string[], right: string[] }} Sides
+ * @typedef {{ size: number[], faces: Record<string, string>, surface?: any, sides?: Sides }} Block
  * @typedef {{
  *   name: string,
  *   block?: Block,
@@ -142,7 +143,11 @@ function validatePalette({ palette }, problems) {
 }
 
 const OBJECT_PROPS = ['kind', 'legacy', 'extends', 'anchor', 'keys', 'rows', 'layers'];
-const BLOCK_PROPS = ['kind', 'size', 'faces', 'surface'];
+const BLOCK_PROPS = ['kind', 'size', 'faces', 'surface', 'sides'];
+const SIDES_PROPS = ['keys', 'left', 'right'];
+/** A side map is one tile's face wide (its 16-pixel period along the face) and one level high. */
+export const SIDE_W = TILE_W / 2;
+export const SIDE_H = LEVEL_H;
 const FACES = ['top', 'left', 'right', 'edge'];
 const MAP_LAYER_PROPS = ['class', 'map'];
 const FRAME_LAYER_PROPS = ['loop', 'prefix', 'frames'];
@@ -159,7 +164,11 @@ function validateObjectShape(sources, name, problems) {
   const obj = sources.objects.get(name);
   if (!NAME.test(name)) add('names are lowercase kebab-case');
   if (!isRecord(obj)) return add('must export an object');
-  if (obj.kind === 'block') return validateBlockShape(sources, obj, add);
+  if (obj.kind === 'block') {
+    validateBlockShape(sources, obj, add);
+    if ('sides' in obj) validateSides(sources, obj, add);
+    return;
+  }
   for (const key of Object.keys(obj)) if (!OBJECT_PROPS.includes(key)) add(`unknown property ${q(key)}`);
   if (obj.kind !== 'sprite') add(`kind must be 'sprite' or 'block', got ${q(obj.kind)}`);
   if ('legacy' in obj && obj.legacy !== true) add('legacy is either true or left out');
@@ -295,6 +304,45 @@ function validateBlockShape(sources, obj, add) {
 }
 
 /**
+ * Checks a block's side textures (hero island detail spec R6): { keys, left,
+ * right }, each map 16 columns by 16 rows, on a block with levels.
+ * @param {Sources} sources
+ * @param {any} obj
+ * @param {(msg: string) => void} add
+ */
+function validateSides(sources, obj, add) {
+  const { sides } = obj;
+  if (!isRecord(sides)) return add('sides: must be { keys, left, right }');
+  if (isWhole(obj.size, 3) && obj.size[2] === 0) add('sides: a flat block (0 levels) has no sides');
+  for (const key of Object.keys(sides)) if (!SIDES_PROPS.includes(key)) add(`sides: unknown property ${q(key)}`);
+  const keys = sides.keys;
+  if (!isRecord(keys)) add('sides: keys must be an object of key: color name');
+  else {
+    for (const [key, color] of Object.entries(keys)) {
+      if (!isKey(key)) add(`sides, key ${q(key)}: keys are one printable character, not space or '.'`);
+      if (typeof color !== 'string' || !sources.colors.has(color)) add(`sides, key ${q(key)}: ${q(color)} is not in the palette`);
+    }
+  }
+  for (const face of ['left', 'right']) {
+    const at = `sides.${face}`;
+    if (!(face in sides)) {
+      add(`${at} is missing`);
+      continue;
+    }
+    const map = sides[face];
+    if (!Array.isArray(map) || !map.every((row) => typeof row === 'string')) {
+      add(`${at}: map must be a list of strings`);
+      continue;
+    }
+    if (map.length !== SIDE_H) add(`${at}: ${map.length} rows, expected ${SIDE_H}, one level`);
+    map.forEach((row, ri) => {
+      if (row.length !== SIDE_W) add(`${at}, row ${ri}: ${row.length} wide, expected ${SIDE_W}, one tile's face`);
+      checkRow(row, isRecord(keys) ? keys : {}, (col, msg) => add(`${at}, row ${ri}, column ${col}: ${msg}`));
+    });
+  }
+}
+
+/**
  * Checks a block against the design language: world colors only, at most 12
  * colors, at most 64×64 pixels (R26, R27).
  * @param {Sources} sources
@@ -309,6 +357,7 @@ function validateBlockResolved(sources, name, problems) {
   const named = Object.entries(block.faces).map(([face, color]) => [`faces.${face}`, color]);
   const surfaceKeys = usedKeys(resolved);
   for (const key of surfaceKeys) named.push([`surface, key ${q(key)}`, resolved.keys[key]]);
+  for (const key of usedSideKeys(block)) named.push([`sides, key ${q(key)}`, /** @type {Sides} */ (block.sides).keys[key]]);
   for (const [where, color] of named) {
     const tier = sources.colors.get(color)?.tier;
     if (tier === 'legacy') add(`${where}: ${q(color)} is a legacy color; only imported art may use it`);
@@ -545,13 +594,13 @@ export function resolve(sources, name, seen = []) {
  * @returns {Resolved}
  */
 function resolveBlock(name, obj) {
-  const { surface } = obj;
+  const { surface, sides } = obj;
   /** @type {SpriteLayer[]} */
   const layers = surface ? [isFrames(surface) ? { loop: surface.loop, prefix: surface.prefix, frames: surface.frames } : { map: surface.map }] : [];
   const [width, height] = blockSize(obj.size);
   return {
     name,
-    block: { size: obj.size, faces: { ...obj.faces }, surface },
+    block: { size: obj.size, faces: { ...obj.faces }, surface, ...(sides ? { sides } : {}) },
     legacy: false,
     character: false,
     anchor: [0, 0],
@@ -585,6 +634,16 @@ export function usedKeys(resolved) {
 }
 
 /**
+ * The keys that a block's side maps actually use, in key order.
+ * @param {Block} block
+ */
+export function usedSideKeys({ sides }) {
+  if (!sides) return [];
+  const used = new Set([...sides.left, ...sides.right].flatMap((row) => [...row]));
+  return Object.keys(sides.keys).filter((k) => used.has(k));
+}
+
+/**
  * The width and height of the pixels an object paints, across every layer
  * and frame.
  * @param {Resolved} resolved
@@ -611,7 +670,9 @@ export function paintedSize(resolved) {
  * @param {Resolved} resolved
  */
 export function usedColors(sources, resolved) {
-  const names = [...Object.values(resolved.block?.faces ?? {}), ...usedKeys(resolved).map((k) => resolved.keys[k])];
+  const { block } = resolved;
+  const sideColors = block?.sides ? usedSideKeys(block).map((k) => /** @type {Sides} */ (block.sides).keys[k]) : [];
+  const names = [...Object.values(block?.faces ?? {}), ...sideColors, ...usedKeys(resolved).map((k) => resolved.keys[k])];
   return [...new Set(names.map((n) => sources.colors.get(n)?.hex ?? n))];
 }
 
@@ -677,6 +738,16 @@ function paint(layer, map, keys, ox, oy, clip) {
       list.push(`${ox + x},${oy + y}`);
     }
   });
+  layByKey(layer, byKey, keys);
+}
+
+/**
+ * Lays pixels grouped by key onto a layer, in key order.
+ * @param {Layer} layer
+ * @param {Map<string, string[]>} byKey
+ * @param {Record<string, string>} keys
+ */
+function layByKey(layer, byKey, keys) {
   for (const key of Object.keys(keys)) {
     const pixels = byKey.get(key);
     if (!pixels) continue;
@@ -686,21 +757,54 @@ function paint(layer, map, keys, ox, oy, clip) {
 }
 
 /**
+ * Where each pixel of a side face falls in its side map. Column c of the face
+ * (from its leftmost x) reads map column c mod 16. Row r below that column's
+ * first face pixel, which is one pixel below the top's edge, reads map row
+ * r mod 16. So the map is sheared onto the face, follows the top edge, and
+ * repeats along the face and up every level.
+ * @param {string[]} face  the face's pixels, from blockFaces
+ * @returns {{ p: string, col: number, row: number }[]}
+ */
+export function sideCells(face) {
+  const points = face.map((p) => p.split(',').map(Number));
+  const x0 = Math.min(...points.map(([x]) => x));
+  /** @type {Map<number, number>} */
+  const first = new Map();
+  for (const [x, y] of points) first.set(x, Math.min(first.get(x) ?? Infinity, y));
+  return points.map(([x, y], i) => ({ p: face[i], col: (x - x0) % SIDE_W, row: (y - /** @type {number} */ (first.get(x))) % SIDE_H }));
+}
+
+/**
  * Draws a block with its first tile's top-face center at (cx, cy): the three
- * faces, then the surface on every tile's top, then the edge over everything.
+ * faces, then the side textures, then the surface on every tile's top, then
+ * the edge over everything.
  * @param {Block} block
  * @param {Record<string, string>} keys  the surface's keys
  * @param {number} cx
  * @param {number} cy
  * @param {Group} group
  */
-function drawBlock({ size, faces, surface }, keys, cx, cy, group) {
+function drawBlock({ size, faces, surface, sides }, keys, cx, cy, group) {
   const shapes = blockFaces(size, [cx, cy]);
   const base = openLayer(group);
   for (const face of /** @type {const} */ (['top', 'left', 'right'])) {
     if (!faces[face]) continue;
     base.colors.add(faces[face]);
     for (const p of shapes[face]) base.pixels.set(p, faces[face]);
+  }
+  if (sides) {
+    /** @type {Map<string, string[]>} */
+    const byKey = new Map();
+    for (const face of /** @type {const} */ (['left', 'right'])) {
+      for (const { p, col, row } of sideCells(shapes[face])) {
+        const ch = sides[face][row][col];
+        if (ch === '.') continue;
+        let list = byKey.get(ch);
+        if (!list) byKey.set(ch, (list = []));
+        list.push(p);
+      }
+    }
+    layByKey(base, byKey, sides.keys);
   }
   if (surface) {
     /** @param {Layer} layer @param {string[]} map */

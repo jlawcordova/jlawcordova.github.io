@@ -76,15 +76,60 @@ export default {
     right: 'soil-3',
     edge: 'soil-4',
   },
+  sides: {
+    keys: {
+      g: 'grass-3',
+      G: 'grass-4',
+      s: 'soil-3',
+      S: 'soil-4',
+    },
+    left: [
+      'gggggggggggggggg',
+      'GGGGGGGGGGGGGGGG',
+      '..G.....G....G..',
+      '................',
+      '................',
+      '................',
+      '................',
+      '....s...........',
+      '................',
+      '................',
+      '................',
+      '..........ss....',
+      '..........ss....',
+      '................',
+      '................',
+      '................',
+    ],
+    right: [
+      'GGGGGGGGGGGGGGGG',
+      'GGGGGGGGGGGGGGGG',
+      '...G......G.....',
+      '................',
+      '................',
+      '................',
+      '.........S......',
+      '................',
+      '................',
+      '................',
+      '...SS...........',
+      '...SS...........',
+      '................',
+      '................',
+      '................',
+      '................',
+    ],
+  },
 };
 ```
 
 - **`size`** is `[tiles wide, tiles deep, levels high]`. `[1, 1, 0]` is a flat tile and `[1, 1, 1]` a cube. A block is at most 64×64 pixels, so `[2, 2, 0]` fits and `[3, 3, 0]` doesn't.
-- **`faces`**: `top` is the light shade, `left` the mid shade and `right` the shadow shade (R28). `left` and `right` are required when there are levels, and refused on a flat block. `edge` is optional: a 1-pixel outline around the whole block, drawn last. The faces use 1–4 colors (a flat block just its top), and the whole object, surface included, stays within 12.
+- **`faces`**: `top` is the light shade, `left` the mid shade and `right` the shadow shade (R28). `left` and `right` are required when there are levels, and refused on a flat block. `edge` is optional: a 1-pixel outline around the whole block, drawn last. The faces use 1–4 colors (a flat block just its top), and the whole object, surface and sides included, stays within 12.
 - **Placement.** `at` is the top-face center of the block's first tile. The sides hang `levels × 16` pixels *below* it, so a cube on the ground is placed at `[col, row, 0]` and its sides reach one level under the ground. To sit a cube on top of a tile, place it at level 1: `[col, row, 1]`. A `[2, 1, 2]` block covers the tiles `[col, row]` and `[col + 1, row]`.
 - **Paint order.** Items paint in order, so list a scene back to front: by `col + row`, smallest first.
 - **A tile is 30 pixels wide at its widest row,** not 32: pixel centers never land on an edge, so neighbouring tiles share no pixel and leave no gap. Don't nudge blocks by a pixel to hide a seam; there isn't one.
 - **`surface`** (optional) paints a one-tile (32×16) sprite over each tile of the top face, clipped to each tile's own diamond. It's `{ keys, map }`, or `{ keys, loop, prefix, frames }` for a loop. `water` uses five frames of `wf w0`…`w4`, which is what the site's CSS animates. Frame 0 is the reduced-motion frame. Surface colors count toward the 12-color cap.
+- **`sides`** (optional, blocks with levels only) textures the left and right faces: `{ keys, left, right }`, each map 16 columns by 16 rows. A map is face-local: row 0 is the first pixel below the top's edge in each column, so a band that follows the top edge is just the map's first rows (the grass band above). Column *c* of a face reads map column *c* mod 16, and the map repeats up every level. A 1×1 face is 15 pixels wide, so it shows columns 0–14, and column 15 shows only where a longer face repeats the map. The engine draws the faces, then the sides, then the surface, then `edge`. Side colors count toward the 12-color cap.
 - `npm run art -- --new object <name> --kind block` writes a starter block.
 
 ### Outfits (`extends`)

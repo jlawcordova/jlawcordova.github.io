@@ -895,20 +895,239 @@ describe('blocks (R28, D3, D4)', () => {
     assert.ok(still.includes("  surface: {\n    keys: {\n      a: 'b',\n    },\n    map: [\n      'a',\n    ],\n  },\n"));
   });
 
-  it('R9, L4: a random block survives save and reload byte for byte', async () => {
+  it('R9, L4: a random block, with and without sides, survives save and reload byte for byte', async () => {
+    let withSides = 0;
     for (const seed of SEEDS) {
       const r = rng(seed);
       const obj = { kind: 'block', size: [1 + Math.floor(r() * 3), 1 + Math.floor(r() * 3), Math.floor(r() * 3)], faces: { top: 'grass-2' } };
       if (obj.size[2] > 0) Object.assign(obj.faces, { left: 'wood-3', right: 'grass-4' });
       if (r() < 0.5) obj.faces.edge = 'ink';
+      if (obj.size[2] > 0) {
+        const map = () => Array.from({ length: 16 }, () => Array.from({ length: 16 }, () => (r() < 0.5 ? '.' : 'ab\'%'[Math.floor(r() * 4)])).join(''));
+        obj.sides = { keys: { a: 'cream', b: 'ink', "'": 'grass-4', '%': 'wood-3' }, left: map(), right: map() };
+        withSides++;
+      }
       const text = serialize(obj);
-      assert.equal(serialize(await load(text)), text, `seed ${seed}`);
+      const loaded = await load(text);
+      assert.deepEqual(loaded, obj, `seed ${seed}`);
+      assert.equal(serialize(loaded), text, `seed ${seed}`);
+      assert.deepEqual(validate(src({ blk: loaded })), [], `seed ${seed}`);
     }
+    assert.ok(withSides > 0, 'some random blocks have sides');
   });
 
   it('R27: --check names a block\'s kind, size and colors', () => {
     const sources = src({ block: BLOCK });
     assert.equal(describeObject(sources, resolve(sources, 'block')), 'block 1×1×1 · 30×32 · 4 colors (of 12) · 1 frame');
+  });
+});
+
+describe('block sides (hero island detail spec R6)', () => {
+  // One world color per letter: t, l and r for the faces, a to f for the
+  // side textures. Pictures show faces in uppercase and textures in lowercase.
+  const SIDE_PALETTE = { world: Object.fromEntries([...'tlrabcdef'].map((n, i) => [n, `#0000${(16 + i).toString(16).toUpperCase()}`])), outfit: {}, legacy: {} };
+  const sideMap = (cell) => Array.from({ length: 16 }, (_, r) => Array.from({ length: 16 }, (_, c) => cell(r, c) ?? '.').join(''));
+  /** A two-row band on the left (with column 15 and one speckle marked) and one row on the right (with one speckle). */
+  const SIDES = {
+    keys: Object.fromEntries([...'abcdef'].map((k) => [k, k])),
+    left: sideMap((r, c) => (r === 0 ? 'a' : r === 1 ? 'b' : c === 15 ? 'c' : r === 6 && c === 3 ? 'd' : undefined)),
+    right: sideMap((r, c) => (r === 0 ? 'e' : r === 4 && c === 10 ? 'f' : undefined)),
+  };
+  const cube = (size, extra = {}) => ({ kind: 'block', size, faces: { top: 't', left: 'l', right: 'r' }, sides: SIDES, ...extra });
+  const letter = (name) => (['t', 'l', 'r'].includes(name) ? name.toUpperCase() : name);
+  /** What an object paints, as text rows from `origin`, `width` wide and `height` high. */
+  const picture = (sources, name, [x0, y0], width, height) => {
+    const drawn = composite(renderObject(sources, name));
+    const rows = Array.from({ length: height }, (_, r) => Array.from({ length: width }, (_, c) => (drawn.has(`${x0 + c},${y0 + r}`) ? letter(drawn.get(`${x0 + c},${y0 + r}`)) : '.')).join(''));
+    return { rows, count: drawn.size };
+  };
+  // Checked by eye: each band follows its column's top edge at 2:1, column 15
+  // shows only where a face is longer than one tile, and the map repeats on
+  // every level. Then frozen here.
+  const PICTURES = {
+    '1,1,1': [
+      '..............TT..............',
+      '............TTTTTT............',
+      '..........TTTTTTTTTT..........',
+      '........TTTTTTTTTTTTTT........',
+      '......TTTTTTTTTTTTTTTTTT......',
+      '....TTTTTTTTTTTTTTTTTTTTTT....',
+      '..TTTTTTTTTTTTTTTTTTTTTTTTTT..',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'aaTTTTTTTTTTTTTTTTTTTTTTTTTTee',
+      'bbaaTTTTTTTTTTTTTTTTTTTTTTeeRR',
+      'LLbbaaTTTTTTTTTTTTTTTTTTeeRRRR',
+      'LLLLbbaaTTTTTTTTTTTTTTeeRRRRRR',
+      'LLLLLLbbaaTTTTTTTTTTeeRRRRRRRR',
+      'LLLLLLLLbbaaTTTTTTeeRRRRRRRRRR',
+      'LLLLLLLLLLbbaaTTeeRRRRRRRfRRRR',
+      'LLLdLLLLLLLLbbaeRRRRRRRRRRRRRR',
+      'LLLLLLLLLLLLLLbRRRRRRRRRRRRRRR',
+      'LLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      'LLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      'LLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      'LLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      'LLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      'LLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      'LLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      '..LLLLLLLLLLLLLRRRRRRRRRRRRR..',
+      '....LLLLLLLLLLLRRRRRRRRRRR....',
+      '......LLLLLLLLLRRRRRRRRR......',
+      '........LLLLLLLRRRRRRR........',
+      '..........LLLLLRRRRR..........',
+      '............LLLRRR............',
+      '..............LR..............',
+    ],
+    '2,1,2': [
+      '..............TT..............................',
+      '............TTTTTT............................',
+      '..........TTTTTTTTTT..........................',
+      '........TTTTTTTTTTTTTT........................',
+      '......TTTTTTTTTTTTTTTTTT......................',
+      '....TTTTTTTTTTTTTTTTTTTTTT....................',
+      '..TTTTTTTTTTTTTTTTTTTTTTTTTT..................',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT................',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT..............',
+      'aaTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT............',
+      'bbaaTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT..........',
+      'LLbbaaTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT........',
+      'LLLLbbaaTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT......',
+      'LLLLLLbbaaTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT....',
+      'LLLLLLLLbbaaTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT..',
+      'LLLLLLLLLLbbaaTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'LLLdLLLLLLLLbbaaTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'LLLLLLLLLLLLLLbbaaTTTTTTTTTTTTTTTTTTTTTTTTTTee',
+      'LLLLLLLLLLLLLLLcbbaaTTTTTTTTTTTTTTTTTTTTTTeeRR',
+      'LLLLLLLLLLLLLLLcLLbbaaTTTTTTTTTTTTTTTTTTeeRRRR',
+      'LLLLLLLLLLLLLLLcLLLLbbaaTTTTTTTTTTTTTTeeRRRRRR',
+      'LLLLLLLLLLLLLLLcLLLLLLbbaaTTTTTTTTTTeeRRRRRRRR',
+      'LLLLLLLLLLLLLLLcLLLLLLLLbbaaTTTTTTeeRRRRRRRRRR',
+      'LLLLLLLLLLLLLLLcLLLLLLLLLLbbaaTTeeRRRRRRRfRRRR',
+      'LLLLLLLLLLLLLLLcLLLdLLLLLLLLbbaeRRRRRRRRRRRRRR',
+      'aaLLLLLLLLLLLLLcLLLLLLLLLLLLLLbRRRRRRRRRRRRRRR',
+      'bbaaLLLLLLLLLLLcLLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      'LLbbaaLLLLLLLLLcLLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      'LLLLbbaaLLLLLLLcLLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      'LLLLLLbbaaLLLLLcLLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      'LLLLLLLLbbaaLLLcLLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      'LLLLLLLLLLbbaaLcLLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      'LLLdLLLLLLLLbbaaLLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      'LLLLLLLLLLLLLLbbaaLLLLLLLLLLLLLRRRRRRRRRRRRRee',
+      'LLLLLLLLLLLLLLLcbbaaLLLLLLLLLLLRRRRRRRRRRReeRR',
+      'LLLLLLLLLLLLLLLcLLbbaaLLLLLLLLLRRRRRRRRReeRRRR',
+      'LLLLLLLLLLLLLLLcLLLLbbaaLLLLLLLRRRRRRReeRRRRRR',
+      'LLLLLLLLLLLLLLLcLLLLLLbbaaLLLLLRRRRReeRRRRRRRR',
+      'LLLLLLLLLLLLLLLcLLLLLLLLbbaaLLLRRReeRRRRRRRRRR',
+      'LLLLLLLLLLLLLLLcLLLLLLLLLLbbaaLReeRRRRRRRfRRRR',
+      'LLLLLLLLLLLLLLLcLLLdLLLLLLLLbbaeRRRRRRRRRRRRRR',
+      '..LLLLLLLLLLLLLcLLLLLLLLLLLLLLbRRRRRRRRRRRRRRR',
+      '....LLLLLLLLLLLcLLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      '......LLLLLLLLLcLLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      '........LLLLLLLcLLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      '..........LLLLLcLLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      '............LLLcLLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      '..............LcLLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      '................LLLLLLLLLLLLLLLRRRRRRRRRRRRRRR',
+      '..................LLLLLLLLLLLLLRRRRRRRRRRRRR..',
+      '....................LLLLLLLLLLLRRRRRRRRRRR....',
+      '......................LLLLLLLLLRRRRRRRRR......',
+      '........................LLLLLLLRRRRRRR........',
+      '..........................LLLLLRRRRR..........',
+      '............................LLLRRR............',
+      '..............................LR..............',
+    ],
+  };
+
+  it('R6: pixel-exact side textures for [1,1,1] and [2,1,2]', () => {
+    for (const [size, rows] of Object.entries(PICTURES)) {
+      const sources = src({ blk: cube(size.split(',').map(Number)) }, {}, SIDE_PALETTE);
+      const got = picture(sources, 'blk', [-15, -8], rows[0].length, rows.length);
+      assert.deepEqual(got.rows, rows, `size ${size}`);
+      assert.equal(got.count, rows.join('').replaceAll('.', '').length, `size ${size}: no pixel outside the picture`);
+    }
+  });
+
+  it('R6, L4: a cube\'s side maps land where the conversion formulas say (pixel-artist agent, Blocks)', () => {
+    for (const seed of SEEDS) {
+      const r = rng(seed);
+      const random = () => sideMap(() => (r() < 0.4 ? '.' : 'abcdef'[Math.floor(r() * 6)]));
+      const sides = { ...SIDES, left: random(), right: random() };
+      const drawn = composite(renderObject(src({ blk: cube([1, 1, 1], { sides }) }, {}, SIDE_PALETTE), 'blk'));
+      // A 30×32 cube sprite anchored at [15, 8]: left column i, row r is sprite[9 + ⌊i/2⌋ + r][i],
+      // and right column j, row r is sprite[16 − ⌈j/2⌉ + r][15 + j].
+      const want = (map, row, col, face) => (map[row][col] === '.' ? face : map[row][col]);
+      for (let col = 0; col < 15; col++) {
+        for (let row = 0; row < 16; row++) {
+          const [lx, ly] = [col, 9 + Math.floor(col / 2) + row];
+          const [rx, ry] = [15 + col, 16 - Math.ceil(col / 2) + row];
+          assert.equal(drawn.get(`${lx - 15},${ly - 8}`), want(sides.left, row, col, 'l'), `seed ${seed}: left column ${col}, row ${row}`);
+          assert.equal(drawn.get(`${rx - 15},${ry - 8}`), want(sides.right, row, col, 'r'), `seed ${seed}: right column ${col}, row ${row}`);
+        }
+      }
+    }
+  });
+
+  it('R6: sides paint after the faces, under the top surface and the edge', () => {
+    const full = (ch, width) => Array.from({ length: 16 }, () => ch.repeat(width));
+    const blk = cube([1, 1, 1], {
+      faces: { top: 't', left: 'l', right: 'r', edge: 'd' },
+      surface: { keys: { b: 'b' }, loop: 'wf', prefix: 'w', frames: [full('b', 32)] },
+      sides: { keys: { a: 'a' }, left: full('a', 16), right: full('a', 16) },
+    });
+    const sources = src({ blk }, { s: scene([{ object: 'blk', at: { px: [0, 0] } }]) }, SIDE_PALETTE);
+    const { root } = renderScene(sources, 's');
+    assert.deepEqual(root.children.map((c) => c.attrs?.[0]?.[1] ?? 'layer'), ['layer', 'wf w0', 'layer']);
+    const drawn = composite(root);
+    const faces = blockFaces([1, 1, 1], [0, 0]);
+    const edge = new Set(faces.edge);
+    for (const p of faces.edge) assert.equal(drawn.get(p), 'd', `edge ${p}`);
+    for (const p of [...faces.left, ...faces.right]) if (!edge.has(p)) assert.equal(drawn.get(p), 'a', `side ${p}`);
+    for (const p of faces.top) if (!edge.has(p)) assert.equal(drawn.get(p), 'b', `top ${p}`);
+  });
+
+  it('R6: sides are refused on a flat block, and need 16×16 maps with known keys', () => {
+    const bad = (sides, extra = {}) => validate(src({ blk: cube([1, 1, 1], { sides, ...extra }) }, {}, SIDE_PALETTE));
+    const rows = (n, w, ch = '.') => Array.from({ length: n }, () => ch.repeat(w));
+    assert.deepEqual(bad(SIDES), []);
+    assert.deepEqual(bad(SIDES, { size: [1, 1, 0], faces: { top: 't' } }), ['objects/blk.mjs: sides: a flat block (0 levels) has no sides']);
+    assert.deepEqual(bad({ ...SIDES, left: rows(15, 16) }), ['objects/blk.mjs: sides.left: 15 rows, expected 16, one level']);
+    assert.deepEqual(bad({ ...SIDES, right: [...rows(3, 16), '.'.repeat(17), ...rows(12, 16)] }), ["objects/blk.mjs: sides.right, row 3: 17 wide, expected 16, one tile's face"]);
+    assert.deepEqual(bad({ ...SIDES, left: [`z${'.'.repeat(15)}`, ...rows(15, 16)] }), ["objects/blk.mjs: sides.left, row 0, column 0: key 'z' is not in keys"]);
+    assert.deepEqual(bad({ ...SIDES, keys: { ...SIDES.keys, a: 'nope' } }), ["objects/blk.mjs: sides, key 'a': 'nope' is not in the palette"]);
+    assert.deepEqual(bad({ keys: SIDES.keys, left: SIDES.left }), ['objects/blk.mjs: sides.right is missing']);
+    assert.deepEqual(bad({ ...SIDES, top: rows(16, 16) }), ["objects/blk.mjs: sides: unknown property 'top'"]);
+    assert.deepEqual(bad('stripes'), ['objects/blk.mjs: sides: must be { keys, left, right }']);
+  });
+
+  it('R6, R26: side colors are world colors only, and count toward the 12-color cap', () => {
+    const blk = (sides) => validate(src({ blk: { ...cube([1, 1, 1]), faces: { top: 'grass-2', left: 'wood-3', right: 'grass-4' }, sides } }));
+    const one = (color) => ({ keys: { a: color }, left: sideMap((r) => (r === 0 ? 'a' : undefined)), right: sideMap(() => undefined) });
+    assert.deepEqual(blk(one('cream')), []);
+    assert.deepEqual(blk(one('c-6f8a55')), ["objects/blk.mjs: sides, key 'a': 'c-6f8a55' is a legacy color; only imported art may use it"]);
+    assert.deepEqual(blk(one('teal-1')), ["objects/blk.mjs: sides, key 'a': 'teal-1' is an outfit color; only objects that extend character may use it"]);
+    const wide = { ...SIDE_PALETTE, world: { ...SIDE_PALETTE.world, ...Object.fromEntries([...Array(10).keys()].map((i) => [`w-${i}`, `#0001${String(i).padStart(2, '0')}`])) } };
+    const keys = Object.fromEntries([...Array(10).keys()].map((i) => [String(i), `w-${i}`]));
+    const many = { keys, left: sideMap((r, c) => (r === 0 && c < 10 ? String(c) : undefined)), right: sideMap(() => undefined) };
+    assert.deepEqual(validate(src({ blk: cube([1, 1, 1], { sides: many }) }, {}, wide)), ['objects/blk.mjs: uses 13 colors, max 12']);
+    const unused = { ...many, left: sideMap((r, c) => (r === 0 && c < 9 ? String(c) : undefined)) };
+    assert.deepEqual(validate(src({ blk: cube([1, 1, 1], { sides: unused }) }, {}, wide)), [], 'a key no map uses is not counted');
+  });
+
+  it('R27: --check counts a block\'s side colors', () => {
+    const sources = src({ blk: cube([1, 1, 1]) }, {}, SIDE_PALETTE);
+    assert.equal(describeObject(sources, resolve(sources, 'blk')), 'block 1×1×1 · 30×32 · 9 colors (of 12) · 1 frame');
+  });
+
+  it('R9: a block with sides serializes to its canonical text, sides after the surface', () => {
+    const surface = { keys: { a: 'cream' }, map: Array.from({ length: 16 }, () => '.'.repeat(32)) };
+    const text = serialize({ kind: 'block', size: [1, 1, 1], faces: { top: 't', left: 'l', right: 'r' }, surface, sides: SIDES });
+    const lines = text.split('\n');
+    const at = lines.indexOf('  sides: {');
+    assert.ok(at > lines.indexOf('  surface: {'), 'sides come after the surface');
+    assert.deepEqual(lines.slice(at, at + 11), ['  sides: {', '    keys: {', "      a: 'a',", "      b: 'b',", "      c: 'c',", "      d: 'd',", "      e: 'e',", "      f: 'f',", '    },', '    left: [', `      '${SIDES.left[0]}',`]);
+    assert.deepEqual(lines.slice(at + 26, at + 29), ['    ],', '    right: [', `      '${SIDES.right[0]}',`]);
+    assert.equal(lines.slice(-4).join('\n'), '    ],\n  },\n};\n');
   });
 });
 
