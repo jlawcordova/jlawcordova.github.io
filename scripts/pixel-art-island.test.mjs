@@ -424,8 +424,11 @@ describe('hero island structure', () => {
     const house = composite(renderScene(sources, 'slice-6-probe').root);
     const showing = [...tile.keys()].filter((p) => !house.has(p));
     assert.deepEqual(showing, ['-34,31', '-34,32'], 'the house hides the tile at [0, 3]');
-    // The roof's right outline, the old house's rightmost column, is the house's too.
-    for (const y of [30, 31, 32]) assert.equal(house.get(`-35,${y}`), 'ink', `the roof's right outline at -35,${y}`);
+    // The roof's right edge, the old house's rightmost column, is the house's too, painted in a world color (no outline).
+    for (const y of [30, 31, 32]) {
+      const color = house.get(`-35,${y}`);
+      assert.ok(color && color !== 'ink' && color in sources.palette.world, `the roof's right edge at -35,${y} is ${color}`);
+    }
   });
 
   it('R1, R2: every object the island places is within 64×64 and 12 colors, in world colors', () => {
