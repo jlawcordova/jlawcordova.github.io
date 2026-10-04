@@ -1,9 +1,10 @@
-// Tests for `npm run art`'s command line (pixel-art engine spec D6, R38):
-// --new, --check, --preview and the plain compile, each run as a process on
-// a temp copy of the sources. No browser and no network.
+// Tests for `npm run art`'s command line (pixel-art engine spec D6, R38, and
+// the hero island detail spec's tooling): --new, --check, --preview, --scale,
+// --sizes and the plain compile, each run as a process on a temp copy of the
+// sources. No browser and no network.
 
 import assert from 'node:assert/strict';
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { cp, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -255,6 +256,47 @@ describe('--preview (R29, R38)', () => {
     assert.deepEqual(await size('outfit-front-end@3x.png'), [w * 3, h * 3]);
   });
 
+  it('--scale N also writes <name>@Nx.png, N times the 1× size', async () => {
+    const dir = await workspace();
+    const { code, out } = art(dir, '--preview', 'tile', '--scale', '6');
+    assert.equal(code, 0, out);
+    assert.deepEqual((await readdir(join(dir, '.art-preview'))).sort(), ['tile@1x.png', 'tile@2x.png', 'tile@3x.png', 'tile@4x.png', 'tile@6x.png']);
+    const size = async (f) => {
+      const buf = await readFile(join(dir, '.art-preview', f));
+      return [buf.readUInt32BE(16), buf.readUInt32BE(20)];
+    };
+    const [w, h] = await size('tile@1x.png');
+    assert.deepEqual(await size('tile@6x.png'), [w * 6, h * 6]);
+    assert.equal(art(dir, '--preview', 'tile', '--scale', '3').code, 0, 'a scale from 1 to 4 adds no file');
+  });
+
+  it('--scale refuses a bad number, and needs --preview', async () => {
+    const dir = await workspace();
+    for (const [args, message] of [
+      [['--preview', 'tile', '--scale', '0'], '--scale 0: give a whole number from 1 to 16\n'],
+      [['--preview', 'tile', '--scale', '17'], '--scale 17: give a whole number from 1 to 16\n'],
+      [['--preview', 'tile', '--scale', '2.5'], '--scale 2.5: give a whole number from 1 to 16\n'],
+      [['--scale', '6'], '--scale goes with --preview\n'],
+    ]) {
+      const { code, err } = art(dir, ...args);
+      assert.equal(code, 1, args.join(' '));
+      assert.equal(err, message, args.join(' '));
+    }
+    assert.ok(!existsSync(join(dir, '.art-preview')));
+  });
+
+  it('a closed stdout (piped into head) neither crashes nor stops the previews', async () => {
+    const dir = await workspace();
+    const child = spawn(process.execPath, [SCRIPT, '--source', join(dir, 'source'), '--preview', 'hero-island', '--scale', '6'], { cwd: dir });
+    child.stdout.destroy();
+    let err = '';
+    child.stderr.on('data', (chunk) => (err += chunk));
+    const code = await new Promise((done) => child.on('close', done));
+    assert.equal(err, '');
+    assert.equal(code, 0);
+    assert.equal((await readdir(join(dir, '.art-preview'))).length, 5);
+  });
+
   it('R29: a scene previews at its viewBox', async () => {
     const dir = await workspace();
     assert.equal(art(dir, '--preview', 'range-sprite').code, 0);
@@ -290,5 +332,54 @@ describe('--preview (R29, R38)', () => {
     assert.equal(code, 1);
     assert.match(err, /is a legacy color; only imported art may use it/);
     assert.ok(!existsSync(join(dir, '.art-preview')));
+  });
+});
+
+describe('--sizes (hero island detail spec, Tooling)', () => {
+  const git = (dir, ...args) => {
+    const r = spawnSync('git', ['-c', 'user.name=Test', '-c', 'user.email=test@example.com', ...args], { cwd: dir, encoding: 'utf8' });
+    assert.equal(r.status, 0, r.stderr);
+  };
+  const row = (out, name) => new RegExp(`^${name} +.*$`, 'm').exec(out)?.[0].trim().split(/ {2,}/);
+
+  it('prints the scene\'s bytes, and each object\'s and color\'s, and says when there is no HEAD', async () => {
+    const dir = await workspace();
+    const { code, out, err } = art(dir, '--sizes', 'hero-island');
+    assert.equal(code, 0, err);
+    const [, raw, gzip] = /^hero-island\.svg: ([\d,]+) B raw, ([\d,]+) B gzip$/m.exec(out) ?? [];
+    const committed = await readFile(join(ROOT, 'src/assets/pixel-art/hero-island.svg'));
+    assert.equal(Number(raw.replaceAll(',', '')), committed.length, 'the raw total is the compiled SVG');
+    assert.ok(Number(gzip.replaceAll(',', '')) > 0);
+    assert.match(out, /^HEAD: not available \(not in a git repository with a HEAD commit\)$/m);
+    const [name, placed, objectRaw, deltaRaw] = row(out, 'tile');
+    assert.deepEqual([name, placed, deltaRaw], ['tile', '17', '—']);
+    assert.ok(Number(objectRaw.replaceAll(',', '')) > 0);
+    assert.ok(row(out, 'grass-2 #8FA56E'), 'colors are listed by their world name');
+  });
+
+  it('compares with the sources at HEAD', async () => {
+    const dir = await workspace();
+    git(dir, 'init', '-q');
+    git(dir, 'add', 'source');
+    git(dir, 'commit', '-q', '-m', 'sources');
+    const path = join(dir, 'source/scenes/hero-island.mjs');
+    const text = await readFile(path, 'utf8');
+    const fewer = text.replace(/^ *\{ object: 'tile', at: \{ tile: \[[^\]]*\] \} \},\n/m, '');
+    assert.notEqual(fewer, text);
+    await writeFile(path, fewer);
+    const { code, out, err } = art(dir, '--sizes', 'scenes/hero-island');
+    assert.equal(code, 0, err);
+    assert.match(out, /^HEAD: [\d,]+ B raw, [\d,]+ B gzip \(-[\d,]+ raw, -[\d,]+ gzip\)$/m);
+    const [, placed, , deltaRaw] = row(out, 'tile');
+    assert.equal(placed, '16');
+    assert.match(deltaRaw, /^-[\d,]+$/);
+    assert.equal(row(out, 'cloud-a')[3], '+0', 'an object far from the change costs the same raw bytes');
+  });
+
+  it('takes a scene, not an object', async () => {
+    const dir = await workspace();
+    const { code, err } = art(dir, '--sizes', 'tile');
+    assert.equal(code, 1);
+    assert.equal(err, '--sizes takes a scene; tile is an object\n');
   });
 });

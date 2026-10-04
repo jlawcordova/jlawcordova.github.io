@@ -18,15 +18,20 @@
 //   npm run art -- --check <name>        validate one object or scene
 //   npm run art -- --preview <name>      write .art-preview/<name>@{1,2,3,4}x.png
 //                                        (name palette: the world palette's swatch sheet)
+//   npm run art -- --preview <name> --scale N   also write <name>@Nx.png (N up to 16)
+//   npm run art -- --sizes <scene>       print the bytes each object and color adds to
+//                                        the compiled scene, against the sources at HEAD
 //   npm run art -- --new object <name> [--kind sprite|block] [--extends character] [--size WxH]
 //   npm run art -- --new scene <name>    write a starter source
 // --source <dir> and --out <dir> replace source/ and the output folder.
 // A name can be qualified as objects/<name> or scenes/<name>.
 // Exit code 0 when everything is fine, 1 on any problem.
 
+import { execFileSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
-import { mkdir, readdir, writeFile } from 'node:fs/promises';
-import { join, relative, resolve as resolvePath } from 'node:path';
+import { mkdir, mkdtemp, readdir, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { dirname, join, relative, resolve as resolvePath } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
 import { gzipSync } from 'node:zlib';
@@ -49,6 +54,7 @@ import { encodePng, previewColors, renderPalette, renderPreview } from './pixel-
 const ART_DIR = fileURLToPath(new URL('../src/assets/pixel-art/', import.meta.url));
 const SOURCE_DIR = join(ART_DIR, 'source');
 const PREVIEW_DIR = '.art-preview';
+const MAX_SCALE = 16;
 /** Each output's budget in bytes: the engine's, or its own (hero island detail spec R10). */
 export const BUDGET = { raw: 100 * 1024, gzip: 25 * 1024 };
 export const OUTPUT_BUDGETS = { 'hero-island.svg': { raw: 500 * 1024, gzip: 125 * 1024 } };
@@ -364,7 +370,7 @@ function check(sources, problems, query) {
 
 const countItems = (items) => items.reduce((n, item) => n + (item.group ? countItems(item.items) : 1), 0);
 
-async function preview(sources, problems, query) {
+async function preview(sources, problems, query, extraScale) {
   // The swatch sheet of the world palette (R31), not an object or a scene.
   const sheet = query === 'palette';
   if (sheet) {
@@ -376,11 +382,121 @@ async function preview(sources, problems, query) {
   const { image } = target ? renderPreview(sources, target, colors) : renderPalette(sources, colors);
   await mkdir(PREVIEW_DIR, { recursive: true });
   const name = target ? (target.object ?? target.scene) : 'palette';
-  for (const scale of [1, 2, 3, 4]) {
+  for (const scale of new Set([1, 2, 3, 4, extraScale ?? 1])) {
     const file = join(PREVIEW_DIR, `${name}@${scale}x.png`);
     await writeFile(file, encodePng(image, scale));
     console.log(`wrote ${file} (${image.width * scale}×${image.height * scale})`);
   }
+  return true;
+}
+
+/** A scene's compiled size in bytes, raw and gzip, without the lossless check. */
+function measure(sources, name) {
+  const output = optimizeSvg(toRectSvg(renderScene(sources, name), (color) => sources.colors.get(color).hex));
+  return { output, raw: Buffer.byteLength(output), gzip: gzipSync(output).length };
+}
+
+/** The scene's items without any that place `object`. */
+const withoutObject = (items, object) =>
+  items.filter((item) => item.object !== object).map((item) => (item.group ? { ...item, items: withoutObject(item.items, object) } : item));
+
+/** How many times each object is placed. */
+function placements(items, counts = new Map()) {
+  for (const item of items) {
+    if (item.group) placements(item.items, counts);
+    else counts.set(item.object, (counts.get(item.object) ?? 0) + 1);
+  }
+  return counts;
+}
+
+/**
+ * What each object and each color costs in a compiled scene: the bytes the
+ * scene loses, raw and gzip, when the object's items are left out or the
+ * color's paths are dropped. Costs overlap a little, so they don't add up to
+ * the total exactly.
+ */
+function sceneSizes(sources, name) {
+  const scene = sources.scenes.get(name);
+  const total = measure(sources, name);
+  const objects = new Map();
+  for (const [object, placed] of placements(scene.items)) {
+    sources.scenes.set('sizes-probe', { ...scene, output: undefined, items: withoutObject(scene.items, object) });
+    const less = measure(sources, 'sizes-probe');
+    objects.set(object, { placed, raw: total.raw - less.raw, gzip: total.gzip - less.gzip });
+  }
+  sources.scenes.delete('sizes-probe');
+  // A hex can have several names; the first tier's (world before legacy) wins.
+  const names = new Map();
+  for (const [color, { hex }] of sources.colors) if (!names.has(hex)) names.set(hex, color);
+  const colors = new Map();
+  for (const hex of new Set([...total.output.matchAll(/<path fill="(#[0-9A-F]{6})"/g)].map((m) => m[1]))) {
+    const less = total.output.replace(new RegExp(`<path fill="${hex}"[^>]*/>`, 'g'), '');
+    colors.set(`${names.get(hex) ?? '?'} ${hex}`, { raw: total.raw - Buffer.byteLength(less), gzip: total.gzip - gzipSync(less).length });
+  }
+  return { raw: total.raw, gzip: total.gzip, objects, colors };
+}
+
+/**
+ * The sources as committed at HEAD, or the reason they can't be read. They're
+ * copied from git into a temp folder, which the caller removes.
+ */
+async function headSources(dir) {
+  const git = (...args) => execFileSync('git', ['-C', dir, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 64 * 1024 * 1024 });
+  let files;
+  try {
+    files = git('ls-tree', '-r', '--name-only', 'HEAD', '--', '.').split('\n').filter((f) => f.endsWith('.mjs'));
+  } catch {
+    return { reason: 'not in a git repository with a HEAD commit' };
+  }
+  if (!files.length) return { reason: 'no sources at HEAD' };
+  const temp = await mkdtemp(join(tmpdir(), 'pixel-art-head-'));
+  for (const file of files) {
+    await mkdir(dirname(join(temp, file)), { recursive: true });
+    await writeFile(join(temp, file), git('show', `HEAD:./${file}`));
+  }
+  const { sources, loadErrors } = await readSources(temp);
+  return { temp, sources, problems: [...loadErrors, ...validate(sources)] };
+}
+
+/** Prints what each object and color of a scene costs, against HEAD. */
+async function sizes(sources, problems, query, dir) {
+  const target = find(sources, problems, query);
+  if (!target.scene) throw new Problem(`--sizes takes a scene; ${target.object} is an object`);
+  const mine = problems.filter((p) => dependencies(sources, target).has(p.slice(0, p.indexOf(': '))));
+  if (mine.length) return printProblems(mine), false;
+  const now = sceneSizes(sources, target.scene);
+  const head = await headSources(dir);
+  let before;
+  try {
+    if (head.reason) before = { reason: head.reason };
+    else if (!head.sources.scenes.has(target.scene)) before = { reason: `${sceneFile(target.scene)} isn't at HEAD` };
+    else if (head.problems.some((p) => dependencies(head.sources, target).has(p.slice(0, p.indexOf(': '))))) {
+      before = { reason: 'its sources at HEAD have problems' };
+    } else before = sceneSizes(head.sources, target.scene);
+  } finally {
+    if (head.temp) await rm(head.temp, { recursive: true, force: true });
+  }
+  const bytes = (n) => (n === undefined ? '—' : n.toLocaleString('en-US'));
+  const delta = (a, b) => (a === undefined || b === undefined ? '—' : `${a - b >= 0 ? '+' : ''}${(a - b).toLocaleString('en-US')}`);
+  const label = sources.scenes.get(target.scene).output ?? `${target.scene} (preview only)`;
+  console.log(`${label}: ${bytes(now.raw)} B raw, ${bytes(now.gzip)} B gzip`);
+  console.log(before.reason ? `HEAD: not available (${before.reason})` : `HEAD: ${bytes(before.raw)} B raw, ${bytes(before.gzip)} B gzip (${delta(now.raw, before.raw)} raw, ${delta(now.gzip, before.gzip)} gzip)`);
+  /** One table, sorted by raw bytes now (then HEAD), largest first. */
+  const table = (title, rows, nowRows, headRows, placed) => {
+    const keys = [...new Set([...nowRows.keys(), ...(headRows?.keys() ?? [])])];
+    const raw = (k) => nowRows.get(k)?.raw ?? -1;
+    keys.sort((a, b) => raw(b) - raw(a) || (headRows?.get(b)?.raw ?? 0) - (headRows?.get(a)?.raw ?? 0) || (a < b ? -1 : 1));
+    const header = [title, ...(placed ? ['placed'] : []), 'raw', 'Δ raw', 'gzip', 'Δ gzip'];
+    const lines = keys.map((k) => {
+      const [n, h] = [nowRows.get(k), headRows?.get(k)];
+      return [k, ...(placed ? [bytes(n?.placed)] : []), bytes(n?.raw), delta(n?.raw, h?.raw), bytes(n?.gzip), delta(n?.gzip, h?.gzip)];
+    });
+    const widths = header.map((_, i) => Math.max(...[header, ...lines].map((l) => l[i].length)));
+    console.log(`\n${rows}`);
+    for (const l of [header, ...lines]) console.log(l.map((c, i) => (i === 0 ? c.padEnd(widths[i]) : c.padStart(widths[i]))).join('  '));
+  };
+  table('object', 'Bytes each object adds (the scene compiled without it), against HEAD:', now.objects, before.objects, true);
+  table('color', "Bytes each color's path takes, against HEAD:", now.colors, before.colors, false);
   return true;
 }
 
@@ -425,6 +541,8 @@ async function main(argv) {
       kind: { type: 'string' },
       extends: { type: 'string' },
       size: { type: 'string' },
+      scale: { type: 'string' },
+      sizes: { type: 'string' },
       source: { type: 'string' },
       out: { type: 'string' },
     },
@@ -443,9 +561,16 @@ async function main(argv) {
   }
   if (positionals.length) throw new Problem(`unexpected ${positionals.join(' ')}`);
 
+  let scale;
+  if (values.scale !== undefined) {
+    if (!values.preview) throw new Problem('--scale goes with --preview');
+    scale = /^\d+$/.test(values.scale) ? Number(values.scale) : 0;
+    if (scale < 1 || scale > MAX_SCALE) throw new Problem(`--scale ${values.scale}: give a whole number from 1 to ${MAX_SCALE}`);
+  }
   const problems = [...loadErrors, ...validate(sources)];
   if (values.check) return check(sources, problems, values.check);
-  if (values.preview) return preview(sources, problems, values.preview);
+  if (values.preview) return preview(sources, problems, values.preview, scale);
+  if (values.sizes) return sizes(sources, problems, values.sizes, dir);
   if (problems.length) {
     printProblems(problems);
     return false;
@@ -454,6 +579,10 @@ async function main(argv) {
 }
 
 if (process.argv[1] && resolvePath(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  // Piped into head, stdout closes early: stop printing, but finish the work.
+  process.stdout.on('error', (err) => {
+    if (err.code !== 'EPIPE') throw err;
+  });
   main(process.argv.slice(2))
     .then((ok) => {
       if (!ok) process.exitCode = 1;
