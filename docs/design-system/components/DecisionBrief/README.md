@@ -4,7 +4,7 @@ The five questions every page answers (problem, assumptions, risks, recommendati
 
 ## Use
 
-- `article.brief`: a `color-surface` box with a `color-border` hairline and `radius-card` corners. The header has a `label` kicker, a 22px/600 title and a meta line (owner, date, status) in `label`.
+- `article.brief`: a `color-surface` box with a `color-border` hairline and square corners. The header has a `label` kicker, a 22px/600 title and a meta line (owner, date, status) in `label`.
 - Each `.brief__section` is a two-column row: a numbered `label` key (168px) and the body. Rows are separated by hairlines. At 480px and below, the key stacks over the body.
 - `.brief__section--recommend` sits on `color-card`. It's the only emphasis, and it's what the reader should act on.
 - Next actions use `.brief__actions`: each item has the action on the left, and the owner and date in `label` on the right.
