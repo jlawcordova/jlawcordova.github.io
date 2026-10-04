@@ -5,33 +5,68 @@ Status: draft.
 
 Traced to the [intent](intent.md). Each is checkable.
 
-### Design system
+### The design system moves into this repo
 
-- **R1. Gamified copy has a home.** The design system's README has a section on gamified copy. It says gamified copy is allowed in two places only, accomplishments and buttons, and that everything else uses the plain, structured voice. *(Outcome 1; constraint: limited to accomplishments and buttons)*
-- **R2. The voice is defined.** That section gives the voice the accomplishments already use: Stardew Valley's level of playfulness, one to three words, warm, a little folksy, light wordplay, never a joke that needs explaining. It carries over the gamified accomplishments' rules: playful but not misleading, never overstating what was done, and no points, rarity or progress figures unless they're true and defined. *(Outcome 1; [gamified accomplishments intent](../2026-10-gamified-accomplishments/intent.md), constraints)*
-- **R3. Plain meaning sits next to play.** The section says a gamified line never stands alone. An accomplishment's fun title sits beside its short description and plain title. A gamified button sits beside text that says where it goes or what it does. *(Outcome 1: "how that playful copy sits next to the plain voice")*
-- **R4. The examples match the site.** The AchievementRow guidelines and preview use Stardew-style fun titles in the row, with the plain title in the opened panel, as the site does. *(Problem: "The design system gets the accomplishments wrong")*
-- **R5. Buttons may be gamified.** The Button guidelines and the README's examples table allow a gamified label as well as a plain one. The Button preview shows "Press start" and "Get in touch", as the site does. *(Outcome 1)*
-- **R6. The kept headline is named.** The README's paragraph on the site's playful layer is replaced by R1's section. "Many hats. One craftsman." is listed there as a kept exception, so the design system and the site agree. *(Outcome 2: the heading stays; see [concern C1](#c1-the-range-heading-is-neither-an-accomplishment-nor-a-button))*
-- **R7. Nothing else changes in the system.** Tokens, components other than those named above, assets, the cover and the rest of the README stay as they are. *(Constraint: accomplishments unchanged; scope)*
+- **R1. It's committed here.** The design system's content is in `docs/design-system/`, laid out as in [Design](#where-it-lives). It's the source of truth from now on, and its README says so in its first lines. *(Outcome 3)*
+- **R2. It's public-safe.** Every committed file passes CLAUDE.md's publishing rules: its examples are made up, and name no client, colleague or employer system. *(Constraint: public-safe)*
+- **R3. Tokens can't drift.** Every token in `docs/design-system/tokens.json` whose name matches a custom property in `src/styles/variables.css` has the same value, and a `node:test` test checks it. *(Outcome 3: one source of truth)*
+- **R4. The repo points to it.** CLAUDE.md's Conventions and the README's project layout table name `docs/design-system/`. The `write-spec` skill lists it among the standards a spec loads. *(Outcome 3: "changes go through this repo")*
+- **R5. The artifact is retired.** The design system artifact gets one last revision matching the repo, with a line at the top of its README saying the repo is the source. After that it isn't edited. *(Outcome 3)*
+
+### Gamified copy
+
+- **R6. Gamified copy has a home.** The design system's README has a Gamified copy section. It allows gamified copy in two places, accomplishments and buttons, plus one kept exception, the Range heading. Everything else uses the plain, structured voice. *(Outcome 1; constraint)*
+- **R7. The voice is defined.** The section gives the voice the accomplishments already use: Stardew Valley's level of playfulness, one to three words, warm, a little folksy, light wordplay, never a joke that needs explaining. It carries over the [gamified accomplishments](../2026-10-gamified-accomplishments/intent.md) rules: playful but not misleading, and no points, rarity or progress figures unless they're true and defined. *(Outcome 1)*
+- **R8. Plain meaning sits next to play.** A gamified line never stands alone. An accomplishment's fun title sits beside its short description and plain title. A gamified button sits beside text that says where it leads. The Range heading sits beside its plain paragraph. *(Outcome 1)*
+- **R9. The accomplishment examples match the site.** The AchievementRow guidelines use Stardew-style fun titles in the row, with the plain title in the opened panel. *(Problem)*
+- **R10. Buttons may be gamified.** The Button guidelines and the README's examples table allow a gamified label as well as a plain one. *(Outcome 1)*
+- **R11. The hero title's accent is allowed.** The design system's color rule lists the hero title's second clause as a use of `color-accent`. *(Owner decision on spec C2)*
+- **R12. Nothing else changes in the system.** Tokens, the other components and the rest of the README keep their meaning. Only the edits listed in [Design](#design-system-edits) and the move are made. *(Constraint: scope)*
 
 ### Site
 
-- **R8. Hero title.** The hero `<h1>` is rewritten in the design system's voice: plain, specific, and backed by the profile. Its second clause stays accent-colored. *(Outcome 2)*
-- **R9. Hero paragraph.** The hero lede is rewritten in the design system's voice: context first, first person, no slogans. *(Outcome 2)*
-- **R10. Range paragraph.** The Range paragraph is rewritten in the design system's voice. *(Outcome 2)*
-- **R11. These stay as they are:** the pre-title, "Press start", "Get in touch", "Many hats. One craftsman.", the Range class names, and the accomplishments' wording, look and behavior. *(Outcome 2; constraints)*
-- **R12. Facts come from the profile.** Every claim in R8 to R10 traces to `docs/references/profile.md`. *(Constraint: public-safe)*
-- **R13. Layout and behavior don't change.** No markup structure, class, style, or carousel behavior changes. Both sections show no horizontal scroll at 390px, and the new text wraps no worse than the old at 1440px and 390px. *(Constraint: out of scope)*
-- **R14. Earlier documents say so.** The redesign spec's §7.1 and §7.3 get an update note that links here, as §7.3 already has for the Range classes. Their old copy stays, because that spec predates the templates. *(CLAUDE.md: when a doc changes, update mentions)*
+- **R13. Hero title.** The hero `<h1>` is rewritten in the design system's voice: plain, specific, and backed by the profile. Its second clause stays accent-colored. *(Outcome 2)*
+- **R14. Hero paragraph.** The hero lede is rewritten in the design system's voice: context first, first person, no slogans. *(Outcome 2)*
+- **R15. Range paragraph.** The Range paragraph is rewritten in the design system's voice. *(Outcome 2)*
+- **R16. Site description.** `site.description`, used for search results and link previews, matches the new hero and is at most 160 characters. *(Outcome 2)*
+- **R17. These stay as they are:** the pre-title, "Press start", "Get in touch", "Many hats. One craftsman.", the Range class names, and the accomplishments' wording, look and behavior. *(Outcome 2; constraints)*
+- **R18. Facts come from the profile.** Every claim in R13 to R16 traces to `docs/references/profile.md`. *(Constraint: public-safe)*
+- **R19. Layout and behavior don't change.** No markup structure, class, style or carousel behavior changes. Both sections show no horizontal scroll at 390px, and the new text wraps no worse than one extra line at 1440px and 390px. *(Constraint: out of scope)*
+- **R20. Earlier documents say so.** The redesign spec's §7.1, §7.3 and §7.4 get an update note that links here, as §7.3 already has for the Range classes. Their old copy stays, because that spec predates the templates. *(CLAUDE.md: update mentions)*
 
 ## Design
 
-### Design system changes
+### Where it lives
 
-These are published to the design system artifact as one revision. The artifact isn't in this repo, so the PR description lists each change and links the revision for the verifier.
+```
+docs/design-system/
+  README.md                     the brand book (from the artifact's project/README.md)
+  tokens.json                   tokens with usage notes (from project/tokens.json)
+  components/<Name>/README.md   guidelines, one per component (12)
+```
 
-**README: `## Content fundamentals`.** Replace the paragraph that begins "The site already has a playful layer" with a new subsection after `### Examples`:
+The 12 components are AchievementRow, Button, Card, CodeBlock, DecisionBrief, Footer, Navigation, PageHead, Pagination, Pill, Prose and Register.
+
+Left out, because the site already holds them or they only serve the artifact's page:
+
+- `components/bundle.css`: a copy of the site's CSS. The site's `src/styles/` is the implementation.
+- `components/*/preview.html` and the cover: they render only inside the artifact, from its generated `tokens.css` and uploaded assets.
+- The uploaded logo and icon sheet. The README points to them where they already live: `static/public/logo.svg`, `static/public/favicon.svg`, `static/public/logo@2x.png` and `src/assets/pixel-art/achievement-icons.svg`. The two asset READMEs fold into the README's Iconography section.
+- The artifact's index file.
+
+`tokens.json` keeps its shape. Its `meta` becomes `{"source": "docs/design-system", "synced": "<date>"}`, with the existing `paths` kept.
+
+**Which wins.** `src/styles/variables.css` holds the values the build uses. `tokens.json` adds names that are literals in the CSS (such as `radius-chip` and the `syntax-*` colors) and a usage note for each. A token change edits both in the same commit, and R3's test fails if they differ.
+
+**The test.** `scripts/design-system.test.mjs` reads `tokens.json` and the first definition of each `--<name>` in `variables.css` (outside media queries), and compares the values of every token with a matching name. The comparison ignores case and whitespace. Tokens that have no custom property, and shadows that use `var()` in the CSS, are skipped.
+
+### Design system edits
+
+These apply to the files in `docs/design-system/`.
+
+**README, top.** Add after the first paragraph: "This folder is the design system's source of truth. Change it here, by pull request."
+
+**README, `## Content fundamentals`.** Replace the paragraph that begins "The site already has a playful layer" with a new subsection after `### Examples`:
 
 > ### Gamified copy
 >
@@ -43,73 +78,71 @@ These are published to the design system artifact as one revision. The artifact 
 > - **Not a real game.** No points, levels, rarity or progress figures unless they're true and defined.
 > - **One kept exception:** the home page's Range heading, "Many hats. One craftsman.", with a plain paragraph beside it.
 
-**README: examples table.** The button row "Get started today" → "Read the plan" stays as a plain example. Add one row: "Click here to learn more!" → "Press start" (a gamified button, with the section it opens right beside it).
+**README, examples table.** The button row "Get started today" → "Read the plan" stays as a plain example. Add a row: "Click here to learn more!" → "Press start" (a gamified button, with the section it opens right beside it).
 
-**README: `## Components`.** The AchievementRow line becomes: "an icon, a fun title, a short line, a date, and an opened panel with the plain title, tags and links."
+**README, `### Color`.** The `color-accent` line becomes: "Use `color-accent` only for links, the primary action, the J of the mark, and the second clause of the hero title."
+
+**README, `## Components`.** The AchievementRow line becomes: "an icon, a fun title, a short line, a date, and an opened panel with the plain title, tags and links."
+
+**README, `## Iconography`.** Asset paths change to the repo paths above, and the asset READMEs' notes (the icon sheet's cell order, the mark's colors and grounds) are added.
 
 **Button README.** "What you provide" becomes: a label of one to three words. It's either plain and says what happens next ("Read the plan", not "Learn more"), or gamified under the README's Gamified copy rules ("Press start"). The "Don't" list keeps "no exclamation marks or hype".
 
-**Button preview.** The primary label "Read the plan" becomes "Press start". The ghost button stays "Get in touch".
-
-**AchievementRow README, `## Content`:** the short title is a fun title in the Gamified copy voice. The short line says plainly what was done in five to seven words. The plain title in the panel says exactly what was done. A locked row's text says it's not done yet.
-
-**AchievementRow preview.** Same markup, new example text, all made up and public-safe:
+**AchievementRow README, `## Content`.** The short title is a fun title in the Gamified copy voice. The short line says plainly what was done, in five to seven words. The plain title in the panel says exactly what was done. A locked row's text says it's not done yet. Examples, all made up:
 
 | Row | Fun title | Short line | Plain title (panel) |
 | --- | --- | --- | --- |
-| Done | Night Owl | Nightly loads finish before 06:00. | — |
-| Done, open | Lore Keeper | On-call steps for every pipeline. | Documented the data platform's on-call runbook |
+| Done | Night Owl | Nightly loads finish before 06:00. | Moved the nightly loads to a lakehouse |
+| Done | Lore Keeper | On-call steps for every pipeline. | Documented the data platform's on-call runbook |
 | Locked | Spring Cleaning | Retire the legacy ETL. | — (date slot: "Not done yet") |
 
-**Index.** `lastChange` is set (by J. Law. Cordova, via Claude Code, note "Gamified copy for accomplishments and buttons"). No other index key changes.
+**tokens.json.** The `hero-title` sample becomes the new hero title.
 
-### Site changes
+### The artifact's last revision
 
-Only text changes, in `src/components/home/Hero.astro` and `src/components/home/Range.astro`. The `<span class="accent">` in the hero title wraps the new second clause.
+The artifact gets the same edits, the same top line (pointing to `docs/design-system/` in this repo), and matching previews: the Button preview's primary label becomes "Press start", and the AchievementRow preview uses the examples above. Its `lastChange` note says it's retired. The PR description links the revision.
 
-Proposed copy, for the owner to edit. Claims trace to the profile's Current role, Summary and Highlights.
+### Site copy
 
-| Where | Now | Proposed | Profile source |
+Only text changes, in `src/components/home/Hero.astro`, `src/components/home/Range.astro` and `src/site.ts`. The `<span class="accent">` in the hero title wraps the new second clause. Claims trace to the profile's Current role, Summary, Highlights and Disciplines.
+
+| Where | Now | New | Profile source |
 | --- | --- | --- | --- |
 | Hero title | I ship whole products, *not handoffs.* | I take software from estimate *to production.* | Release management; technical estimation |
-| Hero paragraph (now 23 words) | Senior developer and tech lead at Netzon in Davao City. I lead full-stack teams, design data platforms, and take releases safely to production. | Senior developer and tech lead at Netzon in Davao City. I lead full-stack teams, design data platforms on Microsoft Fabric, and run releases with sign-offs and rollback. (27 words) | Current role; Summary |
-| Range paragraph (now 22 words) | I’ve worked every stage of shipping software, from code review to production sign-off. AI speeds up the work; the judgment stays mine. | Each outfit is a discipline I work in, from Figma designs to production releases. I use AI to work faster, and I review what it produces. (27 words) | Disciplines; Responsible AI highlight |
+| Hero paragraph | Senior developer and tech lead at Netzon in Davao City. I lead full-stack teams, design data platforms, and take releases safely to production. | Senior developer and tech lead at Netzon in Davao City. I lead full-stack teams, design data platforms on Microsoft Fabric, and run releases with sign-offs and rollback. | Current role; Summary |
+| Range paragraph | I’ve worked every stage of shipping software, from code review to production sign-off. AI speeds up the work; the judgment stays mine. | Each outfit is a discipline I work in, from Figma designs to production releases. I use AI to work faster, and I review what it produces. | Disciplines; Responsible AI highlight |
+| Site description | J. Law. Cordova is a senior developer and tech lead in Davao City who ships whole products: full-stack apps, Fabric data platforms and secure releases. | Senior developer and tech lead in Davao City. I take software from estimate to production: full-stack apps, Fabric data platforms and releases with rollback. (157 characters) | Current role; Summary |
 
-Why these read as the design system: they lead with what is done rather than a contrast slogan, name real tools and steps, use the first person, and cut adjectives that aren't evidence ("safely", "whole"). The Range paragraph says what the carousel shows, so the playful heading has a plain line beside it (R3, R6).
+These read as the design system: they lead with what is done rather than a contrast slogan, name real tools and steps, use the first person, and drop adjectives that aren't evidence ("whole"). The Range paragraph says what the carousel shows, so the playful heading has a plain line beside it (R8).
 
-The redesign spec set the two paragraphs at about 23 and 22 words (D5). The proposals run to 27. Both sit in `max-width` columns (540px and 480px), so they wrap to one more line at most; R13's screenshots check it.
+The two paragraphs grow from 23 and 22 words to 27 and 26. Both sit in `max-width` columns (540px and 480px), so they wrap to one more line at most. R19's screenshots check it.
 
-### Redesign spec notes
+### Updates elsewhere
 
-Under §7.1 and §7.3, add: *Update, 2026-10: the hero title and paragraph and the Range paragraph were rewritten to follow the design system ([copy intent](../2026-10-design-system-copy/intent.md)).*
+- **Redesign spec** §7.1, §7.3 and §7.4: *Update, 2026-10: rewritten to follow the design system ([copy intent](../2026-10-design-system-copy/intent.md)).*
+- **CLAUDE.md, Conventions:** "Copy, components and tokens follow the design system in `docs/design-system/`. Its README is the brand book. A token change edits `tokens.json` and `src/styles/variables.css` together."
+- **README.md** project layout table: a `docs/design-system/` row.
+- **`.claude/skills/write-spec/SKILL.md`,** step 2: add `docs/design-system/` to the standards list.
 
 ### Verification
 
-- `npm run build` and `npm test` pass as CLAUDE.md requires. No test asserts the copy today, so none changes.
+- `npm run build` and `npm test` pass as CLAUDE.md requires, including the new token test.
 - Screenshots of the home page at 1440px and 390px, before and after, with no horizontal scroll.
-- The design system revision is read back after publishing: the README section, both READMEs and both previews show the text above.
+- A search of `docs/design-system/` for "Netzon" and client-style names finds nothing.
+- The artifact is read back after its last revision and shows the edits and the top line.
 
 ## Areas of concern
 
-### C1. The Range heading is neither an accomplishment nor a button
+Decided with the owner: the Range heading is the one kept exception (the intent now says so), the hero title's accent clause is added to the color rule, and the site description is rewritten here.
 
-The intent limits gamified copy to accomplishments and buttons, and also keeps "Many hats. One craftsman.", a slogan-style heading. Read strictly, the second breaks the first. This spec keeps the heading and names it in the design system as the one kept exception (R6), with a plain paragraph beside it. **Owner decides:** accept the exception, or amend the intent's constraint to say so too.
+### C1. Two copies until the artifact is retired
 
-### C2. The hero title's accent clause isn't in the design system's color rules
+The repo and the artifact hold the same content for one revision. R5 makes the repo the source and stops edits to the artifact, so they diverge only if someone edits it anyway. Its top line says not to.
 
-The design system allows `color-accent` only for links, the primary action and the J of the mark. The hero title's accent-colored clause is outside that list, and the intent puts styling out of scope. This spec keeps the accent clause. **Owner decides:** keep it and add "the hero title's second clause" to the design system's color rule in this revision (recommended, since the system was built from the site), or leave the mismatch for later.
+### C2. The previews don't come along
 
-### C3. The site description repeats the old hero line
-
-`site.description` in `src/site.ts` (the page's meta and social description) says "who ships whole products", from the old title. The intent doesn't name it. **Owner decides:** rewrite it to match the new hero in this change (recommended), or leave it out of scope.
-
-### C4. The design system isn't version controlled here
-
-Its revision can't be part of the PR's diff, so a verifier checks it from the PR description and a read of the artifact. Nothing else in this repo depends on it.
+Without `preview.html` files, the repo copy has no rendered examples. The live site is the rendered example of every component except DecisionBrief and Register, which aren't on the site. If rendered previews are wanted later, they're a separate change.
 
 ## Open questions
 
-The intent has none.
-
-1. Is the proposed copy for the hero title, hero paragraph and Range paragraph what you want? Edit freely; the requirements only ask that it follows the design system and the profile.
-2. C1, C2 and C3 above.
+The intent has none, and the owner settled the spec's earlier questions. The new copy above can still be edited in review.
