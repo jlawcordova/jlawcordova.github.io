@@ -10,7 +10,7 @@ Plans [`spec.md`](spec.md) (R1–R12, slices 1–8). The work runs on a feature 
   - `island-shadow.mjs` (new): the dithered shadow, in `path-2` (as built; see step 3).
   - `waterfall-face.mjs` (new): the falling face at the front-right edge, `wf` frames.
   - `river.mjs` (new, as built in step 4): the library's `water` with fewer ripples, for the river's tiles (see step 4).
-  - `bridge.mjs`, `house.mjs`, `fence.mjs`, `crane-mast.mjs`, `crane-jib.mjs` (new), plus a roof piece if the house can't carry it, and `tree-small.mjs` (new) only if a second tree size is needed.
+  - `bridge.mjs`, `house.mjs`, `fence.mjs`, `crane-mast.mjs`, `crane-jib.mjs` (new), plus a roof piece if the house can't carry it, and `tree-small.mjs` (new) only if a second tree size is needed. As built in step 7, the roof piece is `shed.mjs`, and `pine.mjs`, `tree-shade.mjs` and `bridge-rail.mjs` are new too (see step 7).
   - `island-front.mjs` (deleted in step 7), `island-base.mjs` and `waterfall.mjs` (deleted in steps 8 and 4).
 - `src/assets/pixel-art/source/scenes/hero-island.mjs` and the generated `src/assets/pixel-art/hero-island.svg`. `library-demo.mjs` and its SVG, when a new object is added to the demo (R11).
 - `scripts/pixel-art-roundtrip.test.mjs`: the island's R11 identity tests become structural tests (step 1); the "animated pieces" test drops `waterfall` (step 4) and `island-base` (step 8).
@@ -51,6 +51,17 @@ One commit per slice, in the spec's order. Each PR targets `feat/island-migratio
 6. **House.**
    - *As built.* `house` (45×42, 10 colors: `ink`, `roof-1` to `roof-4`, `path-1`, `path-2`, `water-1`, `water-3` and `soil-3`) is the old house's pixels in world colors, at the same place: its anchor is the front corner of its walls, placed at `px [-59, 59]`, right after the bridge. The house is not on the tile grid (it is about 2.7 tiles wide), so it is placed by `px`. Only the right wall's shade changes (`c-d9c9ae` becomes `path-2`); the roof, the cream left wall, the door and the window panes were already exact world colors. It hides the tile at `[0, 3]` except 4 pixels at its right corner, by the river. It stays out of `library-demo`: it is bigger than a tile and would cover the demo's grid. What left `island-base`: the whole house, 1,335 pixels, including its window panes, the last water colors in `island-base`. `hearth` is not part of the house (it is the crane's swinging load), so step 6 leaves it alone. `hero-island.svg` is 79,939 bytes raw after this step, unchanged, because the house paints the same runs.
 7. **Front pieces.** Trees, `fence`, `crane-mast` + `crane-jib` (each within 64×64), roof pieces. All listed after the trucks (R5). `island-front.mjs` is empty and deleted.
+   - *As built.* Every piece is the old pieces' pixels in world colors, cut into objects:
+     - **Trees, a departure.** The island has two kinds, four round trees and four pines, all ink-outlined like the rest of the island. They are `tree-small` (14×21, the old round tree) and a new `pine` (17×24). The library's `tree` is not used: tried at the pines' places, its bigger, unoutlined crown read as a different style beside the outlined house, bridge and crane, and it can't stand in for a pine (previews in the PR). Four trees stand behind the road (they were `island-base`) and paint before the trucks; four stand in front (they were `island-front`) and paint after them. A test checks that wherever a truck crosses a tree on its drive, the one further forward paints on top.
+     - **`tree-shade`** (11×5, `grass-3`, new): the dithered shade under the back trees that slice 3 removed with the grass, taken from the old map, under the three back trees whose trunks show. Not under the front trees, which would paint it over a truck.
+     - **The crane:** `crane-mast` (8×40) and `crane-jib` (44×27) stacked, the jib's anchor right above the mast's top, so the 67-pixel crane needs no exemption. `hearth` is the crane's swinging load; it hangs from the jib as before, at the same place.
+     - **`bridge-rail`** (21×17, new, a departure): the bridge's front railing, which was in `island-front` because the trucks drive between the two railings. It is placed on the bridge's tile, `[2, 3]`, after the trucks.
+     - **Roof pieces: `shed`** (22×19): the small roofed building under the crane. It stood on the river once the river was a tile wide (slice 4), so it moves 3 pixels left and 3 up, onto the grass of `[4, 2]` by the river bank.
+     - **`fence`** (14×15): the two posts. They stood in the river too, so they move onto the river's front bank (`[4, 4]` and `[5, 4]`), right of the front pine that used to hide them. A test checks every piece's feet stand on the island's grass, not on the river, road or bridge.
+     - Placed by `px` (except `bridge-rail`), like the old pieces, because none of them sits on the tile grid. None is in `library-demo`: they are the island's own pieces.
+     - What left the maps: `island-base`'s four back trees (687 pixels), so `island-base` is now an empty map that slice 8 deletes, and all of `island-front`, which is deleted, so the R2 allow-list is `island-base` alone. The skill's island list names the new objects (the rest of its island section is step 8).
+     - The R5 test now checks, in the compiled SVG, that every front piece's visible pixels are painted after both truck groups and before the hearth, and that nothing else is painted there.
+     - `hero-island.svg` is 80,549 bytes raw, 16,267 with `gzip -9`, after this step.
 
 **PR E: slice 8**
 
@@ -95,7 +106,7 @@ The final PR adds the whole-island before and after, and a verifier report again
 - [x] PR A: slices 1–2
 - [x] PR B: slice 3
 - [x] PR C: slices 4–5
-- [ ] PR D: slices 6–7
+- [x] PR D: slices 6–7
 - [ ] PR E: slice 8
 - [ ] Final PR to `main`
 
@@ -106,3 +117,6 @@ Where the island as built differs from the approved `spec.md`. The implementers 
 - **The shadow is `path-2` only.** The spec said `path-1` and `path-2`; slice 3 built a one-tone checker because `path-1` is nearly the page background (step 3, As built). This one was already edited into `spec.md` (Target scene) by PR C, so the owner should confirm that edit.
 - **The river is a new `river` object, not the library's `water` tiles.** Six `water` tiles put the island over R6; `river` is `water` with two of its five ripple rows blank (step 4, As built). The spec's Target scene still says `water` tiles.
 - **Six copies of the `wf` loop.** R4 names `wf w0`…`w4` once. Each of the five river tiles and the falling face carries its own loop, so the scene has six (30 groups). They run in sync, and `pixel-art.css` is untouched.
+- **The trees are `tree-small` and a new `pine`, not the library's `tree`** (step 7, As built). The spec says the island uses the existing `tree`, with a small variant if needed. The island's own trees are ink-outlined round trees and pines; the library `tree` is larger and unoutlined, and was tried and dropped.
+- **Pieces the spec doesn't name** (step 7): `bridge-rail` (the bridge's front railing, which paints over the trucks), `shed` (the spec's "roof pieces": a small roofed building under the crane) and `tree-shade` (the ground shade under the back trees).
+- **The `flag` paints before the trucks.** The spec's Order lists the front pieces as "front trees, crane, fence, roof pieces, hearth, flag". As built, `flag` (the waterfall's fast streaks, not a flag) stays where it always was, before the trucks, because it lies on the falling water and no truck passes it.
