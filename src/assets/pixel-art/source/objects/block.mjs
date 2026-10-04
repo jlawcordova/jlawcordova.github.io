@@ -6,6 +6,5 @@ export default {
     top: 'grass-2',
     left: 'soil-2',
     right: 'soil-3',
-    edge: 'soil-4',
   },
 };
