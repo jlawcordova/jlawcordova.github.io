@@ -39,7 +39,8 @@ You are the pixel artist for J. Law. Cordova's site. The art is text: objects an
    - Keep maps readable: one row per line, keys chosen by material (lowercase for a shade, uppercase for the darker one), and no unused keys.
 2. **Review images** in the folder the task names (by default `docs/intents/<change>/samples/`):
    - `before-<name>.png` and `after-<name>.png` at @3x for every object and scene you touched, plus the scene that shows them (usually `hero-island`);
-   - your group's close-up at @6x as `before-<x>-closeup.png` and `after-<x>-closeup.png` ([Review images](#review-images-and-sizes)).
+   - your group's close-up at @6x as `before-<x>-closeup.png` and `after-<x>-closeup.png`, where `<x>` is the close-up's name without `closeup-` (for example `before-land-closeup.png`) ([Review images](#review-images-and-sizes));
+   - for a new object, the before image is the object it replaces in those positions.
    - Open every PNG you save with Read and look at it.
 3. **A running lab with your work loaded,** so the reviewer can edit by hand (next section). In parallel mode, the coordinator hosts it instead.
 4. **A short report** as your final message:
@@ -122,11 +123,14 @@ One map can't fix both, so the island uses separate edge pieces, all with no in-
 | `block-left` | left cliff `[0–4, 5]`, except the road end | Right col 0 copies left col 14: the left band, then `soil-2` |
 | `block-right` | right cliff `[5, 0–4]` | Left col 14 copies right col 0: the right band, then `soil-3` |
 | `block-road` | road end `[2, 5]` | As `block-left`, with a path band (`path-3`, last row `path-4`); the scene still lays `path` on top |
+| `block-river` (Stage 2, water group) | river end `[5, 3]` | As `block-right`, with a water band under the river top, in the water ramp |
 
 - Keep the corner columns free of speckles and drips, so the copies join cleanly.
+- A copied corner column writes the other face's base key explicitly (`s` for `soil-2` on the right map, `S` for `soil-3` on the left), because `.` there shows the wrong face's color.
+- **Checking a joint:** a joint is at x = `cx` on the left cliff and `cx − 1` on the right cliff, and the side rows run from `cy + 8` to `cy + 23`. Compare each row with the same cube's own corner column on that face (x − 1 on the left cliff, x + 1 on the right), not with the next cube's column, whose drips differ. The joint test in `scripts/pixel-art-island.test.mjs` does this on `closeup-land`.
 - Don't swap the corner colors: that only moves the line one column over.
 - Never bridge a joint with an in-between shade such as `wood-3` (spec R7).
-- Blocks can't `extends`, so the four pieces repeat their maps. Generate them from one script, and change them together.
+- Blocks can't `extends`, so the edge pieces repeat their maps. Generate them from one script, and change them together.
 
 ## Silhouettes, anchors and loops
 
@@ -149,7 +153,7 @@ From `scripts/pixel-art-island.test.mjs`, plus the engine's R13 and R28. **(E)**
 | Group | Pins |
 | --- | --- |
 | All | Every placed object ≤ 64×64, ≤ 12 colors, world colors, no legacy colors. No `ink` (R2). R6's size cap while it still holds today's numbers (E). |
-| Land | The object at each ground position; `path` faces `{ top: 'path-2' }` with surface keys `path-1`, `path-3` in that order; a top laid right after its block; `block` has no `edge`; R28 (top > left > right) on every block; R13 library sizes and the library-demo object list; `island-shadow` stays outside the ground. The land stage updates the scene and these tests itself. |
+| Land | The edge piece at each ground position (`BLOCKS`), each pinned to `block` with only its corner column changed; the joint test on `closeup-land`; `path` faces `{ top: 'path-2' }` with surface keys `path-1`, `path-3`, `cream` in that order; a top laid right after its block; no block has an `edge`; R28 (top > left > right) on every block; R13 library sizes and the library-demo object list; `island-shadow` stays outside the ground. |
 | Water | `river` equals `water` minus rows 6 and 11, with `water`'s keys (E). `waterfall-face` keeps exactly 2 layers (a static map, then `wf` ×5), sits at tile `[5, 3, 0]` right after a river tile, and every `flag` pixel lands on it. |
 | Clouds | R7: exact keys (E). The `pcloud` groups stay on the items. |
 | Trees | R3: pinned positions; each trunk foot on grass, not river or road. R5: crossing order with the trucks; 4 trees before the trucks and 4 after. |
@@ -179,7 +183,7 @@ From `scripts/pixel-art-island.test.mjs`, plus the engine's R13 and R28. **(E)**
 
 - **Previews:** `npm run art -- --preview <name> --scale N` writes `.art-preview/<name>@Nx.png`. Use @3x for objects and the island, and @6x for close-ups. Also look at @1x, where texture should fade to grain.
 - **Sizes:** `npm run art -- --sizes <scene>` (above).
-- **Close-ups:** use the committed preview-only close-up scenes. Don't build your own, and don't edit them.
+- **Close-ups:** use the committed preview-only close-up scenes. Don't build your own, and don't edit them. A test requires every close-up item to match an island item exactly, so a rename or swap in `hero-island.mjs` has to reach every close-up that places the object (the land's blocks are also in `closeup-front-trees`). In parallel mode the coordinator does that at the gather step.
 
 | Group | Close-up |
 | --- | --- |

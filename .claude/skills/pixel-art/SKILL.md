@@ -276,17 +276,19 @@ The style of the hero island's objects ([hero island detail spec](../../../docs/
   - About 4 small clusters per 32×16 top. For grass, that's tufts of two 1-px blade strokes, 2–3 px tall, slightly leaning, sometimes mirrored.
   - About 6 speckles per side face, mixing 1×1 and 2×2 squares.
   - Avoid 2×1 dashes, which read as scratches. "V" tufts read as birds, and diagonal dotted pairs read as wallpaper.
-  - Keep texture at least 2 px from face edges, so repeats don't draw grid lines.
+  - Keep texture at least 2 px from face edges, so repeats don't draw grid lines. On a top, that means every pixel in a ±2 square around a texture pixel is inside the tile's diamond.
 - **Transitions.**
   - Where materials meet (grass over dirt, a road over dirt), the upper material hangs a 3–4 px band down the side faces, following the top edge.
   - The band's last row is the ramp's darker shade, and a few 1-px drips break up its lower edge. A roof's fascia stays straight, with no drips.
-  - Bands stay in the upper material's own ramp: grass bands are grass greens, and a road's band is `path-3`, last row `path-4`.
+  - Bands stay in the upper material's own ramp: grass bands are grass greens, a road's band is `path-3`, last row `path-4`, and a river's is in the water ramp.
+  - Every top material on a cliff hangs its own band, so where the river or the road reaches the edge, the edge piece under it carries that material's band (`block-road`, and `block-river` under the river).
 - **Edges and joints.**
   - No outlines, and no `ink` on island objects.
   - Where cubes line a cliff, both of each cube's corner columns show on both cliffs. So joints are hidden with separate edge pieces (`block`, `block-left`, `block-right`, `block-road`), never with an in-between shade or a corner-color swap.
   - When an object loses its outline, recolor the outline pixels with the darker shade of the face they border, which keeps the silhouette.
 - **Shapes.**
   - Clouds are short-sided stacked cubes: `cream` tops, `path-2` left, `path-3` right, tip pixels clipped, no texture.
+  - The road is `path-2` dirt with a `cream` dashed center line: one dash per tile, 4 rows on the road's 2:1 line through the tile's center, so the dashes and gaps are even along the road.
   - Pines are three stacked tiers with shallow-V skirts, split at the center (lit left, dark right), with a sawtooth of needle tips.
   - Cardboard is `wood-1` top, `wood-2` left, `wood-3` right, with `path-1` tape.
   - Lattices (the crane) are see-through.
