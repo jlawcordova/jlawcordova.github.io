@@ -84,6 +84,13 @@ describe('hero island structure', () => {
     }
   });
 
+  it('R3: the front blocks have no outline (the owner\'s decision of 2026-10-04: the library block has no edge)', () => {
+    const block = sources.objects.get('block');
+    assert.ok(placed.includes('block'), 'the island places blocks');
+    assert.equal(block.faces.edge, undefined, 'block has no faces.edge');
+    assert.deepEqual(Object.keys(block.faces).sort(), ['left', 'right', 'top'], 'block has only top, left and right faces');
+  });
+
   it('R7: the clouds and trucks use the world colors the Colors table names', () => {
     const want = {
       'cloud-a': { a: 'path-2', b: 'cream', c: 'cream' },
