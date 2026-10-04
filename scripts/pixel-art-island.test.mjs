@@ -125,7 +125,7 @@ describe('hero island structure', () => {
     assert.ok(svg.slice(at('<g class="itruck it2"'), at('<g class="hf h0"')).includes('</g><path'), 'something is painted over the trucks');
   });
 
-  it('R1, R3: the ground is 36 library objects on a [col, row, 0] grid: blocks on the two front edges, the river along row 3, flat tiles elsewhere', () => {
+  it('R1, R3: the ground is 36 library objects on a [col, row, 0] grid: blocks on the two front edges, the river along row 3, the road along column 2, flat tiles elsewhere', () => {
     const items = scene.items.filter((item) => GROUND.includes(item.object));
     // The first item at a position is its ground; a later one at the same position is a flat top laid over it.
     const seen = new Map();
@@ -144,11 +144,12 @@ describe('hero island structure', () => {
     for (const item of ground) {
       const [col, row] = item.at.tile;
       // The river runs along row 3 from the house; under the house, at [0, 3], it stays grass.
-      const want = col === 5 || row === 5 ? 'block' : row === 3 && col >= 1 ? 'river' : 'tile';
+      // The road runs along column 2, on the trucks' line, and crosses the river on the bridge at [2, 3].
+      const want = col === 5 || row === 5 ? 'block' : row === 3 && col >= 1 ? 'river' : col === 2 ? 'path' : 'tile';
       assert.equal(item.object, want, `[${col}, ${row}]`);
     }
-    // Where the river crosses the front edge, the block gets a river top, listed right after it.
-    assert.deepEqual(tops.map((item) => [item.object, item.at.tile]), [['river', [5, 3, 0]]]);
+    // Where the river and the road cross the front edges, the block gets a river or path top, listed right after it.
+    assert.deepEqual(tops.map((item) => [item.object, item.at.tile]), [['path', [2, 5, 0]], ['river', [5, 3, 0]]]);
     for (const top of tops) {
       const i = scene.items.indexOf(top);
       assert.equal(scene.items[i - 1].object, 'block', `${top.object} is laid over the block before it`);
@@ -159,6 +160,8 @@ describe('hero island structure', () => {
     const blockObj = resolve(sources, 'block');
     assert.deepEqual(blockObj.block.size, [1, 1, 1]);
     assert.deepEqual(resolve(sources, 'tile').block.size, [1, 1, 0]);
+    const path = sources.objects.get('path');
+    assert.deepEqual([path.size, path.faces, Object.values(path.surface.keys)], [[1, 1, 0], { top: 'path-2' }, ['path-1', 'path-3']], 'path is a flat path-2 tile with path-1 and path-3 specks');
     // river is the library's water with fewer ripples (two of its five rows), so six fit R6; same size, colors and loop.
     const [water, river] = ['water', 'river'].map((name) => sources.objects.get(name));
     assert.deepEqual(river.size, [1, 1, 0]);
@@ -271,6 +274,60 @@ describe('hero island structure', () => {
       }
     });
     assert.ok(leftover < 400, `${leftover} green and brown pixels are left in island-base`);
+  });
+
+  it('R1, R2, R3: the bridge is a small world-color object on the road where it crosses the river, painted over the ground', () => {
+    const obj = resolve(sources, 'bridge');
+    assert.equal(obj.legacy, false);
+    assert.ok(obj.width <= CAPS.size && obj.height <= CAPS.size, `${obj.width}×${obj.height}`);
+    assert.ok(usedColors(sources, obj).length <= CAPS.colors);
+    for (const color of Object.values(obj.keys)) assert.ok(color in sources.palette.world, `bridge uses ${color}`);
+    const i = indexesOf(['bridge']);
+    assert.equal(i.length, 1);
+    assert.deepEqual(scene.items[i[0]].at, { tile: [2, 3, 0] });
+    assert.ok(i[0] > Math.max(...indexesOf(GROUND)), 'it paints over the ground, both banks included');
+    assert.ok(i[0] < indexesOf(['island-base'])[0]);
+  });
+
+  it('R3, R4, C5: both trucks stay on the road: at every visible step of idrive, their lowest pixels sit on the path or the bridge', async () => {
+    const css = await readFile(join(ROOT, 'src/styles/pixel-art.css'), 'utf8');
+    const steps = [...css.match(/@keyframes idrive\{(.*?)\}\}/)[1].matchAll(/translate\((-?\d+)px,(-?\d+)px\);opacity:(\d)/g)].map((m) => m.slice(1).map(Number));
+    assert.equal(steps.length, 59, 'idrive is unchanged');
+    sources.scenes.set('slice-5-road', { viewBox: scene.viewBox, origin: scene.origin, items: scene.items.filter((item) => ['path', 'bridge'].includes(item.object)) });
+    const road = composite(renderScene(sources, 'slice-5-road').root);
+    for (const name of ['truck', 'truck-green']) {
+      const map = resolve(sources, name).layers[0].map;
+      const feet = [];
+      for (let x = 0; x < map[0].length; x++) {
+        for (let y = map.length - 1; y >= 0; y--) if (map[y][x] !== '.') { feet.push([x, y]); break; }
+      }
+      const [tx, ty] = scene.items.find((item) => item.object === name).at.px;
+      const onRoad = (dx, dy) => feet.filter(([x, y]) => road.has(`${tx + dx + x},${ty + dy + y}`) || road.has(`${tx + dx + x},${ty + dy + y + 1}`)).length;
+      for (const [dx, dy, shown] of steps) {
+        // The last steps drive off the island's front edge and fade, as they always have.
+        if (!shown || dx < -88) continue;
+        const on = onRoad(dx, dy);
+        assert.ok(on >= feet.length - 1, `${name} at translate(${dx}px, ${dy}px): ${on} of ${feet.length} on the road`);
+      }
+      // With reduced motion the truck rests untranslated at the road's back end, half behind the crane; the old road held 15 of 21 there too.
+      assert.ok(onRoad(0, 0) >= 15, `${name} at rest: ${onRoad(0, 0)} of ${feet.length} on the road`);
+    }
+  });
+
+  it('R8: island-base no longer paints the road or the bridge', () => {
+    const base = resolve(sources, 'island-base');
+    const [ox, oy] = scene.items.find((item) => item.object === 'island-base').at.px;
+    const road = new Set(['c-c9b79a', 'c-a8957a', 'c-bba88a', 'cream']);
+    const bridge = new Set(['ink', 'c-c25a6a', 'c-9e3b4b', 'c-7b2d3b', 'c-5a2230']);
+    base.layers[0].map.forEach((row, y) => {
+      for (let x = 0; x < row.length; x++) {
+        if (row[x] === '.') continue;
+        const color = base.keys[row[x]];
+        assert.ok(!road.has(color), `island-base paints the road's ${color} at ${x},${y}`);
+        const [sx, sy] = [x + ox, y + oy];
+        assert.ok(!(bridge.has(color) && sx >= -30 && sx <= 6 && sy >= 30 && sy <= 58), `island-base paints the bridge's ${color} at ${sx},${sy}`);
+      }
+    });
   });
 
   it('R8: island-base no longer paints the river, its fall or its spray; only the house\'s windows keep water colors', () => {
