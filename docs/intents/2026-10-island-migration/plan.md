@@ -49,6 +49,7 @@ One commit per slice, in the spec's order. Each PR targets `feat/island-migratio
 **PR D: slices 6–7**
 
 6. **House.**
+   - *As built.* `house` (45×42, 10 colors: `ink`, `roof-1` to `roof-4`, `path-1`, `path-2`, `water-1`, `water-3` and `soil-3`) is the old house's pixels in world colors, at the same place: its anchor is the front corner of its walls, placed at `px [-59, 59]`, right after the bridge. The house is not on the tile grid (it is about 2.7 tiles wide), so it is placed by `px`. Only the right wall's shade changes (`c-d9c9ae` becomes `path-2`); the roof, the cream left wall, the door and the window panes were already exact world colors. It hides the tile at `[0, 3]` except 4 pixels at its right corner, by the river. It stays out of `library-demo`: it is bigger than a tile and would cover the demo's grid. What left `island-base`: the whole house, 1,335 pixels, including its window panes, the last water colors in `island-base`. `hearth` is not part of the house (it is the crane's swinging load), so step 6 leaves it alone. `hero-island.svg` is 79,939 bytes raw after this step, unchanged, because the house paints the same runs.
 7. **Front pieces.** Trees, `fence`, `crane-mast` + `crane-jib` (each within 64×64), roof pieces. All listed after the trucks (R5). `island-front.mjs` is empty and deleted.
 
 **PR E: slice 8**

@@ -55,6 +55,7 @@ export default {
     { object: 'block', at: { tile: [4, 5, 0] } },
     { object: 'block', at: { tile: [5, 5, 0] } },
     { object: 'bridge', at: { tile: [2, 3, 0] } },
+    { object: 'house', at: { px: [-59, 59] } },
     { object: 'island-base', at: { px: [-96, -3] } },
     { object: 'flag', at: { px: [37, 73] } },
     { object: 'truck', class: 'itruck it1', at: { px: [31, 6] } },

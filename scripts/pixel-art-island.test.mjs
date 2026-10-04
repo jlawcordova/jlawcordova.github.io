@@ -336,20 +336,49 @@ describe('hero island structure', () => {
     });
   });
 
-  it('R8: island-base no longer paints the river, its fall or its spray; only the house\'s windows keep water colors', () => {
+  it('R8: island-base no longer paints the river, its fall, its spray or the house\'s window panes: no water colors at all', () => {
     const base = resolve(sources, 'island-base');
-    const [ox] = scene.items.find((item) => item.object === 'island-base').at.px;
-    // The house's right wall is at x = -37; its windows are left of it.
     const water = new Set(['c-5f8c7e', 'c-c9ddd3', 'c-e8f1ec']);
-    let windows = 0;
     base.layers[0].map.forEach((row, y) => {
       for (let x = 0; x < row.length; x++) {
-        if (row[x] === '.' || !water.has(base.keys[row[x]])) continue;
-        assert.ok(x + ox < -37, `island-base paints ${base.keys[row[x]]} at ${x},${y}, on the river`);
-        windows++;
+        if (row[x] !== '.') assert.ok(!water.has(base.keys[row[x]]), `island-base paints ${base.keys[row[x]]} at ${x},${y}`);
       }
     });
-    assert.ok(windows > 0 && windows < 30, `${windows} window pixels`);
+  });
+
+  it('R1, R2, R3: the house is a small world-color object, where the house stood, painted after the ground and before the trucks', () => {
+    const obj = resolve(sources, 'house');
+    assert.equal(obj.legacy, false);
+    assert.ok(obj.width <= CAPS.size && obj.height <= CAPS.size, `${obj.width}×${obj.height}`);
+    assert.ok(usedColors(sources, obj).length <= CAPS.colors);
+    for (const color of Object.values(obj.keys)) assert.ok(color in sources.palette.world, `house uses ${color}`);
+    const i = indexesOf(['house']);
+    assert.equal(i.length, 1);
+    // Its anchor is the front corner of its walls; [-59, 59] is where the old house's front corner stood.
+    assert.deepEqual(obj.anchor, [21, 41]);
+    assert.deepEqual(scene.items[i[0]].at, { px: [-59, 59] });
+    assert.ok(i[0] > Math.max(...indexesOf(GROUND)), 'it paints over the ground');
+    // It covers the river's grass end at [0, 3], which is why that tile stays grass: all but the 4 pixels of its right corner, by the river.
+    sources.scenes.set('slice-6-probe', { viewBox: scene.viewBox, origin: scene.origin, items: [{ object: 'tile', at: { tile: [0, 3, 0] } }] });
+    const tile = composite(renderScene(sources, 'slice-6-probe').root);
+    sources.scenes.set('slice-6-probe', { viewBox: scene.viewBox, origin: scene.origin, items: [scene.items[i[0]]] });
+    const house = composite(renderScene(sources, 'slice-6-probe').root);
+    const showing = [...tile.keys()].filter((p) => !house.has(p));
+    assert.deepEqual(showing, ['-35,31', '-34,31', '-35,32', '-34,32'], 'the house hides the tile at [0, 3]');
+  });
+
+  it('R8: island-base no longer paints the house: none of its roof, wall or door colors', () => {
+    const base = resolve(sources, 'island-base');
+    const house = new Set(['c-9e3b4b', 'c-c25a6a', 'c-5a2230', 'c-7b2d3b', 'c-e9dcc6', 'c-d9c9ae']);
+    const [ox, oy] = scene.items.find((item) => item.object === 'island-base').at.px;
+    base.layers[0].map.forEach((row, y) => {
+      for (let x = 0; x < row.length; x++) {
+        if (row[x] === '.') continue;
+        assert.ok(!house.has(base.keys[row[x]]), `island-base paints the house's ${base.keys[row[x]]} at ${x},${y}`);
+        // Nothing of island-base is left inside the house's box (scene x -80 to -36, y 18 to 59): its door was soil-3, its outline ink.
+        assert.ok(!(x + ox >= -80 && x + ox <= -36 && y + oy >= 18 && y + oy <= 59), `island-base paints ${base.keys[row[x]]} at ${x},${y}, on the house`);
+      }
+    });
   });
 
   it('R6: the compiled island is no heavier than today\'s, raw and gzipped', async () => {
