@@ -51,6 +51,8 @@ Planned work follows Anthropic's [AI-native SDLC playbook](https://claude.com/bl
 
 A small, self-contained fix can go straight to a PR.
 
+A large change can merge its slice PRs into a feature branch, `feat/<slug>`, and reach `main` in one final PR (`write-plan`, "Feature branch"). Agents may merge verified slice PRs into `feat/<slug>`. Only the owner merges into `main`, because every merge there deploys; a hook in `.claude/settings.json` blocks agents from doing it.
+
 Each change lives in `docs/intents/YYYY-MM-<slug>/` (the month its intent was created), holding its `intent.md`, `spec.md`, `plan.md` and any notes. Don't create top-level `docs/specs/` or `docs/plans/` folders.
 - Link within a change by sibling path (`spec.md`), and to another change with `../YYYY-MM-<slug>/intent.md`.
 - `docs/references/` holds shared public-safe material, such as `profile.md`.

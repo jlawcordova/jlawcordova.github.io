@@ -32,6 +32,15 @@ Split into more than one PR only when a step can't wait for the rest, and say wh
 
 Keep the count as low as the reasons allow: two or three PRs, each holding several commits, not one PR per step. Every merge to `main` deploys the site, so keep the site deployable after each PR. When there is more than one PR, number them in Order of work and group the steps under each, for example `PR 1: steps 1–3`.
 
+### Feature branch
+
+A large change with several PRs, where the owner wants to review the result once, can use a feature branch instead. Say so in the plan, under Order of work:
+
+- The slice PRs target `feat/<slug>`, branched from `main`. Merging there deploys nothing, so the site only has to build at each slice, not be worth shipping.
+- Each slice PR still gets the independent verifier (`CLAUDE.md` step 5). An agent may merge it into `feat/<slug>` once the report is PASS and CI is green.
+- One final PR takes `feat/<slug>` to `main`. It gets its own verifier run against the whole spec, and only the owner merges it. Agents never merge into `main` (`.claude/hooks/block-main-merge.sh`).
+- When `main` moves, merge it into `feat/<slug>` before the next slice starts.
+
 ## Template
 
 ```markdown
