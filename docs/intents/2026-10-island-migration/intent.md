@@ -1,5 +1,5 @@
 # Intent: Island migration
-Author: J. Law. Cordova (site owner). Status: accepted.
+Author: J. Law. Cordova (site owner). Status: done, 2026-10-04: built in slice PRs [#65](https://github.com/jlawcordova/jlawcordova.github.io/pull/65) to [#69](https://github.com/jlawcordova/jlawcordova.github.io/pull/69) on `feat/island-migration`, and merged to `main` in [#71](https://github.com/jlawcordova/jlawcordova.github.io/pull/71). Checked on the live site the same day: the island is built from library objects, every fill is a world color with no `c-<hex>` key, the animated groups (`wf`, `ff`, `hf`, `itruck`, `pcloud`) are all there, there's no script, link or text in the SVG, there's no horizontal scroll at 1440px or 390px, and under reduced motion nothing animates and `it2` is hidden.
 
 ## Problem
 

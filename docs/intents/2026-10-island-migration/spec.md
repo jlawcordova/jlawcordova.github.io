@@ -1,5 +1,5 @@
 # Spec: Island migration (from intent.md 2026-10-03)
-Status: approved.
+Status: done, 2026-10-04: built in slice PRs [#65](https://github.com/jlawcordova/jlawcordova.github.io/pull/65) to [#69](https://github.com/jlawcordova/jlawcordova.github.io/pull/69) on `feat/island-migration`, and merged to `main` in [#71](https://github.com/jlawcordova/jlawcordova.github.io/pull/71).
 Updated to the build with the owner's approval on 2026-10-04 (final review of PR #71): the as-built differences are now the spec, and the front blocks have no outline.
 
 This spec moves the hero island to world colors and rebuilds it from library objects. It was first written under the [pixel-art follow-ups intent](../2026-10-pixel-art-follow-ups/intent.md) and now belongs to the island's own [intent](intent.md). The owner's answers to the earlier concerns are recorded under each one below.
