@@ -304,11 +304,17 @@ describe('hero island structure', () => {
       const [tx, ty] = scene.items.find((item) => item.object === name).at.px;
       const onRoad = (dx, dy) => feet.filter(([x, y]) => road.has(`${tx + dx + x},${ty + dy + y}`) || road.has(`${tx + dx + x},${ty + dy + y + 1}`)).length;
       for (const [dx, dy, shown] of steps) {
-        // The last steps drive off the island's front edge and fade, as they always have.
+        // The last visible steps (dx < -88) are checked below, not here.
         if (!shown || dx < -88) continue;
         const on = onRoad(dx, dy);
         assert.ok(on >= feet.length - 1, `${name} at translate(${dx}px, ${dy}px): ${on} of ${feet.length} on the road`);
       }
+      // At the last 9 visible steps the truck is still on the island, but it turns off the road onto the grass by the
+      // front edge before it fades, exactly as it did on the old road. Pin how much road is under it there, so it can't get worse.
+      const tail = steps.filter(([dx, , shown]) => shown && dx < -88).map(([dx, dy]) => onRoad(dx, dy));
+      const oldRoad = [15, 10, 9, 7, 5, 2, 1, 0, 0];
+      assert.equal(tail.length, oldRoad.length, `${name}: ${tail.length} steps past dx -88`);
+      tail.forEach((on, i) => assert.ok(on >= oldRoad[i], `${name}: road under the last steps is ${JSON.stringify(tail)}, worse than the old road's ${JSON.stringify(oldRoad)}`));
       // With reduced motion the truck rests untranslated at the road's back end, half behind the crane; the old road held 15 of 21 there too.
       assert.ok(onRoad(0, 0) >= 15, `${name} at rest: ${onRoad(0, 0)} of ${feet.length} on the road`);
     }
