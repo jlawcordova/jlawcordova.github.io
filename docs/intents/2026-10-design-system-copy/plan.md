@@ -10,6 +10,15 @@ One PR, `feat/design-system-copy` → `main`, with one commit per step below. No
 
 The source for the design system's content is the artifact's current version (1791091552-a35a). Each file is read from it with the Artifact tool, then edited as below.
 
+## Departures
+
+Recorded as the work departed from this plan, per `CLAUDE.md`. The spec still holds, with the dated note on its page address.
+
+1. **The preview page is `/design-system/`, not `/lab/design-system/`.** The owner asked for it during step 7, so the page is `src/pages/design-system.astro`. It's still unlisted and `noindex`. Every mention in this plan, the spec, CLAUDE.md and the README now uses the new address.
+2. **The pixel-art lab's unlisted check covers the preview page.** `scripts/e2e/editor.e2e.mjs` (R15) failed the first full run because it allowed only `/lab/pixel-art/` to be `noindex`. It now also expects `/design-system/` to carry the robots meta, and still checks that no other page links to either page or is `noindex`.
+3. **Step 1 adapted the AchievementRow README's icon line,** not only the main README's paths. Its "crop an `<img>` with `.achievement__icon--img`" note only worked inside the artifact, so it now describes the site's `<use>` markup.
+4. **C3 didn't happen.** The build reads `docs/design-system/` with `import.meta.glob`, so the previews stayed where the spec put them.
+
 ## Workflow
 
 - **Who builds it:** the main session, inline. No implementer subagents: the work is small, mostly copying and editing text, and each step needs the artifact files the session has already read. A subagent would start cold and re-read them.
@@ -23,13 +32,13 @@ The source for the design system's content is the artifact's current version (17
 
 ## Progress
 
-- [ ] 1. Move the design system in
-- [ ] 2. Design system edits
-- [ ] 3. Previews
-- [ ] 4. Preview page and test
-- [ ] 5. Site copy
-- [ ] 6. Pointers and notes
-- [ ] 7. Verify
+- [x] 1. Move the design system in
+- [x] 2. Design system edits
+- [x] 3. Previews
+- [x] 4. Preview page and test
+- [x] 5. Site copy
+- [x] 6. Pointers and notes
+- [x] 7. Verify
 - [ ] 8. Retire the artifact
 
 ## Files that change
@@ -41,7 +50,7 @@ The source for the design system's content is the artifact's current version (17
 - `docs/design-system/components/<Name>/preview.html` (new, 12): the `<body>` contents of each artifact preview, edited as in step 3
 
 **Preview page (new, R4a)**
-- `src/pages/lab/design-system.astro` (new): the unlisted preview page
+- `src/pages/design-system.astro` (new): the unlisted preview page
 - `src/styles/design-system.css` (new): the `.brief*`, `.register*` and `.rating*` rules from the artifact's `components/bundle.css` (lines 1136–1259), imported only by the preview page
 - `src/styles/variables.css`: adds `--radius-chip: 6px`, which those rules use. It's already a token in `tokens.json`, so the token test then covers it too
 
@@ -75,7 +84,7 @@ The source for the design system's content is the artifact's current version (17
 4. **Add the preview page and test.**
    - `src/styles/variables.css`: add `--radius-chip: 6px;` beside the other radii.
    - `src/styles/design-system.css`: copy bundle.css lines 1136–1259 (`.brief` to `.rating--low`), with a header comment like `lab.css`'s saying only the preview page imports it.
-   - `src/pages/lab/design-system.astro`: `BaseLayout` with `title="Design system previews"` and `noindex`, a `PageHead`, and `<AchievementIcons />` once. Load the previews with `import.meta.glob('../../../docs/design-system/components/*/preview.html', { query: '?raw', import: 'default', eager: true })`. Render one `<section>` per component in the README's Components order (Button, Pill, Navigation, Footer, PageHead, Card, Pagination, AchievementRow, CodeBlock, Prose, DecisionBrief, Register), with an `h2` of the name, a link to its README on GitHub (`https://github.com/jlawcordova/jlawcordova.github.io/blob/main/docs/design-system/components/<Name>/README.md`), and the markup through `set:html`. A component missing from the order list goes at the end, so a new one still shows.
+   - `src/pages/design-system.astro`: `BaseLayout` with `title="Design system previews"` and `noindex`, a `PageHead`, and `<AchievementIcons />` once. Load the previews with `import.meta.glob('../../docs/design-system/components/*/preview.html', { query: '?raw', import: 'default', eager: true })`. Render one `<section>` per component in the README's Components order (Button, Pill, Navigation, Footer, PageHead, Card, Pagination, AchievementRow, CodeBlock, Prose, DecisionBrief, Register), with an `h2` of the name, a link to its README on GitHub (`https://github.com/jlawcordova/jlawcordova.github.io/blob/main/docs/design-system/components/<Name>/README.md`), and the markup through `set:html`. A component missing from the order list goes at the end, so a new one still shows.
    - `scripts/design-system.test.mjs`: (a) every `docs/design-system/components/<Name>/` has both `README.md` and `preview.html`; (b) for every token in `tokens.json`'s `color`, `radius`, `spacing`, `shadow` and `layout` families whose name has a `--<name>` in `variables.css`, the values match, ignoring case and whitespace. Use the first definition outside `@media`, and skip CSS values containing `var(`. (c) `tokens.json` parses, and every token name is unique.
 5. **Rewrite the site copy.** Add the profile line first, then the spec's [Site copy](spec.md#site-copy) table, word for word: `Hero.astro` (title, keeping `<span class="accent">` around "to production."; lede), `Range.astro` (paragraph), `site.ts` (`description`).
 6. **Point the repo at the design system.** The spec's [Updates elsewhere](spec.md#updates-elsewhere): CLAUDE.md, README.md, the `write-spec` skill and the redesign spec notes. Also add `docs/design-system/` to CLAUDE.md's Architecture summary.
@@ -99,9 +108,9 @@ The source for the design system's content is the artifact's current version (17
 Run and paste in the PR:
 
 - `npm test`: `# fail 0`, including `design-system.test.mjs`.
-- `npm run build`: `- 0 errors`, `- 0 warnings`, `- 0 hints` and `[build] Complete!`. Then `grep -c 'noindex' dist/lab/design-system/index.html` is 1, and `grep -c '<section' dist/lab/design-system/index.html` is at least 12.
+- `npm run build`: `- 0 errors`, `- 0 warnings`, `- 0 hints` and `[build] Complete!`. Then `grep -c 'noindex' dist/design-system/index.html` is 1, and `grep -c '<section' dist/design-system/index.html` is at least 12.
 - `npm run e2e`: `# fail 0` (nothing tests the copy, but the Range and accomplishments suites must still pass).
 - `grep -rn "Netzon" docs/design-system/` finds nothing.
 - `grep -rn "whole products\|handoffs\|judgment stays" src/` finds nothing.
-- Screenshots at 1440px and 390px, before and after: the home page's hero and Range sections, and the whole `/lab/design-system/` page. Each shows no horizontal scroll. Every preview renders, the icons in the AchievementRow preview are the rocket, book and hammer (with a lock), and DecisionBrief and Register are styled.
+- Screenshots at 1440px and 390px, before and after: the home page's hero and Range sections, and the whole `/design-system/` page. Each shows no horizontal scroll. Every preview renders, the icons in the AchievementRow preview are the rocket, book and hammer (with a lock), and DecisionBrief and Register are styled.
 - The artifact's README, read back after step 8, starts with the retirement line.

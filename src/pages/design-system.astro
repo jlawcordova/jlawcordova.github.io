@@ -5,12 +5,12 @@
 // so the previews show exactly what ships. design-system.css (the
 // DecisionBrief and Register styles, which aren't on the site) loads on this
 // page only.
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import PageHead from '../../components/PageHead.astro';
-import AchievementIcons from '../../components/AchievementIcons.astro';
-import '../../styles/design-system.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHead from '../components/PageHead.astro';
+import AchievementIcons from '../components/AchievementIcons.astro';
+import '../styles/design-system.css';
 
-const previews = import.meta.glob<string>('../../../docs/design-system/components/*/preview.html', {
+const previews = import.meta.glob<string>('../../docs/design-system/components/*/preview.html', {
   query: '?raw',
   import: 'default',
   eager: true,

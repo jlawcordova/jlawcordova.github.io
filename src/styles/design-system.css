@@ -1,6 +1,6 @@
 /*
  * The design system's preview page (design system copy spec, Rendered
- * previews). Imported by src/pages/lab/design-system.astro only, after
+ * previews). Imported by src/pages/design-system.astro only, after
  * global.css, so none of it ships to other pages. Tokens only.
  */
 
