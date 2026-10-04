@@ -12,6 +12,7 @@ The site also feels static. Transitions are limited to a few CSS fades and sprit
 - **Square corners everywhere.** No UI element has rounded corners, including buttons, the Contact pill and the navigation bar.
 - **No shadows.** Buttons and everything else that used a hard shadow get a thick border instead.
 - **Pixel type on every button and link in the nav.** All buttons and the navigation links use the pixel font. The hero's greeting ("Hi, I’m J. Law. Cordova.") does too.
+- **A menu button on small screens.** On mobile, the nav shows an icon-only menu button with no text and no border, and the links stay hidden until it's pressed.
 - **The footer is a grass block.** It stays mostly dirt-colored, with a grass layer along the top.
 - **Motion where it helps.** The site uses the Motion library (formerly Framer Motion) wherever possible to make the experience delightful, with transitions on the components where they fit.
 - **The design system says so.** Its guidance describes all of the above, so later work, including the proposed home page redesign, follows it.
