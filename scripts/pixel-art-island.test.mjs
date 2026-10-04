@@ -25,11 +25,11 @@ const svg = compileScene(sources, 'hero-island').output;
 
 /**
  * The objects the island may still draw from legacy colors, until their slice
- * lands: the island and its front layer (slices 3 to 8), the waterfall
- * (slice 4) and the trucks (slice 2). Remove each name when its slice replaces it; the test fails if a
+ * lands: the island and its front layer (slices 3 to 8) and the waterfall
+ * (slice 4). Remove each name when its slice replaces it; the test fails if a
  * name stays after the object has left the scene.
  */
-const LEGACY_ALLOWED = ['island-base', 'island-front', 'waterfall', 'truck', 'truck-green'];
+const LEGACY_ALLOWED = ['island-base', 'island-front', 'waterfall'];
 
 /** Today's island, in bytes (spec R6). */
 const MAX_RAW = 83485;
@@ -64,6 +64,14 @@ describe('hero island structure', () => {
       const now = resolve(sources, name).keys;
       assert.deepEqual(Object.keys(now), Object.keys(keys), `${name} keys`);
       for (const [key, legacy] of Object.entries(keys)) assert.equal(hex(now[key]), hex(legacy), `${name} key ${key}`);
+    }
+  });
+
+  it('R7: truck-green is still a recolor of truck, and both use world colors', () => {
+    assert.equal(sources.objects.get('truck-green').extends, 'truck');
+    assert.equal(sources.objects.get('truck-green').layers, undefined, 'truck-green adds no map of its own');
+    for (const name of ['truck', 'truck-green']) {
+      for (const color of Object.values(resolve(sources, name).keys)) assert.ok(color in sources.palette.world, `${name} uses ${color}`);
     }
   });
 

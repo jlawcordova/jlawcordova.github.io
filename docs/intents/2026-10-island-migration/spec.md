@@ -69,7 +69,7 @@ No new world colors are needed. The tier stays at 32. Every legacy color on the 
 | `c-e8f1ec`, `c-d3dfc0` | 18 + 8 px | `cream`, `water-1` | 17, 22 | highlights |
 | `c-fffdf8`, `c-efe6d6` | clouds | `cream` | 31, 13 | cloud body and shade |
 | `c-fbf6ec`, `c-bfd3cb` | truck | `cream`, `water-1` | 17, 16 | truck body and window |
-| `c-6f9a6e`, `c-2e4f33`, `c-3f6b45` | green truck | `grass-3`, `grass-4`, `grass-4` | to be measured in the slice | green truck |
+| `c-6f9a6e`, `c-2e4f33`, `c-3f6b45` | green truck | `grass-3`, `grass-4`, `grass-4` | 27, 43, 19 | green truck |
 
 Distance is plain RGB distance (0 to 441). In all, 4,901 of `island-base`'s 14,433 painted pixels (34%) and 207 of `island-front`'s 1,958 (11%) change shade. The biggest visible effect is that the grass loses some of its subtle variety, because 11 greens fall onto four ramp steps. Pieces drawn fresh from tiles will not reproduce the old checkerboard pixel for pixel anyway; the `tile` library object's own surface specks stand in for it (C3).
 

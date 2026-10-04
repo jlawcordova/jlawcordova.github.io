@@ -86,7 +86,7 @@ The final PR adds the whole-island before and after, and a verifier report again
 
 ### Progress
 
-- [ ] PR A: slices 1–2
+- [x] PR A: slices 1–2
 - [ ] PR B: slice 3
 - [ ] PR C: slices 4–5
 - [ ] PR D: slices 6–7
