@@ -196,10 +196,26 @@ You don't need the editor or a browser.
 1. **Start from a valid file.** `npm run art -- --new object <name> --size 16x16` (a sprite with an empty map), `--new object <name> --kind block` (a block), `--new object <name> --extends character` (an outfit) or `--new scene <name>`, or open an existing source. Choose the smallest object that does the job, and prefer placing objects in a scene over drawing large maps. `--new` refuses to overwrite a file.
 2. **Edit whole rows**, and keep every row the same width. For a block, change `size` and `faces` instead. Add each color you use to `keys`, from the world palette.
 3. **Check it:** `npm run art -- --check <name>`. It prints every problem with its file, layer, frame, row and column, and the rule broken, or a one-line summary (size, colors against the cap, layers, frames). Fix each problem where it points.
-4. **Look at it:** `npm run art -- --preview <name>` (or `--preview palette` for the world palette's swatch sheet) writes `.art-preview/<name>@1x.png` to `@4x.png` (git-ignored). **Open the PNG and look at it.** An object stands on one tile outline; a scene shows its viewBox at frame 0. The picture, not the text, decides whether the art is right.
+4. **Look at it:** `npm run art -- --preview <name>` (or `--preview palette` for the world palette's swatch sheet) writes `.art-preview/<name>@1x.png` to `@4x.png` (git-ignored). Add `--scale N` for a bigger one too, `<name>@Nx.png`, up to 16×. **Open the PNG and look at it.** An object stands on one tile outline; a scene shows its viewBox at frame 0. The picture, not the text, decides whether the art is right.
 5. **Generate the output:** `npm run art` writes the SVGs for scenes with an `output`, then run `npm test`. A test fails if a committed SVG is stale against its sources.
 
 A name can be written `objects/<name>` or `scenes/<name>` when an object and a scene share it.
+
+**Sizes.** Each SVG must stay within its budget, or `npm run art` reports it `OVER BUDGET` and exits 1: `hero-island.svg` 500 KB raw and 125 KB gzip, every other SVG 100 KB and 25 KB. `npm run art -- --sizes <scene>` shows where the bytes go: the scene's total, then what each object adds (the scene compiled without it) and what each color's path takes, raw and gzip, each against the sources at `HEAD`.
+
+**Close-ups.** Preview-only scenes frame each part of the hero island tightly, so every review round renders the same view. Preview them with `--scale 6`:
+
+| Scene | Shows |
+| --- | --- |
+| `closeup-land` | The front corner and both cliffs (columns and rows 3–5) |
+| `closeup-road-end` | Where the road meets the left cliff (columns 1–3, rows 4–5) |
+| `closeup-water` | The river, the waterfall and its streaks (`flag`) |
+| `closeup-crane` | The crane, the hanging load, the stack at its foot and the pine behind it |
+| `closeup-office` | The house, the road, the bridge and its rail, and both trucks at two points of their drive |
+| `closeup-front-trees` | The front trees and the fence |
+| `closeup-sky` | The three clouds and the crane jib's head |
+
+They place the island's objects at the island's positions, in its paint order, and a test keeps them that way: when the island's scene renames or moves an object, change the close-ups in the same commit. The preview's card color is one shade off the hero's background, so the sky reads as it does on the site.
 
 ## The editor (optional)
 
@@ -225,6 +241,7 @@ The lab at `/lab/pixel-art/` (or `npm run dev`, then http://localhost:4321/lab/p
   - 0 is Fit, and 1–4 zoom to 4×, 8×, 12× and 16×. A pointer stroke is one undo step.
   - **Colors:** a color the object doesn't use yet gets a new key, named after the color where it can be. The usage meter warns from 9 colors and stops new ones at 12.
   - **Outfits:** painting an outfit writes whole-row overrides, and a row painted back to match `character` drops its override. The gutter beside the stage marks the overridden rows.
+  - **Blocks:** a block shows as the engine draws it. Painting its top writes its `surface` (each pixel is its tile's map cell, clipped to the diamond), and painting a face writes its `sides`, so a 16-pixel band painted along a face's top edge lands on the map's first rows. Fill covers one color on one face, Picker reads the block as drawn, and a looped surface paints the frame shown. Size and face colors are in the Object panel, and going flat drops the sides. A block's export carries only that block: apply the same change to its variants (such as the island's edge pieces) yourself.
   - **Layers and frames:** the Layers and Frames panels add, duplicate, reorder and delete them. Play never starts by itself.
 - **New documents** start from the same starters as `--new`, as drafts named "(new)". A scene can place a new object right away. Export then reminds you to export the object too.
 - **Export** shows the canonical source and its path. Save it there exactly, then run `npm run art` and `npm test`. With problems, Export lists them instead, and the status bar's count opens the same list, where choosing one goes to its row and column.
@@ -247,6 +264,39 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
 - **Moving legacy art to world colors** (`range-island`, and the legacy palette with it) changes how it looks, so do it one object at a time, in its own PR, with before and after previews. Don't do it as part of other work.
 - **Keep the CSS hooks.** `pixel-art.css` animates the classes on these groups (`wf w0`…, `itruck it1`, `pcloud pc0`, `cbob`). Don't rename a loop, prefix or placement class unless you change the CSS in the same PR.
 
+## Hero island look
+
+The style of the hero island's objects ([hero island detail spec](../../../docs/intents/2026-10-hero-island-detail/spec.md)). Detailed, calm, no outlines. The `pixel-artist` agent (`.claude/agents/pixel-artist.md`) draws in it.
+
+- **Shade order.**
+  - Each material uses its own ramp. The lit top is shade 2. The left face is the mid shade and the right face the dark one (for soil, `soil-2` and `soil-3`).
+  - Texture is the next shade lighter on tops, or darker on sides, from the same ramp. A face holds 2–3 shades at most.
+  - Two-tone the small parts too: a trunk is `wood-3` with a `wood-4` right column, and a post is lit on the left and dark on the right.
+- **Density.**
+  - About 4 small clusters per 32×16 top. For grass, that's tufts of two 1-px blade strokes, 2–3 px tall, slightly leaning, sometimes mirrored.
+  - About 6 speckles per side face, mixing 1×1 and 2×2 squares.
+  - Avoid 2×1 dashes, which read as scratches. "V" tufts read as birds, and diagonal dotted pairs read as wallpaper.
+  - Keep texture at least 2 px from face edges, so repeats don't draw grid lines.
+- **Transitions.**
+  - Where materials meet (grass over dirt, a road over dirt), the upper material hangs a 3–4 px band down the side faces, following the top edge.
+  - The band's last row is the ramp's darker shade, and a few 1-px drips break up its lower edge. A roof's fascia stays straight, with no drips.
+  - Bands stay in the upper material's own ramp: grass bands are grass greens, and a road's band is `path-3`, last row `path-4`.
+- **Edges and joints.**
+  - No outlines, and no `ink` on island objects.
+  - Where cubes line a cliff, both of each cube's corner columns show on both cliffs. So joints are hidden with separate edge pieces (`block`, `block-left`, `block-right`, `block-road`), never with an in-between shade or a corner-color swap.
+  - When an object loses its outline, recolor the outline pixels with the darker shade of the face they border, which keeps the silhouette.
+- **Shapes.**
+  - Clouds are short-sided stacked cubes: `cream` tops, `path-2` left, `path-3` right, tip pixels clipped, no texture.
+  - Pines are three stacked tiers with shallow-V skirts, split at the center (lit left, dark right), with a sawtooth of needle tips.
+  - Cardboard is `wood-1` top, `wood-2` left, `wood-3` right, with `path-1` tape.
+  - Lattices (the crane) are see-through.
+- **Scale.** Texture should fade to grain at 1× and read as material at 2–3×. Check both.
+- **Cost.**
+  - Each horizontal run costs about 15 B, and rows of the same width merge, so vertical strokes are cheap.
+  - An isolated texture pixel costs about 30 B raw and 6 B gzip, times the number of placements and loop frames.
+  - Prefer a few deliberate clusters and horizontal adjacency.
+  - Check with `npm run art -- --sizes hero-island`.
+
 ## Pitfalls
 
 - `.` is transparent. A space is not a valid key.
@@ -258,7 +308,7 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
 
 ## Before opening a PR
 
-- [ ] `npm run art -- --check <name>` passes for everything you touched, and `npm run art` reports every file `lossless` and none `OVER BUDGET`.
+- [ ] `npm run art -- --check <name>` passes for everything you touched, and `npm run art` reports every file `lossless` and none `OVER BUDGET`. For the hero island, paste `npm run art -- --sizes hero-island` into the PR.
 - [ ] No legacy colors in new art; within the caps; light from the island's side.
 - [ ] The preview PNGs (1× and 4× at least) are attached to the PR.
 - [ ] `npm test` shows `# fail 0`.
