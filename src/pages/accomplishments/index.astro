@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AccomplishmentsPage from '../../components/AccomplishmentsPage.astro';
+import PageHead from '../../components/PageHead.astro';
+import { getAccomplishments } from '../../lib/accomplishments';
+import { paginate } from '../../lib/pagination';
+import { site } from '../../site';
+
+// Page 1: the newest done accomplishments, then every locked one. Without data
+// (the committed "unavailable" placeholder, or none yet) it still builds, with
+// a short note instead of the list.
+const { status, done, locked } = getAccomplishments();
+const hasData = status === 'ok' && done.length + locked.length > 0;
+const [firstPage] = paginate(done, site.accomplishmentsPerPage);
+---
+
+<BaseLayout title="Accomplishments">
+  {
+    hasData ? (
+      <AccomplishmentsPage {...firstPage} locked={locked} />
+    ) : (
+      <>
+        <PageHead title="Accomplishments" />
+        <div class="page-body">
+          <div class="page-body__inner achievements-page">
+            <p class="achievements-page__empty">
+              {status === 'ok'
+                ? 'Nothing here yet. Check back soon.'
+                : 'The list couldn’t be loaded this time. Check back soon.'}
+            </p>
+            <a class="btn btn--ghost" href="/">
+              Back to home
+            </a>
+          </div>
+        </div>
+      </>
+    )
+  }
+</BaseLayout>

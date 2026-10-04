@@ -4,10 +4,11 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import BlogPage from '../../components/BlogPage.astro';
 import { getPosts } from '../../lib/posts';
 import { paginate } from '../../lib/pagination';
+import { site } from '../../site';
 
 // Pages 2+ keep Jekyll's paginate_path: /blog/page2/, /blog/page3/, ...
 export const getStaticPaths = (async () => {
-  return paginate(await getPosts())
+  return paginate(await getPosts(), site.postsPerPage)
     .slice(1)
     .map((props) => ({ params: { page: `page${props.page}` }, props }));
 }) satisfies GetStaticPaths;

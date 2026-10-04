@@ -8,10 +8,11 @@ J. Law. Cordova's personal site and blog: Astro 7, TypeScript and plain CSS, dep
 - Dev server: `npm run dev` (http://localhost:4321)
 - Build: `npm run build` (runs `astro check`, then builds to `dist/`)
 - Test: `npm test` (Node built-ins, no network)
-- Browser checks: `npm run e2e` (serves the built `dist/` and runs `scripts/e2e/` with the environment's Playwright; run `npm run build` first)
+- Browser checks: `npm run e2e` (serves the built `dist/` and runs `scripts/e2e/` with the environment's Playwright; run `npm run build` first). One suite: `npm run e2e -- scripts/e2e/accomplishments.e2e.mjs`. That suite builds the four accomplishments fixtures into `.e2e-output/accomplishments/` itself and restores `src/data/accomplishments.json` afterwards, so don't run `npm test` alongside it.
 - Pixel art: `npm run art` (compiles the scenes in `src/assets/pixel-art/source/` to `src/assets/pixel-art/*.svg`). `npm run art -- --check <name>` validates one object or scene, `--preview <name>` writes PNGs to `.art-preview/`, and `--new object|scene <name>` writes a starter source. The `pixel-art` skill has the details. Accomplishment icons (`icon-<id>` objects and the `achievement-icons` sheet) are added with the `achievement-icon` skill.
 - Pixel-art lab: `npm run dev`, then http://localhost:4321/lab/pixel-art/ (unlisted). It edits scenes, paints objects and exports their sources.
 - Accomplishments: `npm run fetch-accomplishments` (overwrites `src/data/accomplishments.json`; never commit the result)
+- Fixture accomplishments: `cp scripts/fixtures/accomplishments.json src/data/accomplishments.json` (or `-two-done`, `-unavailable`, `-locked-only`), build, then `git checkout src/data/accomplishments.json`. The rich fixture fills the home section and `/accomplishments/` (three pages and the locked list).
 
 ## Verifying your work
 
@@ -36,7 +37,7 @@ Run these before reporting any task complete, and paste the output. If a test fa
 
 ## Architecture
 
-The README's project layout table maps every folder. In short: routes in `src/pages/`, components in `src/components/` (home sections in `home/`), one CSS file per area in `src/styles/`, the pixel-art engine in `src/lib/pixel-art/` (plain `.mjs` with `// @ts-check`, shared by `npm run art` and the editor at `src/pages/lab/pixel-art.astro`, whose client code is in `src/components/lab/`), scripts with `node:test` tests in `scripts/`, browser checks in `scripts/e2e/`, and `static/public/*` served at `/public/*`.
+The README's project layout table maps every folder. In short: routes in `src/pages/` (including `/accomplishments/`, paginated like `/blog/`), components in `src/components/` (home sections in `home/`; the accomplishment rows, home section, list page and icon sheet in `Accomplishment*.astro` and `AchievementIcons.astro`), one CSS file per area in `src/styles/`, the pixel-art engine in `src/lib/pixel-art/` (plain `.mjs` with `// @ts-check`, shared by `npm run art` and the editor at `src/pages/lab/pixel-art.astro`, whose client code is in `src/components/lab/`), scripts with `node:test` tests in `scripts/`, browser checks in `scripts/e2e/`, and `static/public/*` served at `/public/*`.
 
 ## How changes flow
 

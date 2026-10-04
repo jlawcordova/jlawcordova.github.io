@@ -3,8 +3,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import BlogPage from '../../components/BlogPage.astro';
 import { getPosts } from '../../lib/posts';
 import { paginate } from '../../lib/pagination';
+import { site } from '../../site';
 
-const [firstPage] = paginate(await getPosts());
+const [firstPage] = paginate(await getPosts(), site.postsPerPage);
 ---
 
 <BaseLayout title="Blog">

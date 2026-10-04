@@ -118,9 +118,50 @@ describe('fetch-accomplishments script', () => {
       rkey: '3aaaaaaaaaaa2',
       title: 'Older',
       description: 'd',
+      done: true,
       startDate: '2025-03',
       tags: ['TypeScript'],
       links: ['https://example.com/pr/1'],
+      createdAt: '2026-10-01T00:00:00.000Z',
+    });
+  });
+
+  it('R9, R10: writes locked records after done ones, keeping createdAt on every item', async () => {
+    const { code, data } = await run('locked', {
+      routes: {
+        ...identityRoutes,
+        [LIST]: [
+          {
+            body: {
+              records: [
+                record('3aaaaaaaaaab1', { title: 'Older goal', description: 'd', done: false, createdAt: '2026-09-01T00:00:00.000Z' }),
+                record('3aaaaaaaaaab2', { title: 'Done', description: 'd', startDate: '2026-09', funTitle: 'Lift Off', icon: 'rocket' }),
+                record('3aaaaaaaaaab3', { title: 'Newer goal', description: 'd', done: false, createdAt: '2026-09-20T00:00:00.000Z' }),
+                record('3aaaaaaaaaab4', { title: 'Dated goal', description: 'd', done: false, startDate: '2026-09' }),
+              ],
+            },
+          },
+        ],
+      },
+    });
+    assert.equal(code, 0);
+    assert.deepEqual(
+      data.items.map((i) => [i.title, i.done]),
+      [
+        ['Done', true],
+        ['Newer goal', false],
+        ['Older goal', false],
+      ],
+    );
+    assert.ok(data.items.every((i) => typeof i.createdAt === 'string'));
+    assert.deepEqual(data.items[1], {
+      rkey: '3aaaaaaaaaab3',
+      title: 'Newer goal',
+      description: 'd',
+      done: false,
+      tags: [],
+      links: [],
+      createdAt: '2026-09-20T00:00:00.000Z',
     });
   });
 });
@@ -136,6 +177,65 @@ describe('toItem', () => {
   });
 });
 
+describe('toItem: gamified fields (spec D3)', () => {
+  const base = { title: 'Plain title', description: 'd', startDate: '2026-05' };
+
+  it('R17: an old record with none of the new fields is a done item without them', () => {
+    const item = toItem(record('r', base));
+    assert.equal(item.done, true);
+    assert.equal(item.startDate, '2026-05');
+    for (const key of ['funTitle', 'shortDescription', 'icon']) assert.ok(!(key in item), key);
+  });
+
+  it('R1: copies funTitle, shortDescription and icon, trimmed', () => {
+    const item = toItem(
+      record('r', { ...base, funTitle: ' Lift Off ', shortDescription: 'Shipped the new booking app release ', icon: 'rocket' }),
+    );
+    assert.equal(item.funTitle, 'Lift Off');
+    assert.equal(item.shortDescription, 'Shipped the new booking app release');
+    assert.equal(item.icon, 'rocket');
+  });
+
+  it('R17: drops blank or non-string funTitle, shortDescription and icon', () => {
+    const item = toItem(record('r', { ...base, funTitle: '   ', shortDescription: 42, icon: ['rocket'] }));
+    assert.notEqual(item, null);
+    for (const key of ['funTitle', 'shortDescription', 'icon']) assert.ok(!(key in item), key);
+  });
+
+  it('R13: keeps an unknown icon name, so the site can fall back to the star', () => {
+    assert.equal(toItem(record('r', { ...base, icon: 'dragon' })).icon, 'dragon');
+  });
+
+  it('R9: done is true when absent and copied when a boolean', () => {
+    assert.equal(toItem(record('r', { ...base, done: true })).done, true);
+    assert.equal(toItem(record('r', base)).done, true);
+  });
+
+  it('R9: a done that is present but not a boolean rejects the record', () => {
+    for (const done of ['false', 0, null, 'yes']) {
+      assert.equal(toItem(record('r', { ...base, done })), null, JSON.stringify(done));
+    }
+  });
+
+  it('R9: a locked record needs no startDate and has no dates', () => {
+    const item = toItem(record('r', { title: 'Goal', description: 'd', done: false, icon: 'trophy' }));
+    assert.equal(item.done, false);
+    assert.equal(item.icon, 'trophy');
+    assert.ok(!('startDate' in item) && !('endDate' in item));
+    assert.equal(item.createdAt, '2026-10-01T00:00:00.000Z');
+  });
+
+  it('R9: a locked record with a startDate or endDate is rejected', () => {
+    assert.equal(toItem(record('r', { title: 'Goal', description: 'd', done: false, startDate: '2026-05' })), null);
+    assert.equal(toItem(record('r', { title: 'Goal', description: 'd', done: false, endDate: '2026-05' })), null);
+  });
+
+  it('a done record still needs a valid startDate', () => {
+    assert.equal(toItem(record('r', { title: 't', description: 'd' })), null);
+    assert.equal(toItem(record('r', { title: 't', description: 'd', done: true })), null);
+  });
+});
+
 describe('compareItems', () => {
   it('sorts by endDate ?? startDate, then createdAt, newest first', () => {
     const items = [
@@ -144,5 +244,14 @@ describe('compareItems', () => {
       { title: 'c', startDate: '2026-01', createdAt: '2026-03-01T00:00:00Z' },
     ];
     assert.deepEqual(items.sort(compareItems).map((i) => i.title), ['b', 'c', 'a']);
+  });
+
+  it('R7: puts done items first, then locked items by createdAt, newest first', () => {
+    const items = [
+      { title: 'old goal', done: false, createdAt: '2026-01-01T00:00:00Z' },
+      { title: 'done', done: true, startDate: '2020-01', createdAt: '2020-01-01T00:00:00Z' },
+      { title: 'new goal', done: false, createdAt: '2026-09-01T00:00:00Z' },
+    ];
+    assert.deepEqual(items.sort(compareItems).map((i) => i.title), ['done', 'new goal', 'old goal']);
   });
 });

@@ -82,6 +82,7 @@ function isHttpUrl(value) {
   }
 }
 
+/** @param {unknown} value @returns {value is string} */
 function nonEmptyString(value) {
   return typeof value === 'string' && value.trim() !== '';
 }
@@ -90,6 +91,14 @@ function nonEmptyString(value) {
  * Minimal check: required fields are non-empty strings, dates are YYYY-MM with
  * endDate not before startDate, and only http(s) links survive. Every other
  * field is dropped. Returns null for a record that fails.
+ *
+ * Gamified accomplishments (spec D3): `done` is true when absent. A locked
+ * record (`done: false`) has no dates, and one that has any is rejected, as
+ * the AT Protocol side rejects it. A `done` that is present but not a boolean
+ * is malformed (the lexicon types it boolean), so the record is rejected
+ * rather than guessed into a claim or a goal. `funTitle`, `shortDescription`
+ * and `icon` are copied, trimmed, only when they are non-empty strings; the
+ * site falls back to the plain title and the star without them (R17).
  */
 export function toItem(record) {
   const value = record?.value;
@@ -97,28 +106,51 @@ export function toItem(record) {
   if (!value || typeof value !== 'object' || !nonEmptyString(rkey)) return null;
   const { title, description, startDate, endDate, createdAt } = value;
   if (!nonEmptyString(title) || !nonEmptyString(description) || !nonEmptyString(createdAt)) return null;
-  if (typeof startDate !== 'string' || !MONTH.test(startDate)) return null;
-  if (endDate !== undefined && (typeof endDate !== 'string' || !MONTH.test(endDate) || endDate < startDate)) {
+  if (value.done !== undefined && typeof value.done !== 'boolean') return null;
+  const done = value.done !== false;
+
+  if (done) {
+    if (typeof startDate !== 'string' || !MONTH.test(startDate)) return null;
+    if (endDate !== undefined && (typeof endDate !== 'string' || !MONTH.test(endDate) || endDate < startDate)) {
+      return null;
+    }
+  } else if (startDate !== undefined || endDate !== undefined) {
     return null;
   }
 
-  const item = {
+  /** @param {unknown} v */
+  const optional = (v) => (nonEmptyString(v) ? v.trim() : undefined);
+  const entries = {
     rkey,
     title: title.trim(),
     description: description.trim(),
-    startDate,
+    done,
+    startDate: done ? startDate : undefined,
+    endDate: done ? endDate : undefined,
+    funTitle: optional(value.funTitle),
+    shortDescription: optional(value.shortDescription),
+    icon: optional(value.icon),
     tags: Array.isArray(value.tags) ? value.tags.filter(nonEmptyString).map((t) => t.trim()) : [],
     links: Array.isArray(value.links) ? value.links.filter(isHttpUrl) : [],
     createdAt,
   };
-  if (endDate !== undefined) item.endDate = endDate;
-  return item;
+  // Leave absent fields out rather than writing them as undefined.
+  return Object.fromEntries(Object.entries(entries).filter(([, v]) => v !== undefined));
 }
 
-/** Newest first: endDate ?? startDate descending, then createdAt descending. */
+/**
+ * Newest first. Done items come first, by endDate ?? startDate descending,
+ * then createdAt descending. Locked items follow, by createdAt descending.
+ */
 export function compareItems(a, b) {
-  const byMonth = (b.endDate ?? b.startDate).localeCompare(a.endDate ?? a.startDate);
-  return byMonth !== 0 ? byMonth : b.createdAt.localeCompare(a.createdAt);
+  const aLocked = a.done === false;
+  const bLocked = b.done === false;
+  if (aLocked !== bLocked) return aLocked ? 1 : -1;
+  if (!aLocked) {
+    const byMonth = (b.endDate ?? b.startDate).localeCompare(a.endDate ?? a.startDate);
+    if (byMonth !== 0) return byMonth;
+  }
+  return b.createdAt.localeCompare(a.createdAt);
 }
 
 async function write(data) {
@@ -133,11 +165,9 @@ async function main() {
     const records = await listAllRecords(identity);
     const items = records.map(toItem).filter(Boolean).sort(compareItems);
     const skipped = records.length - items.length;
-    await write({
-      status: 'ok',
-      fetchedAt,
-      items: items.map(({ createdAt, ...item }) => item),
-    });
+    // createdAt stays on every item: locked items sort by it, and it dates
+    // a locked accomplishment for the stale check (spec R10).
+    await write({ status: 'ok', fetchedAt, items });
     console.log(
       `fetch-accomplishments: wrote ${items.length} item(s)` + (skipped ? `, skipped ${skipped} invalid` : ''),
     );

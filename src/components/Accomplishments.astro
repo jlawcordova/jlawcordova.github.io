@@ -1,35 +1,32 @@
 ---
-import AccomplishmentCard from './AccomplishmentCard.astro';
-import { getAccomplishments } from '../lib/accomplishments';
+// The home page's accomplishments (gamified accomplishments spec R5, R6, R8):
+// the three newest done, the newest locked, and "Show more" when the full list
+// at /accomplishments/ has anything else. Nothing renders without data.
+import AccomplishmentRow from './AccomplishmentRow.astro';
+import AchievementIcons from './AchievementIcons.astro';
+import { getAccomplishments, homeSelection } from '../lib/accomplishments';
 
-const VISIBLE = 8;
-const { status, items } = getAccomplishments();
-const shown = items.slice(0, VISIBLE);
-const more = items.slice(VISIBLE);
+const { visible, done, locked, showMore } = homeSelection(getAccomplishments());
+const shown = locked ? [...done, locked] : done;
 ---
 
 {
-  status === 'ok' && items.length > 0 && (
+  visible && (
     <section id="accomplishments" class="accomplishments" aria-labelledby="accomplishments-title">
+      <AchievementIcons />
       <div class="accomplishments__inner">
-        <header class="accomplishments__head">
-          <p class="label">Achievements unlocked</p>
-          <h2 id="accomplishments-title">Accomplishments</h2>
-        </header>
-        <ol class="accomplishments__list" role="list">
+        <h2 id="accomplishments-title" class="accomplishments__title">
+          What I’ve been working on lately
+        </h2>
+        <ol class="achievement-list" role="list">
           {shown.map((item) => (
-            <AccomplishmentCard item={item} />
+            <AccomplishmentRow item={item} />
           ))}
         </ol>
-        {more.length > 0 && (
-          <details class="accomplishments__more">
-            <summary class="btn btn--ghost">Show {more.length} more</summary>
-            <ol class="accomplishments__list" role="list">
-              {more.map((item) => (
-                <AccomplishmentCard item={item} />
-              ))}
-            </ol>
-          </details>
+        {showMore && (
+          <a class="btn btn--ghost accomplishments__more" href="/accomplishments/">
+            Show more<span class="visually-hidden"> accomplishments</span>
+          </a>
         )}
       </div>
     </section>

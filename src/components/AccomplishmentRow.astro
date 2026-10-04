@@ -1,0 +1,102 @@
+---
+// One accomplishment as a row (gamified accomplishments spec D4): icon, fun
+// title, short description and month. A done row is a <details> that opens to
+// the plain title, the full description, the tags and the links, with a
+// tooltip of the full description on hover-capable devices. A locked row has
+// the same layout, can't be opened, and says "Not done yet" where the date goes.
+// Needs <AchievementIcons /> once on the page.
+import { CELL, LOCK_ICON, SHEET_ORDER } from '../lib/achievement-icons.mjs';
+import { formatDateRange, linkLabel, rowFor, type Accomplishment } from '../lib/accomplishments';
+
+interface Props {
+  item: Accomplishment;
+}
+
+const { item } = Astro.props;
+const row = rowFor(item);
+const cell = (id: string) => `${SHEET_ORDER.indexOf(id) * CELL} 0 ${CELL} ${CELL}`;
+const tipId = `achievement-tip-${item.rkey}`;
+
+// A 7×7 pixel "↗".
+const ARROW = 'M2 0h5v1h-5zM3 1h4v1h-4zM4 2h3v1h-3zM3 3h1v1h-1zM5 3h2v1h-2zM2 4h1v1h-1zM6 4h1v1h-1zM1 5h1v1h-1zM0 6h1v1h-1z';
+// A 7×4 pixel "⌄".
+const CHEVRON = 'M0 0h2v1h-2zM5 0h2v1h-2zM1 1h2v1h-2zM4 1h2v1h-2zM2 2h3v1h-3zM3 3h1v1h-1z';
+---
+
+{
+  item.done ? (
+    <li class="achievement" data-state="done">
+      <details class="achievement__details">
+        <summary class="achievement__row" aria-describedby={tipId}>
+          <span class="achievement__icon" data-icon={row.icon}>
+            <svg class="pixel-art" viewBox={cell(row.icon)} width="48" height="48" aria-hidden="true" focusable="false">
+              <use href="#achievement-icons" />
+            </svg>
+          </span>
+          <span class="achievement__text">
+            <span class="achievement__lead">{row.lead}</span>
+            {row.short && <span class="achievement__short">{row.short}</span>}
+          </span>
+          <span class="achievement__date">{formatDateRange(item)}</span>
+          <svg class="achievement__chevron pixel-art" viewBox="0 0 7 4" width="14" height="8" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d={CHEVRON} />
+          </svg>
+        </summary>
+        <div class="achievement__panel">
+          <div class="achievement__body">
+            <p class="achievement__title">{item.title}</p>
+            <p class="achievement__description">{item.description}</p>
+            {item.tags.length > 0 && (
+              <ul class="achievement__tags" aria-label="Tags">
+                {item.tags.map((tag) => (
+                  <li>{tag}</li>
+                ))}
+              </ul>
+            )}
+            {item.links.length > 0 && (
+              <ul class="achievement__links">
+                {item.links.map((link) => (
+                  <li>
+                    <a href={link} target="_blank" rel="noopener noreferrer">
+                      {linkLabel(link)}
+                      <svg class="pixel-art" viewBox="0 0 7 7" width="10" height="10" aria-hidden="true">
+                        <path fill="currentColor" d={ARROW} />
+                      </svg>
+                      <span class="visually-hidden">(opens in a new tab)</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      </details>
+      <p class="achievement__tip" role="tooltip" id={tipId}>{item.description}</p>
+    </li>
+  ) : (
+    <li class="achievement" data-state="locked">
+      <div class="achievement__row">
+        <span class="achievement__icon" data-icon={row.icon}>
+          <svg class="pixel-art" viewBox={cell(row.icon)} width="48" height="48" aria-hidden="true" focusable="false">
+            <use href="#achievement-icons" />
+          </svg>
+          <svg
+            class="achievement__lock pixel-art"
+            viewBox={cell(LOCK_ICON)}
+            width="48"
+            height="48"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <use href="#achievement-icons" />
+          </svg>
+        </span>
+        <span class="achievement__text">
+          <span class="achievement__lead">{row.lead}</span>
+          {row.short && <span class="achievement__short">{row.short}</span>}
+        </span>
+        <span class="achievement__date">Not done yet</span>
+      </div>
+    </li>
+  )
+}
