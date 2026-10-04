@@ -485,3 +485,30 @@ describe('hero island structure', () => {
     assert.match(component, /class="hero-island pixel-art"/);
   });
 });
+
+describe('close-up scenes (hero island detail plan, step 5)', () => {
+  const CLOSEUPS = ['closeup-land', 'closeup-road-end', 'closeup-water', 'closeup-crane', 'closeup-office', 'closeup-front-trees', 'closeup-sky'];
+  const key = (item) => JSON.stringify([item.object, item.class, item.at]);
+  const order = new Map(scene.items.map((item, i) => [key(item), i]));
+
+  it('each is preview-only and shows island items where the island places them, in the island\'s paint order', () => {
+    for (const name of CLOSEUPS) {
+      const closeup = sources.scenes.get(name);
+      assert.ok(closeup, `${name} exists`);
+      assert.equal(closeup.output, undefined, `${name} writes no file`);
+      assert.deepEqual(closeup.origin, scene.origin, `${name} uses the island's origin`);
+      // closeup-office adds the two trucks, placed by px along their drive.
+      const items = closeup.items.filter((item) => !(name === 'closeup-office' && ['truck', 'truck-green'].includes(item.object)));
+      const at = items.map((item) => order.get(key(item)));
+      assert.deepEqual(items.filter((_, i) => at[i] === undefined), [], `${name}: every item is one the island places`);
+      assert.deepEqual(at, [...at].sort((a, b) => a - b), `${name}: in the island's order`);
+    }
+  });
+
+  it('closeup-office paints both trucks after the house and before the bridge rail, as the island does', () => {
+    const office = sources.scenes.get('closeup-office');
+    const names = office.items.map((item) => item.object);
+    assert.deepEqual(names.filter((n) => n.startsWith('truck')), ['truck', 'truck-green']);
+    assert.ok(names.indexOf('truck-green') < names.indexOf('bridge-rail') && names.indexOf('house') < names.indexOf('truck'));
+  });
+});
