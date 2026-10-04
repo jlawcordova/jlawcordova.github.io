@@ -1,7 +1,7 @@
 # Spec: Island migration (from intent.md 2026-10-03)
-Status: draft.
+Status: approved.
 
-This is the first spec under the [pixel-art follow-ups intent](intent.md). It covers the part the owner chose to start with: **moving the hero island to world colors and rebuilding it from library objects.** The intent's other outcomes (opening a file in the editor, draft differences, the palette-swap decision, the base character) get their own specs in this folder. See concern C1.
+This spec moves the hero island to world colors and rebuilds it from library objects. It was first written under the [pixel-art follow-ups intent](../2026-10-pixel-art-follow-ups/intent.md) and now belongs to the island's own [intent](intent.md). The owner's answers to the earlier concerns are recorded under each one below.
 
 ## Requirements
 
@@ -9,12 +9,12 @@ Traced to the intent's Problem and Proposed outcome. Each is checkable.
 
 - **R1. No big maps.** `island-base` and `island-front` are deleted. `scenes/hero-island.mjs` is built only from objects of at most 64×64 pixels and at most 12 colors. *(Outcome: the island is made of pieces)*
 - **R2. World colors only.** Every object in `hero-island` uses world colors (plus `ink` and `cream`). None has `legacy: true` or a `c-<hex>` key. *(Outcome: one palette, for the island)*
-- **R3. Same place.** The ground stays a 6×6-tile footprint on the same pixels, the viewBox stays `[-100, -84, 225, 212]`, and the river, road, bridge, house, trees, crane, fence, trucks, flag and waterfall are all still there in the same arrangement. The owner confirms it reads as the same place against the before and after previews. *(Constraint: same place)*
+- **R3. Same layout, free redesign.** The viewBox stays `[-100, -84, 225, 212]`, the road stays on the same line, and the river, road, bridge, house, trees, crane, fence, trucks, flag and waterfall are all still there. Their drawing and exact placement may be redesigned where library objects make it simpler. The owner reviews the before and after previews. *(Outcome: a redesign is allowed)*
 - **R4. Animation is unchanged.** The scene keeps the groups the CSS animates: `wf w0`…`w4`, `ff f0`…`f3`, `hf h0`…`h5`, `itruck it1`, `itruck it2` and `pcloud pc0`…`pc2`. `pixel-art.css` is not edited. Frame 0 is still the reduced-motion frame and `it2` is still hidden under reduced motion. *(Constraint)*
 - **R5. Paint order is kept.** The trees, crane, fence and roof that were `island-front` still paint over the trucks, and the trucks still paint over the road. *(Constraint: same place)*
 - **R6. Not heavier.** `hero-island.svg` is at most today's 83,485 bytes raw and 18,299 bytes gzipped, and the home page stays inside the redesign spec's §12 budget. *(Constraint: no heavier art)*
-- **R7. Every shade change is listed.** Each legacy color the island loses maps to a named world color in the table in [Colors](#colors). No pixel changes shade for a reason that isn't in the table. *(Outcome: each change of shade is deliberate)*
-- **R8. One piece at a time.** Each slice in [Slices](#slices) is its own PR with before and after previews at 1× and 4× and a screenshot of the home page at 1440px and 390px (no horizontal scroll). Each slice removes the pixels it replaces from `island-base` or `island-front` in the same PR, so nothing is ever painted twice. *(Constraint)*
+- **R7. Legacy colors are swapped for world colors.** Each legacy color the island loses becomes the named world color in the table in [Colors](#colors). Shade changes are accepted. *(Outcome: no legacy colors on the island)*
+- **R8. One piece at a time.** Each slice in [Slices](#slices) is its own reviewed step: one commit, with before and after previews at 1× and 4× and a screenshot of the home page at 1440px and 390px (no horizontal scroll). Each slice removes the pixels it replaces from `island-base` or `island-front` in the same commit, so nothing is ever painted twice. How the slices are grouped into PRs is the plan's decision (the `write-plan` skill, "How many PRs"). The site stays deployable after each PR. *(Constraint)*
 - **R9. The proof changes with the promise.** The island stops being pixel-identical to `scripts/fixtures/pixel-art/hero-island.src.svg`, so the tests that say so (engine spec R10 and R11 for the island, and the island case in `scripts/e2e/art.e2e.mjs`) are replaced in the first slice that changes a shade. The new tests check R1 to R6 and R10, not pixels. *(Constraint; see C2)*
 - **R10. The island is still decorative and safe.** `HeroIsland.astro` still inlines the SVG with the same classes, and the SVG carries no script, link, text or external reference. *(Constraint: accessibility, public safety)*
 - **R11. The library and the skill keep up.** New objects are added to the `library-demo` test list when they appear there (skill, "Adding to the library demo"). The last slice removes the island's legacy section from `.claude/skills/pixel-art/SKILL.md` and the README mentions of `island-base` and `island-front`. *(Outcome)*
@@ -43,7 +43,7 @@ The ground is the 6×6 grid the engine spec measured (D4), about 192 pixels acro
 - **Ground.** 36 tile positions on a `[col, row, 0]` grid. Positions on the two front edges (`col = 5` or `row = 5`) are `block` `[1, 1, 1]` (grass top, soil sides, so the soil shows). The rest are flat `tile`. Back-edge sides are never seen, so they stay flat.
 - **River.** `water` tiles along the river's course, which carry the `wf` surface loop themselves. The waterfall's falling face is a small new object at the front-right edge, with the same `wf` frames.
 - **Road.** A new flat `path` tile (top `path-2`, with a surface of `path-1` and `path-3` specks like `tile`'s), placed along the road.
-- **Bridge, house, fence, crane.** New sprites, each within 64×64 and 12 colors, drawn from the existing shapes. The crane is about 44 wide and 65 tall, so it is drawn as two stacked objects (mast, then jib and hook), or trimmed by one pixel row if the plan finds it can.
+- **Bridge, house, fence, crane.** New sprites, each within 64×64 and 12 colors, drawn from the existing shapes. The crane is about 44 wide and 65 tall, so it is drawn as two stacked objects (mast, then jib and hook), with no exemption from the cap.
 - **Trees.** The existing `tree` library object, with a small variant added if a second size is needed.
 - **Shadow.** A sprite of the dithered shadow under the island, in `path-1` and `path-2`.
 - **Animated pieces.** `flag` and `hearth` swap their keys to world names and drop `legacy: true`. This changes no pixel (the values are equal). The `waterfall`'s 82-wide map is mostly empty. Its sparkles are carried by the river's `water` tiles and the new falling-face object, so the 82×45 sprite is retired.
@@ -52,7 +52,7 @@ The ground is the 6×6 grid the engine spec measured (D4), about 192 pixels acro
 
 ### Colors
 
-No new world colors are needed. The tier stays at 32. Every legacy color on the island maps to the nearest world color. Colors that already equal a world value (21 of the base's 33 and 16 of the front's 20) change nothing. The rest:
+No new world colors are needed. The tier stays at 32. Every legacy color on the island is swapped for the nearest world color from the editor's approved palette. Colors that already equal a world value (21 of the base's 33 and 16 of the front's 20) change nothing. The rest:
 
 | Legacy color | Used | Becomes | Distance | What it is |
 | --- | --- | --- | --- | --- |
@@ -75,19 +75,18 @@ Distance is plain RGB distance (0 to 441). In all, 4,901 of `island-base`'s 14,4
 
 ### Slices
 
-Each slice is one PR, in this order. Early slices are small and low-risk, so the process is proven before the large ones.
+Each slice is one step in this order (R8). The plan decides which slices share a PR. Early slices are small and low-risk, so the process is proven before the large ones.
 
-1. **Free swaps (no visible change).** `flag` and `hearth` to world keys. A test shows they paint the same pixels.
-2. **Clouds.** Three clouds to world colors. A visible, tiny shade change.
-3. **Trucks.** `truck` and `truck-green` to world colors.
-4. **Ground and shadow.** The 36 positions and the shadow. The matching pixels leave `island-base`.
-5. **River and waterfall.** `water` tiles and the falling face. Retires the 82×45 `waterfall`.
-6. **Road and bridge.**
-7. **House.**
-8. **Front pieces.** Trees, fence, crane and roof pieces. `island-front` is empty and deleted.
-9. **Clean-up.** `island-base` is empty and deleted. The fixture, the identity tests and the e2e case are removed, and the skill and README are updated (R11).
+1. **Free swaps (no visible change) and clouds.** `flag` and `hearth` to world keys (a test shows they paint the same pixels), together with the three clouds in world colors (a tiny shade change). One slice.
+2. **Trucks.** `truck` and `truck-green` to world colors.
+3. **Ground and shadow.** The 36 positions and the shadow. The matching pixels leave `island-base`.
+4. **River and waterfall.** `water` tiles and the falling face. Retires the 82×45 `waterfall`.
+5. **Road and bridge.**
+6. **House.**
+7. **Front pieces.** Trees, fence, crane and roof pieces. `island-front` is empty and deleted.
+8. **Clean-up.** `island-base` is empty and deleted. The fixture, the identity tests and the e2e case are removed, and the skill and README are updated (R11).
 
-The first slice that changes a shade (2) also replaces the identity tests (R9), because they cannot pass any more.
+The first slice that changes a shade (1) also replaces the identity tests (R9), because they cannot pass any more.
 
 ### Files touched
 
@@ -95,35 +94,32 @@ The first slice that changes a shade (2) also replaces the identity tests (R9), 
 
 ## Areas of concern
 
-**C1. The intent is bigger than this spec.** The intent lists five outcomes. This spec delivers the island half of "one palette" and all of "the island is made of pieces". The legacy tier cannot be emptied yet, because the Range sprite's base character still uses it, so `legacy` stays in the engine after this work. *Owner decides:* confirm this spec covers only the island, with the editor outcomes and the base character as separate specs in this folder.
+All resolved by the owner (2026-10-03).
 
-**C2. The old safety net contradicts the new goal.** The engine spec makes the island pixel-identical to its fixture (R10, R11) and the browser check compares it too. The follow-ups intent deliberately changes shades and allows a redraw. Both can't hold. *Proposal:* retire the identity checks for the island in slice 2, keep the fixture as the "before" reference until slice 9, and replace the proof with structural tests (R1 to R6) plus the owner's review of previews. *Owner decides* whether to accept that the pixels are then judged by eye.
+**C1. Scope.** The island is its own change with its own intent. The editor outcomes and the Range platform stay with the follow-ups intent. **Resolved:** the island is a separate intent. The legacy tier stays in the engine until the Range platform moves.
 
-**C3. Shade changes are real, and the palette is full.** Mapping to the nearest world color changes 34% of the base's pixels (the table), and the grass is the most affected. The world tier has 32 of 32 colors, so keeping a shade means dropping another. *Owner decides, per slice:* accept the nearest color, ask for a redraw with the available ramp, or approve a palette swap-in (one color out, one in, in its own reviewed commit).
+**C2. The old safety net contradicts the new goal.** The engine spec makes the island pixel-identical to its fixture (R10, R11), and the browser check compares it too. **Resolved:** pixel-identical is not required and the island may be redesigned. The identity checks for the island are retired in slice 1 and replaced with structural tests (R1 to R6). The fixture stays until the last slice.
 
-**C4. The 64×64 cap against two pieces.** The crane (about 44×65) is one row over, and the waterfall (82×45) is wider. The cap is a hard rule for new art (engine spec R27), and the legacy exemption only covers imported objects. This spec splits the crane and retires the waterfall sprite. *Owner decides* if a one-row overage on the crane should instead get an exemption.
+**C3. Shade changes, and a full palette.** **Resolved:** shade changes don't matter. Every legacy color is swapped for the approved world color from the editor's palette. No palette changes are needed or made. Legacy colors that already exist in the palette can be removed from the island at once.
 
-**C5. The truck path is hard-coded.** `idrive` in `pixel-art.css` moves the trucks by fixed offsets from `px [31, 6]`. The road has to stay on the same line, or the CSS changes in the same PR. This spec keeps the road, so no CSS changes (R4). A redrawn road that moves is out of scope here.
+**C4. The 64×64 cap against two pieces.** **Resolved:** the crane is split into stacked objects, the waterfall sprite is retired, and nothing gets an exemption.
 
-**C6. Size could rise.** 36 ground positions, each with surface specks, compile to many more rects than one big map. R6 caps the result at today's size. If it doesn't fit, the plan may have to use bigger blocks (a `[2, 2, 0]` fits the 64 pixel cap) instead of single tiles. *Proof:* each slice reports raw and gzip size.
+**C5. The truck path is hard-coded.** `idrive` in `pixel-art.css` moves the trucks by fixed offsets from `px [31, 6]`. **Resolved:** the road stays on the same line, so no CSS changes (R4).
 
-**C7. Two palettes persist until the base character moves.** Between slices, and after the last one, a piece of legacy art (the Range sprite) sits on the same page as the migrated island. That is the same situation as before and doesn't get worse.
+**C6. Size could rise.** **Resolved:** the owner is fine with the size. R6 still holds the island to today's size, and each slice reports raw and gzip size. If 36 single tiles don't fit, the plan may use `[2, 2, 0]` blocks.
+
+**C7. Two palettes persist until the Range platform moves.** The migrated island sits next to the legacy Range platform. **Accepted:** it is no worse than today.
 
 ## Open questions
 
-Carried forward from the [intent](intent.md):
+All closed.
 
-| # | Question | Answer here |
+| # | Question | Answer |
 | --- | --- | --- |
-| 1 | The legacy tier: delete it entirely once empty, or keep it empty? | **Carried.** It is not empty after this work (C1, C7). Decide in the base-character spec. |
-| 2 | Draft differences: show only, or merge row by row? | **Carried.** Not part of the island work. |
-| 3 | Palette swaps: still wanted? | **Carried.** Not part of the island work. |
-| 4 | The base character: after the island, one piece at a time? | **Carried.** Starts after slice 9. |
-
-New:
-
-| # | Question | Recommendation |
-| --- | --- | --- |
-| N1 | Take the nearest world color everywhere, or redraw where it looks worse? | Nearest first, and redraw only where a preview shows a real loss (C3). |
-| N2 | One PR per slice, or merge the three small recolors (1 to 3)? | Slice 1 together with 2 is fine, since slice 1 changes nothing. Keep trucks separate. |
-| N3 | Keep the old fixture until the end, or drop it at the first visible change? | Keep it until slice 9, as the "before" reference (C2). |
+| 1 | The legacy tier: delete it entirely once empty? | **Out of scope.** It isn't empty after this work. Decided with the Range platform. |
+| 2 | Draft differences | **Out of scope.** Stays with the follow-ups intent. |
+| 3 | Palette swaps | **Out of scope.** Stays with the follow-ups intent. |
+| 4 | The Range platform: after the island? | **Out of scope.** Stays with the follow-ups intent. |
+| N1 | Nearest world color everywhere, or redraw? | **Closed:** swap to the approved colors, and redraw freely. |
+| N2 | One PR per slice? | **Closed:** no. Each slice is one commit (R8), and the plan groups them into PRs under `write-plan`'s "How many PRs". The flag, hearth and clouds are one slice; the trucks are their own slice. |
+| N3 | Keep the old fixture until the end? | **Closed:** yes, until the last slice. |
