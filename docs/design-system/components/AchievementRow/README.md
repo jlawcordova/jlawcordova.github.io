@@ -23,4 +23,4 @@ One record as a list row: a pixel icon, a short title and line, and a date. A do
 | --- | --- | --- | --- |
 | Done | Night Owl | Nightly loads finish before 06:00. | Moved the nightly loads to a lakehouse |
 | Done | Lore Keeper | On-call steps for every pipeline. | Documented the data platform's on-call runbook |
-| Locked | Spring Cleaning | Retire the legacy ETL. | — (date slot: "Not done yet") |
+| Locked | Spring Cleaning | Retire the old nightly ETL jobs. | — (date slot: "Not done yet") |

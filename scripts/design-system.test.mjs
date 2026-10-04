@@ -1,7 +1,8 @@
 // The design system in docs/design-system/ can't drift from the site (design
 // system copy spec R3, R4a): every component has guidelines and a preview,
-// token names are unique, and every token with a custom property of the same
-// name in src/styles/variables.css has the same value. Node built-ins only.
+// token names are unique, every token with a custom property of the same
+// name in src/styles/variables.css has the same value, and every syntax-*
+// color is one that src/styles/syntax.css uses. Node built-ins only.
 
 import assert from 'node:assert/strict';
 import { readdir, readFile, stat } from 'node:fs/promises';
@@ -62,6 +63,16 @@ describe('design system', () => {
       compared++;
     }
     assert.ok(compared >= 25, `compared ${compared} tokens, expected at least 25`);
+  });
+
+  it('R3: every syntax-* token is a color syntax.css uses', async () => {
+    // syntax.css sets the code colors as literals, not custom properties.
+    const tokens = tokenList(JSON.parse(await read('docs/design-system/tokens.json'))).filter((t) => t.name.startsWith('syntax-'));
+    const css = normalize(await read('src/styles/syntax.css'));
+    assert.ok(tokens.length >= 11, `found ${tokens.length} syntax tokens`);
+    for (const { name, value } of tokens) {
+      assert.ok(css.includes(normalize(value)), `${name}: ${value} isn't in syntax.css`);
+    }
   });
 
   it('cssProperties skips values set inside @media', () => {

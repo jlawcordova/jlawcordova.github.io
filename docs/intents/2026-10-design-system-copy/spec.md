@@ -106,7 +106,7 @@ These apply to the files in `docs/design-system/`.
 | --- | --- | --- | --- |
 | Done | Night Owl | Nightly loads finish before 06:00. | Moved the nightly loads to a lakehouse |
 | Done | Lore Keeper | On-call steps for every pipeline. | Documented the data platform's on-call runbook |
-| Locked | Spring Cleaning | Retire the legacy ETL. | — (date slot: "Not done yet") |
+| Locked | Spring Cleaning | Retire the old nightly ETL jobs. | — (date slot: "Not done yet") |
 
 **tokens.json.** The `hero-title` sample becomes the new hero title.
 

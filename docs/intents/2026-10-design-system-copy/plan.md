@@ -17,7 +17,9 @@ Recorded as the work departed from this plan, per `CLAUDE.md`. The spec still ho
 1. **The preview page is `/design-system/`, not `/lab/design-system/`.** The owner asked for it during step 7, so the page is `src/pages/design-system.astro`. It's still unlisted and `noindex`. Every mention in this plan, the spec, CLAUDE.md and the README now uses the new address.
 2. **The pixel-art lab's unlisted check covers the preview page.** `scripts/e2e/editor.e2e.mjs` (R15) failed the first full run because it allowed only `/lab/pixel-art/` to be `noindex`. It now also expects `/design-system/` to carry the robots meta, and still checks that no other page links to either page or is `noindex`.
 3. **Step 1 adapted the AchievementRow README's icon line,** not only the main README's paths. Its "crop an `<img>` with `.achievement__icon--img`" note only worked inside the artifact, so it now describes the site's `<use>` markup.
-4. **C3 didn't happen.** The build reads `docs/design-system/` with `import.meta.glob`, so the previews stayed where the spec put them.
+4. **The preview page's own layout** (`.ds-previews`, `.ds-preview__head`, `.ds-preview__stage`) is also in `src/styles/design-system.css`, beside the DecisionBrief and Register rules, since only that page uses it.
+5. **After verification (PR #75, PASS with 5 suggestions):** the token test also checks the `syntax-*` colors against `syntax.css`; `color-accent`'s usage note in `tokens.json` names the hero title's second clause; and the locked example's short line became "Retire the old nightly ETL jobs." so it has the five to seven words the rule asks for (the spec example changed with it). Not changed: the page's second `<h1>` is the PageHead preview's own, kept so the preview shows the real component; the hero title's 5 lines at 320px is outside R19's 390 and 1440px.
+6. **C3 didn't happen.** The build reads `docs/design-system/` with `import.meta.glob`, so the previews stayed where the spec put them.
 
 ## Workflow
 
