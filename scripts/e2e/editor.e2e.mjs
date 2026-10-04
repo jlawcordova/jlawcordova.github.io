@@ -701,9 +701,9 @@ describe('object painting (R17)', () => {
     doc = await load(await exportText(page));
     assert.equal(doc.layers.length, 1);
 
-    // Frames, on the waterfall's loop.
-    await pickObject(page, 'waterfall');
-    const fall = await load(await sourceOf('object', 'waterfall'));
+    // Frames, on the waterfall face's loop.
+    await pickObject(page, 'waterfall-face');
+    const fall = await load(await sourceOf('object', 'waterfall-face'));
     const loop = fall.layers.findIndex((l) => l.frames);
     await page.getByRole('button', { name: `Layer ${loop + 1} · loop wf, 5 frames` }).click();
     await page.getByRole('button', { name: 'Frame w2' }).click();
@@ -811,15 +811,20 @@ describe('object painting (R17)', () => {
     await toggle.click();
     assert.equal(await canvas(), shown);
 
-    await pickObject(page, 'waterfall');
-    const fall = await load(await sourceOf('object', 'waterfall'));
+    await pickObject(page, 'waterfall-face');
+    const fall = await load(await sourceOf('object', 'waterfall-face'));
     await page.getByRole('button', { name: `Layer ${fall.layers.findIndex((l) => l.frames) + 1} · loop wf, 5 frames` }).click();
+    // The onion skin draws under the whole object, so hide the still layers
+    // (the face the streaks fall over), as a person would to see it.
+    for (const [i, layer] of fall.layers.entries()) {
+      if (!layer.frames) await page.getByRole('button', { name: `Show Layer ${i + 1}` }).click();
+    }
     await page.getByRole('button', { name: 'Frame w2' }).click();
     const plain = await canvas();
     await page.getByRole('button', { name: 'Onion skin' }).click();
     assert.equal(await page.getByRole('button', { name: 'Onion skin' }).getAttribute('aria-pressed'), 'true');
     assert.notEqual(await canvas(), plain, 'frame w1 shows under w2');
-    assert.equal(await exportText(page), await sourceOf('object', 'waterfall'));
+    assert.equal(await exportText(page), await sourceOf('object', 'waterfall-face'));
     await context.close();
   });
 
@@ -929,8 +934,8 @@ describe('object painting (R17)', () => {
 
   test('R21: Page Up and Page Down step frames, and [ and ] step layers', async () => {
     const { context, page } = await openLab();
-    await pickObject(page, 'waterfall');
-    const fall = await load(await sourceOf('object', 'waterfall'));
+    await pickObject(page, 'waterfall-face');
+    const fall = await load(await sourceOf('object', 'waterfall-face'));
     const loop = fall.layers.findIndex((l) => l.frames);
     await page.getByRole('group', { name: 'Object stage' }).focus();
     for (let i = 0; i < loop; i++) await page.keyboard.press(']');
@@ -1102,7 +1107,7 @@ describe('layout (R22, R5)', () => {
       await screenshot(page, `editor-${width}`);
 
       // Object mode, on the outfit (its gutter) and the largest map.
-      for (const name of ['outfit-security-governance', 'island-base']) {
+      for (const name of ['outfit-security-governance', 'range-island']) {
         await pickObject(page, name);
         assert.ok(await fits(), `${name} in Object mode`);
         if (width < 960) {
@@ -1156,7 +1161,7 @@ describe('layout (R22, R5)', () => {
         }
       };
       await everyTab('Scene mode', ['Library', 'Items', 'Inspector']);
-      for (const name of ['tree', 'outfit-security-governance', 'island-base', 'block']) {
+      for (const name of ['tree', 'outfit-security-governance', 'range-island', 'block']) {
         await pickObject(page, name);
         await everyTab(`Object mode, ${name}`, ['Library', 'Palette', 'Inspector']);
       }
@@ -1179,8 +1184,8 @@ describe('layout (R22, R5)', () => {
   test('R5: with reduced motion, nothing animates on the lab or the home page, and frames only step when asked', async () => {
     const { context, page } = await openLab({ reducedMotion: 'reduce' });
     assert.equal(await page.evaluate(() => document.getAnimations().length), 0, 'lab');
-    await pickObject(page, 'waterfall');
-    const fall = await load(await sourceOf('object', 'waterfall'));
+    await pickObject(page, 'waterfall-face');
+    const fall = await load(await sourceOf('object', 'waterfall-face'));
     await page.getByRole('button', { name: `Layer ${fall.layers.findIndex((l) => l.frames) + 1} · loop wf, 5 frames` }).click();
     await page.waitForTimeout(600);
     assert.equal(await page.getByRole('button', { name: 'Frame w0' }).getAttribute('aria-pressed'), 'true', 'Play never starts by itself');

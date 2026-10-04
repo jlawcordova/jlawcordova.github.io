@@ -117,8 +117,17 @@ test('R7: the arrows wrap both ways', async () => {
 
 test('R7: it auto-advances, and pause, hover and focus stop it', async () => {
   const page = await openRange();
-  await page.waitForTimeout(STEP_MS + 400);
-  assert.equal((await state(page)).current, 1, 'auto-advance');
+  // The carousel's clock starts when the page loads, not when openRange
+  // returns, so a slow load (a cold server or browser on the first run after a
+  // build) has already used part of the interval. Wait for the next step from
+  // wherever it is now, within one interval, and check it is exactly one class.
+  const from = (await state(page)).current;
+  await page.waitForFunction(
+    (was) => Number(/** @type {HTMLElement} */ (document.querySelector('.range')).dataset.current) !== was,
+    from,
+    { timeout: STEP_MS + 400 },
+  );
+  assert.equal((await state(page)).current, (from + 1) % names.length, 'auto-advance moves one class at a time');
 
   await pause(page);
   // Clicking leaves the pointer over the panel and focus on the toggle, and

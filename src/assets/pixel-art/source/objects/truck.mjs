@@ -1,17 +1,16 @@
 // Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md
 export default {
   kind: 'sprite',
-  legacy: true,
   anchor: [0, 0],
   keys: {
     a: 'ink',
-    b: 'c-d9c9ae',
-    c: 'c-e9dcc6',
-    d: 'c-9e3b4b',
-    e: 'c-bfd3cb',
-    f: 'c-5a2230',
-    g: 'c-7b2d3b',
-    h: 'c-fbf6ec',
+    b: 'path-2',
+    c: 'path-1',
+    d: 'roof-2',
+    e: 'water-1',
+    f: 'roof-4',
+    g: 'roof-3',
+    h: 'cream',
   },
   layers: [
     {

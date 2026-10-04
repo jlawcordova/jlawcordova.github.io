@@ -15,7 +15,7 @@ Traced to the intent's Problem and Proposed outcome. Each is checkable.
 - **R6. Not heavier.** `hero-island.svg` is at most today's 83,485 bytes raw and 18,299 bytes gzipped, and the home page stays inside the redesign spec's §12 budget. *(Constraint: no heavier art)*
 - **R7. Legacy colors are swapped for world colors.** Each legacy color the island loses becomes the named world color in the table in [Colors](#colors). Shade changes are accepted. *(Outcome: no legacy colors on the island)*
 - **R8. One piece at a time.** Each slice in [Slices](#slices) is its own reviewed step: one commit, with before and after previews at 1× and 4× and a screenshot of the home page at 1440px and 390px (no horizontal scroll). Each slice removes the pixels it replaces from `island-base` or `island-front` in the same commit, so nothing is ever painted twice. How the slices are grouped into PRs is the plan's decision (the `write-plan` skill, "How many PRs"). The site stays deployable after each PR. *(Constraint)*
-- **R9. The proof changes with the promise.** The island stops being pixel-identical to `scripts/fixtures/pixel-art/hero-island.src.svg`, so the tests that say so (engine spec R10 and R11 for the island, and the island case in `scripts/e2e/art.e2e.mjs`) are replaced in the first slice that changes a shade. The new tests check R1 to R6 and R10, not pixels. *(Constraint; see C2)*
+- **R9. The proof changes with the promise.** The island stops being pixel-identical to `scripts/fixtures/pixel-art/hero-island.src.svg`, so the tests that say so (engine spec R10 and R11 for the island, and the island case in `scripts/e2e/art.e2e.mjs`, a suite since deleted because that was its only case) are replaced in the first slice that changes a shade. The new tests check R1 to R6 and R10, not pixels. *(Constraint; see C2)*
 - **R10. The island is still decorative and safe.** `HeroIsland.astro` still inlines the SVG with the same classes, and the SVG carries no script, link, text or external reference. *(Constraint: accessibility, public safety)*
 - **R11. The library and the skill keep up.** New objects are added to the `library-demo` test list when they appear there (skill, "Adding to the library demo"). The last slice removes the island's legacy section from `.claude/skills/pixel-art/SKILL.md` and the README mentions of `island-base` and `island-front`. *(Outcome)*
 - **R12. Independent verification** on every PR, as in `CLAUDE.md`. *(Constraint)*
@@ -45,7 +45,7 @@ The ground is the 6×6 grid the engine spec measured (D4), about 192 pixels acro
 - **Road.** A new flat `path` tile (top `path-2`, with a surface of `path-1` and `path-3` specks like `tile`'s), placed along the road.
 - **Bridge, house, fence, crane.** New sprites, each within 64×64 and 12 colors, drawn from the existing shapes. The crane is about 44 wide and 65 tall, so it is drawn as two stacked objects (mast, then jib and hook), with no exemption from the cap.
 - **Trees.** The existing `tree` library object, with a small variant added if a second size is needed.
-- **Shadow.** A sprite of the dithered shadow under the island, in `path-1` and `path-2`.
+- **Shadow.** A sprite of the dithered shadow under the island, in `path-2` (as built in slice 3: a one-tone checker, because `path-1` is nearly the page background; see `plan.md`, step 3).
 - **Animated pieces.** `flag` and `hearth` swap their keys to world names and drop `legacy: true`. This changes no pixel (the values are equal). The `waterfall`'s 82-wide map is mostly empty. Its sparkles are carried by the river's `water` tiles and the new falling-face object, so the 82×45 sprite is retired.
 - **Trucks and clouds.** Same shapes, world keys (see below). `truck-green` stays a recolor of `truck` (`extends: 'truck'`).
 - **Order.** Ground, shadow, river, road, bridge, house, back trees, the trucks (`itruck it1`, `itruck it2`), then the front pieces (front trees, crane, fence, roof pieces, hearth, flag), then the clouds. The front pieces cannot be sorted by `col + row` with the trucks, because the trucks move. They are listed after the trucks on purpose (R5).
@@ -69,7 +69,7 @@ No new world colors are needed. The tier stays at 32. Every legacy color on the 
 | `c-e8f1ec`, `c-d3dfc0` | 18 + 8 px | `cream`, `water-1` | 17, 22 | highlights |
 | `c-fffdf8`, `c-efe6d6` | clouds | `cream` | 31, 13 | cloud body and shade |
 | `c-fbf6ec`, `c-bfd3cb` | truck | `cream`, `water-1` | 17, 16 | truck body and window |
-| `c-6f9a6e`, `c-2e4f33`, `c-3f6b45` | green truck | `grass-3`, `grass-4`, `grass-4` | to be measured in the slice | green truck |
+| `c-6f9a6e`, `c-2e4f33`, `c-3f6b45` | green truck | `grass-3`, `grass-4`, `grass-4` | 27, 43, 19 | green truck |
 
 Distance is plain RGB distance (0 to 441). In all, 4,901 of `island-base`'s 14,433 painted pixels (34%) and 207 of `island-front`'s 1,958 (11%) change shade. The biggest visible effect is that the grass loses some of its subtle variety, because 11 greens fall onto four ramp steps. Pieces drawn fresh from tiles will not reproduce the old checkerboard pixel for pixel anyway; the `tile` library object's own surface specks stand in for it (C3).
 
@@ -90,7 +90,7 @@ The first slice that changes a shade (1) also replaces the identity tests (R9), 
 
 ### Files touched
 
-`src/assets/pixel-art/source/objects/` (new and removed objects), `scenes/hero-island.mjs`, the compiled `hero-island.svg`, `scripts/pixel-art-roundtrip.test.mjs`, `scripts/pixel-art-engine.test.mjs` (library list), `scripts/e2e/art.e2e.mjs`, `scripts/fixtures/pixel-art/hero-island.src.svg` (removed last), `.claude/skills/pixel-art/SKILL.md`, `README.md`. Not touched: `pixel-art.css`, `HeroIsland.astro`, `hero.css`, the palette, the engine.
+`src/assets/pixel-art/source/objects/` (new and removed objects), `scenes/hero-island.mjs`, the compiled `hero-island.svg`, `scripts/pixel-art-roundtrip.test.mjs`, `scripts/pixel-art-engine.test.mjs` (library list), `scripts/e2e/art.e2e.mjs` (deleted in slice 1; see the plan), `scripts/fixtures/pixel-art/hero-island.src.svg` (removed last), `.claude/skills/pixel-art/SKILL.md`, `README.md`. Not touched: `pixel-art.css`, `HeroIsland.astro`, `hero.css`, the palette, the engine.
 
 ## Areas of concern
 
