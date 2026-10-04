@@ -84,6 +84,17 @@ describe('hero island structure', () => {
     }
   });
 
+  it('R7: the clouds and trucks use the world colors the Colors table names', () => {
+    const want = {
+      'cloud-a': { a: 'path-2', b: 'cream', c: 'cream' },
+      'cloud-b': { a: 'path-2', b: 'cream', c: 'cream' },
+      'cloud-c': { a: 'path-2', b: 'cream', c: 'cream' },
+      truck: { a: 'ink', b: 'path-2', c: 'path-1', d: 'roof-2', e: 'water-1', f: 'roof-4', g: 'roof-3', h: 'cream' },
+      'truck-green': { a: 'ink', b: 'gold-3', c: 'gold-2', d: 'grass-3', e: 'water-1', f: 'grass-4', g: 'grass-4', h: 'gold-1' },
+    };
+    for (const [name, keys] of Object.entries(want)) assert.deepEqual(resolve(sources, name).keys, keys, name);
+  });
+
   it('R3: the viewBox is unchanged and the trucks still drive from the same road line', () => {
     assert.deepEqual(scene.viewBox, [-100, -84, 225, 212]);
     assert.match(svg, /^<svg [^>]*viewBox="-100 -84 225 212"/);
