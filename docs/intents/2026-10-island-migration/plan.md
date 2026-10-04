@@ -1,4 +1,5 @@
 # Plan: Island migration (from intent.md 2026-10-03)
+Status: done, 2026-10-04: built in slice PRs [#65](https://github.com/jlawcordova/jlawcordova.github.io/pull/65) to [#69](https://github.com/jlawcordova/jlawcordova.github.io/pull/69) on `feat/island-migration`, and merged to `main` in [#71](https://github.com/jlawcordova/jlawcordova.github.io/pull/71).
 
 Plans [`spec.md`](spec.md) (R1–R12, slices 1–8). The work runs on a feature branch (`write-plan`, "Feature branch"): five slice PRs merge into `feat/island-migration`, and one final PR takes it to `main`. The owner reviews the whole island once, in that final PR, and only the owner merges it. Nothing deploys until then.
 
