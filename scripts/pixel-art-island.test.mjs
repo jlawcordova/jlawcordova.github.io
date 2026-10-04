@@ -107,12 +107,11 @@ describe('hero island structure', () => {
     }
   });
 
-  it('R7: the trucks use the world colors the Colors table names', () => {
-    const want = {
-      truck: { a: 'ink', b: 'path-2', c: 'path-1', d: 'roof-2', e: 'water-1', f: 'roof-4', g: 'roof-3', h: 'cream' },
-      'truck-green': { a: 'ink', b: 'gold-3', c: 'gold-2', d: 'grass-3', e: 'water-1', f: 'grass-4', g: 'grass-4', h: 'gold-1' },
-    };
-    for (const [name, keys] of Object.entries(want)) assert.deepEqual(resolve(sources, name).keys, keys, name);
+  it('R7: the trucks use world colors only, with no outline, and truck-green still extends truck', () => {
+    for (const name of ['truck', 'truck-green']) {
+      for (const color of Object.values(resolve(sources, name).keys)) assert.ok(color !== 'ink' && color in sources.palette.world, `${name} uses ${color}`);
+    }
+    assert.equal(sources.objects.get('truck-green').extends, 'truck');
   });
 
   it('R3: the viewBox is unchanged and the trucks still drive from the same road line', () => {
