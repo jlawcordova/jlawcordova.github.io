@@ -19,7 +19,7 @@ This is the step after "Code and tests" in `CLAUDE.md`'s "How changes flow". It 
 
 0. **Set up an isolated worktree at the latest PR head.** Do this before anything else, and run every later command inside it.
    - Find the PR's base branch: `gh pr view <n> --json baseRefName`. It is `main`, or a feature branch (`feat/<slug>`) when the plan merges slices there first. Below, `<base>` means that branch.
-   - Run `git fetch origin <base> "pull/<n>/head"`. This gets the newest PR head, since the PR may have gained commits since you were asked, and a current `origin/<base>` for the diffs below. Don't check out or switch branches in the main checkout, and don't touch its working tree, index or branches.
+   - Run `git fetch origin <base>`, then `git fetch origin "pull/<n>/head"` on its own. The first gives a current `origin/<base>` for the diffs below. The second gets the newest PR head, since the PR may have gained commits since you were asked. Keep them separate: with both refs in one fetch, `FETCH_HEAD` points at the base branch, not the PR. Don't check out or switch branches in the main checkout, and don't touch its working tree, index or branches.
    - Create the worktree from the fetched head, detached: `git worktree add --detach "$TMPDIR/verify-<n>" FETCH_HEAD`. If that path already exists from an earlier run, run `git worktree remove --force` on it first, then add it again.
    - `cd` into it and confirm: `git rev-parse HEAD` equals the PR's current head SHA from the GitHub tools (`gh pr view <n> --json headRefOid`). If they differ, fetch again. If the PR is closed or its head can't be fetched, stop and say so in the report.
    - Install dependencies there (`npm ci`). A worktree has no `node_modules`, and never symlink the main checkout's.
