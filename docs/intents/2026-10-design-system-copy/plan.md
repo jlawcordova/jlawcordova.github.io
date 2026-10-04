@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Status** | Approved 2026-10-04. Built; awaiting independent verification and the owner's review |
+| **Status** | Done 2026-10-04: [#75](https://github.com/jlawcordova/jlawcordova.github.io/pull/75), verified (PASS) and merged by the owner |
 | **Intent** | [`intent.md`](intent.md) (accepted) |
 | **Spec** | [`spec.md`](spec.md) (approved). R*n* and C*n* below refer to its requirements and concerns |
 

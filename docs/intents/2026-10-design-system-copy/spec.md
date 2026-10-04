@@ -1,5 +1,5 @@
 # Spec: Copy that follows the design system (from intent.md 2026-10-04)
-Status: approved.
+Status: approved. Implemented in [#75](https://github.com/jlawcordova/jlawcordova.github.io/pull/75), verified and live.
 
 ## Requirements
 
