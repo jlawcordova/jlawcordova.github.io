@@ -30,7 +30,7 @@ Traced to the [intent](intent.md). Each is checkable.
 - **R15. Range paragraph.** The Range paragraph is rewritten in the design system's voice. *(Outcome 2)*
 - **R16. Site description.** `site.description`, used for search results and link previews, matches the new hero and is at most 160 characters. *(Outcome 2)*
 - **R17. These stay as they are:** the pre-title, "Press start", "Get in touch", "Many hats. One craftsman.", the Range class names, and the accomplishments' wording, look and behavior. *(Outcome 2; constraints)*
-- **R18. Facts come from the profile.** Every claim in R13 to R16 traces to `docs/references/profile.md`. *(Constraint: public-safe)*
+- **R18. Facts come from the profile.** Every claim in R13 to R16 traces to `docs/references/profile.md`. The owner's AI workflow claim is added to the profile first (see [Updates elsewhere](#updates-elsewhere)). *(Constraint: public-safe)*
 - **R19. Layout and behavior don't change.** No markup structure, class, style or carousel behavior changes. Both sections show no horizontal scroll at 390px, and the new text wraps no worse than one extra line at 1440px and 390px. *(Constraint: out of scope)*
 - **R20. Earlier documents say so.** The redesign spec's §7.1, §7.3 and §7.4 get an update note that links here, as §7.3 already has for the Range classes. Their old copy stays, because that spec predates the templates. *(CLAUDE.md: update mentions)*
 
@@ -110,15 +110,16 @@ Only text changes, in `src/components/home/Hero.astro`, `src/components/home/Ran
 | --- | --- | --- | --- |
 | Hero title | I ship whole products, *not handoffs.* | I take software from estimate *to production.* | Release management; technical estimation |
 | Hero paragraph | Senior developer and tech lead at Netzon in Davao City. I lead full-stack teams, design data platforms, and take releases safely to production. | Senior developer and tech lead at Netzon in Davao City. I lead full-stack teams, design data platforms on Microsoft Fabric, and run releases with sign-offs and rollback. | Current role; Summary |
-| Range paragraph | I’ve worked every stage of shipping software, from code review to production sign-off. AI speeds up the work; the judgment stays mine. | Each outfit is a discipline I work in, from Figma designs to production releases. I use AI to work faster, and I review what it produces. | Disciplines; Responsible AI highlight |
+| Range paragraph | I’ve worked every stage of shipping software, from code review to production sign-off. AI speeds up the work; the judgment stays mine. | Each outfit is a discipline I work in, from Figma designs to production releases. I set up AI workflows that plan, build and check each change before it ships. | Disciplines; AI workflows (added to the profile, see below) |
 | Site description | J. Law. Cordova is a senior developer and tech lead in Davao City who ships whole products: full-stack apps, Fabric data platforms and secure releases. | Senior developer and tech lead in Davao City. I take software from estimate to production: full-stack apps, Fabric data platforms and releases with rollback. (157 characters) | Current role; Summary |
 
 These read as the design system: they lead with what is done rather than a contrast slogan, name real tools and steps, use the first person, and drop adjectives that aren't evidence ("whole"). The Range paragraph says what the carousel shows, so the playful heading has a plain line beside it (R8).
 
-The two paragraphs grow from 23 and 22 words to 27 and 26. Both sit in `max-width` columns (540px and 480px), so they wrap to one more line at most. R19's screenshots check it.
+The two paragraphs grow from 23 and 22 words to 27 and 29. Both sit in `max-width` columns (540px and 480px), so they wrap to one more line at most. R19's screenshots check it.
 
 ### Updates elsewhere
 
+- **Profile** (`docs/references/profile.md`), Summary: "Sets up AI-assisted delivery workflows (intent, spec, plan, build and independent verification) so each change is planned, built and checked before it ships." This is the owner's own claim, and this site's workflow is the public example.
 - **Redesign spec** §7.1, §7.3 and §7.4: *Update, 2026-10: rewritten to follow the design system ([copy intent](../2026-10-design-system-copy/intent.md)).*
 - **CLAUDE.md, Conventions:** "Copy, components and tokens follow the design system in `docs/design-system/`. Its README is the brand book. A token change edits `tokens.json` and `src/styles/variables.css` together."
 - **README.md** project layout table: a `docs/design-system/` row.
