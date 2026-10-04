@@ -1,5 +1,5 @@
 # Spec: Hero island detail (from intent.md 2026-10-04)
-Status: approved.
+Status: approved. Amended 2026-10-04 with the owner while planning: three edge blocks instead of `block-corner`, block painting in the lab, 16-column side maps, the accepted art picks and the full list of tests that change.
 
 This spec turns the [intent](intent.md) into requirements and a design. The look was set by a sample before this spec was written: a subagent detailed the land, and the owner reviewed it, edited `block` by hand in the lab, and approved it. The owner then answered a questionnaire for each object. The sample, those answers and the owner's budget decision are recorded here.
 
@@ -12,7 +12,7 @@ Traced to the intent's Problem, Proposed outcome and Constraints. Each is checka
 - **R3. World palette only.** Every island object uses only world colors. No color is added to, changed in or removed from the palette. *(Constraint: world palette only)*
 - **R4. Cardboard boxes at the crane.** The crane lifts one cardboard box, and a small stack of cardboard boxes stands on the ground beside it. Both clearly read as cardboard boxes. *(Outcome: cardboard boxes)*
 - **R5. The clouds are isometric,** built from stacked blocks. *(Outcome: the clouds become isometric)*
-- **R6. Blocks can texture their sides.** The engine's block kind accepts a texture on its left and right faces as well as its top. The land uses it, and `block` is a block, not a sprite. *(Owner's decision on the sample, 2026-10-04)*
+- **R6. Blocks can texture their sides.** The engine's block kind accepts a texture on its left and right faces as well as its top. The land uses it, and `block` is a block, not a sprite. The lab paints a block's top surface and its side textures, so the owner can edit the land by hand. *(Owner's decisions on the sample and while planning, 2026-10-04)*
 - **R7. The cliffs show no joints.** On both front cliffs, no line shows where one block meets the next at 4×, and no in-between color is used to hide it. The island's front corner still reads as a corner. *(Owner's decisions on the sample, 2026-10-04)*
 - **R8. Same island.** The viewBox, the grid, the road line and the layout stay. The groups the CSS animates (`wf w0`…`w4`, `ff f0`…`f3`, `hf h0`…`h5`, `itruck it1` and `it2`, and `pcloud pc0`…`pc2`) are all still there. `pixel-art.css` is not edited, frame 0 is still the reduced-motion frame, and `it2` is still hidden under reduced motion. The paint order of the trucks and front pieces is kept. Objects may grow or shift a few pixels where a redraw needs it, and the owner reviews it. *(Constraint: same island)*
 - **R9. The engine's rules still hold:** the 32×16 tile, the light direction, the 64×64 and 12-color caps, accessibility, public safety and deterministic output. *(Constraint)*
@@ -61,6 +61,7 @@ The owner's answers to the questionnaire, object by object. All colors are world
 | --- | --- | --- |
 | `tile` | As the sample: grass tufts on a plain top. | `grass-2` top, `grass-1` tufts |
 | `block` | As the owner's sample, rebuilt as a block with side textures: the tile's tufts on top, a grass band and dirt speckles on the sides, no joints (R6, R7). | Top as `tile`; left band `grass-3` with a `grass-4` last row; right band `grass-4`; left dirt `soil-2` with `soil-3` speckles; right dirt `soil-3` with `soil-4` speckles |
+| `block-left`, `block-right`, `block-road` | The edge pieces in [Hidden joints](#hidden-joints). | As `block`; `block-road` adds `path-3` and `path-4` |
 | `path` (road) | A mottled dirt top, like the tutorial's dirt block: soft lighter and darker patches. | `path-2` top, `path-1` and `path-3` patches |
 | `river` | Calm water with light ripple lines, like the tutorial's water tile. The `wf` loop and its five frames stay; the ripples are drawn in them. | `water-2` top, `water-1` ripples |
 | `waterfall-face`, `flag` | Falling streaks down the face and foam where the water lands. `flag` (the `ff` streaks) keeps its loop. | `water-2` and `water-3`, `water-1` streaks, `cream` foam |
@@ -77,6 +78,15 @@ The owner's answers to the questionnaire, object by object. All colors are world
 | `truck`, `truck-green` | Same size and colors: a shaded cab and box, windows, and wheels with hubs. `truck-green` still extends `truck`. | Today's body colors; `water-1` windows; `wood-4` tyres |
 | `island-shadow` | No change. | `path-2` |
 
+The plan holds the pixel artist's proposal for each object (size, layers, details, colors and byte cost). The owner accepted these choices from it on 2026-10-04:
+
+- the river's ripples drift diagonally with the flow;
+- the cloud cubes have short sides, so they read as puffs, not stone;
+- the tree trunks are two-tone (`wood-3` with a `wood-4` shaded column);
+- the office's loading door is on the right wall, facing the road, and it has a small roof vent;
+- the crane's lattice is see-through, and its cab has a `water-1` window;
+- the truck wheels have `path-2` hubs.
+
 Two objects are renamed (the owner's decision), because the old names say what they were in the legacy art, not what they are: `hearth` becomes `crane-box` and `shed` becomes `boxes`. The CSS classes don't change. `flag` keeps its name. It's the waterfall's streaks, which the [island migration spec](../2026-10-island-migration/spec.md) records.
 
 ### Block side textures
@@ -84,20 +94,26 @@ Two objects are renamed (the owner's decision), because the old names say what t
 The block kind gains side textures (R6):
 
 - **Format.** Today a block's `surface` is one tile's top map (32×16), repeated on every top tile. A block gains an optional `sides` property: `{ keys, left, right }`. `left` and `right` are each one face-local map, one tile wide and one level high, repeated along the face and up every level.
-- **Face-local rows.** Row 0 of a side map is the first pixel row below the top's edge, in each column. So the engine shears the map onto the face, and a band that follows the top edge is just the map's first rows. The plan fixes the exact width from the engine's face geometry. The sample has 15 columns per face.
+- **Face-local rows.** Row 0 of a side map is the first pixel row below the top's edge, in each column. So the engine shears the map onto the face, and a band that follows the top edge is just the map's first rows.
+- **Width.** Each map is 16 columns by 16 rows, one per pixel of the tile's 16-pixel period along a face. A 1×1 block's faces are 15 columns wide, so they show columns 0–14, and column 15 shows only where a longer face repeats the map.
 - **Order.** The engine draws the faces, then the side textures, then the top surface, then `edge` over everything.
-- **Rules.** Side textures are refused on a flat block, as `left` and `right` faces are today. Their colors count toward the 12-color cap, and the tests check world colors only. The serializer and the lab round-trip them in canonical form.
+- **Rules.** Side textures are refused on a flat block, as `left` and `right` faces are today. Their colors count toward the 12-color cap, and the tests check world colors only. The serializer round-trips them in canonical form.
+- **The lab.** It paints a block's top surface (clipped to each tile's diamond) and its side textures (each face pixel maps back to its side map's column and row), and exports them. Its palette is on for blocks.
 
 R28's lighting check still applies to the faces. The R13 and island tests that read `block.size` and `block.faces` keep working, because `block` is a block again.
 
 ### Hidden joints
 
-The sample showed why the joints appear. Where two cubes touch, the front cube's two corner columns show. One of them is the other face's shade, so it draws a line down the cliff. Swapping the corner colors removes the line on both cliffs, but it twists the island's one true corner at `[5, 5]`.
+Where two cubes touch on a cliff, each cube shows one column that belongs to its other face, and that column draws a line down the cliff. Planning measured it with the engine's geometry: on the left cliff (row 5) each cube shows its right map's column 0, and on the right cliff (column 5) its left map's column 14. One `block` can't hide both, because column 14 would need the left face's material on one cliff and the right face's on the other. So the edges use three pieces, each differing from `block` by one recolored column, with no in-between color:
 
-- **The design:** the edge blocks hide their joints, and the front corner is its own object.
-  - `block`'s side maps color the corner columns so the cliff runs on unbroken.
-  - A new `block-corner` (the same block with true corner columns) goes at `[5, 5]` only.
-- **If that fails:** the plan proves this on the land close-up before the other objects start. If the engine's geometry makes a joint unavoidable without an in-between color, the plan stops and asks the owner.
+| Object | Placed at | Its one change from `block` |
+| --- | --- | --- |
+| `block` | `[5, 5]`, the true front corner (and the library demo) | none: a true cube |
+| `block-left` | `[0..4, 5]`, the left cliff | right column 0 takes the left face's material (the `grass-3` band with a `grass-4` last row, then `soil-2`) |
+| `block-right` | `[5, 0..4]`, the right cliff | left column 14 takes the right face's material (the `grass-4` band, then `soil-3`) |
+| `block-road` | `[2, 5]`, where the road meets the edge | `block-left` with a dirt band under the road (`path-3`, with a `path-4` last row) instead of grass |
+
+The first slice proves this on the `closeup-land` scene before any other object starts.
 
 ### Budgets
 
@@ -134,7 +150,7 @@ The owner raised the size budgets on 2026-10-04 and approved these numbers (C1):
 
 From the subagent's notes, to make each review round fast and comparable:
 
-- **Close-up scenes.** Preview-only scenes, with no output: `closeup-land` (a 3×3 corner of tiles and edge blocks), and others where a slice needs one. They're committed, so every round renders the same view.
+- **Close-up scenes.** Preview-only scenes, with no output, committed so every round renders the same view: `closeup-land` (the front corner and both cliffs), `closeup-road-end`, `closeup-water`, `closeup-crane`, `closeup-office` (with both trucks), `closeup-front-trees` and `closeup-sky`.
 - **Bigger previews.** `--preview <name> --scale N` for scales above 4.
 - **A size report.** `npm run art -- --sizes <scene>` prints raw and gzip bytes per object and per color, compared with `HEAD`.
 - **A small fix.** `--preview` no longer crashes with EPIPE when its output is piped into `head`.
@@ -150,10 +166,19 @@ The island's tests pin today's look. Each one below is replaced in the slice tha
 | R7: the clouds and trucks use the colors the Colors table names | World colors only; `truck-green` still extends `truck` |
 | R3: the front blocks have no outline | No island object uses `ink` (R2), and `block` has no `edge` |
 | R3: the front pieces and trees are pinned | Re-pinned to the reviewed positions, still on the grass |
-| R1, R3: the ground is 36 library objects | Also allows `block-corner` at `[5, 5]` |
+| R1, R3: the ground is 36 library objects | `block` at `[5, 5]`, `block-left`, `block-right` and `block-road` on the edges |
+| R1, R3: the river is `water`'s frames minus two rows | A flat `water-2` tile with five `wf` frames, in world colors |
+| R1, R2, R3: the house (an ink pixel at its edge) | The same spot painted in a world color |
+| R1, R3: the crane (ink at the ends of the mast's top row and the jib's anchor row) | The jib's anchor row lines up with the mast's top row |
+| The names lists (`IN_FRONT_OF_TRUCKS`, the road-line list, the feet list, R5's hearth check) | The new names, `crane-box` and `boxes` |
+
+Two tests outside the island file change too:
+- `scripts/pixel-art-roundtrip.test.mjs` names the `hearth` loop (`hf`, 6 frames), which becomes `crane-box`.
+- Its R32 check counts the skill's code examples. The `sides` format joins the existing block example, so the count stays.
 
 New tests:
 - the engine validates, renders and round-trips `sides`;
+- the lab paints a block's top and sides and exports them (editor e2e);
 - R7's joints, as pixel checks on the `closeup-land` scene: no joint column on either cliff;
 - the per-output budget.
 
@@ -162,11 +187,12 @@ New tests:
 The work runs in three stages. The land goes first, alone. Then the other objects are drawn at the same time by parallel agents, and the owner is pinged once, when every agent is done.
 
 **Stage 0. Set-up (main session, no art).**
-- The agent file, the skill's "Hero island look", the close-up scenes, the preview and size tooling, and the per-output budget, on `feat/hero-island-detail`.
+- The per-output budget, the preview and size tooling, the engine's `sides`, block painting in the lab, the close-up scenes, the skill's "Hero island look" and the agent file, on `feat/hero-island-detail`.
+- **The agent's instructions are tuned first.** The pixel artist that proposed the objects revises the draft from what it learned, and the agent file is made from that revision. After each stage's review, the agent that did the work is asked for refinements again, and they're folded in before the next stage, so every run uses the latest instructions.
 - Confirm that a dev server started in the background survives an agent's hand-back (C7).
 
 **Stage 1. Land (one `pixel-artist` agent).**
-- The engine's `sides`, then `tile`, `block`, `block-corner` and `path`, with the hidden joints (R6, R7).
+- `tile`, `block`, `block-left`, `block-right`, `block-road` and `path`, with the hidden joints (R6, R7).
 - This stage proves the recipe and the joints, so it runs alone. The owner reviews it in the lab, and its PR merges into the feature branch before Stage 2 starts. Every later agent starts from the merged land.
 
 **Stage 2. Everything else (parallel `pixel-artist` agents).** One agent per object group, all started at once from the main session:
@@ -209,12 +235,12 @@ How they run without colliding:
   - **What's affected:** `CLAUDE.md` says never to skip or delete a failing test.
   - **What's proposed:** these tests pin the old look, so each is replaced by one that checks this spec, in the slice that changes the look, and the PR lists it. That's the migration's precedent (its R9).
   - **What the owner decides:** nothing, unless they disagree.
-- **C3. Hidden joints might not be possible as designed.** If the corner-column approach fails, the plan stops and asks rather than bringing back an in-between color (R7).
+- **C3. Hidden joints.** The first design (`block` plus `block-corner`) couldn't hide the joints on both cliffs. Planning measured the geometry, and the owner chose the three edge pieces in [Hidden joints](#hidden-joints). If they still leave a line, the first slice stops and asks rather than bringing back an in-between color (R7).
 - **C4. Cloud colors.**
   - **What's affected:** `path-1` (#E9DCC6) is almost the hero's background (`color-hero`, #EADFC8), so a cloud face in `path-1` would vanish.
   - **What's proposed:** the sides use `path-2` and `path-3`. `cream` tops are lighter than the background, so they still read.
 - **C5. The island no longer matches the outlined art.** The Range sprite and the achievement icons keep their ink outlines. The owner accepted the difference (intent, Open questions).
-- **C6. The engine changes.** The intent says the engine's rules hold, and it doesn't ask for engine work. `sides` adds a capability and keeps every rule. The owner chose it while reviewing the sample. Nothing else in the engine changes, except the per-output budget and the tooling above.
+- **C6. The engine and the lab change.** The intent says the engine's rules hold, and it doesn't ask for engine work. `sides` adds a capability and keeps every rule. The owner chose it while reviewing the sample, and chose block painting in the lab while planning, so the land can be edited by hand. The lab's JS stays within its 30 KB gzip budget. Nothing else in the engine changes, except the per-output budget and the tooling above.
 - **C7. The lab hand-off may not outlive the agent.** A dev server the subagent starts in the background may stop when it hands back. Slice 0 checks this. If it stops, the main session runs the server and the agent only checks that its version is served.
 - **C8. Parallel agents use a lot at once.** Seven Opus agents running together can reach the account's usage limit; the sample's agent was cut off by one. If an agent stops early, its worktree keeps its work, and the main session resumes it after the limit resets. The ping waits until every agent has finished or failed, and says which. The plan may run fewer agents at a time.
 - **C9. Gathered work can conflict.** Each group touches only its own objects, so their sources don't overlap. The compiled SVG, the scene and the tests are only ever changed in the gather step. The byte budget is shared, so the gather step checks the total, and an agent whose objects cost far more than the others is asked to trim.
