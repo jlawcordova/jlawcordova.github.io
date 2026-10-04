@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Status** | Approved 2026-10-04, in progress |
+| **Status** | Approved 2026-10-04. Built; awaiting independent verification and the owner's review |
 | **Intent** | [`intent.md`](intent.md) (accepted) |
 | **Spec** | [`spec.md`](spec.md) (approved). R*n* and C*n* below refer to its requirements and concerns |
 
@@ -39,7 +39,7 @@ Recorded as the work departed from this plan, per `CLAUDE.md`. The spec still ho
 - [x] 5. Site copy
 - [x] 6. Pointers and notes
 - [x] 7. Verify
-- [ ] 8. Retire the artifact
+- [x] 8. Retire the artifact
 
 ## Files that change
 
