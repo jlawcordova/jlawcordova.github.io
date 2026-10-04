@@ -38,12 +38,12 @@ The look I'm aiming for is the second step of a public isometric-tiles pixel-art
 
 - **World palette only.** No new colors. Detail comes from the shades the world palette already has.
 - **Same island.** It stays the same scene, with the same layout, road, river and animation. The clouds still drift, the trucks still drive, and reduced motion still stops them.
-- **The engine's rules still hold:** the 32×16 tile, the light direction, the size caps, the budgets, accessibility, public safety and deterministic output.
-- **The island may get heavier.** Its SVG can grow past today's size, as long as it stays within the engine's budgets.
+- **The engine's rules still hold:** the 32×16 tile, the light direction, the size caps, accessibility, public safety and deterministic output.
+- **The island may get heavier.** Its SVG can grow past today's size and past the engine's 100 KB budget if the detail needs it, up to a hard ceiling of 500 KB.
 - **Every visible change is reviewed,** with before and after previews and screenshots at 1440px and 390px, and an independent verifier on every PR.
 - **The reference stays out of the repo.** It's described here in words. Its images and palette aren't copied.
 - **Out of scope:** new colors or a change to the palette, the Range platform and characters, the achievement icons, and the hero copy.
 
 ## Open questions
 
-None open. Decided with the owner: the trucks are detailed and lose their outlines too, the island's file size may grow within the engine's budgets, and the island may differ from the outlined Range sprite and achievement icons.
+None open. Decided with the owner: the trucks are detailed and lose their outlines too, the island's file size may grow past the engine's budget, up to a hard ceiling of 500 KB, and the island may differ from the outlined Range sprite and achievement icons.
