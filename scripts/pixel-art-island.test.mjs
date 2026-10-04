@@ -100,11 +100,15 @@ describe('hero island structure', () => {
     }
   });
 
-  it('R7: the clouds and trucks use the world colors the Colors table names', () => {
+  it('R7: the clouds are cubes in world colors: cream tops, path-2 and path-3 sides, never path-1 (detail spec C4)', () => {
+    for (const name of ['cloud-a', 'cloud-b', 'cloud-c']) {
+      const colors = new Set(Object.values(resolve(sources, name).keys));
+      assert.deepEqual([...colors].sort(), ['cream', 'path-2', 'path-3'], name);
+    }
+  });
+
+  it('R7: the trucks use the world colors the Colors table names', () => {
     const want = {
-      'cloud-a': { a: 'path-2', b: 'cream', c: 'cream' },
-      'cloud-b': { a: 'path-2', b: 'cream', c: 'cream' },
-      'cloud-c': { a: 'path-2', b: 'cream', c: 'cream' },
       truck: { a: 'ink', b: 'path-2', c: 'path-1', d: 'roof-2', e: 'water-1', f: 'roof-4', g: 'roof-3', h: 'cream' },
       'truck-green': { a: 'ink', b: 'gold-3', c: 'gold-2', d: 'grass-3', e: 'water-1', f: 'grass-4', g: 'grass-4', h: 'gold-1' },
     };
