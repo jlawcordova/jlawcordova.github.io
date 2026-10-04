@@ -4,8 +4,10 @@ on:
   push:
     branches: [main]
   # Build (but don't deploy) pull requests so a broken build is caught before merging.
+  # Also build pull requests into feature branches (feat/**), whose slices
+  # merge there before one final pull request takes them to main.
   pull_request:
-    branches: [main]
+    branches: [main, "feat/**"]
   workflow_dispatch:
   # Sent by the jlawcordova-mcp Worker after an accomplishment is added or deleted.
   repository_dispatch:
