@@ -1,6 +1,6 @@
 // Pixel-art scene. How to edit it: .claude/skills/pixel-art/SKILL.md
 export default {
-  viewBox: [-1, -9, 98, 99],
+  viewBox: [-1, -14, 98, 104],
   origin: [0, 8],
   items: [
     { object: 'tile', at: { tile: [3, 0, 0] } },
@@ -14,9 +14,9 @@ export default {
     { object: 'block-right', at: { tile: [5, 2, 0] } },
     { object: 'tree-shade', at: { px: [55, 38] } },
     { object: 'pine', at: { px: [55, 38] } },
-    { object: 'shed', at: { px: [32, 62] } },
+    { object: 'boxes', at: { px: [32, 62] } },
     { object: 'crane-mast', at: { px: [59, 59] } },
     { object: 'crane-jib', at: { px: [56, 19] } },
-    { object: 'hearth', at: { px: [24, 17] } },
+    { object: 'crane-box', at: { px: [24, 17] } },
   ],
 };

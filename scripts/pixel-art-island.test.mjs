@@ -41,7 +41,7 @@ const MAX_GZIP = 125 * 1024;
  * (spec, Target scene). Trees stand on both sides: TREES are placed by depth, and the R5 test checks each one.
  */
 const BEHIND_TRUCKS = ['island-shadow', 'tile', ...BLOCKS, 'river', 'waterfall-face', 'path', 'bridge', 'house', 'tree-shade'];
-const IN_FRONT_OF_TRUCKS = ['bridge-rail', 'shed', 'crane-mast', 'crane-jib', 'fence', 'hearth'];
+const IN_FRONT_OF_TRUCKS = ['bridge-rail', 'boxes', 'crane-mast', 'crane-jib', 'fence', 'crane-box'];
 const TREES = ['tree', 'tree-small', 'pine'];
 
 const indexesOf = (names) => scene.items.flatMap((item, i) => (names.includes(item.object) ? [i] : []));
@@ -69,16 +69,12 @@ describe('hero island structure', () => {
     }
   });
 
-  it('R7: flag and hearth paint the same pixels as before, because each world key has the legacy color\'s value', () => {
-    const was = {
-      flag: { a: 'c-c9ddd3' },
-      hearth: { a: 'ink', b: 'c-5a2230', c: 'c-7b2d3b', d: 'c-9e3b4b' },
-    };
-    const hex = (color) => sources.colors.get(color).hex;
-    for (const [name, keys] of Object.entries(was)) {
-      const now = resolve(sources, name).keys;
-      assert.deepEqual(Object.keys(now), Object.keys(keys), `${name} keys`);
-      for (const [key, legacy] of Object.entries(keys)) assert.equal(hex(now[key]), hex(legacy), `${name} key ${key}`);
+  it('R7: flag and crane-box keep their loops and frame counts, in world colors', () => {
+    for (const [name, [loop, prefix, count]] of Object.entries({ flag: ['ff', 'f', 4], 'crane-box': ['hf', 'h', 6] })) {
+      const obj = resolve(sources, name);
+      const looped = obj.layers.filter((layer) => 'frames' in layer);
+      assert.deepEqual(looped.map((layer) => [layer.loop, layer.prefix, layer.frames.length]), [[loop, prefix, count]], name);
+      for (const color of Object.values(obj.keys)) assert.ok(color !== 'ink' && color in sources.palette.world, `${name} uses ${color}`);
     }
   });
 
@@ -122,7 +118,7 @@ describe('hero island structure', () => {
       assert.ok(item, `${cls} is placed`);
       assert.deepEqual(item.at, { px: [31, 6] }, `${cls} position`);
     }
-    for (const name of ['flag', 'hearth', 'river', 'waterfall-face', 'path', 'bridge', 'bridge-rail', 'house', 'shed', 'tree-small', 'pine', 'crane-mast', 'crane-jib', 'fence', 'truck', 'truck-green']) {
+    for (const name of ['flag', 'crane-box', 'river', 'waterfall-face', 'path', 'bridge', 'bridge-rail', 'house', 'boxes', 'tree-small', 'pine', 'crane-mast', 'crane-jib', 'fence', 'truck', 'truck-green']) {
       assert.ok(placed.includes(name), `${name} is still in the scene`);
     }
     assert.ok(!placed.includes('waterfall'), 'the 82×45 waterfall is retired (slice 4)');
@@ -184,7 +180,7 @@ describe('hero island structure', () => {
   });
 
   it('R5: in the compiled SVG, every front piece is painted after both truck groups', () => {
-    // Everything between the end of the it2 group and the hearth's first frame, as 'x,y' to fill.
+    // Everything between the end of the it2 group and the crane-box's first frame, as 'x,y' to fill.
     const it2 = svg.indexOf('<g class="itruck it2"');
     const after = svg.slice(svg.indexOf('</g>', it2), svg.indexOf('<g class="hf h0"'));
     const painted = new Map();
@@ -194,8 +190,8 @@ describe('hero island structure', () => {
       }
     }
     const lastTruck = Math.max(...indexesOf(['truck', 'truck-green']));
-    const front = scene.items.filter((item, i) => i > lastTruck && !item.class && item.object !== 'hearth');
-    assert.equal(front.length, 5 + 4, 'the rail, shed, mast, jib and fence, and four trees');
+    const front = scene.items.filter((item, i) => i > lastTruck && !item.class && item.object !== 'crane-box');
+    assert.equal(front.length, 5 + 4, 'the rail, boxes, mast, jib and fence, and four trees');
     const all = paintOf(front);
     const hex = (color) => sources.colors.get(color).hex.toUpperCase();
     for (const item of front) {
@@ -207,7 +203,7 @@ describe('hero island structure', () => {
       }
       assert.ok(pixels > 0, `${item.object} shows`);
     }
-    assert.equal(painted.size, all.size, 'nothing else is painted between the trucks and the hearth');
+    assert.equal(painted.size, all.size, 'nothing else is painted between the trucks and the crane-box');
   });
 
   it('R1, R3: the ground is 36 library objects on a [col, row, 0] grid: blocks on the two front edges (the edge pieces, and block at the corner), the river along row 3, the road along column 2, flat tiles elsewhere', () => {
@@ -455,12 +451,14 @@ describe('hero island structure', () => {
     // The mast's top-left pixel sits right under the jib's anchor, the bottom-left of the jib's own piece of mast.
     const top = [mast.item.at.px[0] - mast.obj.anchor[0], mast.item.at.px[1] - mast.obj.anchor[1]];
     assert.deepEqual(jib.item.at.px, [top[0], top[1] - 1]);
-    const outline = (row, from) => [row[from], row[from + mast.obj.width - 1]].map((key) => (key === '.' ? '.' : resolve(sources, 'crane-mast').keys[key] ?? key));
-    assert.deepEqual(outline(mast.obj.layers[0].map[0], 0), ['ink', 'ink'], 'the mast starts with its two outlines');
-    assert.deepEqual(outline(jib.obj.layers[0].map[jib.obj.anchor[1]], jib.obj.anchor[0]).map((key) => jib.obj.keys[key] ?? key), ['ink', 'ink'], 'the jib ends on the same two outlines');
-    // The hearth (the crane's swinging load) hangs from the jib: the pixel above its cable is the jib's.
-    const hearth = scene.items.find((item) => item.object === 'hearth');
-    assert.ok(paintOf([jib.item]).has(`${hearth.at.px[0] + 9},${hearth.at.px[1] - 1}`), 'the jib is right above the hearth\'s cable');
+    // The jib's anchor row lines up with the mast's top row: the same world colors at both ends (no outline).
+    const ends = (obj, y, from) => [from, from + mast.obj.width - 1].map((x) => obj.keys[obj.layers[0].map[y][x]]);
+    const mastEnds = ends(mast.obj, 0, 0);
+    assert.deepEqual(ends(jib.obj, jib.obj.anchor[1], jib.obj.anchor[0]), mastEnds, 'the jib carries on the mast\'s top row');
+    for (const color of mastEnds) assert.ok(color && color !== 'ink' && color in sources.palette.world, `the mast's edge is ${color}`);
+    // The crane-box (the crane's swinging load) hangs from the jib: the pixel above its cable is the jib's.
+    const box = scene.items.find((item) => item.object === 'crane-box');
+    assert.ok(paintOf([jib.item]).has(`${box.at.px[0] + 9},${box.at.px[1] - 1}`), 'the jib is right above the crane-box\'s cable');
   });
 
   it('R3: the front pieces and trees are pinned, and each stands on the grass, not on the river or the road', () => {
@@ -474,7 +472,7 @@ describe('hero island structure', () => {
       ['tree-small', [-25, 29]],
       ['pine', [55, 38]],
       ['bridge-rail', [2, 3, 0]],
-      ['shed', [32, 62]],
+      ['boxes', [32, 62]],
       ['crane-mast', [59, 59]],
       ['crane-jib', [56, 19]],
       ['fence', [12, 75]],
@@ -482,15 +480,15 @@ describe('hero island structure', () => {
       ['pine', [-30, 78]],
       ['pine', [-1, 80]],
       ['tree-small', [-1, 90]],
-      ['hearth', [24, 17]],
+      ['crane-box', [24, 17]],
     ]);
     // Each shade lies under a back tree's trunk.
     for (const [, px] of at(['tree-shade'])) {
       assert.ok(scene.items.some((item) => TREES.includes(item.object) && String(item.at.px) === String(px)), `a tree stands on the shade at ${px}`);
     }
-    // Where each piece meets the ground: a tree's or the mast's anchor (the foot of its trunk), and the lowest pixel of every column of the shed and the fence.
+    // Where each piece meets the ground: a tree's or the mast's anchor (the foot of its trunk), and the lowest pixel of every column of the boxes and the fence.
     const feet = scene.items.filter((item) => [...TREES, 'crane-mast'].includes(item.object)).map((item) => [item.object, item.at.px]);
-    for (const item of scene.items.filter((item) => ['shed', 'fence'].includes(item.object))) {
+    for (const item of scene.items.filter((item) => ['boxes', 'fence'].includes(item.object))) {
       const lowest = new Map();
       for (const p of paintOf([item]).keys()) {
         const [x, y] = p.split(',').map(Number);

@@ -74,7 +74,7 @@ When the task says you're one of several agents in parallel (each in its own wor
 
 - Change only your group's object sources. Never edit a scene, a test, the engine or another group's objects.
 - A rename or position change is a proposal in your report; the coordinator applies it to the scene.
-- **Renames happen at the gather step, not in your worktree.** If your objects are due to be renamed, work in place in the old files so the scene still places them and your previews work. For example, draw `crane-box` in `hearth.mjs` and `boxes` in `shed.mjs`. The coordinator then runs `git mv`, updates the scene and updates the names in the tests.
+- **Renames happen at the gather step, not in your worktree.** If your objects are due to be renamed, work in place in the old files so the scene still places them and your previews work. For example, the hero island detail's crane agent drew `crane-box` in `hearth.mjs` and `boxes` in `shed.mjs`. The coordinator then runs `git mv`, updates the scene and the close-ups, and updates the names in the tests.
 - **An anchor change belongs inside the object file,** not the scene: if a map grows, keep the anchor on the same ground point.
 - Run your checks and previews in your worktree. The island preview shows only your change.
 - **Expected failures.** Some pins in [Test pins](#test-pins-on-the-hero-island) fail by design until the gather step replaces them. List each one as *expected*, with its cause. Any other failure is yours to fix or explain. Never edit a test.
@@ -140,10 +140,10 @@ One map can't fix both, so the island uses separate edge pieces, all with no in-
   - the bridge deck, which counts as road (paint plank gaps, don't open holes);
   - the feet of `boxes` and `fence`, which must stand on grass;
   - the flag's streaks, which must land on `waterfall-face`.
-- **Grow objects upward or away from water and road.** Keep the anchor on the foot. The `boxes` stack stands only 2–3 px clear of the river, so no column of it may reach lower than the old `shed`'s lowest pixel in that column.
+- **Grow objects upward or away from water and road.** Keep the anchor on the foot. The `boxes` stack stands only 2–3 px clear of the river, so no column of it may reach lower than its lowest pixel in that column today.
 - **Loops.** Keep each loop's name, prefix and frame count: `wf` ×5, `ff` ×4, `hf` ×6.
   - Frame 0 is the reduced-motion frame, so make it the rest pose.
-  - Don't add `class` layers, or a static layer to a looped prop that paints between the trucks and the hearth's frames. Tests count those groups and that paint. For example, keep the crane's cable inside its `hf` frames.
+  - Don't add `class` layers, or a static layer to a looped prop that paints between the trucks and the crane-box's frames. Tests count those groups and that paint. For example, keep the crane's cable inside its `hf` frames.
   - `--preview` renders frame 0 only. Check loops in the lab with Play.
 
 ## Test pins on the hero island
@@ -158,7 +158,7 @@ From `scripts/pixel-art-island.test.mjs`, plus the engine's R13 and R28. **(E)**
 | Clouds | R7: exact keys (E). The `pcloud` groups stay on the items. |
 | Trees | R3: pinned positions; each trunk foot on grass, not river or road. R5: crossing order with the trucks; 4 trees before the trucks and 4 after. |
 | Office | `house` anchor `[21, 41]` at `[-59, 59]`; it covers tile `[0, 3]` except `-34,31` and `-34,32`; ink at x −35, y 30–32 (E). |
-| Crane | Ink at both ends of the mast's top row and of the jib's anchor row (E). The jib's anchor sits one pixel above the mast's top-left pixel; the jib paints the pixel above the cable (`crane-box` column 9, row 0); mast + jib > 64 px. R5: nothing paints between `it2` and `h0` except the front pieces. Each column of `shed` stands on grass. R7: `hearth` keys (E). The names `hearth` and `shed` in the test lists (E, after the gather renames). |
+| Crane | The same world colors at both ends of the mast's top row and of the jib's anchor row. The jib's anchor sits one pixel above the mast's top-left pixel; the jib paints the pixel above the cable (`crane-box` column 9, row 0); mast + jib > 64 px. R5: nothing paints between `it2` and `h0` except the front pieces. Each column of `boxes` stands on grass. R7: `flag` and `crane-box` keep their loops and frame counts, in world colors. |
 | Bridge | The truck road test (keep the deck mask). The rail paints after the trucks and shows. Each column of `fence` stands on grass. `library-demo` places `bridge`. |
 | Trucks | Road test: at every visible step, each column's lowest pixel is on `path` or `bridge`, ≥ 15 of 21 at rest (keep the mask). R7: keys (E). `truck-green` still `extends: 'truck'` with no map of its own; override every material key you add. |
 

@@ -255,9 +255,9 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
 
 - **The hero island** (`scenes/hero-island.mjs`, written to `hero-island.svg`) is built from library and island objects, all in world colors and within the caps. It has no legacy objects. Its pieces are:
   - the ground, road, bridge, `house`, back trees (`tree-small` and `pine`, three of them on a `tree-shade`) as world-color objects;
-  - the river's `river` tiles and `waterfall-face`, `flag` and `hearth`: frame loops `wf` (5 frames, one set per piece), `ff` (4) and `hf` (6);
+  - the river's `river` tiles and `waterfall-face`, `flag` and `crane-box` (the crane's hanging cardboard box): frame loops `wf` (5 frames, one set per piece), `ff` (4) and `hf` (6);
   - `truck`, placed with class `itruck it1`, and `truck-green`, placed with `itruck it2`;
-  - the pieces listed after the trucks, so they paint over them: `bridge-rail`, `shed`, the crane as `crane-mast` with `crane-jib` stacked on it, `fence` and the front trees;
+  - the pieces listed after the trucks, so they paint over them: `bridge-rail`, `boxes` (a stack of cardboard boxes), the crane as `crane-mast` with `crane-jib` stacked on it, `fence` and the front trees;
   - `cloud-a`, `cloud-b` and `cloud-c`, placed with `pcloud pc0` to `pc2`.
 - **The Range sprite** (`scenes/range-sprite.mjs`) is `range-island` (the one legacy object left: imported with `scripts/import-pixel-art.mjs`, marked `legacy: true`, in the legacy palette, exempt from the caps, and a pixel-for-pixel copy of the original until someone changes it on purpose) plus seven outfits that extend `character`, one per `data-class` group, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). The outfits and `character` were redrawn in world and outfit colors by the [Range class characters](../../../docs/intents/2026-10-sixth-range-class/intent.md) change, so they're no longer legacy.
 - **Recolors.** `truck-green` is `truck` with other colors: it `extends: 'truck'` and lists only the keys that differ. Use the same pattern for a variant that changes colors but not shape.
