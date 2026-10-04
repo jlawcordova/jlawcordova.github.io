@@ -1,5 +1,5 @@
 # Intent: Copy that follows the design system
-Author: J. Law. Cordova (site owner). Status: accepted.
+Author: J. Law. Cordova (site owner). Status: done, 2026-10-04: built in [#75](https://github.com/jlawcordova/jlawcordova.github.io/pull/75).
 
 ## Problem
 
