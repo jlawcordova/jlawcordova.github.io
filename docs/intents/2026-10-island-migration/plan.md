@@ -7,8 +7,9 @@ Plans [`spec.md`](spec.md) (R1–R12, slices 1–8). The work runs on a feature 
 - `src/assets/pixel-art/source/objects/`
   - `flag.mjs`, `hearth.mjs`, `cloud-a.mjs`, `cloud-b.mjs`, `cloud-c.mjs`, `truck.mjs`, `truck-green.mjs`: world keys, no `legacy: true`.
   - `path.mjs` (new): the flat road tile (spec, Target scene).
-  - `island-shadow.mjs` (new): the dithered shadow, `path-1` and `path-2`.
+  - `island-shadow.mjs` (new): the dithered shadow, in `path-2` (as built; see step 3).
   - `waterfall-face.mjs` (new): the falling face at the front-right edge, `wf` frames.
+  - `river.mjs` (new, as built in step 4): the library's `water` with fewer ripples, for the river's tiles (see step 4).
   - `bridge.mjs`, `house.mjs`, `fence.mjs`, `crane-mast.mjs`, `crane-jib.mjs` (new), plus a roof piece if the house can't carry it, and `tree-small.mjs` (new) only if a second tree size is needed.
   - `island-front.mjs` (deleted in step 7), `island-base.mjs` and `waterfall.mjs` (deleted in steps 8 and 4).
 - `src/assets/pixel-art/source/scenes/hero-island.mjs` and the generated `src/assets/pixel-art/hero-island.svg`. `library-demo.mjs` and its SVG, when a new object is added to the demo (R11).
@@ -40,7 +41,9 @@ One commit per slice, in the spec's order. Each PR targets `feat/island-migratio
 **PR C: slices 4–5**
 
 4. **River and waterfall.** `water` tiles along the river, the new `waterfall-face` with `wf w0`…`w4`; `waterfall.mjs` is deleted. Move the editor e2e frame tests to `waterfall-face`, and drop `waterfall` from the "animated pieces" test.
+   - *As built.* The old river ran along row 3 (it filled most of that row's width), so the river is the tiles `[1, 3]` to `[4, 3]` in place of their grass `tile`s, plus a flat top laid over the front block at `[5, 3]` (listed right after it) so the block keeps its soil sides. `[0, 3]` stays grass: the house covers it completely. **Departure:** the tiles are a new object, `river`, not the library's `water`. Six `water` tiles put `hero-island.svg` at about 88.7 KB raw, over R6's 83,485 bytes, because every tile repeats its ripples in all five frames. `river` is `water` with two of its five ripple rows blank (same size, colors, `wf` loop and frame count; a test pins that), which brings slice 4 to 82,796 bytes. It is island-specific, so it is not in `library-demo`. `waterfall-face` (15×29, 5 colors) covers the right face of the block at `[5, 3]` and falls 4 pixels past the soil into spray, as the old fall did, so every streak of the `flag` loop (`ff`, which is the waterfall's own fast streaks, not a flag) still lands on water; a test checks every flag pixel in every frame. Its still layer is the face, and its `wf` loop adds five slower streaks on the columns the flag leaves free. The `flag` object and its place are unchanged (slice 7). What left `island-base`: the river (`c-5f8c7e` right of the house's wall at x = −37) and the spray (`c-e8f1ec`), 961 pixels; the house's window panes keep their water colors. The river's top is now `water-2` with ripples (the old river was one flat `water-3`), and it is a full tile wide where the old one was about 12 pixels.
 5. **Road and bridge.** `path` tiles on the same road line as today (the trucks' `idrive` offsets don't change, C5), and `bridge`.
+   - *As built.* The old road ran along column 2 (its pixels spanned 71 to 97 in x + 2y, inside column 2's 64 to 96), so the road is `path` at `[2, 0]`, `[2, 1]`, `[2, 2]` and `[2, 4]` in place of their grass, plus a `path` top over the front block at `[2, 5]`. `[2, 3]` stays river, under the bridge. The road is now a full tile wide (30 pixels across, where the old one was about 26) and about 2 pixels further back, so it still contains the old road; a test checks that at every visible step of `idrive` at least 20 of each truck's 21 lowest pixels sit on the path or the bridge (the old road scored the same or one less), until the last steps where the trucks drive off the front edge and fade, as before. `path` is a flat `path-2` tile with `path-1` and `path-3` specks; the old road's cream centre dashes are gone. `bridge` (34×27, `ink` and `roof-1` to `roof-4`) is the old bridge's pixels, which were already exact world colors, placed at `[2, 3]` after the whole ground. Both are generic, so `library-demo` shows them (a path at `[1, 0]`, and the bridge over the water at `[1, 1]`, listed right after the water in col + row order, so a block the editor test drops on the centre tile is inserted after it and paints on top) and its test lists them. What left `island-base`: the road (`c-c9b79a`, `c-a8957a`, `c-bba88a`, `cream`) and the bridge, 1,404 pixels. `hero-island.svg` is 79,939 bytes raw after this step.
 
 **PR D: slices 6–7**
 
@@ -89,7 +92,7 @@ The final PR adds the whole-island before and after, and a verifier report again
 
 - [x] PR A: slices 1–2
 - [x] PR B: slice 3
-- [ ] PR C: slices 4–5
+- [x] PR C: slices 4–5
 - [ ] PR D: slices 6–7
 - [ ] PR E: slice 8
 - [ ] Final PR to `main`

@@ -61,7 +61,7 @@ export default {
 
 ### Blocks (`kind: 'block'`)
 
-A block is described by numbers, not drawn. Use one for ground, walls and water. `block`, `tile` and `water` in `source/objects/` are the library, and `scenes/library-demo.mjs` places them with `tree` and `pebble`. This example is `objects/stone-block.mjs` in the skill's test.
+A block is described by numbers, not drawn. Use one for ground, walls and water. `block`, `tile`, `water` and `path` (a flat road tile) in `source/objects/` are the library, and `scenes/library-demo.mjs` places them with `tree`, `pebble` and `bridge`. This example is `objects/stone-block.mjs` in the skill's test.
 
 **Adding to the library demo.** A test (`library (R13, R31)` in `scripts/pixel-art-engine.test.mjs`) lists the objects `library-demo` places, and checks that every item sits within its 3×3 grid (columns and rows 0 to 2). When you place a new object there, add its name to that list in the same change, and keep it on the grid. A small object can stand on a block's top: give it the block's tile and list it right after that block, so it paints on top.
 
@@ -195,7 +195,7 @@ The redesign's art was imported with `scripts/import-pixel-art.mjs`, so it's mar
 
 - **The hero island** (`scenes/hero-island.mjs`, written to `hero-island.svg`) is built from:
   - `island-base`: the island itself, one 193×128 map with 33 colors;
-  - `waterfall`, `flag` and `hearth`: frame loops `wf` (5 frames), `ff` (4) and `hf` (6);
+  - the river's `river` tiles and `waterfall-face`, `flag` and `hearth`: frame loops `wf` (5 frames, one set per piece), `ff` (4) and `hf` (6);
   - `truck`, placed with class `itruck it1`, and `truck-green`, placed with `itruck it2`;
   - `island-front`: the trees, crane, fence and roof that are drawn in front of the trucks;
   - `cloud-a`, `cloud-b` and `cloud-c`, placed with `pcloud pc0` to `pc2`.
