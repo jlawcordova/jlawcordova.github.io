@@ -23,8 +23,14 @@ const scene = sources.scenes.get('hero-island');
 const placed = scene.items.map((item) => item.object);
 const svg = compileScene(sources, 'hero-island').output;
 
+/**
+ * The cubes on the island's two front edges (hero island detail spec, Hidden joints): the true corner, then the edge pieces
+ * that hide the joints on the left cliff, the right cliff and where the road meets the left cliff.
+ */
+const BLOCKS = ['block', 'block-left', 'block-right', 'block-road'];
+
 /** The ground's library objects: one per position, plus a flat top laid over a front block where the river or road crosses it. */
-const GROUND = ['tile', 'block', 'river', 'path'];
+const GROUND = ['tile', ...BLOCKS, 'river', 'path'];
 
 /** The island's limits, in bytes (hero island detail spec R10), which replace R6's "no heavier than today". */
 const MAX_RAW = 500 * 1024;
@@ -34,7 +40,7 @@ const MAX_GZIP = 125 * 1024;
  * Objects that paint behind the trucks (ground, water, road, bridge, house, the back trees' shade) and in front of them
  * (spec, Target scene). Trees stand on both sides: TREES are placed by depth, and the R5 test checks each one.
  */
-const BEHIND_TRUCKS = ['island-shadow', 'tile', 'block', 'river', 'waterfall-face', 'path', 'bridge', 'house', 'tree-shade'];
+const BEHIND_TRUCKS = ['island-shadow', 'tile', ...BLOCKS, 'river', 'waterfall-face', 'path', 'bridge', 'house', 'tree-shade'];
 const IN_FRONT_OF_TRUCKS = ['bridge-rail', 'shed', 'crane-mast', 'crane-jib', 'fence', 'hearth'];
 const TREES = ['tree', 'tree-small', 'pine'];
 
@@ -84,11 +90,14 @@ describe('hero island structure', () => {
     }
   });
 
-  it('R3: the front blocks have no outline (the owner\'s decision of 2026-10-04: the library block has no edge)', () => {
-    const block = sources.objects.get('block');
-    assert.ok(placed.includes('block'), 'the island places blocks');
-    assert.equal(block.faces.edge, undefined, 'block has no faces.edge');
-    assert.deepEqual(Object.keys(block.faces).sort(), ['left', 'right', 'top'], 'block has only top, left and right faces');
+  it('R3: the front blocks have no outline (the owner\'s decision of 2026-10-04: the library block and its edge pieces have no edge)', () => {
+    for (const name of BLOCKS) {
+      const block = sources.objects.get(name);
+      assert.ok(placed.includes(name), `the island places ${name}`);
+      assert.equal(block.faces.edge, undefined, `${name} has no faces.edge`);
+      assert.deepEqual(Object.keys(block.faces).sort(), ['left', 'right', 'top'], `${name} has only top, left and right faces`);
+      assert.ok(!Object.values(block.sides?.keys ?? {}).includes('ink') && !Object.values(block.surface?.keys ?? {}).includes('ink'), `${name} paints no ink`);
+    }
   });
 
   it('R7: the clouds and trucks use the world colors the Colors table names', () => {
@@ -198,7 +207,7 @@ describe('hero island structure', () => {
     assert.equal(painted.size, all.size, 'nothing else is painted between the trucks and the hearth');
   });
 
-  it('R1, R3: the ground is 36 library objects on a [col, row, 0] grid: blocks on the two front edges, the river along row 3, the road along column 2, flat tiles elsewhere', () => {
+  it('R1, R3: the ground is 36 library objects on a [col, row, 0] grid: blocks on the two front edges (the edge pieces, and block at the corner), the river along row 3, the road along column 2, flat tiles elsewhere', () => {
     const items = scene.items.filter((item) => GROUND.includes(item.object));
     // The first item at a position is its ground; a later one at the same position is a flat top laid over it.
     const seen = new Map();
@@ -218,20 +227,43 @@ describe('hero island structure', () => {
       const [col, row] = item.at.tile;
       // The river runs along row 3 from the house; under the house, at [0, 3], it stays grass.
       // The road runs along column 2, on the trucks' line, and crosses the river on the bridge at [2, 3].
-      const want = col === 5 || row === 5 ? 'block' : row === 3 && col >= 1 ? 'river' : col === 2 ? 'path' : 'tile';
+      // The front corner is the true cube; the left cliff (row 5) takes block-left, block-road under the road's end, and the
+      // right cliff (column 5) block-right (spec, Hidden joints).
+      const edge = col === 5 && row === 5 ? 'block' : row === 5 ? (col === 2 ? 'block-road' : 'block-left') : 'block-right';
+      const want = col === 5 || row === 5 ? edge : row === 3 && col >= 1 ? 'river' : col === 2 ? 'path' : 'tile';
       assert.equal(item.object, want, `[${col}, ${row}]`);
     }
     // Where the river and the road cross the front edges, the block gets a river or path top, listed right after it.
     assert.deepEqual(tops.map((item) => [item.object, item.at.tile]), [['path', [2, 5, 0]], ['river', [5, 3, 0]]]);
     for (const top of tops) {
       const i = scene.items.indexOf(top);
-      assert.equal(scene.items[i - 1].object, 'block', `${top.object} is laid over the block before it`);
+      assert.ok(BLOCKS.includes(scene.items[i - 1].object), `${top.object} is laid over the block before it`);
       assert.deepEqual(scene.items[i - 1].at, top.at);
     }
     const order = ground.map((item) => item.at.tile[0] + item.at.tile[1]);
     assert.deepEqual(order, [...order].sort((a, b) => a - b), 'ground paints back to front (col + row, smallest first)');
-    const blockObj = resolve(sources, 'block');
-    assert.deepEqual(blockObj.block.size, [1, 1, 1]);
+    for (const name of BLOCKS) assert.deepEqual(resolve(sources, name).block.size, [1, 1, 1], `${name} is a cube`);
+    // Each edge piece is block with one corner column recolored to the cliff's face (block-road also swaps the grass band
+    // for a path band): the same top, faces and surface, the same right face (block-right) or the same left face (block-left).
+    const side = (name, face) => {
+      const { faces, sides } = sources.objects.get(name);
+      return sides[face].map((row) => [...row].map((k) => (k === '.' ? faces[face] : sides.keys[k])));
+    };
+    const column = (map, c) => map.map((row) => row[c]);
+    for (const name of BLOCKS.slice(1)) {
+      const [obj, block] = [name, 'block'].map((n) => sources.objects.get(n));
+      assert.deepEqual([obj.faces, obj.surface], [block.faces, block.surface], `${name} has block's faces and top`);
+    }
+    assert.deepEqual(side('block-left', 'left'), side('block', 'left'), 'block-left keeps block\'s left face');
+    assert.deepEqual(side('block-right', 'right'), side('block', 'right'), 'block-right keeps block\'s right face');
+    for (const [name, face, keep] of [['block-left', 'right', 'left'], ['block-right', 'left', 'right'], ['block-road', 'right', 'left']]) {
+      const corner = face === 'right' ? 0 : 14;
+      const changed = side(name, face).map((row) => row.filter((_, c) => c !== corner));
+      const base = name === 'block-road' ? side('block', face).map((row) => row.map((color) => (color === 'grass-4' ? 'path-4' : color))) : side('block', face);
+      assert.deepEqual(changed, base.map((row) => row.filter((_, c) => c !== corner)), `${name} changes only its ${face} face's corner column`);
+      assert.deepEqual(column(side(name, face), corner), column(side(name, keep), face === 'right' ? 14 : 0), `${name}'s corner column copies its ${keep} face's corner`);
+    }
+    assert.deepEqual(side('block-road', 'left'), side('block', 'left').map((row) => row.map((color) => ({ 'grass-3': 'path-3', 'grass-4': 'path-4' })[color] ?? color)), 'block-road is block with a path band');
     assert.deepEqual(resolve(sources, 'tile').block.size, [1, 1, 0]);
     const path = sources.objects.get('path');
     assert.deepEqual([path.size, path.faces, Object.values(path.surface.keys)], [[1, 1, 0], { top: 'path-2' }, ['path-1', 'path-3']], 'path is a flat path-2 tile with path-1 and path-3 specks');
@@ -503,6 +535,39 @@ describe('close-up scenes (hero island detail plan, step 5)', () => {
       assert.deepEqual(items.filter((_, i) => at[i] === undefined), [], `${name}: every item is one the island places`);
       assert.deepEqual(at, [...at].sort((a, b) => a - b), `${name}: in the island's order`);
     }
+  });
+
+  it('R7: on closeup-land, every joint on both cliffs is painted in its face\'s material, row by row, with no in-between color', () => {
+    // Where two cubes meet on a cliff, one column of the back cube's other face shows: on the left cliff (row 5) its right
+    // face's column 0, at x = cx; on the right cliff (column 5) its left face's column 14, at x = cx - 1 (spec, Hidden joints).
+    // That column must carry on the cliff's face: band rows and soil rows alike, it paints what the same cube's corner column
+    // on the cliff's face paints in the same row (left cliff: x - 1, the left face's column 14; right cliff: x + 1, the right
+    // face's column 0), and at the cube's last side row that corner is the face's own color (soil-2 left, soil-3 right).
+    const closeup = sources.scenes.get('closeup-land');
+    const shown = composite(renderScene(sources, 'closeup-land').root);
+    const blocks = closeup.items.filter((item) => resolve(sources, item.object).block?.size[2] === 1);
+    const at = new Set(blocks.map((item) => String(item.at.tile.slice(0, 2))));
+    let joints = 0;
+    for (const item of blocks) {
+      const [col, row] = item.at.tile;
+      const [cx, cy] = [(col - row) * 16 + scene.origin[0], (col + row) * 8 + scene.origin[1]];
+      const cliffs = [
+        { cliff: 'left', next: [col + 1, row], x: cx, own: cx - 1, onCliff: row === 5 },
+        { cliff: 'right', next: [col, row + 1], x: cx - 1, own: cx, onCliff: col === 5 },
+      ];
+      for (const { cliff, next, x, own, onCliff } of cliffs) {
+        if (!onCliff || !at.has(String(next))) continue;
+        joints++;
+        // The cube's 16 side rows below its top's lowest corner (cy + 7).
+        for (let y = cy + 8; y < cy + 24; y++) {
+          const [joint, face] = [shown.get(`${x},${y}`), shown.get(`${own},${y}`)];
+          const where = `${item.object} at [${col}, ${row}], ${cliff} cliff, x ${x}, side row ${y - cy - 8}`;
+          assert.equal(joint, face, `${where}: the joint paints ${joint}, the ${cliff} face's corner paints ${face}`);
+        }
+        assert.equal(shown.get(`${own},${cy + 23}`), resolve(sources, item.object).block.faces[cliff], `${item.object} at [${col}, ${row}]: the ${cliff} face's corner ends in the face's color`);
+      }
+    }
+    assert.equal(joints, 4, 'two joints on each cliff');
   });
 
   it('closeup-office paints both trucks after the house and before the bridge rail, as the island does', () => {
