@@ -728,6 +728,53 @@ describe('object painting (R17)', () => {
     await context.close();
   });
 
+  test('R17 (hero island detail R6): painting a block\'s top and sides exports a canonical block with surface and sides', async () => {
+    const { context, page, errors } = await openLab();
+    await pickObject(page, 'block');
+    const site = await sourceOf('object', 'block');
+    assert.equal(await exportText(page), site, 'block opens as committed');
+    // block is [1, 1, 1]: its first tile's center is at (15, 8) on the stage.
+    // Left column i starts at y = 1 + ⌊i/2⌋ and right column j at y = 8 − ⌈j/2⌉ from it.
+    await page.getByRole('button', { name: swatch('roof-2') }).click();
+    await clickPixel(page, 15, 8); // the top's center: surface column 16, row 8
+    await clickPixel(page, 5, 13); // left column 5, row 2
+    // The right face with the keyboard: from the cursor at (5, 13) to (25, 15), right column 10, row 4.
+    // The pointer leaves first, since the status bar shows the hovered pixel over the cursor.
+    await page.mouse.move(0, 0);
+    for (const key of ['Shift+ArrowRight', 'Shift+ArrowRight', 'ArrowRight', 'ArrowRight', 'ArrowRight', 'ArrowRight', 'ArrowDown', 'ArrowDown']) await page.keyboard.press(key);
+    assert.equal(await page.locator('#lab-status-position').textContent(), 'x 25 · y 15');
+    await page.keyboard.press('Space');
+
+    const blank = (w) => Array(16).fill('.'.repeat(w));
+    const put = (map, col, row) => map.map((line, y) => (y === row ? line.slice(0, col) + 'r' + line.slice(col + 1) : line));
+    const expected = {
+      ...(await load(site)),
+      surface: { keys: { r: 'roof-2' }, map: put(blank(32), 16, 8) },
+      sides: { keys: { r: 'roof-2' }, left: put(blank(16), 5, 2), right: put(blank(16), 10, 4) },
+    };
+    const painted = await exportText(page);
+    assert.equal(painted, serialize(expected), 'the export is the canonical block, with a surface and sides');
+    const { dir, out } = await compileCopy({ 'objects/block.mjs': painted });
+    await rm(dir, { recursive: true, force: true });
+    assert.match(out, /^hero-island\.svg: .* lossless$/m, 'the painted block compiles');
+
+    // A draft keeps its sides over a reload.
+    await page.reload();
+    await page.getByRole('group', { name: 'Scene stage' }).waitFor();
+    await pickObject(page, 'block');
+    assert.equal(await exportText(page), painted, 'the draft survives a reload, sides and all');
+
+    // Going flat drops the sides; Undo brings them back.
+    await page.getByRole('button', { name: 'Decrease levels' }).click();
+    const flat = await load(await exportText(page));
+    assert.deepEqual([flat.size, flat.faces, flat.sides], [[1, 1, 0], { top: 'grass-2' }, undefined]);
+    assert.deepEqual(flat.surface, expected.surface, 'the top surface stays');
+    await page.getByRole('button', { name: 'Undo' }).click();
+    assert.equal(await exportText(page), painted);
+    assert.deepEqual(errors, []);
+    await context.close();
+  });
+
   test("R17: painting an outfit overrides the row, and painting it back drops the override", async () => {
     const { context, page } = await openLab();
     await pickObject(page, 'outfit-security-governance');

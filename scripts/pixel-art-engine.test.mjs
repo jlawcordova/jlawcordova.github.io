@@ -10,7 +10,7 @@ import { inflateSync } from 'node:zlib';
 
 import { composite, describeObject, loadSources, paintedSize, renderObject, renderScene, resolve, usedKeys, validate } from '../src/lib/pixel-art/engine.mjs';
 import { blockFaces, pxToTile, tilePixels, tileToPx } from '../src/lib/pixel-art/iso.mjs';
-import { addFrame, addLayer, colorAt, deleteFrame, deleteLayer, duplicateFrame, duplicateLayer, floodFill, move, paint, resize } from '../src/lib/pixel-art/edit.mjs';
+import { addFrame, addLayer, blockCells, blockFill, colorAt, deleteFrame, deleteLayer, duplicateFrame, duplicateLayer, floodFill, move, paint, paintBlock, resize } from '../src/lib/pixel-art/edit.mjs';
 import { serialize } from '../src/lib/pixel-art/serialize.mjs';
 import { starterBlock, starterExtends, starterScene, starterSprite } from '../src/lib/pixel-art/starter.mjs';
 import { toRectSvg } from '../src/lib/pixel-art/svg.mjs';
@@ -1481,5 +1481,72 @@ describe('editing objects (R17)', () => {
     const body = sprite(['gc'], { g: 'grass-2', c: 'c-6f8a55' }, { legacy: true });
     assert.deepEqual(starterExtends(src({ body }), 'body'), { kind: 'sprite', extends: 'body', keys: { c: 'grass-2' }, rows: {} });
     assert.deepEqual(starterBlock(), { kind: 'block', size: [1, 1, 1], faces: { top: 'grass-2', left: 'soil-2', right: 'soil-3' } });
+  });
+});
+
+describe('editing blocks (hero island detail spec R6)', () => {
+  const cube = (size = [1, 1, 1]) => ({ kind: 'block', size, faces: { top: 'grass-2', left: 'wood-3', right: 'grass-4' } });
+  const drawn = (doc, frame = 0) => composite(renderObject(src({ blk: doc }), 'blk'), { frame });
+
+  it('R6: every block pixel maps to one cell: the top to the surface, the faces to their side maps', () => {
+    const cells = blockCells([1, 1, 1]);
+    const faces = blockFaces([1, 1, 1], [0, 0]);
+    assert.equal(cells.size, faces.top.length + faces.left.length + faces.right.length);
+    assert.deepEqual(cells.get('0,0'), { part: 'surface', col: 16, row: 8 });
+    assert.deepEqual(cells.get('-15,0'), { part: 'surface', col: 1, row: 8 });
+    // Left column i starts at y = 1 + ⌊i/2⌋, right column j at y = 8 − ⌈j/2⌉ (pixel-artist agent, Blocks).
+    assert.deepEqual(cells.get('-10,5'), { part: 'left', col: 5, row: 2 });
+    assert.deepEqual(cells.get('10,7'), { part: 'right', col: 10, row: 4 });
+    assert.equal(cells.get('20,0'), undefined, 'outside the block');
+  });
+
+  it('R6, L4: painting any pixel of a block makes that pixel show the color', () => {
+    for (const size of [[1, 1, 1], [2, 1, 2], [1, 2, 0]]) {
+      const pixels = [...blockCells(size).keys()];
+      const r = rng(size.reduce((a, b) => a * 10 + b, 0));
+      for (let i = 0; i < 60; i++) {
+        const p = pixels[Math.floor(r() * pixels.length)];
+        const doc = cube(size);
+        if (size[2] === 0) doc.faces = { top: 'grass-2' };
+        assert.equal(paintBlock(doc, 0, [p.split(',').map(Number)], 'cream'), 1, `${size}: ${p}`);
+        assert.equal(drawn(doc).get(p), 'cream', `${size}: ${p} shows the paint`);
+        assert.deepEqual(validate(src({ blk: doc })), [], `${size}: ${p} gives a valid block`);
+      }
+    }
+  });
+
+  it('R6: painting adds a surface or sides with a key for the color, and erasing clears the cell', () => {
+    const doc = cube();
+    assert.equal(paintBlock(doc, 0, [[0, 0], [-10, 5], [10, 7]], 'roof-2'), 3);
+    const blank = (w) => Array(16).fill('.'.repeat(w));
+    const put = (map, col, row) => map.map((line, y) => (y === row ? line.slice(0, col) + 'r' + line.slice(col + 1) : line));
+    assert.deepEqual(doc.surface, { keys: { r: 'roof-2' }, map: put(blank(32), 16, 8) });
+    assert.deepEqual(doc.sides, { keys: { r: 'roof-2' }, left: put(blank(16), 5, 2), right: put(blank(16), 10, 4) });
+    assert.equal(paintBlock(doc, 0, [[-10, 5]], 'roof-2'), 0, 'the same color again changes nothing');
+    assert.equal(paintBlock(doc, 0, [[-10, 5], [-15, 30]], null), 1, 'the eraser clears a cell; outside the block is ignored');
+    assert.deepEqual(doc.sides.left, blank(16));
+    const plain = cube();
+    assert.equal(paintBlock(plain, 0, [[0, 0], [-10, 5]], null), 0);
+    assert.deepEqual(plain, cube(), 'erasing a block with no surface or sides adds neither');
+  });
+
+  it('R6: painting a looped surface paints the frame being edited', () => {
+    const map = (ch) => Array(16).fill(ch.repeat(32));
+    const doc = { ...cube([1, 1, 0]), faces: { top: 'grass-2' }, surface: { keys: { a: 'cream' }, loop: 'wf', prefix: 'w', frames: [map('.'), map('.')] } };
+    paintBlock(doc, 1, [[0, 0]], 'cream');
+    assert.equal(doc.surface.frames[0][8][16], '.');
+    assert.equal(doc.surface.frames[1][8][16], 'a');
+    assert.equal(drawn(doc, 1).get('0,0'), 'cream', 'frame 1 shows it');
+    assert.equal(drawn(doc, 0).get('0,0'), 'grass-2', 'frame 0 does not');
+  });
+
+  it('R6: Fill on a block covers the start pixel\'s color on that part only', () => {
+    const doc = cube();
+    const cells = blockCells(doc.size);
+    const left = blockFill(cells, drawn(doc), -10, 5);
+    assert.equal(left.length, blockFaces([1, 1, 1], [0, 0]).left.length, 'the whole left face, not the top or the right face');
+    paintBlock(doc, 0, [[-10, 5], [-9, 5], [-8, 5]], 'cream');
+    assert.equal(blockFill(cells, drawn(doc), -10, 5).length, 3, 'a patch fills only itself');
+    assert.deepEqual(blockFill(cells, drawn(doc), 40, 40), [], 'outside the block');
   });
 });

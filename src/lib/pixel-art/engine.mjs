@@ -914,14 +914,15 @@ export function renderObject(sources, name) {
 
 /**
  * Flattens a tree to what shows with every group visible and each loop on
- * frame 0 (what reduced motion shows). Later paint wins. With
- * `firstVariant`, only the first of each run of sibling data-class groups
- * draws, as the Range shows one variant at a time.
+ * frame 0 (what reduced motion shows), or on `frame` (the editor's frame,
+ * for a loop that long). Later paint wins. With `firstVariant`, only the
+ * first of each run of sibling data-class groups draws, as the Range shows
+ * one variant at a time.
  * @param {Group} root
- * @param {{ firstVariant?: boolean }} [options]
+ * @param {{ firstVariant?: boolean, frame?: number }} [options]
  * @returns {Map<string, string>} "x,y" → color name
  */
-export function composite(root, { firstVariant = false } = {}) {
+export function composite(root, { firstVariant = false, frame = 0 } = {}) {
   /** @type {Map<string, string>} */
   const out = new Map();
   const isVariant = (/** @type {Group | Layer} */ c) => 'attrs' in c && c.attrs.some(([k]) => k === 'data-class');
@@ -929,7 +930,7 @@ export function composite(root, { firstVariant = false } = {}) {
   const walk = (group) => {
     group.children.forEach((child, i) => {
       if ('pixels' in child) for (const [p, color] of child.pixels) out.set(p, color);
-      else if (child.frame) return;
+      else if (child.frame !== undefined && child.frame !== frame) return;
       else if (firstVariant && isVariant(child) && i > 0 && isVariant(group.children[i - 1])) return;
       else walk(child);
     });
