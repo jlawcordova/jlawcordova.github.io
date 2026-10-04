@@ -10,21 +10,23 @@ The site now has a design system with copywriting rules: structured, analytical,
 
 ## Proposed outcome
 
-1. **The design system allows gamified copy where it applies:** the accomplishments and buttons. It says how that playful copy sits next to the plain, structured voice everywhere else, and its accomplishment examples show the gamified style the site actually uses.
-2. **The hero and Range text follow the design system's copy rules.** Their text reads in the design system's voice, not as generic marketing lines. The "Press start" button and the "Many hats. One craftsman." heading stay.
+1. **The design system allows gamified copy where it applies:** the accomplishments and buttons. It says how that playful copy sits next to the plain, structured voice everywhere else, and its accomplishment examples show the gamified style the site actually uses. The "Many hats. One craftsman." heading is named as the one kept exception.
+2. **The hero and Range text follow the design system's copy rules.** Their text reads in the design system's voice, not as generic marketing lines. The "Press start" button and the "Many hats. One craftsman." heading stay. The site's description, shown in search results and link previews, matches the new hero.
+3. **The design system lives in this repo.** It's committed here and is the source of truth from now on, rather than the design system artifact. Changes to it go through this repo like any other change.
 
 ## Affected users and systems
 
 - **Home page visitors:** the hero and Range sections read differently.
-- **The design system:** its copywriting guidance and its accomplishment examples.
+- **The design system:** its copywriting guidance and its accomplishment examples, and where it's kept.
+- **Search results and link previews:** the site's description.
 - **Future work:** anything written from the design system, including later changes to this site.
 
 ## Constraints
 
 - **The accomplishments stay gamified** as they are now. This change doesn't alter their wording, look or behavior on the site.
-- **Gamified copy is limited to the accomplishments and buttons.** Everything else follows the plain, structured voice.
+- **Gamified copy is limited to the accomplishments and buttons,** plus the kept Range heading. Everything else follows the plain, structured voice.
 - **The site's rules still hold:** the design language, accessibility, the home page layout, and no new dependencies.
-- **Public-safe.** Facts about roles and skills in the new copy come only from `docs/references/profile.md`.
+- **Public-safe.** Facts about roles and skills in the new copy come only from `docs/references/profile.md`. The design system becomes public once it's committed, so its examples must follow the same rules.
 - **Out of scope:** the pixel art, the Range classes and their outfits, the layout or behavior of the hero and Range sections, and the copy of other home sections and pages.
 
 ## Open questions
