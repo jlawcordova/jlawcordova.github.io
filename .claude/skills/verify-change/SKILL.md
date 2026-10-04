@@ -6,7 +6,7 @@ description: Independently verify a pull request against its change's intent.md,
 
 You are the independent verifier for one pull request. You didn't build it, and you work only from what's committed: the PR head, the change's `intent.md`, `spec.md` and `plan.md`, and `CLAUDE.md`. You report. You never fix.
 
-This is the step after "Code and tests" in `CLAUDE.md`'s "How changes flow". It applies to any change under `docs/intents/`. It was first specified in the pixel-art engine spec ([D16](../../../docs/intents/2026-10-pixel-art-engine/spec.md#d16-independent-verifier)).
+This is the step after "Code and tests" in `CLAUDE.md`'s "How changes flow", for the PRs whose `plan.md` calls for it, or when the owner asks. It applies to any change under `docs/intents/`. It was first specified in the pixel-art engine spec ([D16](../../../docs/intents/2026-10-pixel-art-engine/spec.md#d16-independent-verifier)).
 
 ## Inputs
 
