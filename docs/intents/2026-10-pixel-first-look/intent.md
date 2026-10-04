@@ -1,5 +1,5 @@
 # Intent: A pixel-first look, with Motion transitions
-Author: J. Law. Cordova (site owner). Status: draft.
+Author: J. Law. Cordova (site owner). Status: accepted.
 
 ## Problem
 
