@@ -423,13 +423,15 @@ describe('hero island structure', () => {
     assert.deepEqual(obj.anchor, [21, 41]);
     assert.deepEqual(scene.items[i[0]].at, { px: [-59, 59] });
     assert.ok(i[0] > Math.max(...indexesOf(GROUND)), 'it paints over the ground');
-    // It covers the river's grass end at [0, 3], which is why that tile stays grass: all but the 4 pixels of its right corner, by the river.
+    // It covers the river's grass end at [0, 3], which is why that tile stays grass: all but the 2 pixels of its right corner, by the river.
     sources.scenes.set('slice-6-probe', { viewBox: scene.viewBox, origin: scene.origin, items: [{ object: 'tile', at: { tile: [0, 3, 0] } }] });
     const tile = composite(renderScene(sources, 'slice-6-probe').root);
     sources.scenes.set('slice-6-probe', { viewBox: scene.viewBox, origin: scene.origin, items: [scene.items[i[0]]] });
     const house = composite(renderScene(sources, 'slice-6-probe').root);
     const showing = [...tile.keys()].filter((p) => !house.has(p));
-    assert.deepEqual(showing, ['-35,31', '-34,31', '-35,32', '-34,32'], 'the house hides the tile at [0, 3]');
+    assert.deepEqual(showing, ['-34,31', '-34,32'], 'the house hides the tile at [0, 3]');
+    // The roof's right outline, the old house's rightmost column, is the house's too.
+    for (const y of [30, 31, 32]) assert.equal(house.get(`-35,${y}`), 'ink', `the roof's right outline at -35,${y}`);
   });
 
   it('R8: island-base no longer paints the house: none of its roof, wall or door colors', () => {
