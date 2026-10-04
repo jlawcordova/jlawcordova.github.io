@@ -99,9 +99,9 @@ Two places can play: **accomplishments** and **buttons**. Everything else uses t
 - **No shadows.** Don't use hard or soft shadows, glows or bevels. Where the system used `shadow-pixel` or `shadow-pixel-accent`, use `border-thick` instead: a 3px `color-ink` border.
 - `border-thick` goes on buttons, the Contact pill, the nav bar, the current page in pagination and tooltips. Cards, rows and stages keep the 1px `color-border` hairline. Ink fills such as code blocks need no extra edge.
 - **Pressed:** a button moves 2px down and right. Nothing else changes.
-- The sticky nav has no shadow. It keeps its 16px backdrop blur for now, an open question in the intent.
+- The sticky nav has no shadow and no backdrop blur. It sits on solid `color-page`, so nothing shows through it.
 
-Tokens: `radius-*` all become 0, the `shadow-*` tokens are retired, and `border-thick` is new. `tokens.json` and `src/styles/variables.css` change together when this is built (see `../intents/2026-10-pixel-first-look/intent.md`). Until then the site still renders the old rounded corners and shadows.
+Tokens: `radius-*` all become 0, the `shadow-*` tokens and `color-surface-strong` (the nav's see-through fill) are retired, and `border-thick` is new. `tokens.json` and `src/styles/variables.css` change together when this is built (see `../intents/2026-10-pixel-first-look/intent.md`). Until then the site still renders the old rounded corners and shadows.
 
 ### States and motion
 

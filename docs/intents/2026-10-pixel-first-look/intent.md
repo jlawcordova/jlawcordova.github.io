@@ -11,6 +11,7 @@ The site also feels static. Transitions are limited to a few CSS fades and sprit
 
 - **Square corners everywhere.** No UI element has rounded corners, including buttons, the Contact pill and the navigation bar.
 - **No shadows.** Buttons and everything else that used a hard shadow get a thick border instead.
+- **A flat nav bar.** The navigation bar loses its shadow and its frosted backdrop blur.
 - **Pixel type on every button and link in the nav.** All buttons and the navigation links use the pixel font. The hero's greeting ("Hi, I’m J. Law. Cordova.") does too.
 - **A menu button on small screens.** On mobile, the nav shows an icon-only menu button with no text and no border, and the links stay hidden until it's pressed.
 - **The footer is a grass block.** It stays mostly dirt-colored, with a grass layer along the top.
@@ -33,4 +34,4 @@ The site also feels static. Transitions are limited to a few CSS fades and sprit
 
 ## Open questions
 
-- Should the navigation bar keep its backdrop blur?
+- None. The navigation bar's backdrop blur goes, along with its shadow.
