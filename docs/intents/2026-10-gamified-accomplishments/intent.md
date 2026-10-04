@@ -1,5 +1,5 @@
 # Intent: Gamified accomplishments
-Author: J. Law. Cordova (site owner). Status: accepted.
+Author: J. Law. Cordova (site owner). Status: done for the site, 2026-10-04: built in [#56](https://github.com/jlawcordova/jlawcordova.github.io/pull/56), [#60](https://github.com/jlawcordova/jlawcordova.github.io/pull/60) and [#61](https://github.com/jlawcordova/jlawcordova.github.io/pull/61). The atproto side (lexicon, `update`, skill, migration) merged in `jlawcordova-atproto` #21 and #22. R4, R10, R11, R15 and R18 need real runs of the `accomplishments` skill and are tracked in that repo's sub-intent.
 
 ## Problem
 

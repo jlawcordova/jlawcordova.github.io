@@ -1,5 +1,5 @@
 # Spec: Gamified accomplishments (from intent.md 2026-10-03)
-Status: approved.
+Status: done for the site, 2026-10-04: built in [#56](https://github.com/jlawcordova/jlawcordova.github.io/pull/56), [#60](https://github.com/jlawcordova/jlawcordova.github.io/pull/60) and [#61](https://github.com/jlawcordova/jlawcordova.github.io/pull/61). The atproto side (lexicon, `update`, skill, migration) merged in `jlawcordova-atproto` #21 and #22. R4, R10, R11, R15 and R18 need real runs of the `accomplishments` skill and are tracked in that repo's sub-intent.
 
 Implements [`intent.md`](intent.md). Where they disagree, the intent wins and this spec gets fixed. The work spans two repos: this one (pages, icons, the icon skill) and `jlawcordova-atproto` (the record schema, the Worker, the CLI and the `accomplishments` skill). Paths without a repo name are in this repo.
 
