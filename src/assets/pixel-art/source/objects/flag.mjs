@@ -1,10 +1,9 @@
 // Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md
 export default {
   kind: 'sprite',
-  legacy: true,
   anchor: [0, 0],
   keys: {
-    a: 'c-c9ddd3',
+    a: 'water-1',
   },
   layers: [
     {
