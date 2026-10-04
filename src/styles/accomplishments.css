@@ -258,6 +258,7 @@ summary.achievement__row:focus-visible {
   background: var(--color-card);
   color: var(--color-ink);
   border-radius: 6px;
+  overflow-wrap: anywhere;
 }
 
 .achievement__links {
