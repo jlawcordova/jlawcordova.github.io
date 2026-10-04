@@ -114,7 +114,7 @@ The final PR adds the whole-island before and after, and a verifier report again
 - [x] PR C: slices 4–5
 - [x] PR D: slices 6–7
 - [x] PR E: slice 8
-- [ ] Final PR to `main`
+- [x] Final PR to `main`
 
 ## Spec corrections for the owner
 
