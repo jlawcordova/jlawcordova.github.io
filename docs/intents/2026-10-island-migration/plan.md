@@ -71,6 +71,8 @@ One commit per slice, in the spec's order. Each PR targets `feat/island-migratio
 
 8. **Clean-up.** `island-base` is empty and deleted, with the fixture, the remaining R11 island tests and the R2 allow-list. The editor e2e's largest-map cases move to `range-island`, the `lab.ts` comment is updated, and the skill's island section and the README mentions go (R11).
 
+   - *As built (PR E).* No visual change: `hero-island.svg` is byte-identical before and after (80,564 bytes raw, 16,271 with `gzip -9`), because `island-base` was already an empty map. `island-base.mjs` and the fixture `hero-island.src.svg` are deleted, with the four R8 "island-base no longer paints" tests and the R2 allow-list, which is gone, so R2 now holds for every object in the scene with no exceptions. A new test pins that neither `island-base` nor `island-front` exists. In `pixel-art-roundtrip.test.mjs` the "fixture layers don't overlap" test goes, the R12 check no longer looks for the island fixture (`range-sprite.src.svg` stays), and the "animated pieces" test keeps its `flag` and `hearth` loop checks without the `island-base` part; the `structure` and `assertNoOverlaps` helpers it used go too. In `editor.e2e.mjs` both largest-map cases use `range-island` (99×62). The `lab.ts` comment names `range-island`. `MAX_MAP` (512) was not chosen to fit `island-base` (193×128; it is a generous cap on a draft's size), so it is unchanged. The skill's island section now describes the island as built from library and island objects and drops the "why exempt" text; `range-island` stays as the one legacy object. The README had no `island-base` or `island-front` mention; its fixtures row now describes the Range sprite fixture only. The legacy palette tier stays (spec Q1).
+
 **Final PR: `feat/island-migration` → `main`.** Opened by the agents after PR E merges, with the whole-island before and after (1× and 4× previews, home at 1440px and 390px), the final size against R6, and links to every slice PR and its verifier report. Verified once more against the whole spec. The owner reviews R3 here and merges, which deploys.
 
 ### Workflow for each slice PR
@@ -111,7 +113,7 @@ The final PR adds the whole-island before and after, and a verifier report again
 - [x] PR B: slice 3
 - [x] PR C: slices 4–5
 - [x] PR D: slices 6–7
-- [ ] PR E: slice 8
+- [x] PR E: slice 8
 - [ ] Final PR to `main`
 
 ## Spec corrections for the owner
