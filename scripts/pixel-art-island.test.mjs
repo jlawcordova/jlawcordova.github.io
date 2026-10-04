@@ -12,7 +12,7 @@ import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
-import { resolve } from '../src/lib/pixel-art/engine.mjs';
+import { CAPS, composite, renderScene, resolve, usedColors } from '../src/lib/pixel-art/engine.mjs';
 import { compileScene, readSources } from './optimize-pixel-art.mjs';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
@@ -118,6 +118,75 @@ describe('hero island structure', () => {
     assert.ok(svg.slice(at('<g class="itruck it2"'), at('<g class="hf h0"')).includes('</g><path'), 'something is painted over the trucks');
   });
 
+  it('R1, R3: the ground is 36 library objects on a [col, row, 0] grid: blocks on the two front edges, flat tiles elsewhere', () => {
+    const ground = scene.items.filter((item) => item.object === 'block' || item.object === 'tile');
+    assert.equal(ground.length, 36);
+    assert.deepEqual(scene.origin, [0, 8], 'the grid origin that puts the 6×6 top faces where the island stood');
+    const seen = new Set();
+    for (const item of ground) {
+      const [col, row, level] = item.at.tile;
+      assert.equal(level, 0, 'ground sits at level 0');
+      assert.ok(col >= 0 && col <= 5 && row >= 0 && row <= 5, `[${col}, ${row}] is on the grid`);
+      assert.equal(item.object, col === 5 || row === 5 ? 'block' : 'tile', `[${col}, ${row}]`);
+      seen.add(`${col},${row}`);
+    }
+    assert.equal(seen.size, 36, 'every position once');
+    const order = ground.map((item) => item.at.tile[0] + item.at.tile[1]);
+    assert.deepEqual(order, [...order].sort((a, b) => a - b), 'ground paints back to front (col + row, smallest first)');
+    const blockObj = resolve(sources, 'block');
+    assert.deepEqual(blockObj.block.size, [1, 1, 1]);
+    assert.deepEqual(resolve(sources, 'tile').block.size, [1, 1, 0]);
+  });
+
+  it('R1, R2: island-shadow is a small world-color object, painted under the ground and outside the island', () => {
+    const obj = resolve(sources, 'island-shadow');
+    assert.equal(obj.legacy, false);
+    assert.ok(obj.width <= CAPS.size && obj.height <= CAPS.size, `${obj.width}×${obj.height}`);
+    assert.ok(usedColors(sources, obj).length <= CAPS.colors);
+    for (const color of Object.values(obj.keys)) assert.match(color, /^path-[1-4]$/, `shadow color ${color}`);
+    const shadows = indexesOf(['island-shadow']);
+    const ground = indexesOf(['tile', 'block']);
+    assert.ok(shadows.length > 0);
+    assert.ok(Math.max(...shadows) < Math.min(...ground), 'the shadow paints before the ground');
+    // Everything the shadow paints that survives is below or beside the island, so it only shows as a rim.
+    const only = (names) => {
+      sources.scenes.set('slice-3-probe', { viewBox: scene.viewBox, origin: scene.origin, items: scene.items.filter((item) => names.includes(item.object)) });
+      return composite(renderScene(sources, 'slice-3-probe').root);
+    };
+    const island = only(['tile', 'block']);
+    const visible = [...only(['island-shadow']).keys()].filter((p) => !island.has(p));
+    assert.ok(visible.length > 500, 'a visible shadow rim');
+  });
+
+  it('R8: island-base no longer paints the ground\'s soil, grass lip or shadow, so nothing is painted twice', () => {
+    sources.scenes.set('slice-3-ground', { viewBox: scene.viewBox, origin: scene.origin, items: scene.items.filter((item) => item.object === 'tile' || item.object === 'block') });
+    const footprint = composite(renderScene(sources, 'slice-3-ground').root);
+    const base = resolve(sources, 'island-base');
+    const [ox, oy] = scene.items.find((item) => item.object === 'island-base').at.px;
+    const soil = new Set(['c-8a5a34', 'c-7a4e2d', 'c-9c6b42', 'c-4a3324', 'c-6e4d36']);
+    const shadow = 'c-d4c5a9';
+    const grass = new Set(['c-8fa56e', 'c-88a267', 'c-7e9a60', 'c-a9bd8c', 'c-77925a', 'c-6f8a55', 'c-6f8f55', 'c-4e6b3a', 'soil-3']);
+    const topOf = new Map();
+    for (const p of footprint.keys()) {
+      const [x, y] = p.split(',').map(Number);
+      topOf.set(x, Math.min(topOf.get(x) ?? Infinity, y));
+    }
+    let leftover = 0;
+    base.layers[0].map.forEach((row, y) => {
+      for (let x = 0; x < row.length; x++) {
+        if (row[x] === '.') continue;
+        const color = base.keys[row[x]];
+        assert.ok(!soil.has(color) && color !== shadow, `island-base paints ${color} at ${x},${y}`);
+        if (!grass.has(color)) continue;
+        // What is left in these greens and browns is a tree's foliage, a trunk or a door: on the island, or a treetop above it, never on its rim or below it.
+        const covered = footprint.has(`${x + ox},${y + oy}`) || y + oy < (topOf.get(x + ox) ?? Infinity);
+        assert.ok(covered, `island-base paints ${color} at ${x},${y} outside the ground`);
+        leftover++;
+      }
+    });
+    assert.ok(leftover < 400, `${leftover} green and brown pixels are left in island-base`);
+  });
+
   it('R6: the compiled island is no heavier than today\'s, raw and gzipped', async () => {
     const committed = await readFile(join(ART_DIR, 'hero-island.svg'), 'utf8');
     assert.equal(committed, svg, 'the committed SVG is what the scene compiles to');
@@ -127,12 +196,15 @@ describe('hero island structure', () => {
   });
 
   it('R10: the SVG is decorative and safe: no script, link, text or external reference', async () => {
-    assert.match(svg, /^<svg [^>]*aria-hidden="true"/);
-    assert.doesNotMatch(svg, /<(script|a|text|tspan|image|use|style|foreignObject|link|iframe|animate|set)\b/i);
-    assert.doesNotMatch(svg, /\b(href|src)\s*=/i);
-    assert.doesNotMatch(svg, /\bon[a-z]+\s*=/i);
-    assert.doesNotMatch(svg, /javascript:|data:|url\(/i);
-    assert.deepEqual(svg.match(/https?:\/\/[^"' )]+/g), ['http://www.w3.org/2000/svg']);
+    const committed = await readFile(join(ART_DIR, 'hero-island.svg'), 'utf8');
+    for (const [label, text] of [['compiled', svg], ['committed', committed]]) {
+      assert.match(text, /^<svg [^>]*aria-hidden="true"/, label);
+      assert.doesNotMatch(text, /<(script|a|text|tspan|image|use|style|foreignObject|link|iframe|animate|set)\b/i, label);
+      assert.doesNotMatch(text, /\b(href|src)\s*=/i, label);
+      assert.doesNotMatch(text, /\bon[a-z]+\s*=/i, label);
+      assert.doesNotMatch(text, /javascript:|data:|url\(/i, label);
+      assert.deepEqual(text.match(/https?:\/\/[^"' )]+/g), ['http://www.w3.org/2000/svg'], label);
+    }
     const component = await readFile(join(ROOT, 'src/components/home/HeroIsland.astro'), 'utf8');
     assert.match(component, /hero-island\.svg\?raw/);
     assert.match(component, /class="hero-island pixel-art"/);

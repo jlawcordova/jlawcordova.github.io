@@ -35,6 +35,7 @@ One commit per slice, in the spec's order. Each PR targets `feat/island-migratio
 **PR B: slice 3 (the biggest pixel move)**
 
 3. **Ground and shadow.** The 36 positions (`block [1,1,1]` on the front edges, `tile` elsewhere) and `island-shadow`. Remove those pixels from `island-base` in the same commit. If the size test fails, switch interior tiles to `[2, 2, 0]` blocks (spec C6) and record it here.
+   - *As built.* The size test passes with single `tile`s (`hero-island.svg` goes from 83,336 to 67,323 bytes raw), so the `[2, 2, 0]` fallback is not used. The scene gets `origin: [0, 8]`, the value at which the 36 top faces cover the old diamond exactly (a fit against `island-base`); `px` items are unaffected. `island-shadow` is a 30×16 diamond with a one-pixel `path-2` checker, placed by `px` on the 11 front tiles whose shadow shows (a half-level offset is not on the tile grid), and it uses `path-2` only. The soil is 16 pixels high, as the `block` library object draws it, where the old art had about 20, so the island is 4 pixels shorter and the shadow sits 24 pixels below the top faces to keep its old gap. What left `island-base`: every grass, soil-face, grass-lip and shadow pixel (10,046 of 14,433), found as grass-colored regions not touching a tree's foliage keys, plus soil colors outside the top-face footprint. The trees, trunks, door, road, river, bridge, house and crane cable stay. Visible changes, all deliberate: the front blocks carry the library's 1-pixel `soil-4` outline, the soil loses its mottling, the old two-tone grass checkerboard becomes `tile`'s specks, and the dithered ground shade under the back trees goes with the grass (it returns with the trees in step 7 if wanted).
 
 **PR C: slices 4–5**
 
@@ -87,7 +88,7 @@ The final PR adds the whole-island before and after, and a verifier report again
 ### Progress
 
 - [x] PR A: slices 1–2
-- [ ] PR B: slice 3
+- [x] PR B: slice 3
 - [ ] PR C: slices 4–5
 - [ ] PR D: slices 6–7
 - [ ] PR E: slice 8
