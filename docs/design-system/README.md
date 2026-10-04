@@ -82,7 +82,7 @@ Two places can play: **accomplishments** and **buttons**. Everything else uses t
 
 - **Sora** (`font-text`, 400/500/600/700) for headings and body. **Silkscreen** (`font-pixel`, 400) for the wordmark, every button (primary, ghost and pill), nav links, pagination, `label`, `tag` and the footer. A monospace stack (`font-code`) for code and IDs. Both faces load from Google Fonts: `family=Silkscreen&family=Sora:wght@400;500;600;700`.
 - Headings: `hero-title` once per page at most, then `section-title`, `h1`, `h2` and `h3`. Body copy is `body` (17px / 1.6). Long reads use `post-body` (17px / 1.75) in a `reading-max` column.
-- Silkscreen is for short strings only, three words at most. Never set a sentence in it. One kept exception: the hero's greeting line ("Hi, I’m J. Law. Cordova.").
+- Silkscreen is for short strings only, three words at most. Never set a sentence in it.
 - Use tabular numerals in tables and registers.
 
 ### Space and layout
@@ -97,11 +97,11 @@ Two places can play: **accomplishments** and **buttons**. Everything else uses t
 
 - **Corners are square.** Nothing in the UI is rounded: buttons, pills, the nav bar, cards, rows, chips, code blocks, stages, panels and images all have 90° corners. The pixel art is the only place for curves, and only as pixels.
 - **No shadows.** Don't use hard or soft shadows, glows or bevels. Where the system used `shadow-pixel` or `shadow-pixel-accent`, use `border-thick` instead: a 3px `color-ink` border.
-- `border-thick` goes on buttons, the Contact pill, the nav bar, the current page in pagination and tooltips. Cards, rows and stages keep the 1px `color-border` hairline. Ink fills such as code blocks need no extra edge.
+- `border-thick` goes on buttons, the Contact pill, the nav bar, the current page in pagination, tooltips and the Range console. Accomplishment rows take a 3px `color-border` edge, dashed `color-border-strong` when locked. Cards and stages keep the 1px `color-border` hairline. Ink fills such as code blocks need no extra edge.
 - **Pressed:** a button moves 2px down and right. Nothing else changes.
-- The sticky nav has no shadow and no backdrop blur. It sits on solid `color-page`, so nothing shows through it.
+- The sticky nav has no shadow. It sits on the see-through `color-surface-strong` with a 16px backdrop blur, the one blur in the system, and falls back to solid `color-page` where `backdrop-filter` isn't supported.
 
-Tokens: `radius-*` all become 0, the `shadow-*` tokens and `color-surface-strong` (the nav's see-through fill) are retired, and `border-thick` is new. `tokens.json` and `src/styles/variables.css` change together when this is built (see `../intents/2026-10-pixel-first-look/intent.md`). Until then the site still renders the old rounded corners and shadows.
+Tokens: `radius-*` all become 0. `shadow-pixel`, `shadow-pixel-pressed`, `shadow-pixel-accent` and `shadow-nav` are retired, and `shadow-focus-halo` stays for the focus ring. `color-surface-strong`, the nav's fill, rises from 62% to 78% opacity, as the home page proposal draws it. `border-thick` is new. `tokens.json` and `src/styles/variables.css` change together when this is built (see `../intents/2026-10-pixel-first-look/intent.md`). Until then the site still renders the old rounded corners and shadows.
 
 ### States and motion
 
@@ -124,7 +124,7 @@ Use [Motion](https://motion.dev) (the `motion` package, formerly Framer Motion) 
 
 ## Iconography
 
-- **The mark:** the flat block J and L on a square grid (`static/public/logo.svg`, 68 × 45), with the J in `color-accent` (#3f6b45) and the L in `color-ink` (#2e2418). Don't make it 3D, outline it, recolor it or change its shape. Set it beside "J.LAW" in `wordmark` in the nav. It's two-ink, so as an `<img>` it reads on light grounds only (`color-page`, `color-hero`, `color-card`). `static/public/favicon.svg` is the same mark padded to a square, and `static/public/logo@2x.png` is a raster fallback.
+- **The mark:** the flat block J and L on a square grid (`static/public/logo.svg`, 68 × 45), with the J in `color-accent` (#3f6b45) and the L in `color-ink` (#2e2418). Don't make it 3D, outline it, recolor it or change its shape. Set it beside "J. LAW. Cordova" in `wordmark` in the nav. It's two-ink, so as an `<img>` it reads on light grounds only (`color-page`, `color-hero`, `color-card`). `static/public/favicon.svg` is the same mark padded to a square, and `static/public/logo@2x.png` is a raster fallback.
 - **Icons:** 16 × 16 pixel icons from one sheet (`src/assets/pixel-art/achievement-icons.svg`), drawn at 48px (3×) with crisp edges. The sheet is one row of 16px cells: 0 star (the fallback), 1 lock, 2 sprout, 3 hammer, 4 rocket, 5 bug, 6 shield, 7 key, 8 wrench, 9 book, 10 magnifier, 11 flask, 12 apple, 13 heart, 14 signpost, 15 chest, 16 trophy, 17 speech. Their colors are fixed from the pixel-art world palette and outlined in `color-ink`, for light grounds. Small glyphs (chevron, external arrow, play/pause) are hand-pixelled paths in `currentColor`.
 - Don't use emoji, an icon font, or outlined line icons.
 - For diagrams, prefer systems diagrams that use the UI tokens: boxes in `color-surface` with `color-border`, flows in `color-ink`, and one path highlighted in `color-accent`. Pixel-art scenes are for the personal site's hero and Range only.
@@ -151,6 +151,6 @@ Intentional additions, for the content model above:
 
 These site pieces are left out. Each one is specific to the personal site, and none is needed for working documents.
 
-- The Range carousel (`src/components/home/Range.astro`), the hero island scene, and the outfit sprite. The proposed home page shows the Range on a handheld console: a square gold shell, cut off by the section's bottom edge, with a D-pad for class, START to pause, A to make the sprite hop and B to go back.
+- The Range carousel (`src/components/home/Range.astro`), the hero island scene, and the outfit sprite. The proposed home page shows the Range on a handheld console: a square gold shell, cut off by the section's bottom edge, with a D-pad for class, START to pause, A to make the sprite hop and B to go back. Its control labels are Silkscreen at 10px.
 - The featured post and related-post cards. They need post images.
 - The pixel-art lab UI (`src/styles/lab.css`).
