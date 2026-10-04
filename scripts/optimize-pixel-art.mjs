@@ -8,7 +8,9 @@
 // order are kept, so the CSS classes, data-class variants and z-order still
 // work. verifyLossless() then checks that every fill group covers exactly the
 // same pixels as before and that nothing else changed, and the budget is
-// checked (redesign spec §8: 100 KB raw, 25 KB gzip). Node built-ins only.
+// checked: 100 KB raw and 25 KB gzip per file (redesign spec §8), except the
+// hero island's 500 KB and 125 KB (hero island detail spec R10). Node
+// built-ins only.
 //
 // Usage:
 //   npm run art                          validate and compile every scene,
@@ -47,8 +49,9 @@ import { encodePng, previewColors, renderPalette, renderPreview } from './pixel-
 const ART_DIR = fileURLToPath(new URL('../src/assets/pixel-art/', import.meta.url));
 const SOURCE_DIR = join(ART_DIR, 'source');
 const PREVIEW_DIR = '.art-preview';
-const MAX_RAW = 100 * 1024;
-const MAX_GZIP = 25 * 1024;
+/** Each output's budget in bytes: the engine's, or its own (hero island detail spec R10). */
+export const BUDGET = { raw: 100 * 1024, gzip: 25 * 1024 };
+export const OUTPUT_BUDGETS = { 'hero-island.svg': { raw: 500 * 1024, gzip: 125 * 1024 } };
 
 // Just enough XML for the sources: elements with double-quoted attributes,
 // and text. Comments, CDATA and processing instructions are refused.
@@ -261,14 +264,18 @@ export async function readSources(dir) {
   return { sources, loadErrors };
 }
 
-/** Renders a scene and runs it through the optimizer, lossless check and budget. */
+/**
+ * Renders a scene and runs it through the optimizer, lossless check and
+ * budget. A preview-only scene gets the engine's budget.
+ */
 export function compileScene(sources, name) {
   const rects = toRectSvg(renderScene(sources, name), (color) => sources.colors.get(color).hex);
   const output = optimizeSvg(rects);
   verifyLossless(rects, output);
   const [raw, gz] = [Buffer.byteLength(output), gzipSync(output).length];
   const [srcRaw, srcGz] = [Buffer.byteLength(rects), gzipSync(rects).length];
-  const over = raw > MAX_RAW || gz > MAX_GZIP;
+  const budget = OUTPUT_BUDGETS[sources.scenes.get(name).output] ?? BUDGET;
+  const over = raw > budget.raw || gz > budget.gzip;
   return { output, over, report: `${kb(srcRaw)} / ${kb(srcGz)} gzip → ${kb(raw)} / ${kb(gz)} gzip, lossless${over ? ' — OVER BUDGET' : ''}` };
 }
 

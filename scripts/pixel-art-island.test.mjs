@@ -26,9 +26,9 @@ const svg = compileScene(sources, 'hero-island').output;
 /** The ground's library objects: one per position, plus a flat top laid over a front block where the river or road crosses it. */
 const GROUND = ['tile', 'block', 'river', 'path'];
 
-/** Today's island, in bytes (spec R6). */
-const MAX_RAW = 83485;
-const MAX_GZIP = 18299;
+/** The island's limits, in bytes (hero island detail spec R10), which replace R6's "no heavier than today". */
+const MAX_RAW = 500 * 1024;
+const MAX_GZIP = 125 * 1024;
 
 /**
  * Objects that paint behind the trucks (ground, water, road, bridge, house, the back trees' shade) and in front of them
@@ -462,7 +462,7 @@ describe('hero island structure', () => {
     }
   });
 
-  it('R6: the compiled island is no heavier than today\'s, raw and gzipped', async () => {
+  it('R6: the compiled island is within the detail spec\'s R10 limits, raw and gzipped', async () => {
     const committed = await readFile(join(ART_DIR, 'hero-island.svg'), 'utf8');
     assert.equal(committed, svg, 'the committed SVG is what the scene compiles to');
     assert.ok(Buffer.byteLength(svg) <= MAX_RAW, `${Buffer.byteLength(svg)} bytes raw, over ${MAX_RAW}`);

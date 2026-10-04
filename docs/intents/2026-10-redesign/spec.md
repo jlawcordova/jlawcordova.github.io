@@ -659,6 +659,8 @@ At every width from 320px up there's no horizontal scroll. All tap targets are a
 
 ## 12. Performance budgets
 
+*Update, 2026-10-04: the hero island's detail raised these budgets. `hero-island.svg` may be up to 500 KB raw and 125 KB gzip, while every other SVG keeps §8's 100 KB and 25 KB. The home page may use 150 KB gzip of HTML and 160 KB gzip in total. Lighthouse stays at ≥ 95 ([hero island detail spec, Budgets](../2026-10-hero-island-detail/spec.md#budgets)).*
+
 Baseline (current `master`, measured from `npm run build`): the home page loads 5.1 KB of HTML (2.0 KB gzip), 20.6 KB of CSS (3.9 KB gzip), 62.6 KB of background WebP and 4.7 KB of SVGs. That's about **70 KB of first-party transfer**, plus the Font Awesome kit script and its fonts, plus Merriweather and Roboto.
 
 | Metric (home, gzip transfer) | Budget |

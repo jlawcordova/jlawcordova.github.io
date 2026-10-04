@@ -72,6 +72,44 @@ describe('npm run art (R38)', () => {
   });
 });
 
+describe('per-output budget (hero island detail spec R10)', () => {
+  /** A 64×64 checkerboard: every pixel is its own run, so two of them compile to over 100 KB raw. */
+  const checkerboard = {
+    kind: 'sprite',
+    anchor: [0, 0],
+    keys: { a: 'grass-1', b: 'grass-2' },
+    layers: [{ map: Array.from({ length: 64 }, (_, y) => (y % 2 ? 'ab' : 'ba').repeat(32)) }],
+  };
+  const heavy = (output) => ({
+    output,
+    viewBox: [0, 0, 128, 64],
+    items: [
+      { object: 'checkerboard', at: { px: [0, 0] } },
+      { object: 'checkerboard', at: { px: [64, 0] } },
+    ],
+  });
+
+  it('R10: hero-island.svg may pass 100 KB raw, up to 500 KB raw and 125 KB gzip', async () => {
+    const dir = await workspace();
+    await writeFile(join(dir, 'source/objects/checkerboard.mjs'), serialize(checkerboard));
+    await writeFile(join(dir, 'source/scenes/hero-island.mjs'), serialize(heavy('hero-island.svg')));
+    const { code, out } = art(dir);
+    assert.equal(code, 0, out);
+    const [, raw] = /^hero-island\.svg: .* → ([\d.]+) KB \/ [\d.]+ KB gzip, lossless$/m.exec(out) ?? [];
+    assert.ok(Number(raw) > 100, `${raw} KB raw is over the engine's 100 KB`);
+  });
+
+  it('R10: every other output keeps the engine\'s 100 KB raw', async () => {
+    const dir = await workspace();
+    await writeFile(join(dir, 'source/objects/checkerboard.mjs'), serialize(checkerboard));
+    await writeFile(join(dir, 'source/scenes/heavy-test.mjs'), serialize(heavy('heavy-test.svg')));
+    const { code, out } = art(dir);
+    assert.equal(code, 1, out);
+    assert.match(out, /^heavy-test\.svg: .* — OVER BUDGET$/m);
+    assert.doesNotMatch(out, /^hero-island\.svg: .*OVER BUDGET/m);
+  });
+});
+
 describe('--check (R38)', () => {
   it('R38: prints a one-line summary for a valid object and exits 0', async () => {
     const dir = await workspace();
