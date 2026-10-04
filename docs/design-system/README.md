@@ -1,4 +1,8 @@
+# Design system
+
 A warm, flat, engineering-led system for J. Law. Cordova: senior developer and technical lead working across data engineering, Microsoft Fabric, cloud architecture and delivery. It should feel like an engineering notebook mixed with a product strategy document, not a marketing site.
+
+This folder is the design system's source of truth. Change it here, by pull request.
 
 **Clarity through structure.**
 
@@ -48,8 +52,17 @@ Write in this order. Use the **Decision Brief** component when the five answers 
 | "We're confident this will be a huge success." | "Confidence: medium. The estimate holds if the API contract is frozen by 2026-10-15." |
 | "Let's circle back and leverage synergies." | "Next: J. Law drafts the data contract by Friday. The team reviews it on Monday." |
 | "Get started today" (button) | "Read the plan" |
+| "Click here to learn more!" (button) | "Press start" (a gamified button, with the section it opens right beside it) |
 
-The site already has a playful layer: "Press start", "Many hats. One craftsman." and the achievement rows. That play belongs to the pixel-art visuals and to short labels. It never replaces information. A fun title still sits next to the plain one, as the achievement row's opened panel does.
+### Gamified copy
+
+Two places can play: **accomplishments** and **buttons**. Everything else uses the plain voice above.
+
+- **Voice:** Stardew Valley's achievements ("Greenhorn", "Cowpoke"). One to three words, warm, a little folksy, light wordplay. Never a joke that needs explaining.
+- **Plain meaning sits next to it.** An accomplishment's fun title has a short description beside it and a plain title in its opened panel. A gamified button sits beside text that says where it leads.
+- **Never misleading.** A fun title doesn't overstate what was done. A locked accomplishment reads as not done yet, not as a claim.
+- **Not a real game.** No points, levels, rarity or progress figures unless they're true and defined.
+- **One kept exception:** the home page's Range heading, "Many hats. One craftsman.", with a plain paragraph beside it.
 
 ## Visual foundations
 
@@ -57,7 +70,7 @@ The site already has a playful layer: "Press start", "Many hats. One craftsman."
 
 - Set the page on `color-page`. Mark a page's top with one `color-hero` band (hero or page head). Use `color-card` for solid inner grounds such as inline code, chips and stages.
 - Set text in `color-ink`. Set secondary text (ledes, descriptions, captions, labels) in `color-ink-muted`. Both pass AA on every light ground.
-- Use `color-accent` only for links, the primary action and the J of the mark. Its hover is `color-accent-hover`, and text on it is `color-on-accent`.
+- Use `color-accent` only for links, the primary action, the J of the mark, and the second clause of the hero title. Its hover is `color-accent-hover`, and text on it is `color-on-accent`.
 - Use `color-gold` for one emphasized phrase on `color-forest`, or as a fill under ink. It never appears as text on light grounds.
 - Use at most one dark section per page: `color-forest` with `color-on-forest` headings and `color-on-forest-muted` body copy. The footer is `color-footer` with `color-on-footer`.
 - Draw lines with `color-border`, and with `color-border-strong` on hover and on controls. Both are faint. `color-border-strong` is 1.4:1, so a control must also read by its fill and its label.
@@ -109,7 +122,7 @@ Built from the site:
 - **PageHead**: the title band with a label.
 - **Card** and **PostCard**: the frosted list surface.
 - **Pagination**.
-- **AchievementRow**: an icon, a title, a short line, a date, and an opened panel with tags and links.
+- **AchievementRow**: an icon, a fun title, a short line, a date, and an opened panel with the plain title, tags and links.
 - **CodeBlock** and **Prose**: the reading column.
 
 Intentional additions, for the content model above:

@@ -16,4 +16,11 @@ One record as a list row: a pixel icon, a short title and line, and a date. A do
 
 ## Content
 
-- The short title can be playful. The plain title in the panel must say exactly what was done. A locked row's line says what blocks it.
+- The short title is a fun title in the README's Gamified copy voice. The short line says plainly what was done, in five to seven words. The plain title in the panel says exactly what was done. A locked row's text says it's not done yet.
+- Examples, all made up:
+
+| Row | Fun title | Short line | Plain title (panel) |
+| --- | --- | --- | --- |
+| Done | Night Owl | Nightly loads finish before 06:00. | Moved the nightly loads to a lakehouse |
+| Done | Lore Keeper | On-call steps for every pipeline. | Documented the data platform's on-call runbook |
+| Locked | Spring Cleaning | Retire the legacy ETL. | — (date slot: "Not done yet") |

@@ -10,7 +10,7 @@ A link-styled action in two weights: primary for the one thing to do next, ghost
 
 ## What you provide
 
-- An `<a>` (or `<button>`) with the classes, and a label of two or three words that says what happens next: "Read the plan", not "Learn more".
+- An `<a>` (or `<button>`) with the classes, and a label of one to three words. It's either plain and says what happens next ("Read the plan", not "Learn more"), or gamified under the README's Gamified copy rules ("Press start").
 
 ## Don't
 
