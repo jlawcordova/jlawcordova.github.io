@@ -94,9 +94,10 @@ export function usableScene(doc: unknown): boolean {
 export function usableObject(doc: unknown): boolean {
   if (!isRecord(doc)) return false;
   if (doc.kind === 'block') {
-    const surface = doc.surface;
+    const { surface, sides } = doc;
     const surfaceOk = surface === undefined || (isRecord(surface) && strings(surface.keys) && isLayer(surface));
-    return wholes(doc.size, 3) && doc.size.every((n: number) => n >= 0 && n <= 8) && strings(doc.faces) && surfaceOk;
+    const sidesOk = sides === undefined || (isRecord(sides) && strings(sides.keys) && isMap(sides.left) && isMap(sides.right));
+    return wholes(doc.size, 3) && doc.size.every((n: number) => n >= 0 && n <= 8) && strings(doc.faces) && surfaceOk && sidesOk;
   }
   if (doc.kind !== 'sprite') return false;
   if ('keys' in doc && !strings(doc.keys)) return false;

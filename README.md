@@ -39,14 +39,14 @@ npm run e2e -- scripts/e2e/accomplishments.e2e.mjs  # one suite only
 | `src/pages/design-system.astro`, `src/styles/design-system.css` | The design system previews at `/design-system/`, unlisted and `noindex`: each component's `preview.html` rendered with the site's CSS. `design-system.css` (DecisionBrief and Register) loads on that page only. |
 | `src/pages/lab/pixel-art.astro`, `src/components/lab/`, `src/styles/lab.css` | The pixel-art lab at `/lab/pixel-art/`: an editor for the art's sources, unlisted and `noindex`. Its script and `lab.css` load on that page only. |
 | `src/lib/pixel-art/` | The pixel-art engine: validation, `extends`, scene rendering, the isometric grid, rect-SVG output and the canonical source format, plus the starter sources (`starter.mjs`, shared by `--new` and the editor) and the editor's object edits (`edit.mjs`). No Node or DOM APIs. |
-| `scripts/optimize-pixel-art.mjs` | `npm run art`: validates the sources, renders each scene, merges each color group's rects into one `<path>` (keeping classes, variants and order), checks that no pixel changed and that the file is within budget, and writes it. Also `--check`, `--preview` and `--new`. |
+| `scripts/optimize-pixel-art.mjs` | `npm run art`: validates the sources, renders each scene, merges each color group's rects into one `<path>` (keeping classes, variants and order), checks that no pixel changed and that the file is within its budget, and writes it. Also `--check`, `--preview`, `--sizes` and `--new`. |
 | `scripts/import-pixel-art.mjs`, `scripts/pixel-art-preview.mjs` | Imports extracted SVG art as legacy sources, and writes PNG previews. |
 | `scripts/fixtures/pixel-art/` | The Range sprite as first extracted (`*.src.svg`, one `<rect>` per run). A test fixture only: a round-trip test checks it is still there and that `npm run art` never reads it. The hero island has no fixture; `pixel-art-island.test.mjs` checks its structure. |
 | `scripts/fixtures/accomplishments*.json` | Invented accomplishments in the shape `npm run fetch-accomplishments` writes, for tests and local builds: `accomplishments.json` (30 done over three pages, 3 locked, every icon, an unknown icon and an old record without the gamified fields), `accomplishments-two-done.json`, `accomplishments-unavailable.json` and `accomplishments-locked-only.json` (locked records only, so `/accomplishments/` has no count). To build with one, copy it over `src/data/accomplishments.json`, then restore the placeholder with `git checkout src/data/accomplishments.json`. `accomplishments.e2e.mjs` builds all four by itself. |
 | `scripts/e2e/` | Browser checks, run by `npm run e2e` with the environment's own Playwright (it's not a dependency). It serves `dist/` with `astro preview` and runs `*.e2e.mjs` with `node --test`. Without Playwright it prints "browser checks NOT RUN" and exits 2. Screenshots go to the git-ignored `.e2e-output/`. `accomplishments.e2e.mjs` needs four datasets, so it builds each accomplishments fixture into `.e2e-output/accomplishments/<variant>/` itself (restoring `src/data/accomplishments.json` straight after) and serves those builds. |
 | `src/site.ts` | Site title, description, author links, posts per page. |
 | `docs/intents/YYYY-MM-<slug>/` | One directory per planned change, holding its `intent.md`, `spec.md` and `plan.md`. |
-| `.claude/skills/` | Project skills: `write-intent`, `write-spec`, `write-plan` and `verify-change` (an independent, report-only check of a PR) for the AI-native SDLC (see `CLAUDE.md`), `pixel-art` for making and changing the art, and `achievement-icon` for the accomplishment icons. |
+| `.claude/skills/` | Project skills: `write-intent`, `write-spec`, `write-plan` and `verify-change` (an independent, report-only check of a PR) for the AI-native SDLC (see `CLAUDE.md`), `pixel-art` for making and changing the art, and `achievement-icon` for the accomplishment icons. `.claude/agents/pixel-artist.md` is the subagent that draws the art. |
 | `docs/references/` | Public-safe reference material shared across changes, such as `profile.md`. |
 | `docs/design-system/` | The design system and its source of truth: the brand book (`README.md`), `tokens.json`, and each component's guidelines and `preview.html`. `scripts/design-system.test.mjs` keeps the tokens in step with `variables.css`. |
 | `static/` | Copied to the site root as-is. `static/public/*` is served at `/public/*` (images, favicons, resume). |
@@ -84,7 +84,9 @@ The home page's art is compiled from text sources in `src/assets/pixel-art/sourc
 npm run art                                   # validate, compile and write every output SVG
 npm run art -- --check <name>                 # validate one object or scene and what it uses
 npm run art -- --preview <name>               # PNGs at 1×–4× in .art-preview/ (git-ignored)
+npm run art -- --preview <name> --scale 6     # also a 6× PNG, for close-ups
 npm run art -- --preview palette              # the world palette's swatch sheet
+npm run art -- --sizes <scene>                # bytes per object and color, against HEAD
 npm run art -- --new object <name> [--kind sprite|block] [--size WxH] [--extends character]
 npm run art -- --new scene <name>             # a valid, canonical starter source
 ```
@@ -92,7 +94,7 @@ npm run art -- --new scene <name>             # a valid, canonical starter sourc
 **The lab** (`/lab/pixel-art/`, or `npm run dev` and http://localhost:4321/lab/pixel-art/) edits the art in the browser, drawn by the same engine as `npm run art`:
 
 - **Scene mode** places objects from the Library by dragging, tapping or Enter, then moves them by tile, level, pixel and paint order.
-- **Object mode** paints an object with the pencil, eraser, fill and picker, from the shared palette, across its layers and frames. An outfit's painted rows become row overrides of `character`.
+- **Object mode** paints an object with the pencil, eraser, fill and picker, from the shared palette, across its layers and frames. An outfit's painted rows become row overrides of `character`, and a block's painted top and faces become its `surface` and `sides`.
 - **New scene… and New object…** start from the same files as `npm run art -- --new`.
 
 Everything works with the keyboard alone, with undo, and with drafts kept in the browser. **Export** gives the canonical source and the path it belongs at. The loop is export → commit the file → `npm run art`. The page is unlisted and `noindex`, but public, and it sends nothing anywhere.

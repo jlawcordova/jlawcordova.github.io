@@ -26,9 +26,9 @@ const svg = compileScene(sources, 'hero-island').output;
 /** The ground's library objects: one per position, plus a flat top laid over a front block where the river or road crosses it. */
 const GROUND = ['tile', 'block', 'river', 'path'];
 
-/** Today's island, in bytes (spec R6). */
-const MAX_RAW = 83485;
-const MAX_GZIP = 18299;
+/** The island's limits, in bytes (hero island detail spec R10), which replace R6's "no heavier than today". */
+const MAX_RAW = 500 * 1024;
+const MAX_GZIP = 125 * 1024;
 
 /**
  * Objects that paint behind the trucks (ground, water, road, bridge, house, the back trees' shade) and in front of them
@@ -462,7 +462,7 @@ describe('hero island structure', () => {
     }
   });
 
-  it('R6: the compiled island is no heavier than today\'s, raw and gzipped', async () => {
+  it('R6: the compiled island is within the detail spec\'s R10 limits, raw and gzipped', async () => {
     const committed = await readFile(join(ART_DIR, 'hero-island.svg'), 'utf8');
     assert.equal(committed, svg, 'the committed SVG is what the scene compiles to');
     assert.ok(Buffer.byteLength(svg) <= MAX_RAW, `${Buffer.byteLength(svg)} bytes raw, over ${MAX_RAW}`);
@@ -483,5 +483,32 @@ describe('hero island structure', () => {
     const component = await readFile(join(ROOT, 'src/components/home/HeroIsland.astro'), 'utf8');
     assert.match(component, /hero-island\.svg\?raw/);
     assert.match(component, /class="hero-island pixel-art"/);
+  });
+});
+
+describe('close-up scenes (hero island detail plan, step 5)', () => {
+  const CLOSEUPS = ['closeup-land', 'closeup-road-end', 'closeup-water', 'closeup-crane', 'closeup-office', 'closeup-front-trees', 'closeup-sky'];
+  const key = (item) => JSON.stringify([item.object, item.class, item.at]);
+  const order = new Map(scene.items.map((item, i) => [key(item), i]));
+
+  it('each is preview-only and shows island items where the island places them, in the island\'s paint order', () => {
+    for (const name of CLOSEUPS) {
+      const closeup = sources.scenes.get(name);
+      assert.ok(closeup, `${name} exists`);
+      assert.equal(closeup.output, undefined, `${name} writes no file`);
+      assert.deepEqual(closeup.origin, scene.origin, `${name} uses the island's origin`);
+      // closeup-office adds the two trucks, placed by px along their drive.
+      const items = closeup.items.filter((item) => !(name === 'closeup-office' && ['truck', 'truck-green'].includes(item.object)));
+      const at = items.map((item) => order.get(key(item)));
+      assert.deepEqual(items.filter((_, i) => at[i] === undefined), [], `${name}: every item is one the island places`);
+      assert.deepEqual(at, [...at].sort((a, b) => a - b), `${name}: in the island's order`);
+    }
+  });
+
+  it('closeup-office paints both trucks after the house and before the bridge rail, as the island does', () => {
+    const office = sources.scenes.get('closeup-office');
+    const names = office.items.map((item) => item.object);
+    assert.deepEqual(names.filter((n) => n.startsWith('truck')), ['truck', 'truck-green']);
+    assert.ok(names.indexOf('truck-green') < names.indexOf('bridge-rail') && names.indexOf('house') < names.indexOf('truck'));
   });
 });

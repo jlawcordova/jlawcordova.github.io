@@ -2,12 +2,14 @@
 // the object's map at a whole zoom over a checkerboard, with its bounds, its
 // anchor and, for an outfit, a gutter marking the rows it overrides. Pencil,
 // Eraser, Fill and Picker work with the pointer (a stroke is one undo step)
-// and from the keyboard at the pixel cursor. Every change goes through
-// edit.mjs, so the source stays canonical. The Palette, Layers and Frames
-// panels are in their own modules.
+// and from the keyboard at the pixel cursor. A block shows as the engine
+// draws it, and painting it writes its top surface and side maps (hero
+// island detail spec R6). Every change goes through edit.mjs, so the source
+// stays canonical. The Palette, Layers and Frames panels are in their own
+// modules.
 
 import { CAPS, composite, layerMaps, paintedSize, renderObject, resolve, usedColors, type Resolved } from '../../lib/pixel-art/engine.mjs';
-import { colorAt, floodFill, mapAt, overriddenRows, paint, resize } from '../../lib/pixel-art/edit.mjs';
+import { blockCells, blockFill, colorAt, floodFill, mapAt, overriddenRows, paint, paintBlock, resize } from '../../lib/pixel-art/edit.mjs';
 import { tilePixels } from '../../lib/pixel-art/iso.mjs';
 import { FramesPanel } from './frames-panel';
 import type { Lab } from './lab';
@@ -116,9 +118,9 @@ export class ObjectMode {
 
   /** Why painting is off for the open object, or null when it's on. */
   get paintBlocked(): string | null {
-    if (this.isBlock) return 'A block is drawn from its size and faces. Change them in the Object panel.';
     const r = this.resolved;
     if (!r) return 'Fix the problems first.';
+    if (this.isBlock) return null;
     const layer = r.layers[this.layer];
     if (this.lab.doc.extends && layer && 'frames' in layer) return `This layer is a frame loop of ${this.lab.doc.extends}, which an outfit can't override.`;
     return null;
@@ -176,15 +178,41 @@ export class ObjectMode {
     this.cursor = [Math.max(0, Math.min(r.width - 1, this.cursor[0] + dx)), Math.max(0, Math.min(r.height - 1, this.cursor[1] + dy))];
     this.lab.notify('view');
     this.revealCursor();
-    const color = colorAt(r, this, ...this.cursor);
+    const color = this.colorUnder(r, ...this.cursor);
     this.lab.announce(`x ${this.cursor[0]}, y ${this.cursor[1]}: ${color ?? 'empty'}`);
+  }
+
+  /** The color shown at a stage pixel: a block's as drawn, a sprite's on the selected layer. */
+  private colorUnder(r: Resolved, x: number, y: number) {
+    if (!r.block) return colorAt(r, this, x, y);
+    return this.blockPixels().get(this.toBlock([x, y]).join(',')) ?? null;
+  }
+
+  /** A block as the engine draws it on the shown frame, "x,y" → color name, from its first tile's center. */
+  private blockPixels() {
+    return composite(renderObject(this.lab.sources, this.lab.name), { frame: this.frame });
+  }
+
+  /** A stage pixel in a block's own coordinates, from its first tile's center. */
+  private toBlock([x, y]: number[]): [number, number] {
+    return [x - this.blockOrigin[0], y - this.blockOrigin[1]];
   }
 
   /** Sets pixels to the current color, or clears them; `group` merges a stroke into one undo step. */
   private paintPixels(pixels: [number, number][], color: string | null, group: string | null) {
     let count = 0;
-    this.lab.edit((doc) => (count = paint(this.lab.sources, this.lab.name, doc, this, pixels, color)), group);
+    if (this.isBlock) {
+      const at = pixels.map((p) => this.toBlock(p));
+      this.lab.edit((doc) => (count = paintBlock(doc, this.frame, at, color)), group);
+    } else this.lab.edit((doc) => (count = paint(this.lab.sources, this.lab.name, doc, this, pixels, color)), group);
     return count;
+  }
+
+  /** The pixels Fill covers from a stage pixel. */
+  private fillFrom(r: Resolved, x: number, y: number): [number, number][] {
+    if (!r.block) return floodFill(mapAt(r.layers[this.layer], this.frame), x, y);
+    const [bx, by] = this.toBlock([x, y]);
+    return blockFill(blockCells(r.block.size), this.blockPixels(), bx, by).map(([px, py]) => [px + this.blockOrigin[0], py + this.blockOrigin[1]]);
   }
 
   /** Applies the current tool at a pixel, as one step, and says what it did. */
@@ -193,7 +221,7 @@ export class ObjectMode {
     if (blocked) return this.lab.announce(blocked);
     const r = this.resolved!;
     if (this.tool === 'picker') {
-      const color = colorAt(r, this, x, y);
+      const color = this.colorUnder(r, x, y);
       if (!color) return this.lab.announce(`x ${x}, y ${y} is empty`);
       this.color = color;
       this.lab.notify('view');
@@ -201,7 +229,7 @@ export class ObjectMode {
     }
     const color = this.tool === 'eraser' ? null : this.color;
     if (color && !this.palette.allowed(color)) return this.lab.announce(this.palette.whyNot(color));
-    const pixels = this.tool === 'fill' ? floodFill(mapAt(r.layers[this.layer], this.frame), x, y) : ([[x, y]] as [number, number][]);
+    const pixels = this.tool === 'fill' ? this.fillFrom(r, x, y) : ([[x, y]] as [number, number][]);
     const count = this.paintPixels(pixels, color, null);
     this.lab.announce(this.said(count, color));
   }
@@ -329,8 +357,8 @@ export class ObjectMode {
 
   /**
    * The object's pixels at the shown frame, "x,y" → hex, from its map
-   * coordinates. A block is drawn by the engine and moved so its silhouette
-   * starts at (0, 0).
+   * coordinates. A block is drawn by the engine, on that frame of its
+   * surface loop, and moved so its silhouette starts at (0, 0).
    */
   pixelsAt(frame: number, only?: number): Map<string, string> {
     const r = this.resolved;
@@ -338,7 +366,7 @@ export class ObjectMode {
     if (!r) return out;
     const hex = (name: string) => this.lab.sources.colors.get(name)?.hex ?? '#000000';
     if (r.block) {
-      const pixels = composite(renderObject(this.lab.sources, this.lab.name));
+      const pixels = composite(renderObject(this.lab.sources, this.lab.name), { frame });
       let [minX, minY] = [Infinity, Infinity];
       for (const p of pixels.keys()) {
         const [x, y] = p.split(',').map(Number);
@@ -546,7 +574,7 @@ export class ObjectMode {
     $('lab-object-note').textContent = doc.extends
       ? `Rows painted here override ${doc.extends}'s rows. A row painted back to match is dropped.`
       : this.isBlock
-        ? 'Light comes from the island side: the top is the light shade, the left the mid, the right the shadow.'
+        ? 'Light comes from the island side: the top is the light shade, the left the mid, the right the shadow. Paint the top and the sides to texture them.'
         : '';
   }
 
@@ -631,10 +659,11 @@ export class ObjectMode {
         resize(doc, field === 'width' ? value : (r?.width ?? 1), field === 'height' ? value : (r?.height ?? 1));
       } else if (field.startsWith('size-')) {
         doc.size[Number(field.slice(5))] = value;
-        // A flat block has no side faces.
+        // A flat block has no side faces, so no side textures either.
         if (doc.size[2] === 0) {
           delete doc.faces.left;
           delete doc.faces.right;
+          delete doc.sides;
         } else {
           doc.faces = { top: doc.faces.top, left: doc.faces.left ?? 'soil-2', right: doc.faces.right ?? 'soil-3', ...(doc.faces.edge ? { edge: doc.faces.edge } : {}) };
         }
