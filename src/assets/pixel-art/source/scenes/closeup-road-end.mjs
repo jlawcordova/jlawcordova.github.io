@@ -5,10 +5,10 @@ export default {
   items: [
     { object: 'tile', at: { tile: [1, 4, 0] } },
     { object: 'path', at: { tile: [2, 4, 0] } },
-    { object: 'block', at: { tile: [1, 5, 0] } },
+    { object: 'block-left', at: { tile: [1, 5, 0] } },
     { object: 'tile', at: { tile: [3, 4, 0] } },
-    { object: 'block', at: { tile: [2, 5, 0] } },
+    { object: 'block-road', at: { tile: [2, 5, 0] } },
     { object: 'path', at: { tile: [2, 5, 0] } },
-    { object: 'block', at: { tile: [3, 5, 0] } },
+    { object: 'block-left', at: { tile: [3, 5, 0] } },
   ],
 };
