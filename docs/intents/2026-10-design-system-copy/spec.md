@@ -64,7 +64,7 @@ Left out, because the site already holds them or they only serve the artifact's 
 
 ### Rendered previews
 
-The previews render on an unlisted page, `/lab/design-system/`, like the pixel-art lab: `noindex`, not linked from the navigation, and built with `BaseLayout`.
+The previews render on an unlisted page, `/design-system/`, like the pixel-art lab: `noindex`, not linked from the navigation, and built with `BaseLayout`. *(Update, 2026-10-04: the owner moved it from `/lab/design-system/` during the build.)*
 
 - **Markup.** Each `preview.html` holds only the example markup, the artifact preview's `<body>` contents without the document wrapper, fonts or inline padding. The page reads them all at build time and renders each one under its component's name, with a link to its README on GitHub. The order follows the README's Components list.
 - **Styles.** Previews use the site's real CSS (`global.css`), so they show exactly what ships and can't drift from it. DecisionBrief and Register aren't on the site, so their styles move from the artifact's `bundle.css` into `src/styles/design-system.css`, which only this page imports, as `lab.css` is for the pixel-art lab. It uses only the tokens.
@@ -106,7 +106,7 @@ These apply to the files in `docs/design-system/`.
 | --- | --- | --- | --- |
 | Done | Night Owl | Nightly loads finish before 06:00. | Moved the nightly loads to a lakehouse |
 | Done | Lore Keeper | On-call steps for every pipeline. | Documented the data platform's on-call runbook |
-| Locked | Spring Cleaning | Retire the legacy ETL. | — (date slot: "Not done yet") |
+| Locked | Spring Cleaning | Retire the old nightly ETL jobs. | — (date slot: "Not done yet") |
 
 **tokens.json.** The `hero-title` sample becomes the new hero title.
 
@@ -133,7 +133,7 @@ The two paragraphs grow from 23 and 22 words to 27 and 28. Both sit in `max-widt
 
 - **Profile** (`docs/references/profile.md`), Summary: "Sets up AI-assisted delivery workflows (intent, spec, plan, build and independent verification) so each change is planned, built and checked before it ships." This is the owner's own claim, and this site's workflow is the public example.
 - **Redesign spec** §7.1, §7.3 and §7.4: *Update, 2026-10: rewritten to follow the design system ([copy intent](../2026-10-design-system-copy/intent.md)).*
-- **CLAUDE.md, Conventions:** "Copy, components and tokens follow the design system in `docs/design-system/`. Its README is the brand book. A token change edits `tokens.json` and `src/styles/variables.css` together." And under Commands: "Design system previews: `npm run dev`, then http://localhost:4321/lab/design-system/ (unlisted)."
+- **CLAUDE.md, Conventions:** "Copy, components and tokens follow the design system in `docs/design-system/`. Its README is the brand book. A token change edits `tokens.json` and `src/styles/variables.css` together." And under Commands: "Design system previews: `npm run dev`, then http://localhost:4321/design-system/ (unlisted)."
 - **README.md** project layout table: a `docs/design-system/` row.
 - **`.claude/skills/write-spec/SKILL.md`,** step 2: add `docs/design-system/` to the standards list.
 
@@ -142,7 +142,7 @@ The two paragraphs grow from 23 and 22 words to 27 and 28. Both sit in `max-widt
 - `npm run build` and `npm test` pass as CLAUDE.md requires, including the new token test.
 - Screenshots of the home page at 1440px and 390px, before and after, with no horizontal scroll.
 - A search of `docs/design-system/` for "Netzon" and client-style names finds nothing.
-- `/lab/design-system/` screenshotted at 1440px and 390px: every preview renders, nothing scrolls sideways, and its `<head>` has the `noindex` tag.
+- `/design-system/` screenshotted at 1440px and 390px: every preview renders, nothing scrolls sideways, and its `<head>` has the `noindex` tag.
 - The artifact is read back after its last revision and shows the edits and the top line.
 
 ## Areas of concern

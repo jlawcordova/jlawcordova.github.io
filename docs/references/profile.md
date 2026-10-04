@@ -25,6 +25,7 @@ Main areas of contribution:
 - Release management, from development to staging to production, with sign-offs and rollback.
 - Technical estimation, risk and assumption management, and support for statements of work.
 - Developer onboarding, mentoring and internal technical sharing.
+- Sets up AI-assisted delivery workflows (intent, spec, plan, build and independent verification) so each change is planned, built and checked before it ships.
 - AWS partnership and certification enablement.
 - Standardizing SDLC, ticketing and engineering workflows across teams.
 

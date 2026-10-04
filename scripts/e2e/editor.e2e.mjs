@@ -162,19 +162,25 @@ async function walk(dir) {
 // ------------------------------------------------------------- unlisted
 
 describe('the page (R15, R24)', () => {
-  test('R15: the lab carries the robots meta, and no other page links to /lab/', async () => {
-    const html = await readFile(join(DIST, 'lab/pixel-art/index.html'), 'utf8');
-    assert.match(html, /<meta name="robots" content="noindex, nofollow">/);
+  test('R15: the unlisted pages carry the robots meta, and no other page links to them', async () => {
+    // The lab, and the design system previews (design system copy spec R4a).
+    const unlisted = [join('lab', 'pixel-art', 'index.html'), join('design-system', 'index.html')];
     // Text files, scripts and styles too, so a link built at run time would
-    // show; the lab's own bundles are left out.
-    const own = new Set([...html.matchAll(/(?:src|href)="\/(_astro\/[^"]+)"/g)].map((m) => m[1]));
+    // show; the unlisted pages' own bundles are left out.
+    const own = new Set();
+    for (const page of unlisted) {
+      const html = await readFile(join(DIST, page), 'utf8');
+      assert.match(html, /<meta name="robots" content="noindex, nofollow">/, `${page} is noindex`);
+      for (const m of html.matchAll(/(?:src|href)="\/(_astro\/[^"]+)"/g)) own.add(m[1]);
+    }
     const others = (await walk(DIST)).filter(
-      (f) => /\.(html|xml|txt|json|webmanifest|js|css)$/.test(f) && f !== join('lab', 'pixel-art', 'index.html') && !own.has(f.split('\\').join('/')),
+      (f) => /\.(html|xml|txt|json|webmanifest|js|css)$/.test(f) && !unlisted.includes(f) && !own.has(f.split('\\').join('/')),
     );
     assert.ok(others.length > 10, 'dist/ looks empty');
     for (const file of others) {
       const text = await readFile(join(DIST, file), 'utf8');
       assert.ok(!text.includes('/lab/'), `${file} mentions /lab/`);
+      assert.ok(!text.includes('/design-system/'), `${file} mentions /design-system/`);
       assert.ok(!/robots/.test(text) || !text.includes('noindex'), `${file} is noindex`);
     }
   });

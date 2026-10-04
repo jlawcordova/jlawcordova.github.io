@@ -1,7 +1,7 @@
 export const site = {
   title: 'J. Law. Cordova',
   description:
-    'J. Law. Cordova is a senior developer and tech lead in Davao City who ships whole products: full-stack apps, Fabric data platforms and secure releases.',
+    'Senior developer and tech lead in Davao City. I take software from estimate to production: full-stack apps, Fabric data platforms and releases with rollback.',
   url: 'https://jlawcordova.com',
   author: {
     name: 'Junel Lawrence Cordova',

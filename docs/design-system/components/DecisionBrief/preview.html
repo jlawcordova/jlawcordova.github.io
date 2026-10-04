@@ -1,0 +1,20 @@
+<article class="brief" aria-labelledby="brief-title">
+  <header class="brief__head">
+    <p class="label">Decision brief</p>
+    <h3 class="brief__title" id="brief-title">Move nightly loads to a Fabric lakehouse</h3>
+    <div class="brief__meta"><span class="label">Owner: J. Law</span><span class="label">2026-10-04</span><span class="label">Status: draft</span></div>
+  </header>
+  <section class="brief__section"><p class="label brief__key"><b>01</b> Problem</p>
+    <div class="brief__body"><p>Loads finish at 07:40, after the 06:00 reporting cut-off. Finance works from the previous day's numbers until 09:00.</p></div></section>
+  <section class="brief__section"><p class="label brief__key"><b>02</b> Assumptions</p>
+    <div class="brief__body"><ul><li>The 06:00 SLA is fixed. Not yet confirmed with finance.</li><li>Source exports keep their current schema.</li></ul></div></section>
+  <section class="brief__section"><p class="label brief__key"><b>03</b> Risks</p>
+    <div class="brief__body"><ul><li>Month-end exports slip past 04:00 (<span class="rating rating--high">High</span>).</li><li>Capacity costs rise during the parallel run (<span class="rating rating--medium">Medium</span>).</li></ul></div></section>
+  <section class="brief__section brief__section--recommend"><p class="label brief__key"><b>04</b> Recommendation</p>
+    <div class="brief__body"><p>Move the three late sources to incremental loads first. That covers 80% of the delay at the lowest risk. Confidence: medium.</p></div></section>
+  <section class="brief__section"><p class="label brief__key"><b>05</b> Next actions</p>
+    <div class="brief__body"><ul class="brief__actions">
+      <li><span>Confirm the SLA with finance</span><span class="label">J. Law · 10-08</span></li>
+      <li><span>Prototype the incremental Orders load</span><span class="label">Data team · 10-15</span></li>
+    </ul></div></section>
+</article>

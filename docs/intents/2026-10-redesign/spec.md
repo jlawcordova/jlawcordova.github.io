@@ -445,6 +445,8 @@ All copy is exactly as written here. Typographic apostrophes are `’` and the m
 
 ### 7.1 Hero
 
+*Update, 2026-10: the H1 and lede were rewritten to follow the design system ([copy intent](../2026-10-design-system-copy/intent.md)).*
+
 - **Pre-title:** Hi, I’m J. Law. Cordova.
 - **H1:** I ship whole products, *not handoffs.* (The second clause is accent-colored.)
 - **Lede:** Senior developer and tech lead at Netzon in Davao City. I lead full-stack teams, design data platforms, and take releases safely to production.
@@ -457,6 +459,8 @@ All copy is exactly as written here. Typographic apostrophes are `’` and the m
 None on the site (D4). The profile's Highlights table stays as the source of facts for the copy that remains.
 
 ### 7.3 Range
+
+*Update, 2026-10: the lede was rewritten to follow the design system ([copy intent](../2026-10-design-system-copy/intent.md)).*
 
 *Update, 2026-10: the classes were redrawn as characters and are now seven, including Security & Governance and Back-end ([Range class characters intent](../2026-10-sixth-range-class/intent.md)).*
 
@@ -480,6 +484,8 @@ The `shadow` values are the mock's `CL[i].A` colors, used as the nameplate's har
   This replaces the mock's longer paragraph (D5).
 
 ### 7.4 Site metadata
+
+*Update, 2026-10: `site.description` was rewritten to follow the design system ([copy intent](../2026-10-design-system-copy/intent.md)).*
 
 `site.description` becomes:
 

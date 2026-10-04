@@ -1,0 +1,64 @@
+---
+// The design system's previews (design system copy spec, Rendered previews):
+// an unlisted page that renders each component's example markup from
+// docs/design-system/components/<Name>/preview.html with the site's own CSS,
+// so the previews show exactly what ships. design-system.css (the
+// DecisionBrief and Register styles, which aren't on the site) loads on this
+// page only.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHead from '../components/PageHead.astro';
+import AchievementIcons from '../components/AchievementIcons.astro';
+import '../styles/design-system.css';
+
+const previews = import.meta.glob<string>('../../docs/design-system/components/*/preview.html', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+
+// The README's Components order. A component missing from it still shows, last.
+const ORDER = [
+  'Button',
+  'Pill',
+  'Navigation',
+  'Footer',
+  'PageHead',
+  'Card',
+  'Pagination',
+  'AchievementRow',
+  'CodeBlock',
+  'Prose',
+  'DecisionBrief',
+  'Register',
+];
+const rank = (name: string) => (ORDER.includes(name) ? ORDER.indexOf(name) : ORDER.length);
+
+const components = Object.entries(previews)
+  .map(([path, markup]) => ({ name: path.split('/').at(-2)!, markup }))
+  .sort((a, b) => rank(a.name) - rank(b.name) || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+
+const readme = (name: string) =>
+  `https://github.com/jlawcordova/jlawcordova.github.io/blob/main/docs/design-system/components/${name}/README.md`;
+---
+
+<BaseLayout title="Design system previews" noindex>
+  <PageHead title="Design system previews" label={`${components.length} components`} />
+  <div class="page-body">
+    <div class="page-body__inner ds-previews">
+      <AchievementIcons />
+      {
+        components.map(({ name, markup }) => (
+          <section class="ds-preview" aria-labelledby={`ds-${name}`}>
+            <div class="ds-preview__head">
+              <h2 id={`ds-${name}`}>{name}</h2>
+              <a href={readme(name)}>Guidelines</a>
+            </div>
+            <div class="ds-preview__stage">
+              <Fragment set:html={markup} />
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>

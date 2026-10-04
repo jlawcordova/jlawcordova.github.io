@@ -1,0 +1,6 @@
+<p>Run the check with <code>COUNT(*)</code> before the swap.</p>
+<pre class="language-sql"><code><span class="token comment">-- Rows that landed after the 02:00 cut-off</span>
+<span class="token keyword">SELECT</span> load_date<span class="token punctuation">,</span> <span class="token function">COUNT</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token keyword">AS</span> late_rows
+<span class="token keyword">FROM</span> silver<span class="token punctuation">.</span>orders
+<span class="token keyword">WHERE</span> ingested_at <span class="token operator">&gt;</span> <span class="token string">'02:00'</span> <span class="token keyword">AND</span> load_date <span class="token operator">&gt;=</span> <span class="token number">20260901</span>
+<span class="token keyword">GROUP BY</span> load_date<span class="token punctuation">;</span></code></pre>

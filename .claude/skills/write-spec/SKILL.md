@@ -14,6 +14,7 @@ The steps and the prompt follow Stage 2 (Design) of Anthropic's [AI-native SDLC 
 2. **Load the standards that apply.** These are this repo's equivalent of the playbook's brand, security, compliance and UX skills:
    - `CLAUDE.md`, including the public-safety rules;
    - `docs/references/`;
+   - the design system in `docs/design-system/` (the brand book, copywriting rules, tokens and component guidelines);
    - the design tokens in `src/styles/variables.css`;
    - the house standards set by earlier specs under `docs/intents/`, such as the redesign spec's typography, contrast, accessibility and performance budgets;
    - any skill in `.claude/skills/` that matches the work.
