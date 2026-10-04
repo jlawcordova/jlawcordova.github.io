@@ -41,6 +41,7 @@
   --radius-stage: 16px;
   --radius-card: 14px;
   --radius-button: 10px;
+  --radius-chip: 6px;
   --shadow-pixel: 4px 4px 0 var(--color-ink);
   --shadow-nav: 0 8px 24px rgba(46, 36, 24, 0.08);
 

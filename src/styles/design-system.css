@@ -1,0 +1,230 @@
+/*
+ * The design system's preview page (design system copy spec, Rendered
+ * previews). Imported by src/pages/lab/design-system.astro only, after
+ * global.css, so none of it ships to other pages. Tokens only.
+ */
+
+/* The page: one section per component. */
+.ds-previews {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+}
+
+.ds-preview__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
+  margin-bottom: 20px;
+}
+
+.ds-preview__head h2 {
+  margin: 0;
+}
+
+.ds-preview__stage {
+  padding: 24px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-stage);
+  background-color: var(--color-page);
+  overflow-x: auto;
+}
+
+@media (max-width: 480px) {
+  .ds-preview__stage {
+    padding: 16px;
+  }
+}
+
+/*
+ * ---- Intentional addition: Decision Brief ----
+ * The five questions every page answers (problem, assumptions, risks,
+ * recommendation, next actions), as one numbered block. Built only from
+ * existing tokens: the card surface, hairlines, the pixel label.
+ */
+.brief {
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.brief__head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px 24px 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.brief__head > * {
+  margin: 0;
+}
+
+.brief__title {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.brief__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+
+.brief__section {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  column-gap: 24px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--color-border);
+}
+
+.brief__head + .brief__section {
+  border-top: 0;
+}
+
+.brief__key {
+  margin: 0;
+  padding-top: 3px;
+}
+
+.brief__key b {
+  font-weight: 400;
+  color: var(--color-ink);
+}
+
+.brief__body {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.brief__body > :first-child {
+  margin-top: 0;
+}
+
+.brief__body > :last-child {
+  margin-bottom: 0;
+}
+
+.brief__body :is(ul, ol) {
+  padding-left: 1.2em;
+}
+
+.brief__body li + li {
+  margin-top: 0.25em;
+}
+
+.brief__section--recommend {
+  background: var(--color-card);
+}
+
+.brief__actions {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.brief__actions li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2px 16px;
+  align-items: baseline;
+  margin: 0;
+}
+
+.brief__actions .label {
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .brief__head {
+    padding: 16px;
+  }
+
+  .brief__section {
+    grid-template-columns: 1fr;
+    row-gap: 6px;
+    padding: 14px 16px;
+  }
+}
+
+/*
+ * ---- Intentional addition: Register ----
+ * A dense table of assumptions and risks, each with an owner and a next step.
+ * Rating chips differ in lightness (ink, gold, card), and always carry the word.
+ */
+.register {
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  overflow-x: auto;
+}
+
+.register table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.register caption {
+  text-align: left;
+  padding: 14px 16px 10px;
+}
+
+.register :is(th, td) {
+  padding: 10px 16px;
+  border-top: 1px solid var(--color-border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.register th {
+  font: 12px/1.4 var(--font-pixel);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+  white-space: nowrap;
+}
+
+.register td:first-child {
+  font: 12px/1.9 var(--font-code);
+  color: var(--color-ink-muted);
+  white-space: nowrap;
+}
+
+.register .muted {
+  color: var(--color-ink-muted);
+}
+
+.rating {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: var(--radius-chip);
+  font: 12px/1.4 var(--font-pixel);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.rating--high {
+  background: var(--color-ink);
+  color: var(--color-page);
+}
+
+.rating--medium {
+  background: var(--color-gold);
+  color: var(--color-ink);
+}
+
+.rating--low {
+  background: var(--color-card);
+  color: var(--color-ink);
+}
