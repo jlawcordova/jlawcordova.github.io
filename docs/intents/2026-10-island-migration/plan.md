@@ -15,7 +15,7 @@ Plans [`spec.md`](spec.md) (R1–R12, slices 1–8). The work runs on a feature 
 - `scripts/pixel-art-roundtrip.test.mjs`: the island's R11 identity tests become structural tests (step 1); the "animated pieces" test drops `waterfall` (step 4) and `island-base` (step 8).
 - `scripts/pixel-art-island.test.mjs` (new): the structural tests for R1–R6 and R10 (step 1), tightened as each slice lands.
 - `scripts/pixel-art-engine.test.mjs`: the `library-demo` object list (R11).
-- `scripts/e2e/art.e2e.mjs`: the island's fixture case is removed (step 1).
+- `scripts/e2e/art.e2e.mjs`: deleted in step 1. The island case was its only one (the Range case was retired earlier), so no empty suite is left. `README.md`: its fixtures row no longer names `art.e2e.mjs`.
 - `scripts/e2e/editor.e2e.mjs`: it uses `waterfall` for its frame tests and `island-base` as "the largest map". The frame tests move to `waterfall-face` (step 4) and the largest-map cases move to `range-island`, the largest legacy map left (step 8).
 - `src/components/lab/lab.ts`: the comment naming `island-base` as the largest map (step 8). No code change.
 - `scripts/fixtures/pixel-art/hero-island.src.svg` (deleted in step 8).
