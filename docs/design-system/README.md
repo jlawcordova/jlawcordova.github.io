@@ -12,7 +12,8 @@ This folder is the design system's source of truth. Change it here, by pull requ
 2. **Documentation first.** Use headings, numbered sections, tables and lists before decoration. If a layout makes something harder to scan, change the layout.
 3. **Dense but readable.** Use dashboards over hero banners, systems diagrams over illustrations, and real workflows over abstract concepts.
 4. **One hue, used sparingly.** `color-accent` marks the one thing to act on. Everything else is ink on warm paper.
-5. **Flat, with one depth cue.** Depth comes from hard pixel shadows (`shadow-pixel`) on things you press, and from nothing else.
+5. **Square and flat, like the pixel art.** Corners are square and nothing casts a shadow. Edges and depth come from a thick ink border (`border-thick`) on things you press and on the shell, and from nothing else.
+6. **Delight in small, stepped moves.** Use the Motion library to make state changes and entrances feel alive, in the stepped rhythm of the pixel art. Motion supports the content and never hides it.
 
 ## Content fundamentals
 
@@ -41,7 +42,7 @@ Write in this order. Use the **Decision Brief** component when the five answers 
 - Use sections heavily and bullets often. Keep each bullet to one idea.
 - Choose clarity over persuasion. Cut any adjective that isn't evidence.
 - Use the first person for the owner ("I recommend"), "we" for shared work, and "you" for the reader. Write numbers as numerals, give dates as `YYYY-MM-DD`, and write times in 24-hour form.
-- Use sentence case for headings and buttons. Pixel `label` text is the one uppercase style.
+- Use sentence case for headings. Buttons, nav links and pixel `label` text are uppercase, in Silkscreen.
 - No emoji, no exclamation marks, and no "excited to announce".
 
 ### Examples
@@ -79,9 +80,9 @@ Two places can play: **accomplishments** and **buttons**. Everything else uses t
 
 ### Type
 
-- **Sora** (`font-text`, 400/500/600/700) for headings and body. **Silkscreen** (`font-pixel`, 400) for the wordmark, primary buttons, pills, pagination, `label`, `tag` and the footer. A monospace stack (`font-code`) for code and IDs. Both faces load from Google Fonts: `family=Silkscreen&family=Sora:wght@400;500;600;700`.
+- **Sora** (`font-text`, 400/500/600/700) for headings and body. **Silkscreen** (`font-pixel`, 400) for the wordmark, every button (primary, ghost and pill), nav links, pagination, `label`, `tag` and the footer. A monospace stack (`font-code`) for code and IDs. Both faces load from Google Fonts: `family=Silkscreen&family=Sora:wght@400;500;600;700`.
 - Headings: `hero-title` once per page at most, then `section-title`, `h1`, `h2` and `h3`. Body copy is `body` (17px / 1.6). Long reads use `post-body` (17px / 1.75) in a `reading-max` column.
-- Silkscreen is for short strings only, three words at most. Never set a sentence in it.
+- Silkscreen is for short strings only, three words at most. Never set a sentence in it. One kept exception: the hero's greeting line ("Hi, I’m J. Law. Cordova.").
 - Use tabular numerals in tables and registers.
 
 ### Space and layout
@@ -94,16 +95,32 @@ Two places can play: **accomplishments** and **buttons**. Everything else uses t
 
 ### Shape and depth
 
-- Radii run from small to large by what they wrap: `radius-chip` (6) for code and tags, `radius-button` (10) for buttons, code blocks and images, `radius-card` (14) for cards and rows, `radius-stage` (16), `radius-panel` (24), and `radius-pill` for the nav bar and the Contact pill.
-- `shadow-pixel` goes on the primary button. While pressed, it becomes `shadow-pixel-pressed` with a 2px translate. Ink fills (code blocks, tooltips, the current page) take `shadow-pixel-accent`. The sticky nav is the only element with a soft shadow (`shadow-nav`) and a blur.
+- **Corners are square.** Nothing in the UI is rounded: buttons, pills, the nav bar, cards, rows, chips, code blocks, stages, panels and images all have 90° corners. The pixel art is the only place for curves, and only as pixels.
+- **No shadows.** Don't use hard or soft shadows, glows or bevels. Where the system used `shadow-pixel` or `shadow-pixel-accent`, use `border-thick` instead: a 3px `color-ink` border.
+- `border-thick` goes on buttons, the Contact pill, the nav bar, the current page in pagination and tooltips. Cards, rows and stages keep the 1px `color-border` hairline. Ink fills such as code blocks need no extra edge.
+- **Pressed:** a button moves 2px down and right. Nothing else changes.
+- The sticky nav has no shadow and no backdrop blur. It sits on solid `color-page`, so nothing shows through it.
+
+Tokens: `radius-*` all become 0, the `shadow-*` tokens and `color-surface-strong` (the nav's see-through fill) are retired, and `border-thick` is new. `tokens.json` and `src/styles/variables.css` change together when this is built (see `../intents/2026-10-pixel-first-look/intent.md`). Until then the site still renders the old rounded corners and shadows.
 
 ### States and motion
 
 - **Focus:** a 2px `color-ink` outline, offset 2px, over `shadow-focus-halo`. On `color-forest` or `color-footer`, use the `on-` color for the outline and that ground for the halo. Never remove the focus ring.
 - **Hover:** links go to `color-accent-hover`. Cards strengthen to `color-border-strong` over `color-surface-ghost`.
 - **Locked or pending:** dashed `color-border-strong`, with the icon dimmed and the text left at full strength.
-- **Motion:** sprite steps (`steps()`/`step-end`) and fades of 0.12–0.25s only. Respect `prefers-reduced-motion`, and show a single static frame under it.
+- **Motion:** see Motion below. Respect `prefers-reduced-motion`, and show a single static frame under it.
 - Every interactive element is at least `tap-target` (44px) in both directions.
+
+### Motion
+
+Use [Motion](https://motion.dev) (the `motion` package, formerly Framer Motion) wherever a transition makes the site more delightful. The site isn't React, so use Motion's plain-JavaScript API (`animate`, `stagger`, `inView`) in small client scripts, not its React components.
+
+- **Where:** state changes (a Range class switching, a nameplate updating, a row's panel opening), entrances as a section scrolls into view (a short stagger of cards or rows), and playful feedback a person asks for (a sprite's hop when they press A).
+- **How it moves:** stepped, like the sprites. Use stepped easing (`steps(4)` to `steps(8)`) for anything pixel-art and for entrances. Keep durations between 0.12s and 0.5s, and stagger by 0.04–0.08s. Move by whole pixels on the 4px grid: 8–24px slides and hops, never long sweeps.
+- **What to avoid:** motion that loops on its own beyond the Range rotation, parallax, scroll-jacking, layout shift, and animating text people are reading.
+- **Never hide content.** Pages render complete without JavaScript. A script sets an element's start state just before animating it, so nothing stays hidden if the script fails.
+- **Reduced motion:** under `prefers-reduced-motion: reduce`, skip the animation and jump to the end state.
+- **Budget:** import only the functions a page uses, and load scripts per island, not site-wide.
 
 ## Iconography
 
@@ -116,9 +133,9 @@ Two places can play: **accomplishments** and **buttons**. Everything else uses t
 
 Built from the site:
 
-- **Button**: primary (pixel, accent, pressed-key shadow) and ghost.
+- **Button**: primary (pixel, accent, thick border) and ghost (pixel, thick border).
 - **Pill**: the Contact call to action in the nav.
-- **Navigation** and **Footer**: the site shell.
+- **Navigation** and **Footer**: the site shell. The footer is a grass block: a pixel grass edge over speckled dirt.
 - **PageHead**: the title band with a label.
 - **Card** and **PostCard**: the frosted list surface.
 - **Pagination**.
@@ -134,6 +151,6 @@ Intentional additions, for the content model above:
 
 These site pieces are left out. Each one is specific to the personal site, and none is needed for working documents.
 
-- The Range carousel (`src/components/home/Range.astro`), the hero island scene, and the outfit sprite.
+- The Range carousel (`src/components/home/Range.astro`), the hero island scene, and the outfit sprite. The proposed home page shows the Range on a handheld console: a square gold shell, cut off by the section's bottom edge, with a D-pad for class, START to pause, A to make the sprite hop and B to go back.
 - The featured post and related-post cards. They need post images.
 - The pixel-art lab UI (`src/styles/lab.css`).
