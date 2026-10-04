@@ -1,5 +1,5 @@
 # Plan: Gamified accomplishments (from intent.md 2026-10-03)
-Status: draft.
+Status: done for the site, 2026-10-04: built in [#56](https://github.com/jlawcordova/jlawcordova.github.io/pull/56), [#60](https://github.com/jlawcordova/jlawcordova.github.io/pull/60) and [#61](https://github.com/jlawcordova/jlawcordova.github.io/pull/61). The atproto side (lexicon, `update`, skill, migration) merged in `jlawcordova-atproto` #21 and #22. R4, R10, R11, R15 and R18 need real runs of the `accomplishments` skill and are tracked in that repo's sub-intent.
 
 Plans [`spec.md`](spec.md) (R1–R21, D1–D7). The work is in two repos, so the order below says which repo each PR is in. Every merge to `master` deploys this site, and the Worker deploys on merge to `jlawcordova-atproto`, so each PR leaves both deployable. Paths without a repo name are in this repo; `atproto:` paths are in `jlawcordova-atproto`.
 
