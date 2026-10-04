@@ -115,7 +115,7 @@ Only text changes, in `src/components/home/Hero.astro`, `src/components/home/Ran
 
 These read as the design system: they lead with what is done rather than a contrast slogan, name real tools and steps, use the first person, and drop adjectives that aren't evidence ("whole"). The Range paragraph says what the carousel shows, so the playful heading has a plain line beside it (R8).
 
-The two paragraphs grow from 23 and 22 words to 27 and 29. Both sit in `max-width` columns (540px and 480px), so they wrap to one more line at most. R19's screenshots check it.
+The two paragraphs grow from 23 and 22 words to 27 and 28. Both sit in `max-width` columns (540px and 480px), so they wrap to one more line at most. R19's screenshots check it.
 
 ### Updates elsewhere
 
