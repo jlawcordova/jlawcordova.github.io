@@ -1,5 +1,5 @@
 # Spec: Accomplishment icons in the island and Range style (from intent.md 2026-10-05)
-Status: draft.
+Status: approved by the owner, 2026-10-05.
 
 Implements [`intent.md`](intent.md). Where they disagree, the intent wins and this spec gets fixed. The change is art only. Each icon object is redrawn in place, and the code, pages, styles and the icon list stay as they are.
 
