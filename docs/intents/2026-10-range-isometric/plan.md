@@ -97,3 +97,11 @@ main ── feat/range-isometric ───────────────�
 - Screenshots of the Range section at 1440px and 390px with no horizontal scroll, for the first and last class (PR 4: all seven).
 - `grep` shows no `legacy` object left in `range-sprite`, and `range-island` and `scripts/fixtures/pixel-art/range-sprite.src.svg` are gone.
 - `verify-change` comment on PR 4 with no blocking findings.
+
+## As built
+
+- **PR 1 (#100), platform:** as planned.
+- **PR 2 (#101), base and knight:** as planned, with the departures noted under "Files that change": no engine cap was raised, the base's anchor moved to its ground point so every outfit is placed by `tile [1, 1, 0]`, `outfit-preview` places by `tile` too, and three tests that pinned the old drawing were repointed (R12). The owner approved the knight and its five open choices as drawn (silver-3 helmet side, open helm, full-cube head, center tile, the 1× trade-off). Step 6 then wrote "Isometric characters" into the skill and the Range pins and hand-off into the agent.
+- **PR 3 (#102), the other six:** six `pixel-artist` agents in parallel, one worktree each, editing only their own outfit. Every prop fits on its figure, so there are no `prop-*` objects and `range-sprite.mjs` is unchanged by this slice. No test needed changing. Five outfits are above the 6–8 color aim (10 to 11), and Data Engineering is at the 12-color cap. The owner accepted the color counts and approved the six when merging it.
+- **PR 4:** `docs/intents/2026-10-redesign/spec.md` needs no note: it never calls the Range art legacy.
+- **Weight:** `range-sprite.svg` went from about 29 KB raw and 6 KB gzip (legacy platform) to 29,774 B raw and 6,180 B gzip. The built home page is 28,774 B gzip of HTML, against the redesign spec §12 budget of 150 KB gzip.
