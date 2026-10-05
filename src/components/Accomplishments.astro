@@ -36,3 +36,12 @@ const shown = locked ? [...done, locked] : done;
     </section>
   )
 }
+
+<script>
+  // Rows still below the fold rise in as the list scrolls into view (pixel-first
+  // look spec, Accomplishments). Rows already on screen, and every row without
+  // JavaScript or under reduced motion, are never hidden.
+  import { reveal } from '../lib/motion';
+
+  reveal(document.querySelectorAll('#accomplishments .achievement'), { y: 16, stagger: 0.06, duration: 0.4, frames: 6 });
+</script>
