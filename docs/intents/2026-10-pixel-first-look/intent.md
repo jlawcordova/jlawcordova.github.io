@@ -1,5 +1,5 @@
 # Intent: A pixel-first look, with Motion transitions
-Author: J. Law. Cordova (site owner). Status: accepted. Amended 2026-10-05 while writing the spec: the home page proposal wins over the design system, the nav keeps its blur, the hero greeting goes, Motion's packages and budget are approved, and the footer's grass is in scope.
+Author: J. Law. Cordova (site owner). Status: done, 2026-10-05: built on `feat/pixel-first-look` in [#88](https://github.com/jlawcordova/jlawcordova.github.io/pull/88) (theme), [#91](https://github.com/jlawcordova/jlawcordova.github.io/pull/91) (shell and hero), [#89](https://github.com/jlawcordova/jlawcordova.github.io/pull/89) (Range) and [#90](https://github.com/jlawcordova/jlawcordova.github.io/pull/90) (lists), and shipped to `main` in [#92](https://github.com/jlawcordova/jlawcordova.github.io/pull/92). Follow-ups after launch: [#93](https://github.com/jlawcordova/jlawcordova.github.io/pull/93) (the menu's Escape test) and [#94](https://github.com/jlawcordova/jlawcordova.github.io/pull/94) (smooth UI motion). Before building it was accepted. Amended 2026-10-05 while writing the spec: the home page proposal wins over the design system, the nav keeps its blur, the hero greeting goes, Motion's packages and budget are approved, and the footer's grass is in scope.
 
 ## Problem
 
