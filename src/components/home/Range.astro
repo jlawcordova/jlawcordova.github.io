@@ -9,41 +9,6 @@ const [first] = rangeClasses;
 
 <section id="range" class="range" data-current="0" aria-labelledby="range-title">
   <div class="range__inner">
-    <div class="range__panel">
-      <div class="range__stage isogrid">
-        <p class="range__nameplate" aria-live="off" style={`--class-shadow: ${first.shadow}`}>
-          <span class="range__name">{first.name}</span><span class="visually-hidden range__position"
-            >, class 1 of {rangeClasses.length}</span
-          >
-        </p>
-        <div class="range__controls">
-          <button type="button" class="range__arrow" data-dir="-1" aria-label="Previous class">
-            <svg class="pixel-art" width="28" height="36" viewBox="0 0 7 9" aria-hidden="true">
-              <path fill="currentColor" d="M5 0h2v9h-2zM3 1h2v7h-2zM1 3h2v3h-2zM0 4h1v1h-1z"></path>
-            </svg>
-          </button>
-          <figure class="range__sprite" role="img" aria-label={`Pixel-art character dressed for ${first.name}`}>
-            <Fragment set:html={sprite} />
-          </figure>
-          <button type="button" class="range__arrow" data-dir="1" aria-label="Next class">
-            <svg class="pixel-art" width="28" height="36" viewBox="0 0 7 9" aria-hidden="true">
-              <path fill="currentColor" d="M0 0h2v9h-2zM2 1h2v7h-2zM4 3h2v3h-2zM6 4h1v1h-1z"></path>
-            </svg>
-          </button>
-        </div>
-        <div class="range__pager">
-          {rangeClasses.map((_, i) => <span class:list={['range__dot', { 'is-current': i === 0 }]} aria-hidden="true" />)}
-          <button type="button" class="range__toggle" aria-pressed="false" aria-label="Pause class rotation">
-            <svg class="pixel-art range__icon-pause" width="20" height="28" viewBox="0 0 5 7" aria-hidden="true">
-              <path fill="currentColor" d="M0 0h2v7h-2zM3 0h2v7h-2z"></path>
-            </svg>
-            <svg class="pixel-art range__icon-play" width="20" height="28" viewBox="0 0 5 7" aria-hidden="true">
-              <path fill="currentColor" d="M0 0h1v7h-1zM1 1h1v5h-1zM2 2h1v3h-1zM3 3h1v1h-1z"></path>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
     <div class="range__copy">
       <h2 id="range-title">Many hats. <span class="gold">One craftsman.</span></h2>
       <p>
@@ -51,11 +16,65 @@ const [first] = rangeClasses;
         build and check each change before it ships.
       </p>
     </div>
+    <div class="range__console">
+      <div class="range__bezel">
+        <div class="range__stage isogrid">
+          <p class="range__nameplate" aria-live="off" style={`--class-shadow: ${first.shadow}`}>
+            <span class="range__swatch" aria-hidden="true"></span><span class="range__name">{first.name}</span><span
+              class="visually-hidden range__position">, class 1 of {rangeClasses.length}</span
+            >
+          </p>
+          <figure class="range__sprite" role="img" aria-label={`Pixel-art character dressed for ${first.name}`}>
+            <Fragment set:html={sprite} />
+          </figure>
+        </div>
+      </div>
+      <div class="range__controls">
+        <!-- A 3 × 3 D-pad: left and right are the class buttons, the rest is plastic. -->
+        <div class="range__dpad">
+          <span aria-hidden="true"></span>
+          <span class="range__dpad-arm" aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <button type="button" class="range__arrow" data-dir="-1" aria-label="Previous class">
+            <svg class="pixel-art" width="12" height="15" viewBox="0 0 4 5" aria-hidden="true">
+              <path fill="currentColor" d="M3 0h1v5h-1zM2 1h1v3h-1zM1 2h1v1h-1z"></path>
+            </svg>
+          </button>
+          <span class="range__dpad-arm range__dpad-hub" aria-hidden="true"></span>
+          <button type="button" class="range__arrow" data-dir="1" aria-label="Next class">
+            <svg class="pixel-art" width="12" height="15" viewBox="0 0 4 5" aria-hidden="true">
+              <path fill="currentColor" d="M0 0h1v5h-1zM1 1h1v3h-1zM2 2h1v1h-1z"></path>
+            </svg>
+          </button>
+          <span aria-hidden="true"></span>
+          <span class="range__dpad-arm" aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </div>
+        <button type="button" class="range__toggle" aria-pressed="false" aria-label="Start: pause the class rotation">
+          <span class="range__slot" aria-hidden="true"></span>
+          <span class="range__key-label" aria-hidden="true">START</span>
+        </button>
+        <div class="range__ab">
+          <div class="range__key range__key--a">
+            <button type="button" class="range__button range__a" aria-label="A: jump">A</button>
+            <span class="range__key-label" aria-hidden="true">JUMP</span>
+          </div>
+          <div class="range__key">
+            <button type="button" class="range__button range__b" data-dir="-1" aria-label="B: previous class">B</button>
+            <span class="range__key-label" aria-hidden="true">BACK</span>
+          </div>
+        </div>
+      </div>
+      <div class="range__speaker" aria-hidden="true">
+        {Array.from({ length: 5 }, () => <span />)}
+      </div>
+    </div>
   </div>
 </section>
 
 <script>
   import { rangeClasses } from '../../data/home';
+  import { play, px, reveal } from '../../lib/motion';
 
   const section = document.querySelector<HTMLElement>('.range');
   if (section) {
@@ -64,8 +83,7 @@ const [first] = rangeClasses;
     const sprite = $('.range__sprite');
     const next = $<HTMLElement>('[data-dir="1"]');
     const toggle = $<HTMLButtonElement>('.range__toggle');
-    const panel = $('.range__panel');
-    const dots = section.querySelectorAll('.range__dot');
+    const panel = $('.range__console');
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
     const count = rangeClasses.length;
     let [index, playing, hovered, focused] = [0, !motion.matches, false, false];
@@ -82,7 +100,9 @@ const [first] = rangeClasses;
       $('.range__position').textContent = `, class ${index + 1} of ${count}`;
       plate.style.setProperty('--class-shadow', shadow);
       sprite.setAttribute('aria-label', `Pixel-art character dressed for ${name}`);
-      dots.forEach((dot, i) => dot.classList.toggle('is-current', i === index));
+      // The new outfit slides in from the side it came from, and the plate pops.
+      play(sprite, { x: [step * 24, 0] }, { duration: 0.25, ease: px(4) });
+      play(plate, { scale: [0.88, 1.06, 1] }, { duration: 0.2, ease: px(3) });
     };
 
     const schedule = () => {
@@ -98,7 +118,8 @@ const [first] = rangeClasses;
       }, 2200);
     };
 
-    section.querySelectorAll<HTMLElement>('.range__arrow').forEach((arrow) =>
+    // The D-pad's arrows, and B, which goes back like Previous.
+    section.querySelectorAll<HTMLElement>('button[data-dir]').forEach((arrow) =>
       arrow.addEventListener('click', () => (show(Number(arrow.dataset.dir), true), schedule())),
     );
     toggle.addEventListener('click', () => ((playing = !playing), schedule()));
@@ -109,7 +130,14 @@ const [first] = rangeClasses;
     motion.addEventListener('change', () => ((playing = !motion.matches), schedule()));
     document.addEventListener('visibilitychange', schedule);
 
+    // A: a hop with a little shake on landing. The class stays.
+    $('.range__a').addEventListener('click', () =>
+      play(sprite, { y: [0, -16, 0, -6, 0, 0, 0, 0], x: [0, 0, 0, 0, -3, 3, -2, 0] }, { duration: 0.5, ease: px(8) }),
+    );
+
     section.classList.add('is-ready');
     schedule();
+    // Last, so the controls work even if the entrance can't run.
+    reveal([panel], { y: 48, duration: 0.4, frames: 6 });
   }
 </script>
