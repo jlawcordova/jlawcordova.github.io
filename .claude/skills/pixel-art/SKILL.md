@@ -171,7 +171,7 @@ export default {
   viewBox: [-51, -9, 103, 72],
   origin: [0, 32],
   items: [
-    { object: 'range-island', at: { px: [-49, -1] } },
+    { object: 'tile', at: { tile: [0, 0, 0] } },
     { object: 'small-rock', at: { tile: [1, 2, 0] } },
     { object: 'small-rock', class: 'pcloud pc0', at: { px: [30, 0] } },
     {
@@ -259,9 +259,8 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
   - `truck`, placed with class `itruck it1`, and `truck-green`, placed with `itruck it2`;
   - the pieces listed after the trucks, so they paint over them: `bridge-rail`, `boxes` (a stack of cardboard boxes), the crane as `crane-mast` with `crane-jib` stacked on it, and the front trees. `fence` is in the library but off the island (the owner's Stage 2 review);
   - `cloud-a`, `cloud-b` and `cloud-c`, placed with `pcloud pc0` to `pc2`.
-- **The Range sprite** (`scenes/range-sprite.mjs`) is `range-island` (the one legacy object left: imported with `scripts/import-pixel-art.mjs`, marked `legacy: true`, in the legacy palette, exempt from the caps, and a pixel-for-pixel copy of the original until someone changes it on purpose) plus seven outfits that extend `character`, one per `data-class` group, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). The outfits and `character` were redrawn in world and outfit colors by the [Range class characters](../../../docs/intents/2026-10-sixth-range-class/intent.md) change, so they're no longer legacy.
+- **The Range sprite** (`scenes/range-sprite.mjs`) is a 3×3 platform laid from the island's own blocks (`tile`, `block-right`, `block-left`, `block`, with `island-shadow` under the front edges), a library `tree` and six `flower` objects (`flower`, `flower-pink`, `flower-gold`, two of each, placed by `px`), plus seven outfits that extend `character`, one per `data-class` group, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). It uses no legacy art. The outfits and `character` were redrawn in world and outfit colors by the [Range class characters](../../../docs/intents/2026-10-sixth-range-class/intent.md) change.
 - **Recolors.** `truck-green` is `truck` with other colors: it `extends: 'truck'` and lists only the keys that differ. Use the same pattern for a variant that changes colors but not shape.
-- **Moving legacy art to world colors** (`range-island`, and the legacy palette with it) changes how it looks, so do it one object at a time, in its own PR, with before and after previews. Don't do it as part of other work.
 - **Keep the CSS hooks.** `pixel-art.css` animates the classes on these groups (`wf w0`…, `itruck it1`, `pcloud pc0`, `cbob`). Don't rename a loop, prefix or placement class unless you change the CSS in the same PR.
 
 ## Hero island look
@@ -312,7 +311,7 @@ The style of the hero island's objects ([hero island detail spec](../../../docs/
 - Keys are case-sensitive: `g` and `G` are different colors.
 - Long runs of one character are easy to miscount. Count against the preview, not the text, and let `--check` find ragged rows.
 - Legacy colors (`c-<hex>`) are off-limits for new art, and so is `legacy: true`.
-- Don't hand-edit `src/assets/pixel-art/*.svg`, and don't add `.src.svg` files. The extracted original of the Range sprite lives in `scripts/fixtures/pixel-art/` as a test fixture only.
+- Don't hand-edit `src/assets/pixel-art/*.svg`, and don't add `.src.svg` files.
 - `scripts/import-pixel-art.mjs` brings existing SVG art in as legacy sources. It's not for drawing new art.
 
 ## Before opening a PR
