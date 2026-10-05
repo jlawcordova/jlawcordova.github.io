@@ -6,10 +6,10 @@ export default {
     p: 'path-2',
     q: 'path-3',
     Q: 'path-4',
-    A: 'water-1',
-    B: 'water-2',
-    C: 'water-3',
-    D: 'water-4',
+    A: 'grass-1',
+    B: 'grass-2',
+    C: 'grass-3',
+    D: 'grass-4',
   },
   layers: [
     {
