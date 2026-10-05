@@ -4,6 +4,12 @@
   overflow: hidden;
 }
 
+/* The band starts behind the sticky header, like the page head (page.css). */
+main > .hero:first-child {
+  margin-top: calc(-1 * var(--site-header-height));
+  padding-top: calc(var(--site-header-height) + 72px);
+}
+
 /* The section supplies the gutter, so this isn't .container. */
 .hero__inner {
   max-width: var(--content-max);
@@ -26,13 +32,6 @@
 
 .hero__copy > * {
   margin: 0;
-}
-
-.hero__pretitle {
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 1.4;
-  color: var(--color-ink-muted);
 }
 
 .hero__title {
@@ -66,6 +65,13 @@
   justify-content: center;
 }
 
+/* The inner wrapper carries the floaty loop; .hero__art takes the entrance. */
+.hero__float {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .hero-island {
   width: 675px;
   max-width: 100%;
@@ -77,5 +83,8 @@
 @media (max-width: 480px) {
   .hero {
     padding: 48px var(--gutter) 64px;
+  }
+  main > .hero:first-child {
+    padding-top: calc(var(--site-header-height) + 48px);
   }
 }

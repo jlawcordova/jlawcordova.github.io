@@ -146,7 +146,7 @@ Merging into `feat/pixel-first-look` deploys nothing, so each slice only has to 
   - Remove `.hero__pretitle`, and change the lede to the canvas's text (no employer).
   - The band starts behind the header, as A4.
   - Wrap the island in an inner element that keeps `.floaty`.
-  - On load, `play()` staggers the title, lede and buttons (y 16→0, 0.4s, `px(6)`, 0.08s), then the island (y 24→0, 0.5s, 0.2s delay).
+  - On load, `play()` staggers the title, lede and buttons (y 16→0, 0.4s, `px(6)`, 0.08s), then the island (y 24→0, 0.5s, `px(6)`, 0.2s delay). The island also fades in (opacity 0→1), as the canvas has it, so it doesn't jump down before it rises.
 - **A7.** Update the Navigation (with the menu button), Footer and PageHead previews, and write `shell.e2e.mjs` (Proof).
 
 **Slice B, Range (PR 3):**
