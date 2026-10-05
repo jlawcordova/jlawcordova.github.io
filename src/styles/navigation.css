@@ -13,6 +13,7 @@
   align-items: flex-start;
   justify-content: center;
   padding: 16px var(--gutter) 0;
+  container: site-header / inline-size;
 }
 
 /* Square, see-through over a 16px blur, with a thick ink edge and no shadow. */
@@ -70,6 +71,20 @@
 }
 .site-nav__links a:not(.pill):hover {
   color: var(--color-accent);
+}
+
+/* Where the full wordmark and the menu button can't share one row (a header
+   under 350px, so phones narrower than about 382px, and the design-system
+   preview), the wordmark steps down so the closed bar stays one row. */
+@container site-header (max-width: 349px) {
+  .site-nav {
+    padding-left: 12px;
+    column-gap: 8px;
+  }
+  .site-nav__brand {
+    gap: 12px;
+    font-size: 14px;
+  }
 }
 
 /* Without the menu (no JavaScript), the links wrap under the brand. */
