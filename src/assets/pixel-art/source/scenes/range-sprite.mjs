@@ -27,43 +27,43 @@ export default {
     {
       group: { 'data-class': '0' },
       items: [
-        { object: 'outfit-front-end', at: { px: [-24, -6] } },
+        { object: 'outfit-front-end', at: { tile: [1, 1, 0] } },
       ],
     },
     {
       group: { 'data-class': '1' },
       items: [
-        { object: 'outfit-back-end', at: { px: [-24, -6] } },
+        { object: 'outfit-back-end', at: { tile: [1, 1, 0] } },
       ],
     },
     {
       group: { 'data-class': '2' },
       items: [
-        { object: 'outfit-ux-design', at: { px: [-24, -6] } },
+        { object: 'outfit-ux-design', at: { tile: [1, 1, 0] } },
       ],
     },
     {
       group: { 'data-class': '3' },
       items: [
-        { object: 'outfit-cloud-devops', at: { px: [-24, -6] } },
+        { object: 'outfit-cloud-devops', at: { tile: [1, 1, 0] } },
       ],
     },
     {
       group: { 'data-class': '4' },
       items: [
-        { object: 'outfit-data-engineering', at: { px: [-24, -6] } },
+        { object: 'outfit-data-engineering', at: { tile: [1, 1, 0] } },
       ],
     },
     {
       group: { 'data-class': '5' },
       items: [
-        { object: 'outfit-security-governance', at: { px: [-24, -6] } },
+        { object: 'outfit-security-governance', at: { tile: [1, 1, 0] } },
       ],
     },
     {
       group: { 'data-class': '6' },
       items: [
-        { object: 'outfit-project-management', at: { px: [-24, -6] } },
+        { object: 'outfit-project-management', at: { tile: [1, 1, 0] } },
       ],
     },
   ],
