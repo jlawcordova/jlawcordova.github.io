@@ -302,3 +302,12 @@ section.range {
     padding-inline: 10px;
   }
 }
+
+/* The controls row needs about 364px of viewport with JUMP and BACK beside
+   their keys, so below 375px they go under the keys, like START's label. */
+@media (max-width: 374px) {
+  .range__key {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
