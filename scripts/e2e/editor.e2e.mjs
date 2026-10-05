@@ -793,24 +793,26 @@ describe('object painting (R17)', () => {
   });
 
   test("R17: painting an outfit overrides the row, and painting it back drops the override", async () => {
-    const { context, page } = await openLab();
-    await pickObject(page, 'outfit-security-governance');
-    const site = await load(await sourceOf('object', 'outfit-security-governance'));
-    // A pixel of the figure (so it stays within its 24×32 cap) on a row the
-    // outfit doesn't override yet.
+    // A pixel of the figure (so it stays within its 24×32 cap) on a row an
+    // outfit doesn't override yet, in the first outfit that has one.
     const { sources } = await readSources(SOURCE_DIR);
-    const layers = resolve(sources, 'outfit-security-governance').layers;
-    let [layer, row] = [-1, -1];
-    for (const [i, l] of layers.entries()) {
-      if (l.frames) continue;
-      const overridden = new Set(Object.keys(site.rows[i] ?? {}).map(Number));
-      row = l.map.findIndex((r, y) => !overridden.has(y) && /[^.]/.test(r));
-      if (row >= 0) {
-        layer = i;
-        break;
+    let [outfit, layers, layer, row] = ['', [], -1, -1];
+    for (const name of [...sources.objects.keys()].filter((n) => n.startsWith('outfit-')).sort()) {
+      const site = await load(await sourceOf('object', name));
+      for (const [i, l] of resolve(sources, name).layers.entries()) {
+        if (l.frames) continue;
+        const overridden = new Set(Object.keys(site.rows?.[i] ?? {}).map(Number));
+        row = l.map.findIndex((r, y) => !overridden.has(y) && /[^.]/.test(r));
+        if (row >= 0) {
+          [outfit, layers, layer] = [name, resolve(sources, name).layers, i];
+          break;
+        }
       }
+      if (outfit) break;
     }
-    assert.ok(layer >= 0, 'the outfit has a painted row it doesn\'t override');
+    assert.ok(layer >= 0, 'an outfit has a painted row it doesn\'t override');
+    const { context, page } = await openLab();
+    await pickObject(page, outfit);
     const map = layers[layer].map;
     const col = map[row].search(/[^.]/);
     await page.getByRole('button', { name: new RegExp(`^Layer ${layer + 1}\\b`) }).click();
@@ -824,7 +826,7 @@ describe('object painting (R17)', () => {
     assert.equal(doc.rows[layer]?.[row], undefined, 'undone, the row matches character again, so its override is gone');
     // Painting it back by hand drops the override too.
     await page.getByRole('button', { name: 'Redo' }).click();
-    const name = resolve(sources, 'outfit-security-governance').keys[map[row][col]];
+    const name = resolve(sources, outfit).keys[map[row][col]];
     await page.getByRole('button', { name: swatch(name) }).click();
     await clickPixel(page, col, row);
     doc = await load(await exportText(page));
@@ -916,13 +918,16 @@ describe('object painting (R17)', () => {
   test('R27: the usage meter warns from 9 colors, and at 12 turns off every color not in use', async () => {
     const { context, page } = await openLab();
     await pickObject(page, 'outfit-security-governance');
-    await page.getByText('Colors used: 10 of 12').waitFor();
-    // Two pixels of the outfit's most used key, so no color drops out.
     const { sources } = await readSources(SOURCE_DIR);
     const r = resolve(sources, 'outfit-security-governance');
     const counts = new Map();
     const pixels = [];
     for (const [li, layer] of r.layers.entries()) layer.map?.forEach((row, y) => [...row].forEach((ch, x) => ch !== '.' && pixels.push({ li, x, y, ch }) && counts.set(ch, (counts.get(ch) ?? 0) + 1)));
+    const used = new Set([...counts.keys()].map((k) => sources.colors.get(r.keys[k]).hex));
+    await page.getByText(`Colors used: ${used.size} of 12`).waitFor();
+    // Enough pixels of the outfit's most used key to reach 12, so no color drops out.
+    const add = 12 - used.size;
+    assert.ok(add >= 1, 'the outfit leaves room for a color');
     // The layer that paints the most, and its most used key.
     const byLayer = new Map();
     for (const p of pixels) byLayer.set(p.li, (byLayer.get(p.li) ?? 0) + 1);
@@ -930,11 +935,11 @@ describe('object painting (R17)', () => {
     const inLayer = new Map();
     for (const p of pixels) if (p.li === layer) inLayer.set(p.ch, (inLayer.get(p.ch) ?? 0) + 1);
     const common = [...inLayer].sort((a, b) => b[1] - a[1])[0][0];
-    const spots = pixels.filter((p) => p.ch === common && p.li === layer).slice(0, 2);
-    assert.equal(spots.length, 2);
+    const all = pixels.filter((p) => p.ch === common && p.li === layer);
+    assert.ok(all.length > add, 'the most used key keeps a pixel');
+    const spots = all.slice(0, add);
     await page.getByRole('button', { name: new RegExp(`^Layer ${layer + 1}\\b`) }).click();
-    const used = new Set([...counts.keys()].map((k) => sources.colors.get(r.keys[k]).hex));
-    const fresh = Object.keys(palette.world).filter((n) => !used.has(palette.world[n])).slice(0, 3);
+    const fresh = Object.keys(palette.world).filter((n) => !used.has(palette.world[n])).slice(0, add + 1);
     for (const [i, spot] of spots.entries()) {
       await page.getByRole('button', { name: swatch(fresh[i]) }).click();
       await clickPixel(page, spot.x, spot.y);
@@ -942,11 +947,11 @@ describe('object painting (R17)', () => {
     const meter = page.getByText('Colors used: 12 of 12');
     await meter.waitFor();
     assert.match(await meter.getAttribute('class'), /is-warning/);
-    const off = page.getByRole('button', { name: swatch(fresh[2]) });
+    const off = page.getByRole('button', { name: swatch(fresh[add]) });
     assert.equal(await off.getAttribute('aria-disabled'), 'true');
     // aria-disabled keeps it focusable and announced; a click does nothing.
     await off.dispatchEvent('click');
-    assert.equal(await page.getByRole('button', { name: swatch(fresh[1]) }).getAttribute('aria-pressed'), 'true', 'a 13th color can\'t be chosen');
+    assert.equal(await page.getByRole('button', { name: swatch(fresh[add - 1]) }).getAttribute('aria-pressed'), 'true', 'a 13th color can\'t be chosen');
     assert.equal(await page.getByRole('button', { name: swatch(fresh[0]) }).getAttribute('aria-disabled'), 'false', 'colors in use stay on');
     await context.close();
   });

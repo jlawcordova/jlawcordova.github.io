@@ -178,7 +178,7 @@ describe('--check (R38)', () => {
   it('R38: a check covers what the target uses, and only that', async () => {
     const dir = await workspace();
     const path = join(dir, 'source/objects/character.mjs');
-    await writeFile(path, (await readFile(path, 'utf8')).replace("a: 'ink'", "a: 'no-such-color'"));
+    await writeFile(path, (await readFile(path, 'utf8')).replace("a: 'soil-4'", "a: 'no-such-color'"));
     assert.equal(art(dir, '--check', 'outfit-ux-design').code, 1, 'an outfit is checked with its base');
     assert.equal(art(dir, '--check', 'range-sprite').code, 1, 'a scene is checked with its objects');
     assert.equal(art(dir, '--check', 'flower').code, 0, 'an unrelated object is not');
