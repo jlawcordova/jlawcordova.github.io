@@ -1,7 +1,7 @@
 // The Range scene's art stays on the island's engine (Isometric Range spec
-// R1, R5, R7, R8): the platform is laid from the island's blocks, nothing in
-// range-sprite is legacy, the viewBox keeps the stage's size, and the compiled
-// SVG stays inside its budget. Node built-ins only.
+// R1, R3, R5, R7, R8): the platform is laid from the island's blocks, nothing
+// in range-sprite paints ink or is legacy, the viewBox keeps the stage's size,
+// and the compiled SVG stays inside its budget. Node built-ins only.
 
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
@@ -28,9 +28,22 @@ describe('Range art (Isometric Range spec)', () => {
     const { sources } = await readSources(SOURCE);
     const placed = placedOutsideGroups(sources.scenes.get('range-sprite'));
     for (const name of placed) assert.ok([...GROUND, ...SCENERY].includes(name), `${name} is an island block or scenery`);
-    for (const name of ['tile', 'block', 'block-left', 'block-right']) assert.ok(placed.includes(name), `the platform uses ${name}`);
+    for (const name of GROUND) assert.ok(placed.includes(name), `the platform uses ${name}`);
     assert.ok(!sources.objects.has('range-island'), 'range-island is gone');
     assert.ok(placed.filter((n) => n.startsWith('flower')).length >= 3, 'the platform has flowers');
+  });
+
+  it('R3: nothing range-sprite places paints ink, so the characters have no outline', async () => {
+    const { sources } = await readSources(SOURCE);
+    const names = new Set();
+    const walk = (items) => items.forEach((i) => (i.group ? walk(i.items) : names.add(i.object)));
+    walk(sources.scenes.get('range-sprite').items);
+    assert.ok(names.has('outfit-security-governance'), 'the outfits are walked');
+    for (const name of names) {
+      const r = resolve(sources, name);
+      const keys = { ...(r.keys ?? {}), ...(r.sides?.keys ?? {}), ...(r.surface?.keys ?? {}) };
+      for (const color of Object.values(keys)) assert.notEqual(color, 'ink', `${name} paints ink`);
+    }
   });
 
   it('R5: nothing range-sprite places is legacy', async () => {
