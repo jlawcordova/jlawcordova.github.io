@@ -33,7 +33,7 @@ None of that plumbing changes. Only the 18 maps (and their `keys`) are rewritten
 
 ### Canvas and view
 
-- **The cell stays 16×16, shown at 48px.** That is 3×, the same pixel size as the Range on the home page (103 px drawn at 309 px), so an icon's pixels match the character's beside it in the world. `CELL`, the sheet's `viewBox` and the rows' crop are unchanged. A bigger cell is possible but changes code and the pixel size (C1).
+- **The cell stays 16×16, shown at 48px.** That is 3×, the same pixel size as the Range on the home page (103 px drawn at 309 px), so an icon's pixels match the character's beside it in the world. `CELL`, the sheet's `viewBox` and the rows' crop are unchanged. The owner decided to keep 16×16 (C1).
 - **Footprint.** An isometric object on 16 px is small: a cube that fills the cell is 16 wide, 8 deep on top and about 8 tall on its sides. Each icon uses as much of the 16×16 as its shape allows, with its lowest point on row 15 near column 8 so the anchor still sits under it, and at least one transparent column on each side so it doesn't touch its neighbour in the sheet.
 - **Light and faces.** As on the island: the top is the lit shade (shade 1 or 2 of the material's ramp), the left face the mid shade, the right face the dark shade. A face holds 2–3 shades at most. Texture is the next shade lighter on a top or darker on a side.
 - **Silhouette without an outline.** The outline pixels of today's icons become the darker shade of the face they border. Where a lit edge is close to the row's background, it gets a lighter rim (the skill's grass-rim rule, applied to `--color-surface`). The silhouette must still read when the locked filter turns it gray at 40% opacity.
@@ -97,13 +97,15 @@ Each keeps its subject from the [gamified accomplishments spec D5](../2026-10-ga
 
 ## Areas of concern
 
-- **C1. Detail versus a 16×16 cell. Proposed: keep 16×16.** An isometric object has less room than a front-on one, because its top takes part of the height. The intent asks for richer detail and also for the same layout and size caps. Keeping the cell at 16×16 at 3× matches the Range's pixel size and changes no code, so this spec keeps it. The alternative is a 24×24 cell drawn at 48px (2×), which gives about twice the pixels but finer pixels than the Range's beside it, and changes `CELL`, the sheet's viewBox and the size test. If the first review shows 16×16 can't carry the detail, the owner decides between that and simpler icons before the rest are drawn.
-- **C2. The lock and the star (the intent's open question). Proposed: both get the treatment.** The star is shown as a row's icon, so a flat outlined star next to isometric ones would stand out as the old style. The lock sits over a dimmed gray icon, so its gold and steel shades contrast without an outline, and an outlined lock would be the one `ink` object left. The lock keeps its place (upper-right of its cell) and about its size (7×8, a little more if its isometric box needs it), so the CSS offset still works. If the owner prefers, either can stay as it is; R1, R3 and the new test would then exempt it.
+- **C1. Detail versus a 16×16 cell. Resolved: keep 16×16.** An isometric object has less room than a front-on one, because its top takes part of the height. The owner decided to keep the cell at 16×16, shown at 3×, which matches the Range's pixel size and changes no code. A 24×24 cell at 2× was the alternative: more pixels, but finer than the Range's beside it, and a change to `CELL`, the sheet's viewBox and the size test. Detail is fitted to 16×16, and the sample review checks that each icon still reads.
+- **C2. The lock and the star (the intent's open question). Resolved: both are redrawn.** The owner decided both get the new look. The star is shown as a row's icon, so a flat outlined star next to isometric ones would stand out as the old style. The lock sits over a dimmed gray icon, so its gold and steel shades contrast without an outline, and an outlined lock would be the one `ink` object left. The lock keeps its place (upper-right of its cell) and about its size (7×8, a little more if its isometric box needs it), so the CSS offset still works.
 - **C3. Art quality is subjective.** An icon can meet every rule and still not read at 48px. As for the Range and the first icons (gamified spec C6), the previews decide, and the plan pauses after the sample icons for the owner's review.
 - **C4. Weight.** Three shades and texture cost bytes: each extra run is about 15 B raw. The sheet has 2.3 KB gzip of headroom under its 6 KB budget, which should hold for 18 small icons. If it doesn't, the fallback in gamified spec C2 (inline only the icons a page uses) is a code change, so the plan stops and the owner decides before taking it.
-- **C5. The intent says 15 icons, the set has 16.** `ICONS` has 16 choices (plus `star` and `lock`, 18 objects), and a test pins the 16 published ids. The intent's "the same 15 icons" reads as a miscount, since its point is "the same set". This spec redraws all 16. The owner can correct the intent's number in its own commit.
+- **C5. The intent said 15 icons, the set has 16. Resolved: the intent is fixed.** `ICONS` has 16 choices (plus `star` and `lock`, 18 objects), and a test pins the 16 published ids. The owner confirmed the 15 was a miscount, and the intent now says 16, in its own commit.
 
 ## Open questions
 
-- **From the intent: should the locked padlock and the fallback star get the same treatment?** Proposed yes, for both (C2). The owner confirms before the plan.
-- **Q1. Is a 16×16 cell enough?** Proposed yes, checked at the first review (C1).
+- **From the intent: should the locked padlock and the fallback star get the same treatment?** Answered by the owner: yes, both are redrawn (R1, C2).
+- **Q1. Is a 16×16 cell enough?** Answered by the owner: keep 16×16 (C1).
+
+No open questions remain. C3 and C4 are for the plan and the sample review.
