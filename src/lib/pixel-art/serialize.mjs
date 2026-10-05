@@ -79,7 +79,8 @@ export function serializeObject(obj) {
 }
 
 /**
- * A block: its size, faces and optional surface, a layer with its own keys.
+ * A block: its size, faces, optional surface (a layer with its own keys) and
+ * optional sides (keys, then the left and right maps).
  * @param {any} obj
  * @param {string[]} lines  already holds the kind
  * @returns {string}
@@ -90,6 +91,11 @@ function serializeBlock(obj, lines) {
     const { keys, ...layer } = obj.surface;
     const inner = [`keys: ${stringRecord(keys, 2)}`, ...layerLines(layer, 1)];
     lines.push(`surface: {\n${inner.map((l) => `${pad(2)}${l},\n`).join('')}${pad(1)}}`);
+  }
+  if (obj.sides !== undefined) {
+    const { keys, left, right } = obj.sides;
+    const inner = [`keys: ${stringRecord(keys, 2)}`, `left: ${stringList(left, 2)}`, `right: ${stringList(right, 2)}`];
+    lines.push(`sides: {\n${inner.map((l) => `${pad(2)}${l},\n`).join('')}${pad(1)}}`);
   }
   return wrap(OBJECT_HEADER, lines);
 }

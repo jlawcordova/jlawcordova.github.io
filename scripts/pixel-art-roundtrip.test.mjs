@@ -86,7 +86,7 @@ describe('pixel-art skill (R32)', () => {
 
 describe("the island's animated pieces (R11)", () => {
   it('R11: the animated pieces are their own objects', () => {
-    const loops = { flag: ['ff', 'f', 4], hearth: ['hf', 'h', 6] };
+    const loops = { flag: ['ff', 'f', 4], 'crane-box': ['hf', 'h', 6] };
     for (const [name, [loop, prefix, frames]] of Object.entries(loops)) {
       const layer = sources.objects.get(name).layers[0];
       assert.deepEqual([layer.loop, layer.prefix, layer.frames.length], [loop, prefix, frames], name);

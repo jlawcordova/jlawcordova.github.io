@@ -12,12 +12,26 @@ Template and steps follow Stage 3 (Build) of Anthropic's [AI-native SDLC playboo
 
 1. **Work read-only until the plan is approved.** Use Claude Code's plan mode where it's available. Otherwise read the codebase without editing anything.
 2. **Read `intent.md` and `spec.md`** in the change's directory, plus `CLAUDE.md`. The spec must be approved. If it isn't, say so and stop.
-3. **Draft the plan with the template below.** Name the files that change, the order of the work, and the tests and checks that prove it. Write each step in Order of work as one commit, and group them into as few PRs as the change allows (see "How many PRs").
+3. **Draft the plan with the template below.** Name the files that change, the order of the work, and the tests and checks that prove it. Write each step in Order of work as one commit, and group them into as few PRs as the change allows (see "How many PRs"). Lay out the workflow too (see "Workflow and reviews"): who runs each step, where the owner reviews, and whether any independent review runs.
 4. **Interrogate the plan.** What could the change break? Which step is most risky? What other options were considered and not chosen, and why?
 5. **Iterate until someone who has never seen the conversation could implement the change from the plan alone.**
 6. **Commit the approved plan as `plan.md`** next to `spec.md`, once the owner has approved it.
-7. **Implement against the plan,** one commit per step in Order of work, in order. With a solid plan, implementation is often a single pass.
+7. **Implement against the plan,** one commit per step in Order of work, in order, following its Workflow. Run the steps back to back, and hand over to the owner only at a review the plan names (see "Workflow and reviews"). With a solid plan, implementation is often a single pass.
 8. **When the implementation departs from the plan, update `plan.md` in the same commit.** The PR's diff and the committed plan should always match.
+
+## Workflow and reviews
+
+The plan decides how the work runs, so the implementer doesn't stop to ask. Its Workflow section says:
+
+- **Who runs each step:** the main session, in order, or subagents (for example one per object group, in parallel worktrees), and how their work is gathered.
+- **Owner reviews:** the steps that pause for the owner, what they look at (previews, a running lab, a draft page), and what happens with their feedback. Plan one only where the owner's judgment is the point: a first design that sets the look for the rest, a choice between options, or a result that can't be checked by a test. Everything else runs without a pause.
+- **Independent review:** none by default. The implementer's own tests and checks, pasted into the PR, are the verification. Plan a `verify-change` run, or another adversarial subagent review, only where a second pair of eyes earns its cost: a hard-to-reverse step, security or public-safety risk, a change to a shared format or engine that other work builds on, or the final PR of a large feature branch. Name the PR or step it runs on.
+
+When implementing, follow it as written:
+
+- Don't pause between steps, between PRs or before opening a PR to ask whether to go on. Merging a PR the owner must merge (anything into `main`) is still theirs, and so is anything the plan leaves to them.
+- Stop early only when you're blocked: the plan doesn't cover what you found, a risk it names comes true and it says to stop (for example a test that should pass doesn't), a public-safety question, or an action outside the plan that's hard to reverse or outward-facing. Say what blocked you and what you need.
+- Run `verify-change` or an adversarial review only where the plan names one, or when the owner asks.
 
 ## How many PRs
 
@@ -37,8 +51,8 @@ Keep the count as low as the reasons allow: two or three PRs, each holding sever
 A large change with several PRs, where the owner wants to review the result once, can use a feature branch instead. Say so in the plan, under Order of work:
 
 - The slice PRs target `feat/<slug>`, branched from `main`. Merging there deploys nothing, so the site only has to build at each slice, not be worth shipping.
-- Each slice PR still gets the independent verifier (`CLAUDE.md` step 5). An agent may merge it into `feat/<slug>` once the report is PASS and CI is green.
-- One final PR takes `feat/<slug>` to `main`. It gets its own verifier run against the whole spec, and only the owner merges it. Agents never merge into `main` (`.claude/hooks/block-main-merge.sh`).
+- An agent may merge a slice PR into `feat/<slug>` once its own checks pass and CI is green, and the verifier's report is PASS where the plan gives that slice one. A slice that the plan sends to the owner for review waits for them.
+- One final PR takes `feat/<slug>` to `main`, and only the owner merges it. Agents never merge into `main` (`.claude/hooks/block-main-merge.sh`). A large feature branch usually plans a verifier run against the whole spec on this PR.
 - When `main` moves, merge it into `feat/<slug>` before the next slice starts.
 
 ## Template
@@ -53,6 +67,9 @@ A large change with several PRs, where the owner wants to review the result once
 <One commit per step. One PR unless "How many PRs" gives a reason to split; then group the steps by PR.>
 1. <First step.>
 2. <Next step.>
+
+## Workflow and reviews
+<Who runs each step (main session or subagents, in order or in parallel). The steps that pause for the owner's review, what they review and how feedback comes back; "none" if nothing does. Independent review: "none", or which PR or step gets verify-change or an adversarial subagent, and why.>
 
 ## Risks
 <What could break, the riskiest step, and how each risk is handled.>
@@ -75,6 +92,11 @@ One PR, three commits:
 1. Add the sixth outfit object, place it in a new group in the sprite scene, and run npm run art.
 2. Add the class to rangeClasses.
 3. Add its data-current rule and check the pager at 390px.
+
+## Workflow and reviews
+The main session runs all three steps in order. Owner review: after step 1, the outfit's
+previews at 1× and 4×, since it sets the look; steps 2 and 3 follow once it's approved.
+Independent review: none. The art, test and build checks cover it.
 
 ## Risks
 The sprite file grows. It must stay within 100 KB raw and 25 KB gzip, or the art

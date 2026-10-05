@@ -1,4 +1,15 @@
 # Plan: Hero island detail (from intent.md 2026-10-04)
+Status: done, 2026-10-05: built in [#81](https://github.com/jlawcordova/jlawcordova.github.io/pull/81) (tools), [#83](https://github.com/jlawcordova/jlawcordova.github.io/pull/83) (the land) and [#85](https://github.com/jlawcordova/jlawcordova.github.io/pull/85) (everything else) on `feat/hero-island-detail`, and merged to `main` in that branch's final PR.
+
+**As built.** The work departed from this plan in these ways:
+- **Reviews and verifiers.** From Stage 1 on, the workflow change in [#82](https://github.com/jlawcordova/jlawcordova.github.io/pull/82) applied. The work ran back to back up to the owner's two reviews (steps 9 and 12), and slices merged after those reviews without a verifier. The owner skipped the final verifier run.
+- **Branches.** Stage 1 and the workflow change were branched from Stage 0's branch while #81 was open. The owner merged them into the feature branch.
+- **Agents.** The `pixel-artist` agent wasn't registered in the coordinating session, so general-purpose Opus agents ran with `.claude/agents/pixel-artist.md` as their instructions.
+- **Worktrees.** The coordinator made Stage 2's worktrees itself, from the feature branch. The Agent tool's isolation would have branched from the main checkout's HEAD.
+- **Commits.** Steps 7 and 8 are one commit, because the joint test can't pass on step 7 alone.
+- **Owner's decisions.** From the land review: the road's center line, and a fifth edge piece, `block-river` (Stage 2, water group). From the Stage 2 review: the fence comes off the island.
+- **A test fix.** The Stage 0 block-painting e2e assumed a plain `block`. It now paints whichever block the site has.
+
 
 This plan builds the [spec](spec.md) as amended on 2026-10-04. In plan mode, before this was written:
 - an exploring agent mapped the engine, the lab, the CLI and the tests;

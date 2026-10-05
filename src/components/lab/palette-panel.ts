@@ -128,15 +128,14 @@ export class PalettePanel {
       }
       host.replaceChildren(...parts);
     }
-    const blocked = this.mode.isBlock;
     for (const swatch of host.querySelectorAll<HTMLButtonElement>('[data-color]')) {
       const name = swatch.dataset.color!;
       swatch.setAttribute('aria-pressed', String(name === this.mode.color));
-      swatch.setAttribute('aria-disabled', String(blocked || !this.allowed(name)));
+      swatch.setAttribute('aria-disabled', String(!this.allowed(name)));
     }
     const meter = $('lab-meter');
     const count = this.used().size;
-    meter.textContent = blocked ? 'A block takes its colors from its faces, in the Object panel.' : legacy ? `Colors used: ${count} (legacy, no cap)` : `Colors used: ${count} of ${CAPS.colors}`;
-    meter.classList.toggle('is-warning', !legacy && !blocked && count >= 9);
+    meter.textContent = legacy ? `Colors used: ${count} (legacy, no cap)` : `Colors used: ${count} of ${CAPS.colors}`;
+    meter.classList.toggle('is-warning', !legacy && count >= 9);
   }
 }

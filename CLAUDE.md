@@ -9,7 +9,7 @@ J. Law. Cordova's personal site and blog: Astro 7, TypeScript and plain CSS, dep
 - Build: `npm run build` (runs `astro check`, then builds to `dist/`)
 - Test: `npm test` (Node built-ins, no network)
 - Browser checks: `npm run e2e` (serves the built `dist/` and runs `scripts/e2e/` with the environment's Playwright; run `npm run build` first). One suite: `npm run e2e -- scripts/e2e/accomplishments.e2e.mjs`. That suite builds the four accomplishments fixtures into `.e2e-output/accomplishments/` itself and restores `src/data/accomplishments.json` afterwards, so don't run `npm test` alongside it.
-- Pixel art: `npm run art` (compiles the scenes in `src/assets/pixel-art/source/` to `src/assets/pixel-art/*.svg`). `npm run art -- --check <name>` validates one object or scene, `--preview <name>` writes PNGs to `.art-preview/`, and `--new object|scene <name>` writes a starter source. The `pixel-art` skill has the details. Accomplishment icons (`icon-<id>` objects and the `achievement-icons` sheet) are added with the `achievement-icon` skill.
+- Pixel art: `npm run art` (compiles the scenes in `src/assets/pixel-art/source/` to `src/assets/pixel-art/*.svg`). `npm run art -- --check <name>` validates one object or scene, `--preview <name>` writes PNGs to `.art-preview/` (add `--scale N` for a bigger one), `--sizes <scene>` shows where a scene's bytes go against `HEAD`, and `--new object|scene <name>` writes a starter source. The `pixel-art` skill has the details. To draw or detail art, use the `pixel-artist` agent (`.claude/agents/pixel-artist.md`). Accomplishment icons (`icon-<id>` objects and the `achievement-icons` sheet) are added with the `achievement-icon` skill.
 - Pixel-art lab: `npm run dev`, then http://localhost:4321/lab/pixel-art/ (unlisted). It edits scenes, paints objects and exports their sources.
 - Design system previews: `npm run dev`, then http://localhost:4321/design-system/ (unlisted).
 - Accomplishments: `npm run fetch-accomplishments` (overwrites `src/data/accomplishments.json`; never commit the result)
@@ -47,13 +47,13 @@ Planned work follows Anthropic's [AI-native SDLC playbook](https://claude.com/bl
 
 1. **`intent.md`:** what's wanted and why, in the owner's words. Use the `write-intent` skill. The owner accepts it by merging.
 2. **`spec.md`:** requirements and design from the accepted intent, with areas of concern flagged. Use `write-spec`. The owner approves it by merging.
-3. **`plan.md`:** files, order of work, risks and proof, written before any code. Use `write-plan`. Implement only against an approved plan, and update `plan.md` in the same commit when the work departs from it.
-4. **Code and tests,** then a PR that cites the plan and pastes the verification output.
-5. **Independent verification:** a fresh session, given only "Use the `verify-change` skill on PR #<n>.", checks the PR against its intent, spec and plan and reports as a PR comment. It never pushes or commits. Fix its blocking findings before the owner merges.
+3. **`plan.md`:** files, order of work, workflow, risks and proof, written before any code. Use `write-plan`. Its workflow says who runs each step (the main session or subagents), which steps pause for the owner's review, and whether any independent review runs. Implement only against an approved plan, and update `plan.md` in the same commit when the work departs from it.
+4. **Code and tests,** following the plan's workflow, then a PR that cites the plan and pastes the verification output. Run the steps back to back. Hand over to the owner only at a review the plan names, or when blocked (`write-plan`, "Workflow and reviews").
+5. **Independent verification, when the plan calls for it:** a fresh session, given only "Use the `verify-change` skill on PR #<n>.", checks the PR against its intent, spec and plan and reports as a PR comment. It never pushes or commits. Fix its blocking findings before the PR merges. Without one in the plan, the implementer's checks in the PR are the verification. The owner can still ask for a run on any PR.
 
 A small, self-contained fix can go straight to a PR.
 
-A large change can merge its slice PRs into a feature branch, `feat/<slug>`, and reach `main` in one final PR (`write-plan`, "Feature branch"). Agents may merge verified slice PRs into `feat/<slug>`. Only the owner merges into `main`, because every merge there deploys; a hook in `.claude/settings.json` blocks agents from doing it.
+A large change can merge its slice PRs into a feature branch, `feat/<slug>`, and reach `main` in one final PR (`write-plan`, "Feature branch"). Agents may merge slice PRs into `feat/<slug>` once their checks pass, after any review the plan names for them. Only the owner merges into `main`, because every merge there deploys; a hook in `.claude/settings.json` blocks agents from doing it.
 
 Each change lives in `docs/intents/YYYY-MM-<slug>/` (the month its intent was created), holding its `intent.md`, `spec.md`, `plan.md` and any notes. Don't create top-level `docs/specs/` or `docs/plans/` folders.
 - Link within a change by sibling path (`spec.md`), and to another change with `../YYYY-MM-<slug>/intent.md`.
