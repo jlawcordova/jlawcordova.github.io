@@ -745,14 +745,22 @@ describe('object painting (R17)', () => {
     assert.equal(await page.locator('#lab-status-position').textContent(), 'x 25 · y 15');
     await page.keyboard.press('Space');
 
+    // The site's block, whether or not it has a surface and sides yet, with a new roof-2 key and those three cells.
     const blank = (w) => Array(16).fill('.'.repeat(w));
-    const put = (map, col, row) => map.map((line, y) => (y === row ? line.slice(0, col) + 'r' + line.slice(col + 1) : line));
-    const expected = {
-      ...(await load(site)),
-      surface: { keys: { r: 'roof-2' }, map: put(blank(32), 16, 8) },
-      sides: { keys: { r: 'roof-2' }, left: put(blank(16), 5, 2), right: put(blank(16), 10, 4) },
-    };
+    const put = (map, col, row, key) => map.map((line, y) => (y === row ? line.slice(0, col) + key + line.slice(col + 1) : line));
     const painted = await exportText(page);
+    const doc = await load(painted);
+    const keyOf = (keys) => Object.keys(keys).find((k) => keys[k] === 'roof-2');
+    const [top, side] = [keyOf(doc.surface.keys), keyOf(doc.sides.keys)];
+    const before = await load(site);
+    assert.ok(!Object.values(before.surface?.keys ?? {}).includes('roof-2') && top && side, 'roof-2 is a new key on the top and the sides');
+    const surface = before.surface ?? { keys: {}, map: blank(32) };
+    const sides = before.sides ?? { keys: {}, left: blank(16), right: blank(16) };
+    const expected = {
+      ...before,
+      surface: { keys: { ...surface.keys, [top]: 'roof-2' }, map: put(surface.map, 16, 8, top) },
+      sides: { keys: { ...sides.keys, [side]: 'roof-2' }, left: put(sides.left, 5, 2, side), right: put(sides.right, 10, 4, side) },
+    };
     assert.equal(painted, serialize(expected), 'the export is the canonical block, with a surface and sides');
     const { dir, out } = await compileCopy({ 'objects/block.mjs': painted });
     await rm(dir, { recursive: true, force: true });

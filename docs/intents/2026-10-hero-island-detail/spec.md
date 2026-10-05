@@ -1,5 +1,14 @@
 # Spec: Hero island detail (from intent.md 2026-10-04)
-Status: approved. Amended 2026-10-04 with the owner while planning: three edge blocks instead of `block-corner`, block painting in the lab, 16-column side maps, the accepted art picks and the full list of tests that change.
+Status: done, 2026-10-05: built in [#81](https://github.com/jlawcordova/jlawcordova.github.io/pull/81) (tools), [#83](https://github.com/jlawcordova/jlawcordova.github.io/pull/83) (the land) and [#85](https://github.com/jlawcordova/jlawcordova.github.io/pull/85) (everything else) on `feat/hero-island-detail`, and merged to `main` in that branch's final PR.
+
+**As built.** These differ from the text below, with the owner's approval in the land review (#83) and the Stage 2 review (#85):
+- **A fifth edge piece:** `block-river` is `block-right` with a water band, at `[5, 3]` under the river's end, so every top material on a cliff hangs its own band.
+- **The road:** `path` is `path-2` dirt with a `cream` dashed center line, one dash per tile, plus `path-1` and `path-3` wear.
+- **The fence is off the island,** for now. `fence.mjs` is detailed and stays in the library, unplaced.
+- **R12's verifier:** under the workflow change in [#82](https://github.com/jlawcordova/jlawcordova.github.io/pull/82), a verifier runs only where the plan names one, and the owner chose to skip the final run. Each PR pastes its own checks: `npm test`, `npm run build`, `npm run art` and `npm run e2e`.
+- **Budgets:** the island is 91,041 B raw and 19,187 B gzip, against 500 KB and 125 KB, and the home page is 28.5 KB gzip, against 150 KB.
+
+Status before building: approved. Amended 2026-10-04 with the owner while planning: three edge blocks instead of `block-corner`, block painting in the lab, 16-column side maps, the accepted art picks and the full list of tests that change.
 
 This spec turns the [intent](intent.md) into requirements and a design. The look was set by a sample before this spec was written: a subagent detailed the land, and the owner reviewed it, edited `block` by hand in the lab, and approved it. The owner then answered a questionnaire for each object. The sample, those answers and the owner's budget decision are recorded here.
 

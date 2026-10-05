@@ -1,5 +1,5 @@
 # Intent: Hero island detail
-Author: J. Law. Cordova (site owner). Status: accepted.
+Author: J. Law. Cordova (site owner). Status: done, 2026-10-05: built in [#81](https://github.com/jlawcordova/jlawcordova.github.io/pull/81) (tools), [#83](https://github.com/jlawcordova/jlawcordova.github.io/pull/83) (the land) and [#85](https://github.com/jlawcordova/jlawcordova.github.io/pull/85) (everything else) on `feat/hero-island-detail`, and merged to `main` in that branch's final PR. Every island object is detailed in the sample's style, with no outlines and in world colors; the crane carries cardboard boxes, the clouds are isometric, and the island is 91,041 B raw and 19,187 B gzip.
 
 ## Problem
 

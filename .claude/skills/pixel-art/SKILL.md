@@ -212,7 +212,7 @@ A name can be written `objects/<name>` or `scenes/<name>` when an object and a s
 | `closeup-water` | The river, the waterfall and its streaks (`flag`) |
 | `closeup-crane` | The crane, the hanging load, the stack at its foot and the pine behind it |
 | `closeup-office` | The house, the road, the bridge and its rail, and both trucks at two points of their drive |
-| `closeup-front-trees` | The front trees and the fence |
+| `closeup-front-trees` | The front trees |
 | `closeup-sky` | The three clouds and the crane jib's head |
 
 They place the island's objects at the island's positions, in its paint order, and a test keeps them that way: when the island's scene renames or moves an object, change the close-ups in the same commit. The preview's card color is one shade off the hero's background, so the sky reads as it does on the site.
@@ -255,9 +255,9 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
 
 - **The hero island** (`scenes/hero-island.mjs`, written to `hero-island.svg`) is built from library and island objects, all in world colors and within the caps. It has no legacy objects. Its pieces are:
   - the ground, road, bridge, `house`, back trees (`tree-small` and `pine`, three of them on a `tree-shade`) as world-color objects;
-  - the river's `river` tiles and `waterfall-face`, `flag` and `hearth`: frame loops `wf` (5 frames, one set per piece), `ff` (4) and `hf` (6);
+  - the river's `river` tiles and `waterfall-face`, `flag` and `crane-box` (the crane's hanging cardboard box): frame loops `wf` (5 frames, one set per piece), `ff` (4) and `hf` (6);
   - `truck`, placed with class `itruck it1`, and `truck-green`, placed with `itruck it2`;
-  - the pieces listed after the trucks, so they paint over them: `bridge-rail`, `shed`, the crane as `crane-mast` with `crane-jib` stacked on it, `fence` and the front trees;
+  - the pieces listed after the trucks, so they paint over them: `bridge-rail`, `boxes` (a stack of cardboard boxes), the crane as `crane-mast` with `crane-jib` stacked on it, and the front trees. `fence` is in the library but off the island (the owner's Stage 2 review);
   - `cloud-a`, `cloud-b` and `cloud-c`, placed with `pcloud pc0` to `pc2`.
 - **The Range sprite** (`scenes/range-sprite.mjs`) is `range-island` (the one legacy object left: imported with `scripts/import-pixel-art.mjs`, marked `legacy: true`, in the legacy palette, exempt from the caps, and a pixel-for-pixel copy of the original until someone changes it on purpose) plus seven outfits that extend `character`, one per `data-class` group, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). The outfits and `character` were redrawn in world and outfit colors by the [Range class characters](../../../docs/intents/2026-10-sixth-range-class/intent.md) change, so they're no longer legacy.
 - **Recolors.** `truck-green` is `truck` with other colors: it `extends: 'truck'` and lists only the keys that differ. Use the same pattern for a variant that changes colors but not shape.
@@ -275,20 +275,29 @@ The style of the hero island's objects ([hero island detail spec](../../../docs/
 - **Density.**
   - About 4 small clusters per 32×16 top. For grass, that's tufts of two 1-px blade strokes, 2–3 px tall, slightly leaning, sometimes mirrored.
   - About 6 speckles per side face, mixing 1×1 and 2×2 squares.
+  - Scale counts with the face: below about 4 px of exposed body, a band or skirt does texture's job better than single pixels.
+  - Space texture on a 2:1 band along the band's own axis (u = x/2 + y), not along x, or it clumps.
   - Avoid 2×1 dashes, which read as scratches. "V" tufts read as birds, and diagonal dotted pairs read as wallpaper.
-  - Keep texture at least 2 px from face edges, so repeats don't draw grid lines.
+  - Keep texture at least 2 px from face edges, so repeats don't draw grid lines. On a top, that means every pixel in a ±2 square around a texture pixel is inside the tile's diamond.
 - **Transitions.**
   - Where materials meet (grass over dirt, a road over dirt), the upper material hangs a 3–4 px band down the side faces, following the top edge.
   - The band's last row is the ramp's darker shade, and a few 1-px drips break up its lower edge. A roof's fascia stays straight, with no drips.
-  - Bands stay in the upper material's own ramp: grass bands are grass greens, and a road's band is `path-3`, last row `path-4`.
+  - Bands stay in the upper material's own ramp: grass bands are grass greens, a road's band is `path-3`, last row `path-4`, and a river's is in the water ramp.
+  - Every top material on a cliff hangs its own band, so where the river or the road reaches the edge, the edge piece under it carries that material's band (`block-road`, and `block-river` under the river).
 - **Edges and joints.**
   - No outlines, and no `ink` on island objects.
   - Where cubes line a cliff, both of each cube's corner columns show on both cliffs. So joints are hidden with separate edge pieces (`block`, `block-left`, `block-right`, `block-road`), never with an in-between shade or a corner-color swap.
-  - When an object loses its outline, recolor the outline pixels with the darker shade of the face they border, which keeps the silhouette.
+  - When an object loses its outline, recolor the outline pixels with the darker shade of the face they border, which keeps the silhouette. On a small face, count those darker pixels as detail (a box's rear edge reads as a rib, a chassis as tyres) before adding strokes, or it turns stripy.
+  - Where an object's lit color matches the ground under it (`grass-2` foliage on `grass-2` grass), give it a lighter rim on the lit side; the darker-shade rule only covers the shaded side.
+  - A recolor (`extends`) that loses its outline needs its own shade order checked: top lighter than left, left than right.
 - **Shapes.**
-  - Clouds are short-sided stacked cubes: `cream` tops, `path-2` left, `path-3` right, tip pixels clipped, no texture.
+  - Clouds are short-sided stacked cubes: `cream` tops, `path-2` left, `path-3` right, tip pixels clipped, no texture. A cube's top width is a multiple of 4 (8–24), and a stacked cube narrower than 12 reads as a chimney.
+  - The road is `path-2` dirt with a `cream` dashed center line: one dash per tile, 4 rows on the road's 2:1 line through the tile's center, so the dashes and gaps are even along the road.
   - Pines are three stacked tiers with shallow-V skirts, split at the center (lit left, dark right), with a sawtooth of needle tips.
-  - Cardboard is `wood-1` top, `wood-2` left, `wood-3` right, with `path-1` tape.
+  - Cardboard is `wood-1` top, `wood-2` left, `wood-3` right, with `path-1` tape. A box W px wide has a top W/2 rows tall. Judge tape on the island or a close-up, since `path-1` nearly matches the preview's background.
+  - Planks and plank gaps on a 2:1 deck sit at least 4 rows apart; every 3 rows the steps line up into a checkerboard.
+  - Buildings: a flat roof reads with a 1-px parapet line in the face shades, and `water-1` glass on a `path-1` wall needs a `path-3` frame. Place wall features by offsets from each column's wall-top row.
+  - Water texture follows the side rule too: a falling sheet is `water-3` with darker `water-4` stripes and few light streaks, or it reads as rain.
   - Lattices (the crane) are see-through.
 - **Scale.** Texture should fade to grain at 1× and read as material at 2–3×. Check both.
 - **Cost.**

@@ -6,7 +6,7 @@ export default {
     { object: 'river', at: { tile: [3, 3, 0] } },
     { object: 'river', at: { tile: [4, 3, 0] } },
     { object: 'tile', at: { tile: [3, 4, 0] } },
-    { object: 'block-right', at: { tile: [5, 3, 0] } },
+    { object: 'block-river', at: { tile: [5, 3, 0] } },
     { object: 'river', at: { tile: [5, 3, 0] } },
     { object: 'tile', at: { tile: [4, 4, 0] } },
     { object: 'block-left', at: { tile: [3, 5, 0] } },
