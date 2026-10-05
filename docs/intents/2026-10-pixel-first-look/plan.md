@@ -97,7 +97,7 @@ Merging into `feat/pixel-first-look` deploys nothing, so each slice only has to 
    - `.btn--primary`, `.btn--ghost`, the pill, the current pagination link and the achievement tooltip get `border-thick`;
    - code blocks get no edge;
    - the range nameplate loses its shadow for now (slice B adds the swatch);
-   - `lab.css`'s two `shadow-pixel` become `border-thick`;
+   - `lab.css`'s one `shadow-pixel` (the pressed tool) is dropped, since its ink fill is already its edge and an ink border on ink wouldn't show;
    - the nav drops `shadow-nav` but keeps its fill and blur;
    - the Range panel loses its blur for now (slice B rebuilds it).
 

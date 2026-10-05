@@ -102,8 +102,12 @@ async function exportText(page) {
   return text;
 }
 
-/** Presses Tab until the control with this role and name has focus. */
-async function tabTo(page, role, name, { back = false, max = 120 } = {}) {
+/**
+ * Presses Tab until the control with this role and name has focus. Every
+ * library object is a tab stop in the lab, so `max` leaves room for the
+ * library to grow: at 120 it ran out when the footer tiles were added.
+ */
+async function tabTo(page, role, name, { back = false, max = 240 } = {}) {
   const target = page.getByRole(role, { name, exact: true });
   for (let i = 0; i < max; i++) {
     if (await target.evaluate((el) => el === document.activeElement).catch(() => false)) return;

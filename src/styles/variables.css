@@ -4,7 +4,7 @@
   --color-hero: #EADFC8;
   --color-card: #E9DCC6;
   --color-surface: rgba(250, 245, 235, 0.55);   /* frosted cards */
-  --color-surface-strong: rgba(250, 245, 235, 0.62); /* nav */
+  --color-surface-strong: rgba(250, 245, 235, 0.78); /* nav */
   --color-surface-ghost: rgba(250, 245, 235, 0.6);   /* ghost button */
 
   /* Ink */
@@ -35,15 +35,15 @@
   --font-pixel: 'Silkscreen', ui-monospace, monospace;
   --font-code: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 
-  /* Shape */
-  --radius-pill: 999px;
-  --radius-panel: 24px;
-  --radius-stage: 16px;
-  --radius-card: 14px;
-  --radius-button: 10px;
-  --radius-chip: 6px;
-  --shadow-pixel: 4px 4px 0 var(--color-ink);
-  --shadow-nav: 0 8px 24px rgba(46, 36, 24, 0.08);
+  /* Shape: square corners, and a thick ink border instead of shadows */
+  --radius-pill: 0;
+  --radius-panel: 0;
+  --radius-stage: 0;
+  --radius-card: 0;
+  --radius-button: 0;
+  --radius-chip: 0;
+  --border-thick-width: 3px;
+  --border-thick: 3px solid var(--color-ink);
 
   /* Layout */
   --content-max: 1160px;
