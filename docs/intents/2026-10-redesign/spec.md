@@ -328,6 +328,8 @@ The frosted card from the mock's highlight cards is kept as a generic surface fo
 
 ### 6.6 Range
 
+*Update, 2026-10-05: the Range is now a handheld console, with a D-pad, START, A and B. The pager dots and the frosted panel are gone, and the nameplate shows a swatch instead of a colored shadow ([pixel-first look spec, Range](../2026-10-pixel-first-look/spec.md#home-page)).*
+
 The Range section is `<section id="range" class="range" aria-labelledby="range-title">`, with `background: var(--color-forest); color: var(--color-on-forest); padding: 96px var(--gutter) 112px`.
 
 **Layout.** `.range__inner` is `max-width: var(--content-max); margin-inline: auto` plus `display: flex; flex-wrap: wrap; align-items: center; gap: 56px`.
@@ -660,6 +662,8 @@ At every width from 320px up there's no horizontal scroll. All tap targets are a
 ## 12. Performance budgets
 
 *Update, 2026-10-04: the hero island's detail raised these budgets. `hero-island.svg` may be up to 500 KB raw and 125 KB gzip, while every other SVG keeps §8's 100 KB and 25 KB. The home page may use 150 KB gzip of HTML and 160 KB gzip in total. Lighthouse stays at ≥ 95 ([hero island detail spec, Budgets](../2026-10-hero-island-detail/spec.md#budgets)).*
+
+*Update, 2026-10-05: the pixel-first look adds Motion, so the home page may load 32 KB gzip of JavaScript, and a page with no Motion island 4 KB until its menu is used. CSS stays at 8 KB ([pixel-first look spec, Budgets](../2026-10-pixel-first-look/spec.md#budgets)).*
 
 Baseline (current `master`, measured from `npm run build`): the home page loads 5.1 KB of HTML (2.0 KB gzip), 20.6 KB of CSS (3.9 KB gzip), 62.6 KB of background WebP and 4.7 KB of SVGs. That's about **70 KB of first-party transfer**, plus the Font Awesome kit script and its fonts, plus Merriweather and Roboto.
 

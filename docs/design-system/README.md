@@ -101,7 +101,7 @@ Two places can play: **accomplishments** and **buttons**. Everything else uses t
 - **Pressed:** a button moves 2px down and right. Nothing else changes.
 - The sticky nav has no shadow. It sits on the see-through `color-surface-strong` with a 16px backdrop blur, the one blur in the system, and falls back to solid `color-page` where `backdrop-filter` isn't supported.
 
-Tokens: `radius-*` all become 0. `shadow-pixel`, `shadow-pixel-pressed`, `shadow-pixel-accent` and `shadow-nav` are retired, and `shadow-focus-halo` stays for the focus ring. `color-surface-strong`, the nav's fill, rises from 62% to 78% opacity, as the home page proposal draws it. `border-thick` is new. `tokens.json` and `src/styles/variables.css` change together when this is built (see `../intents/2026-10-pixel-first-look/intent.md`). Until then the site still renders the old rounded corners and shadows.
+Tokens: `radius-*` all become 0. `shadow-pixel`, `shadow-pixel-pressed`, `shadow-pixel-accent` and `shadow-nav` are retired, and `shadow-focus-halo` stays for the focus ring. `color-surface-strong`, the nav's fill, rises from 62% to 78% opacity, as the home page proposal draws it. `border-thick` is new. `tokens.json` and `src/styles/variables.css` hold these values, and they change together (see `../intents/2026-10-pixel-first-look/spec.md`).
 
 ### States and motion
 
