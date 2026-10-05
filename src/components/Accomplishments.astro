@@ -2,6 +2,9 @@
 // The home page's accomplishments (gamified accomplishments spec R5, R6, R8):
 // the three newest done, the newest locked, and "Show more" when the full list
 // at /accomplishments/ has anything else. Nothing renders without data.
+// Two columns above 720px (pixel-first look spec, Accomplishments): the
+// heading, lede and "Show more" on the left, the rows on the right. "Show more"
+// stays after the list in the DOM, so it sits under the rows when they stack.
 import AccomplishmentRow from './AccomplishmentRow.astro';
 import AchievementIcons from './AchievementIcons.astro';
 import { getAccomplishments, homeSelection } from '../lib/accomplishments';
@@ -18,6 +21,7 @@ const shown = locked ? [...done, locked] : done;
         <h2 id="accomplishments-title" class="accomplishments__title">
           What I’ve been working on lately
         </h2>
+        <p class="accomplishments__lede">A running log of what I’ve shipped recently.</p>
         <ol class="achievement-list" role="list">
           {shown.map((item) => (
             <AccomplishmentRow item={item} />

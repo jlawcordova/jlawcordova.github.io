@@ -17,28 +17,72 @@
   padding: 96px var(--gutter) 112px;
 }
 
-/* The section supplies the gutter, so this isn't .container. */
+/*
+ * The section supplies the gutter, so this isn't .container. Two columns at
+ * 1:2 above 720px, by grid area: the heading, lede and "Show more" on the
+ * left, the rows on the right. The last left row takes the list's spare height.
+ */
 .accomplishments__inner {
   max-width: var(--content-max);
   margin-inline: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  grid-template-rows: auto auto auto 1fr;
+  grid-template-areas:
+    "title list"
+    "lede list"
+    "more list"
+    ". list";
+  column-gap: 48px;
+  align-items: start;
+  justify-items: start;
 }
 
 .accomplishments__title {
-  margin: 0 0 40px;
-  font-size: clamp(36px, 5vw, 64px);
-  line-height: 1.04;
-  letter-spacing: -1px;
+  grid-area: title;
+  margin: 0 0 16px;
+  font-size: clamp(30px, 3vw, 40px);
+  line-height: 1.1;
+  letter-spacing: -0.8px;
+}
+
+.accomplishments__lede {
+  grid-area: lede;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-ink-muted);
 }
 
 .accomplishments .achievement-list {
-  align-self: stretch;
+  grid-area: list;
+  justify-self: stretch;
 }
 
 .accomplishments__more {
-  margin-top: 28px;
+  grid-area: more;
+  margin-top: 24px;
+}
+
+/* Stacked: the heading and lede, the rows, then "Show more" under them. */
+@media (max-width: 720px) {
+  .accomplishments__inner {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-template-areas:
+      "title"
+      "lede"
+      "list"
+      "more";
+  }
+
+  .accomplishments__lede {
+    margin-bottom: 32px;
+  }
+
+  .accomplishments__more {
+    margin-top: 28px;
+  }
 }
 
 /* Full-list pages */
@@ -342,10 +386,6 @@ summary.achievement__row:focus-visible {
 @media (max-width: 480px) {
   .accomplishments {
     padding: 64px var(--gutter) 72px;
-  }
-
-  .accomplishments__title {
-    margin-bottom: 28px;
   }
 
   /* The date stacks under the title. */
