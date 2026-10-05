@@ -1,6 +1,6 @@
 # Plan: Isometric Range (from intent.md 2026-10-05)
 
-Status: approved.
+Status: done, 2026-10-05: built on `feat/range-isometric` in [#100](https://github.com/jlawcordova/jlawcordova.github.io/pull/100) (platform), [#101](https://github.com/jlawcordova/jlawcordova.github.io/pull/101) (base and knight), [#102](https://github.com/jlawcordova/jlawcordova.github.io/pull/102) (the other six classes) and [#105](https://github.com/jlawcordova/jlawcordova.github.io/pull/105) (the Back-end laptop, from the owner's review), and shipped to `main` in [#103](https://github.com/jlawcordova/jlawcordova.github.io/pull/103). Follow-up: [#104](https://github.com/jlawcordova/jlawcordova.github.io/pull/104) (the console's labels at 320px). Before building it was approved.
 
 Plans [`spec.md`](spec.md) (R1–R13, approved in #98). The work runs on `feat/range-isometric`: PRs 1 to 3 merge into it and PR 4 takes it to `main`. The owner reviews the platform (after PR 1) and the first character (after PR 2) before the next stage starts.
 

@@ -1,5 +1,5 @@
 # Spec: Isometric Range (from intent.md 2026-10-05)
-Status: approved.
+Status: done, 2026-10-05: built on `feat/range-isometric` in [#100](https://github.com/jlawcordova/jlawcordova.github.io/pull/100) (platform), [#101](https://github.com/jlawcordova/jlawcordova.github.io/pull/101) (base and knight), [#102](https://github.com/jlawcordova/jlawcordova.github.io/pull/102) (the other six classes) and [#105](https://github.com/jlawcordova/jlawcordova.github.io/pull/105) (the Back-end laptop, from the owner's review), and shipped to `main` in [#103](https://github.com/jlawcordova/jlawcordova.github.io/pull/103). Follow-up: [#104](https://github.com/jlawcordova/jlawcordova.github.io/pull/104) (the console's labels at 320px). Before building it was approved.
 
 ## Requirements
 
