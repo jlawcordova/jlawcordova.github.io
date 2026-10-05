@@ -50,10 +50,10 @@
   color: var(--color-on-accent);
 }
 
-/* A pressed key: it moves 2px down and right, in two steps. Nothing else changes. */
+/* A pressed key: it moves 2px down and right. Nothing else changes. */
 .btn--primary,
 .pill {
-  transition: transform 0.12s steps(2);
+  transition: transform 0.12s ease-out;
 }
 .btn--primary:active,
 .pill:active {

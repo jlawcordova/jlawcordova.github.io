@@ -1,5 +1,5 @@
 # Spec: A pixel-first look, with Motion transitions (from intent.md 2026-10-04)
-Status: approved. Amended 2026-10-05 while planning: `feat/hero-island-detail` (#86) has merged, so the hero is no longer held back, and `lab.css` joins the theme step.
+Status: approved. Amended 2026-10-05 while planning: `feat/hero-island-detail` (#86) has merged, so the hero is no longer held back, and `lab.css` joins the theme step. Amended again 2026-10-05 after launch: the owner found stepped UI motion laggy on the deployed site, so UI motion now eases smoothly (the shared `easeOut`), and only the pixel art's CSS loops stay stepped. The steps named below are replaced by it.
 
 This spec turns the [intent](intent.md) into requirements and a design. It builds the site to match two sources:
 
@@ -17,13 +17,13 @@ Traced to the intent's Problem, Proposed outcome and Constraints. Each is checka
 - **R1. Square corners everywhere.** Every rule in `src/styles/*.css`, `lab.css` and `design-system.css` included, sets `border-radius` to `0` or not at all. The `radius-*` tokens are `0` in `tokens.json` and `variables.css`. The pixel art is untouched. *(Outcome: square corners everywhere)*
 - **R2. No shadows.** No rule sets a `box-shadow` with an offset or a blur. Only spread-only rings stay: the focus halo (`shadow-focus-halo`) and the lab's selection rings. `shadow-pixel`, `shadow-pixel-pressed`, `shadow-pixel-accent` and `shadow-nav` are removed from `tokens.json` and `variables.css`. The nav bar's 16px backdrop blur is the only `backdrop-filter` left. *(Outcome: no shadows; no shadow on the nav bar)*
 - **R3. `border-thick` replaces them.** A new `border-thick` token (3px solid `color-ink`) is on buttons, the Contact pill, the nav bar, the current page in pagination, the achievement tooltip and the Range console. Accomplishment rows take a 3px `color-border` edge, dashed `color-border-strong` when locked. Cards and stages keep the 1px `color-border` hairline. Code blocks get no edge. *(Outcome: no shadows; the canvas)*
-- **R4. Pressed buttons move.** While pressed, `.btn--primary`, the pill and the console's A and B buttons move 2px down and right, in a `steps(2)` transition of at most 0.12s. Nothing else changes. *(Design system: Shape and depth)*
+- **R4. Pressed buttons move.** While pressed, `.btn--primary`, the pill and the console's A and B buttons move 2px down and right, in an `ease-out` transition of at most 0.12s. Nothing else changes. *(Design system: Shape and depth)*
 - **R5. Pixel type.** Every `.btn`, the `.pill`, the nav links, pagination links and the footer are set in Silkscreen, uppercase, and no sentence is. The hero greeting line is removed. *(Outcome: pixel type on every button and link in the nav; the greeting goes)*
 - **R6. The nav bar.** The nav bar sits on `color-surface-strong` (now 78% opacity) with a 16px backdrop blur and `border-thick`, square at every width, with no shadow. Without `backdrop-filter` support it's solid `color-page`. The brand reads "J. LAW. Cordova". *(Outcome: no shadow on the nav bar; the canvas)*
 - **R7. A menu button on small screens.** At 720px and below, with JavaScript, the nav shows only the brand and an icon-only menu button: 44 × 44px, no text, no border, with `aria-expanded`, `aria-controls` and an `aria-label` that reads "Open menu" or "Close menu". Pressing it shows the links and the pill in the bar. Choosing a link, pressing Escape, clicking outside the bar or widening past 720px closes the menu, and Escape returns focus to the button. Without JavaScript the button is hidden and the links show, wrapping under the brand. *(Outcome: a menu button on small screens; Constraint: works without JavaScript)*
 - **R8. The footer is a grass block.** The footer is `color-footer` dirt with faint speckles and a pixel grass layer along the top, drawn in the world palette's grass and soil ramps. Its text stays `color-on-footer`, the JL mark sits on a `color-card` chip, a gold "↑ TOP" link ends the links, and every link stays at least 44 × 44px. *(Outcome: the footer is a grass block; the canvas)*
-- **R9. Motion, plain JavaScript.** The site adds the `motion` package, pinned to an exact version, and imports only `animate`, `stagger`, `inView` and the stepped easing it needs. No React, no `motion/react` and no other new dependency. *(Outcome: Motion where it helps; Affected systems: dependencies)*
-- **R10. Motion where it helps.** These move with Motion, in the design system's stepped rhythm (0.12–0.5s, `steps(4)`–`steps(8)`, 8–24px moves, 0.04–0.08s staggers):
+- **R9. Motion, plain JavaScript.** The site adds the `motion` package, pinned to an exact version, and imports only `animate`, `stagger` and `inView`. No React, no `motion/react` and no other new dependency. *(Outcome: Motion where it helps; Affected systems: dependencies)*
+- **R10. Motion where it helps.** These move with Motion, in the design system's rhythm (0.12–0.5s, the shared smooth `easeOut`, 8–24px moves, 0.04–0.08s staggers):
   - the hero copy and island as the home page loads;
   - the Range console as it scrolls into view, the sprite and nameplate on a class change, and the sprite's hop when A is pressed;
   - accomplishment rows as their list scrolls into view, on the home page and `/accomplishments/`, and a row's panel as it opens;
@@ -78,7 +78,7 @@ The intent's constraint that colors stay as they are has one exception, which th
 - The bar is `content-max` wide on `color-surface-strong` with a 16px backdrop blur and `border-thick`, padding 6px 6px 6px 20px. Today's `@supports not (backdrop-filter …)` fallback to `color-page` stays. The brand is the JL mark at 23px tall, a 24px gap, and "J. LAW. Cordova" in `wordmark`. Links are Silkscreen 13px, 1px tracking, uppercase, `color-ink`, `color-accent` on hover, each at least 44px tall.
 - The links are **Range** (`/#range`), **Lately** (`/#accomplishments`) and **Blog** (`/blog/`), then the **Contact** pill. Lately renders only when the home page's accomplishments section renders (`homeSelection(getAccomplishments()).visible`), so it never points at a missing section. The section keeps its `id="accomplishments"`.
 - **Small screens:** a pre-paint inline script in `BaseLayout.astro`'s `<head>` sets `data-js` on `<html>`, so the collapsed bar paints first with no layout shift. At 720px and below, `html[data-js] .site-nav__links` is hidden until the bar has `.is-open`, and the menu button shows. The open menu sits under a `border-thick-width` `color-ink` rule inside the bar. Links stack as full-width 44px rows divided by `color-border`, with the pill full width at the bottom. The glyphs are the canvas's pixel paths in `currentColor`: three bars, and a pixel × while open.
-- A small client script in `Navigation.astro` toggles the menu and handles R7's closing rules. It loads Motion with a dynamic `import('motion')` the first time the button is hovered, focused or touched, and staggers the links in (opacity 0→1, y −8→0, 0.2s, `steps(4)`, 0.04s stagger). If Motion isn't loaded when the menu opens, the links show at once. So pages that use no other Motion don't download it unless someone opens the menu.
+- A small client script in `Navigation.astro` toggles the menu and handles R7's closing rules. It loads Motion with a dynamic `import('motion')` the first time the button is hovered, focused or touched, and staggers the links in (opacity 0→1, y −8→0, 0.2s, `easeOut`, 0.04s stagger). If Motion isn't loaded when the menu opens, the links show at once. So pages that use no other Motion don't download it unless someone opens the menu.
 - The page head (`.page-head`) starts behind the sticky header, so the 16px gap above the bar and the blur behind it show the band's color at the top of the page. Its top padding grows by the header's height, and anchors keep `--header-offset`. The hero band does the same.
 
 **Footer** (`Footer.astro`, `footer.css`):
@@ -93,7 +93,7 @@ The intent's constraint that colors stay as they are has one exception, which th
 
 - Layout as today: copy left, the island right, wrapping when they don't fit. The greeting line (`.hero__pretitle`) is removed. The title is unchanged. The lede becomes the canvas's: "Senior developer and tech lead in Davao City. I lead full-stack teams, design data platforms on Microsoft Fabric, and run releases with sign-offs and rollback." The buttons follow the new Button.
 - The hero band starts behind the sticky header, as the page head does.
-- **Motion on load:** the title, lede and buttons stagger in (opacity 0→1, y 16→0, 0.4s, `steps(6)`, 0.08s stagger), and the island follows (y 24→0, 0.5s, 0.2s delay). The island keeps its `.floaty` CSS loop on an inner wrapper, so the two transforms don't fight.
+- **Motion on load:** the title, lede and buttons stagger in (opacity 0→1, y 16→0, 0.4s, `easeOut`, 0.08s stagger), and the island follows (y 24→0, 0.5s, 0.2s delay). The island keeps its `.floaty` CSS loop on an inner wrapper, so the two transforms don't fight.
 
 **Range** (`Range.astro`, `range.css`) becomes the handheld console:
 
@@ -108,15 +108,15 @@ The intent's constraint that colors stay as they are has one exception, which th
 - **The pager dots are removed,** as the canvas has it (C5). The position stays in the nameplate's visually hidden ", class n of 7" text.
 - **Behavior:** as today. The rotation advances every 2.2s and stops on hover, on focus inside the console, when the page is hidden and when paused. A user's change is announced politely, and auto-advance isn't. Without JavaScript, class 0 shows and the buttons are hidden with `visibility`, so nothing shifts.
 - **Motion:**
-  - the console rises in as it scrolls into view (y 48→0, 0.4s, `steps(6)`);
-  - on a class change, the sprite slides in from the side it came from (x ±24→0, 0.25s, `steps(4)`), and the nameplate pops (scale 0.88→1.06→1, 0.2s, `steps(3)`);
-  - A makes the sprite hop (y 0→−16→0→−6→0 with a small x shake, 0.5s, `steps(8)`), and the class doesn't change.
+  - the console rises in as it scrolls into view (y 48→0, 0.4s, `easeOut`);
+  - on a class change, the sprite slides in from the side it came from (x ±24→0, 0.25s, `easeOut`), and the nameplate pops (scale 0.88→1.06→1, 0.2s, `easeOut`);
+  - A makes the sprite hop (y 0→−16→0→−6→0 with a small x shake, 0.5s, eased in and out on each leg), and the class doesn't change.
 - Focus on the console's buttons is a `color-ink` outline over a `color-gold` halo.
 
 **Accomplishments** (`Accomplishments.astro`, `accomplishments.css`):
 
 - **Two columns** at more than 720px, at a 1:2 ratio with a 48px gap. The left column holds the heading ("What I’ve been working on lately", unchanged), a new lede in `color-ink-muted`, "A running log of what I’ve shipped recently.", and the Show more button when `showMore` holds. The right column holds the rows. In the DOM the button comes after the list, so at 720px and below it sits under the rows, and grid areas place it in the left column on wide screens.
-- Rows follow AchievementRow: a 3px `color-border` edge, dashed `color-border-strong` when locked, 12px apart, `color-border-strong` over `color-surface-ghost` on hover. Today's grid-rows transition on the panel is replaced by Motion: when a `<details>` opens, its panel fades and drops in (y −8→0, 0.25s, `steps(4)`). Closing is instant. The chevron turns in a `steps(2)` CSS transition. Rows stagger in as the list scrolls into view (y 16→0, 0.4s, `steps(6)`, 0.06s stagger), and so do the rows on `/accomplishments/`.
+- Rows follow AchievementRow: a 3px `color-border` edge, dashed `color-border-strong` when locked, 12px apart, `color-border-strong` over `color-surface-ghost` on hover. Today's grid-rows transition on the panel is replaced by Motion: when a `<details>` opens, its panel fades and drops in (y −8→0, 0.25s, `easeOut`). Closing is instant. The chevron turns in a `easeOut` CSS transition. Rows stagger in as the list scrolls into view (y 16→0, 0.4s, `easeOut`, 0.06s stagger), and so do the rows on `/accomplishments/`.
 - The tooltip is `color-page` on `color-ink` with `border-thick` and no shadow.
 
 ### Other pages
@@ -128,7 +128,7 @@ The intent's constraint that colors stay as they are has one exception, which th
 
 ### Motion module
 
-- `src/lib/motion.ts` is the one place that imports `motion`. It exports small helpers: `reveal(elements, from)` for scroll entrances with `inView`, `play(element, keyframes, options)`, and the shared `steps(n)` easing. Every helper returns at once under reduced motion, which it reads from `matchMedia` on each call.
+- `src/lib/motion.ts` is the one place that imports `motion`. It exports small helpers: `reveal(elements, from)` for scroll entrances with `inView`, `play(element, keyframes, options)`, and the shared smooth `easeOut` easing. Every helper returns at once under reduced motion, which it reads from `matchMedia` on each call.
 - Each island's script imports only the helpers it uses, so Vite splits the bundle and pages without an island load no Motion code. The nav uses a dynamic import, as above.
 - Start states are set inside the helpers, in the same call that starts the animation, so R11 holds by construction. `reveal` only hides elements whose top is below the viewport when it runs, and a `beforeprint` listener reveals them all.
 

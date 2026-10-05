@@ -104,7 +104,7 @@ Merging into `feat/pixel-first-look` deploys nothing, so each slice only has to 
    Also: `.btn--ghost` moves to `font-pixel`; pressed buttons translate 2px with `transition: transform .12s steps(2)`. Spread-only focus halos and the lab's selection rings stay.
 4. **`src/lib/motion.ts`:** the only importer of `motion` (`animate`, `stagger`, `inView`). It exports:
    - `reduced()`, read from `matchMedia` on every call;
-   - `px(n)`, stepped easing as `steps(n)`;
+   - `easeOut`, the shared smooth easing (first planned as stepped `px(n)`; changed after launch, see the note under Risks);
    - `play(el, keyframes, opts)`, which returns at once when `reduced()`;
    - `reveal(els, { y, stagger })`, which hides only elements whose top is below the viewport, in the same call that registers `inView`, and reveals them all on `beforeprint`;
    - `stagger`, re-exported.
@@ -250,6 +250,9 @@ The main session merges each slice once its checks and CI are green, in the orde
 **Independent review:** one `verify-change` run on PR 5, against the whole spec, in a fresh subagent given only "Use the `verify-change` skill on PR #<n>." It's a large feature branch that changes shared tokens. Blocking findings are fixed on the branch. The slices get no verifier: `pixel-first-look.test.mjs`, the e2e suites and the final run cover them.
 
 ## Risks
+
+*Changed after launch (2026-10-05): the owner found the stepped UI motion laggy on the deployed site. It held 60 fps, but `steps()` moves in 3–8 jumps by design. A follow-up replaces every `px(n)` and `steps(2)` in UI motion with a smooth ease-out (`easeOut` in `src/lib/motion.ts`, `ease-out` in CSS). The pixel-art loops stay stepped. Bundle size is unchanged.*
+
 
 - **Parallel slices colliding.** This is the main workflow risk.
   - Each slice owns a separate set of files (see Files that change).

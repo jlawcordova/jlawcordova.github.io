@@ -86,11 +86,27 @@ const rgb = (hex) => `rgb(${[1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 1
  * moves, so their boxes are measured at rest.
  */
 const settled = (page) =>
-  page.waitForFunction(() =>
-    ['.range__nameplate', '.range__sprite'].every((s) => {
-      const t = getComputedStyle(document.querySelector(s)).transform;
-      return t === 'none' || t === 'matrix(1, 0, 0, 1, 0, 0)';
-    }),
+  page.evaluate(
+    () =>
+      new Promise((resolve) => {
+        // Motion writes its first frame after the click, so a check made at
+        // once can see "at rest" before the move starts. Wait out the move's
+        // first frames, then for three frames in a row at rest.
+        const atRest = () =>
+          ['.range__nameplate', '.range__sprite'].every((s) => {
+            const t = getComputedStyle(document.querySelector(s)).transform;
+            return t === 'none' || t === 'matrix(1, 0, 0, 1, 0, 0)';
+          });
+        let frames = 0;
+        let still = 0;
+        const tick = () => {
+          frames += 1;
+          still = frames > 2 && atRest() ? still + 1 : 0;
+          if (still >= 3) resolve(undefined);
+          else requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }),
   );
 
 /** Clicking leaves the pointer over the console and focus on a button, and either one pauses it. */
