@@ -29,13 +29,13 @@ import { site } from '../../site';
   // The hero's entrance (pixel-first look spec, Hero): the copy staggers in,
   // then the island rises. Each start state is set by the call that animates
   // it, and nothing runs under reduced motion.
-  import { play, px, stagger } from '../../lib/motion';
+  import { easeOut, play, stagger } from '../../lib/motion';
 
   const hero = document.querySelector('.hero');
   if (hero) {
     const copy = [...hero.querySelectorAll('.hero__title, .hero__lede, .hero__actions')];
-    play(copy, { opacity: [0, 1], y: [16, 0] }, { duration: 0.4, delay: stagger(0.08), ease: px(6) });
+    play(copy, { opacity: [0, 1], y: [16, 0] }, { duration: 0.4, delay: stagger(0.08), ease: easeOut });
     const art = hero.querySelector('.hero__art');
-    if (art) play(art, { opacity: [0, 1], y: [24, 0] }, { duration: 0.5, delay: 0.2, ease: px(6) });
+    if (art) play(art, { opacity: [0, 1], y: [24, 0] }, { duration: 0.5, delay: 0.2, ease: easeOut });
   }
 </script>

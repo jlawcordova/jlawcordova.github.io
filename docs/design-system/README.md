@@ -13,7 +13,7 @@ This folder is the design system's source of truth. Change it here, by pull requ
 3. **Dense but readable.** Use dashboards over hero banners, systems diagrams over illustrations, and real workflows over abstract concepts.
 4. **One hue, used sparingly.** `color-accent` marks the one thing to act on. Everything else is ink on warm paper.
 5. **Square and flat, like the pixel art.** Corners are square and nothing casts a shadow. Edges and depth come from a thick ink border (`border-thick`) on things you press and on the shell, and from nothing else.
-6. **Delight in small, stepped moves.** Use the Motion library to make state changes and entrances feel alive, in the stepped rhythm of the pixel art. Motion supports the content and never hides it.
+6. **Delight in small, smooth moves.** Use the Motion library to make state changes and entrances feel alive. UI motion glides at the display's full frame rate; only the pixel art's own loops step. Motion supports the content and never hides it.
 
 ## Content fundamentals
 
@@ -116,7 +116,7 @@ Tokens: `radius-*` all become 0. `shadow-pixel`, `shadow-pixel-pressed`, `shadow
 Use [Motion](https://motion.dev) (the `motion` package, formerly Framer Motion) wherever a transition makes the site more delightful. The site isn't React, so use Motion's plain-JavaScript API (`animate`, `stagger`, `inView`) in small client scripts, not its React components.
 
 - **Where:** state changes (a Range class switching, a nameplate updating, a row's panel opening), entrances as a section scrolls into view (a short stagger of cards or rows), and playful feedback a person asks for (a sprite's hop when they press A).
-- **How it moves:** stepped, like the sprites. Use stepped easing (`steps(4)` to `steps(8)`) for anything pixel-art and for entrances. Keep durations between 0.12s and 0.5s, and stagger by 0.04–0.08s. Move by whole pixels on the 4px grid: 8–24px slides and hops, never long sweeps.
+- **How it moves:** smoothly. Use the shared ease-out (`easeOut` in `src/lib/motion.ts`, `cubic-bezier(0.22, 1, 0.36, 1)`) for entrances, slides and panels, and `ease-out` for CSS presses and turns. Stepped easing (`steps()`) is for the pixel art's own CSS loops only, such as the island's water and trucks, because stepped UI motion reads as lag. Keep durations between 0.12s and 0.5s, and stagger by 0.04–0.08s. Keep moves short: 8–24px slides and hops, never long sweeps.
 - **What to avoid:** motion that loops on its own beyond the Range rotation, parallax, scroll-jacking, layout shift, and animating text people are reading.
 - **Never hide content.** Pages render complete without JavaScript. A script sets an element's start state just before animating it, so nothing stays hidden if the script fails.
 - **Reduced motion:** under `prefers-reduced-motion: reduce`, skip the animation and jump to the end state.

@@ -6,7 +6,7 @@ One record as a list row: a pixel icon, a short title and line, and a date. A do
 
 - `ul.achievement-list > li.achievement[data-state]`: rows on `color-surface` with a 3px `color-border` edge and square corners, at least 72px tall, with a 12px gap between them.
 - The row grid is icon (48px), text, date and chevron. The title is in `row-lead`, the line in `row-short` (`color-ink-muted`) and the date in `label`. At 480px and below, the date stacks under the text.
-- `data-state="done"` uses a `<details>`. The panel animates open in 0.25s with Motion, stepped, or instantly under reduced motion. Rows stagger in as the list scrolls into view (see the README's Motion section). On mouse devices a tooltip shows the full description: `color-page` on `color-ink` with `border-thick`, and no shadow.
+- `data-state="done"` uses a `<details>`. The panel eases open in 0.25s with Motion, or opens instantly under reduced motion. Rows stagger in as the list scrolls into view (see the README's Motion section). On mouse devices a tooltip shows the full description: `color-page` on `color-ink` with `border-thick`, and no shadow.
 - `data-state="locked"`: transparent, with a 3px dashed `color-border-strong` edge. The icon dims to 40% grey with a padlock in the corner, and the text keeps full strength. The date slot says "Not done yet".
 - Icons are 16px cells from `src/assets/pixel-art/achievement-icons.svg`, drawn at 48px. Put `<AchievementIcons />` on the page once, then crop a cell with `<svg viewBox="<16 × index> 0 16 16"><use href="#achievement-icons"/></svg>`.
 

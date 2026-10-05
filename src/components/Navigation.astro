@@ -63,8 +63,8 @@ const lately = homeSelection(getAccomplishments()).visible;
       button.setAttribute('aria-expanded', String(open));
       button.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
       if (open && motion) {
-        const { play, stagger, px } = motion;
-        play([...links.children], { opacity: [0, 1], y: [-8, 0] }, { duration: 0.2, delay: stagger(0.04), ease: px(4) });
+        const { play, stagger, easeOut } = motion;
+        play([...links.children], { opacity: [0, 1], y: [-8, 0] }, { duration: 0.2, delay: stagger(0.04), ease: easeOut });
       }
     };
 

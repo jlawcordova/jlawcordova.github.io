@@ -244,7 +244,7 @@ section.range {
   background: var(--color-accent);
   color: var(--color-on-accent);
   font: 15px/1 var(--font-pixel);
-  transition: transform 0.12s steps(2);
+  transition: transform 0.12s ease-out;
 }
 .range__button:hover {
   background: var(--color-accent-hover);

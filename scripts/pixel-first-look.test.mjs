@@ -117,6 +117,18 @@ describe('pixel-first look', () => {
     assert.deepEqual(bad, []);
   });
 
+  it('R4, R10: UI motion is smooth; only the pixel art steps', async () => {
+    // Stepped easing read as lag on the deployed site (spec amendment, 2026-10-05).
+    const stepped = ['src/styles/pixel-art.css', 'src/styles/lab.css'];
+    const bad = [];
+    for (const file of [...(await styledFiles()), ...(await filesIn('src', ['.ts']))]) {
+      if (stepped.includes(file) || file.startsWith('src/components/lab/')) continue;
+      const text = stripComments(await read(file));
+      if (/\bsteps\(|step-(?:start|end)\b/.test(text)) bad.push(file);
+    }
+    assert.deepEqual(bad, []);
+  });
+
   it('R3: border-thick is in both token files, with the same value', async () => {
     const tokens = JSON.parse(await read('docs/design-system/tokens.json'));
     const thick = tokens.border?.tokens?.find((t) => t.name === 'border-thick');

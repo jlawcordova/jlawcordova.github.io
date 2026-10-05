@@ -106,7 +106,7 @@ const CHEVRON = 'M0 0h2v1h-2zM5 0h2v1h-2zM1 1h2v1h-2zM4 1h2v1h-2zM2 2h3v1h-3zM3 
   // One listener for every row on the page. `toggle` doesn't bubble, so it's
   // caught on the way down. Under reduced motion play() does nothing, and the
   // panel is simply open; without JavaScript, <details> still opens.
-  import { play, px } from '../lib/motion';
+  import { easeOut, play } from '../lib/motion';
 
   document.addEventListener(
     'toggle',
@@ -114,7 +114,7 @@ const CHEVRON = 'M0 0h2v1h-2zM5 0h2v1h-2zM1 1h2v1h-2zM4 1h2v1h-2zM2 2h3v1h-3zM3 
       const details = event.target;
       if (!(details instanceof HTMLDetailsElement) || !details.open || !details.matches('.achievement__details')) return;
       const panel = details.querySelector('.achievement__panel');
-      if (panel) play(panel, { opacity: [0, 1], y: [-8, 0] }, { duration: 0.25, ease: px(4) });
+      if (panel) play(panel, { opacity: [0, 1], y: [-8, 0] }, { duration: 0.25, ease: easeOut });
     },
     true,
   );

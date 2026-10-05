@@ -1,8 +1,8 @@
 // The site's one door to Motion (pixel-first look spec, Motion module): short,
-// stepped moves in the pixel art's rhythm. Nothing here hides content without
+// smooth moves at the display's full frame rate. Nothing here hides content without
 // also revealing it, and nothing runs under prefers-reduced-motion. Islands
 // import what they use, so a page without one loads no Motion code.
-import { animate, inView, stagger, steps, type AnimationOptions, type DOMKeyframesDefinition } from 'motion';
+import { animate, inView, stagger, type AnimationOptions, type DOMKeyframesDefinition } from 'motion';
 
 export { stagger };
 
@@ -11,8 +11,11 @@ type Targets = Element | Element[];
 /** True when the visitor asked for reduced motion. Read on every call, so a change applies at once. */
 export const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/** Stepped easing, like the sprites: `px(4)` moves in four steps. */
-export const px = (n: number) => steps(n);
+/**
+ * The site's easing: a smooth ease-out that starts quickly and settles gently.
+ * The pixel art's own loops stay stepped in CSS; UI motion glides.
+ */
+export const easeOut: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 /**
  * Animates from the first keyframe to the last. The start state is set by this
@@ -31,8 +34,6 @@ interface RevealOptions {
   /** Seconds between elements that enter together. */
   stagger?: number;
   duration?: number;
-  /** Steps in the easing. */
-  frames?: number;
 }
 
 /**
@@ -41,7 +42,7 @@ interface RevealOptions {
  * visitor can see disappears. The ones hidden here are revealed by the same
  * call's observers, and all at once before printing.
  */
-export function reveal(elements: Iterable<Element>, { y = 16, stagger: gap = 0, duration = 0.4, frames = 6 }: RevealOptions = {}) {
+export function reveal(elements: Iterable<Element>, { y = 16, stagger: gap = 0, duration = 0.4 }: RevealOptions = {}) {
   if (reduced()) return;
   const below = [...elements].filter(
     (el): el is HTMLElement | SVGElement => 'style' in el && el.getBoundingClientRect().top > innerHeight,
@@ -71,7 +72,7 @@ export function reveal(elements: Iterable<Element>, { y = 16, stagger: gap = 0, 
         resetting = true;
         requestAnimationFrame(() => ((batch = 0), (resetting = false)));
       }
-      animate(el, { opacity: [0, 1], y: [y, 0] }, { duration, delay, ease: px(frames) });
+      animate(el, { opacity: [0, 1], y: [y, 0] }, { duration, delay, ease: easeOut });
     },
     { amount: 0.2 },
   );

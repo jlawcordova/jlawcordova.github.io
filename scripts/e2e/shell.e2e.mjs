@@ -130,7 +130,10 @@ test('R7: a link, Escape and an outside click close the menu, and Escape returns
   await page.locator('.site-nav__links a[href="/#range"]').click();
   await waitClosed(page);
 
+  // Focus starts inside the menu, so returning it to the button is what's tested.
   await openMenu(page);
+  await page.locator('.site-nav__links a').first().focus();
+  assert.equal((await menu(page)).focused, false, 'focus is in the menu, not on the button');
   await page.keyboard.press('Escape');
   await waitClosed(page);
   assert.equal((await menu(page)).focused, true, 'Escape returns focus to the button');
