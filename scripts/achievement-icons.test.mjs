@@ -56,6 +56,15 @@ test('R12: every icon is a 16×16 sprite using world colors only', async () => {
   }
 });
 
+// Isometric icons spec R3: the icons are in the island and Range look, where
+// faces are set apart by shade and nothing is outlined.
+test('isometric icons R3: no icon uses ink', async () => {
+  for (const id of SHEET_ORDER) {
+    const object = (await import(new URL(`objects/icon-${id}.mjs`, SOURCE).href)).default;
+    assert.ok(!Object.values(object.keys).includes('ink'), `${id} has no ink key`);
+  }
+});
+
 test('R12: the sheet scene places the icons in SHEET_ORDER, one cell each', async () => {
   const scene = (await import(new URL('scenes/achievement-icons.mjs', SOURCE).href)).default;
   assert.deepEqual(scene.viewBox, [0, 0, CELL * SHEET_ORDER.length, CELL]);

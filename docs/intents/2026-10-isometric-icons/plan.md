@@ -40,8 +40,8 @@ The subagent worktrees are scratch: the main session copies only their `icon-*.m
    - `book` + `signpost` (wood and paper)
    - `trophy` (alone)
 
-   Each one reads the approved chest, star and lock as its reference. The main session gathers the 15 files, runs `npm run art`, makes the after images and the page shots, and commits the icons, the SVG and the images.
-5. **Integration.** Add the no-`ink` test to `scripts/achievement-icons.test.mjs` and the D5 note. Run the full proof (below). Restore `src/data/accomplishments.json` with `git checkout`. Commit. Hand over the final before/after comparison of all 18 and the proof output. The owner pushes and opens the PR to `main`.
+   Each one reads the approved chest, star and lock as its reference. The main session gathers the 15 files, runs `npm run art`, makes the after images and the page shots, and commits the icons, the SVG and the images. *(As run: the owner asked for the round-2 artists to run on Claude Fable, so each `pixel-artist` agent was launched with that model. Their worktrees were cut from `main`, so each read the spec, plan, the updated skills and the three reference icons from the main session's checkout by path. All 15 came back within the caps and none needed a second pass.)*
+5. **Integration.** Add the no-`ink` test to `scripts/achievement-icons.test.mjs` and the D5 note. Run the full proof (below). Restore `src/data/accomplishments.json` with `git checkout`. Commit. Hand over the final before/after comparison of all 18 and the proof output. The owner pushes and opens the PR to `main`. *(As run: two departures from Proof. `npm run build` fails inside this worktree because Vite 8 resolves `tsconfig.json` against the main checkout, which has no `node_modules` ("Tsconfig not found astro/tsconfigs/strict"); the build was run on an rsync copy of the worktree outside the repo folder and passed there. `npm run e2e` was NOT RUN, since Playwright isn't installed on this machine; the page screenshots were taken with headless Chrome over the DevTools protocol from a scratch script instead. Both should be run on the PR branch where they can.)*
 
 ### Subagent prompt (each round)
 
