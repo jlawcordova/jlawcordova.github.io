@@ -212,7 +212,7 @@ A name can be written `objects/<name>` or `scenes/<name>` when an object and a s
 | `closeup-water` | The river, the waterfall and its streaks (`flag`) |
 | `closeup-crane` | The crane, the hanging load, the stack at its foot and the pine behind it |
 | `closeup-office` | The house, the road, the bridge and its rail, and both trucks at two points of their drive |
-| `closeup-front-trees` | The front trees and the fence |
+| `closeup-front-trees` | The front trees |
 | `closeup-sky` | The three clouds and the crane jib's head |
 
 They place the island's objects at the island's positions, in its paint order, and a test keeps them that way: when the island's scene renames or moves an object, change the close-ups in the same commit. The preview's card color is one shade off the hero's background, so the sky reads as it does on the site.
@@ -257,7 +257,7 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
   - the ground, road, bridge, `house`, back trees (`tree-small` and `pine`, three of them on a `tree-shade`) as world-color objects;
   - the river's `river` tiles and `waterfall-face`, `flag` and `crane-box` (the crane's hanging cardboard box): frame loops `wf` (5 frames, one set per piece), `ff` (4) and `hf` (6);
   - `truck`, placed with class `itruck it1`, and `truck-green`, placed with `itruck it2`;
-  - the pieces listed after the trucks, so they paint over them: `bridge-rail`, `boxes` (a stack of cardboard boxes), the crane as `crane-mast` with `crane-jib` stacked on it, `fence` and the front trees;
+  - the pieces listed after the trucks, so they paint over them: `bridge-rail`, `boxes` (a stack of cardboard boxes), the crane as `crane-mast` with `crane-jib` stacked on it, and the front trees. `fence` is in the library but off the island (the owner's Stage 2 review);
   - `cloud-a`, `cloud-b` and `cloud-c`, placed with `pcloud pc0` to `pc2`.
 - **The Range sprite** (`scenes/range-sprite.mjs`) is `range-island` (the one legacy object left: imported with `scripts/import-pixel-art.mjs`, marked `legacy: true`, in the legacy palette, exempt from the caps, and a pixel-for-pixel copy of the original until someone changes it on purpose) plus seven outfits that extend `character`, one per `data-class` group, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). The outfits and `character` were redrawn in world and outfit colors by the [Range class characters](../../../docs/intents/2026-10-sixth-range-class/intent.md) change, so they're no longer legacy.
 - **Recolors.** `truck-green` is `truck` with other colors: it `extends: 'truck'` and lists only the keys that differ. Use the same pattern for a variant that changes colors but not shape.

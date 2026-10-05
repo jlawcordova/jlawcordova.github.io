@@ -1,6 +1,6 @@
 // Pixel-art scene. How to edit it: .claude/skills/pixel-art/SKILL.md
 export default {
-  viewBox: [-41, 49, 68, 46],
+  viewBox: [-41, 48, 54, 47],
   origin: [0, 8],
   items: [
     { object: 'tile', at: { tile: [0, 3, 0] } },
@@ -23,7 +23,6 @@ export default {
     { object: 'block-right', at: { tile: [5, 4, 0] } },
     { object: 'block-left', at: { tile: [4, 5, 0] } },
     { object: 'block', at: { tile: [5, 5, 0] } },
-    { object: 'fence', at: { px: [12, 75] } },
     { object: 'tree-small', at: { px: [-13, 73] } },
     { object: 'pine', at: { px: [-30, 78] } },
     { object: 'pine', at: { px: [-1, 80] } },

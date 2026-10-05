@@ -41,7 +41,7 @@ const MAX_GZIP = 125 * 1024;
  * (spec, Target scene). Trees stand on both sides: TREES are placed by depth, and the R5 test checks each one.
  */
 const BEHIND_TRUCKS = ['island-shadow', 'tile', ...BLOCKS, 'river', 'waterfall-face', 'path', 'bridge', 'house', 'tree-shade'];
-const IN_FRONT_OF_TRUCKS = ['bridge-rail', 'boxes', 'crane-mast', 'crane-jib', 'fence', 'crane-box'];
+const IN_FRONT_OF_TRUCKS = ['bridge-rail', 'boxes', 'crane-mast', 'crane-jib', 'crane-box'];
 const TREES = ['tree', 'tree-small', 'pine'];
 
 const indexesOf = (names) => scene.items.flatMap((item, i) => (names.includes(item.object) ? [i] : []));
@@ -118,9 +118,10 @@ describe('hero island structure', () => {
       assert.ok(item, `${cls} is placed`);
       assert.deepEqual(item.at, { px: [31, 6] }, `${cls} position`);
     }
-    for (const name of ['flag', 'crane-box', 'river', 'waterfall-face', 'path', 'bridge', 'bridge-rail', 'house', 'boxes', 'tree-small', 'pine', 'crane-mast', 'crane-jib', 'fence', 'truck', 'truck-green']) {
+    for (const name of ['flag', 'crane-box', 'river', 'waterfall-face', 'path', 'bridge', 'bridge-rail', 'house', 'boxes', 'tree-small', 'pine', 'crane-mast', 'crane-jib', 'truck', 'truck-green']) {
       assert.ok(placed.includes(name), `${name} is still in the scene`);
     }
+    assert.ok(!placed.includes('fence'), 'the fence is off the island (the owner\'s Stage 2 review)');
     assert.ok(!placed.includes('waterfall'), 'the 82×45 waterfall is retired (slice 4)');
   });
 
@@ -191,7 +192,7 @@ describe('hero island structure', () => {
     }
     const lastTruck = Math.max(...indexesOf(['truck', 'truck-green']));
     const front = scene.items.filter((item, i) => i > lastTruck && !item.class && item.object !== 'crane-box');
-    assert.equal(front.length, 5 + 4, 'the rail, boxes, mast, jib and fence, and four trees');
+    assert.equal(front.length, 4 + 4, 'the rail, boxes, mast and jib, and four trees');
     const all = paintOf(front);
     const hex = (color) => sources.colors.get(color).hex.toUpperCase();
     for (const item of front) {
@@ -475,7 +476,6 @@ describe('hero island structure', () => {
       ['boxes', [32, 62]],
       ['crane-mast', [59, 59]],
       ['crane-jib', [56, 19]],
-      ['fence', [12, 75]],
       ['tree-small', [-13, 73]],
       ['pine', [-30, 78]],
       ['pine', [-1, 80]],
@@ -486,9 +486,9 @@ describe('hero island structure', () => {
     for (const [, px] of at(['tree-shade'])) {
       assert.ok(scene.items.some((item) => TREES.includes(item.object) && String(item.at.px) === String(px)), `a tree stands on the shade at ${px}`);
     }
-    // Where each piece meets the ground: a tree's or the mast's anchor (the foot of its trunk), and the lowest pixel of every column of the boxes and the fence.
+    // Where each piece meets the ground: a tree's or the mast's anchor (the foot of its trunk), and the lowest pixel of every column of the boxes.
     const feet = scene.items.filter((item) => [...TREES, 'crane-mast'].includes(item.object)).map((item) => [item.object, item.at.px]);
-    for (const item of scene.items.filter((item) => ['boxes', 'fence'].includes(item.object))) {
+    for (const item of scene.items.filter((item) => item.object === 'boxes')) {
       const lowest = new Map();
       for (const p of paintOf([item]).keys()) {
         const [x, y] = p.split(',').map(Number);

@@ -70,7 +70,6 @@ export default {
     { object: 'boxes', at: { px: [32, 62] } },
     { object: 'crane-mast', at: { px: [59, 59] } },
     { object: 'crane-jib', at: { px: [56, 19] } },
-    { object: 'fence', at: { px: [12, 75] } },
     { object: 'tree-small', at: { px: [-13, 73] } },
     { object: 'pine', at: { px: [-30, 78] } },
     { object: 'pine', at: { px: [-1, 80] } },

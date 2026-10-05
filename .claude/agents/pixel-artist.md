@@ -138,7 +138,7 @@ One map can't fix both, so the island uses separate edge pieces, all with no in-
   - the trucks' lowest pixel in each column (the road line);
   - the house's mask, which covers the tile at `[0, 3]`;
   - the bridge deck, which counts as road (paint plank gaps, don't open holes);
-  - the feet of `boxes` and `fence`, which must stand on grass;
+  - the feet of `boxes`, which must stand on grass;
   - the flag's streaks, which must land on `waterfall-face`.
 - **Prove the mask is kept.** When a redraw must keep a silhouette, have the generator compare the new map's mask with `HEAD`'s and refuse any difference. When you remove a post or strut that touches a deck or top edge, keep its last pixel in the edge's color, or the mask gets a hole.
 - **Grow objects upward or away from water and road.** Keep the anchor on the foot. Keeping or shrinking a map is fine when it reads better (the crane's box kept its size by raising its travel). The `boxes` stack stands only 2–3 px clear of the river, so no column of it may reach lower than its lowest pixel in that column today.
@@ -161,7 +161,7 @@ From `scripts/pixel-art-island.test.mjs`, plus the engine's R13 and R28. **(E)**
 | Trees | R3: pinned positions; each trunk foot on grass, not river or road. R5: crossing order with the trucks; 4 trees before the trucks and 4 after. |
 | Office | `house` anchor `[21, 41]` at `[-59, 59]`; it covers tile `[0, 3]` except `-34,31` and `-34,32` (checked before the next pin, so a worktree can confirm the mask while it fails); a world color at x −35, y 30–32. |
 | Crane | The same world colors at both ends of the mast's top row and of the jib's anchor row. The jib's anchor sits one pixel above the mast's top-left pixel; the jib paints the pixel above the cable (`crane-box` column 9, row 0); mast + jib > 64 px. R5: nothing paints between `it2` and `h0` except the front pieces. Each column of `boxes` stands on grass. R7: `flag` and `crane-box` keep their loops and frame counts, in world colors. |
-| Bridge | The truck road test (keep the deck mask). The rail paints after the trucks and shows. Each column of `fence` stands on grass. `library-demo` places `bridge`. |
+| Bridge | The truck road test (keep the deck mask). The rail paints after the trucks and shows. `library-demo` places `bridge`. |
 | Trucks | Road test: at every visible step, each column's lowest pixel is on `path` or `bridge`, ≥ 15 of 21 at rest. It reads only each column's lowest pixel, so any recolor inside the silhouette is safe. R7: world colors, no `ink`. `truck-green` still `extends: 'truck'` with no map of its own; override every material key you add. |
 
 ## Cost model
@@ -195,7 +195,7 @@ From `scripts/pixel-art-island.test.mjs`, plus the engine's R13 and R28. **(E)**
 | Trees | `closeup-front-trees` (and `closeup-crane` for the pine behind the mast) |
 | Office | `closeup-office` |
 | Crane | `closeup-crane` |
-| Bridge | `closeup-office` (bridge, rail and trucks) and `closeup-front-trees` (fence) |
+| Bridge | `closeup-office` (bridge, rail and trucks) |
 | Trucks | `closeup-office` |
 
 ## Working efficiently
