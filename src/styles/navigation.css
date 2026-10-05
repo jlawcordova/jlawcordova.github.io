@@ -1,3 +1,10 @@
+/* The sticky header's height with the bar on one row: 16px above the bar, the
+   bar's 6px padding around a 44px row, and its two thick borders. The title
+   bands start this far behind it (hero.css, page.css). Derived, not a token. */
+:root {
+  --site-header-height: calc(16px + 6px + 44px + 6px + 2 * var(--border-thick-width));
+}
+
 .site-header {
   position: sticky;
   top: 0;
@@ -7,6 +14,7 @@
   padding: 16px var(--gutter) 0;
 }
 
+/* Square, see-through over a 16px blur, with a thick ink edge and no shadow. */
 .site-nav {
   width: 100%;
   max-width: var(--content-max);
@@ -14,13 +22,13 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 10px 10px 10px 22px;
+  gap: 8px 16px;
+  padding: 6px 6px 6px 20px;
   border-radius: var(--radius-pill);
   background: var(--color-surface-strong);
   border: var(--border-thick);
-  -webkit-backdrop-filter: blur(16px) saturate(130%);
-  backdrop-filter: blur(16px) saturate(130%);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
@@ -32,7 +40,7 @@
 .site-nav__brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 24px;
   min-height: 44px;
   font: 18px/1 var(--font-pixel);
   letter-spacing: 1px;
@@ -44,6 +52,7 @@
 
 .site-nav__links {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 4px;
 }
@@ -53,20 +62,17 @@
   align-items: center;
   min-height: 44px;
   padding: 0 14px;
-  font-size: 14px;
-  line-height: 1;
+  font: 13px/1 var(--font-pixel);
+  letter-spacing: 1px;
+  text-transform: uppercase;
   color: var(--color-ink);
 }
 .site-nav__links a:not(.pill):hover {
   color: var(--color-accent);
 }
 
-/* No drawer: the links wrap under the brand, and the two-row bar takes the
-   panel radius so it doesn't turn into a tall stadium. */
+/* Without the menu (no JavaScript), the links wrap under the brand. */
 @media (max-width: 480px) {
-  .site-nav {
-    border-radius: var(--radius-panel);
-  }
   .site-nav__links {
     flex: 1 1 100%;
   }

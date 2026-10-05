@@ -1,16 +1,21 @@
 ---
 import JLMark from './JLMark.astro';
+import { getAccomplishments, homeSelection } from '../lib/accomplishments';
 import { site } from '../site';
 
 // On the home page the brand scrolls back to the hero instead of reloading.
 const home = Astro.url.pathname === '/';
+// Lately points at the home page's accomplishments section, so it shows only
+// when that section renders (pixel-first look spec, Shell).
+const lately = homeSelection(getAccomplishments()).visible;
 ---
 
 <header class="site-header">
   <nav class="site-nav" aria-label="Main">
-    <a class="site-nav__brand" href={home ? '#top' : '/'}><JLMark /> J.LAW</a>
+    <a class="site-nav__brand" href={home ? '#top' : '/'}><JLMark height={23} /> J. LAW. Cordova</a>
     <div class="site-nav__links">
       <a href="/#range">Range</a>
+      {lately && <a href="/#accomplishments">Lately</a>}
       <a href="/blog/">Blog</a>
       <a class="pill" href={site.author.linkedin}>Contact</a>
     </div>
