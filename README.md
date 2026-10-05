@@ -31,6 +31,7 @@ npm run e2e -- scripts/e2e/accomplishments.e2e.mjs  # one suite only
 | `src/data/accomplishments.json` | Accomplishments for the home page and `/accomplishments/`. The committed copy is an empty `"unavailable"` placeholder; CI overwrites it before every build. |
 | `src/lib/accomplishment-list.mjs`, `src/lib/accomplishments.ts` | The accomplishments' logic (done and locked, what a row shows, the home selection, dates), in plain `.mjs` so `npm test` can import it; `accomplishments.ts` feeds it the data file. |
 | `src/lib/paginate.mjs`, `src/lib/pagination.ts` | `paginate(items, perPage)` and page paths, shared by `/blog/` and `/accomplishments/`. |
+| `src/lib/motion.ts` | The one importer of Motion: `reduced()`, stepped `px(n)` easing, `play()` and `reveal()`, a scroll entrance that never leaves content hidden. Islands import it; the nav loads it lazily. |
 | `src/lib/achievement-icons.mjs` | The achievement icons (ids and meanings). `src/pages/achievement-icons.json.ts` publishes them at `/achievement-icons.json` for the accomplishments skill. |
 | `scripts/fetch-accomplishments.mjs` | Reads the public `com.jlawcordova.profile.accomplishment` records from the AT Protocol repo of `jlawcordova.com` and writes the file above. Any failure writes the placeholder and exits 0, so the build never breaks on the data. |
 | `src/data/home.ts` | The Range carousel's classes. Entry *i* matches outfit variant `data-class="i"` in the sprite. |

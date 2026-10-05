@@ -1,12 +1,22 @@
+/* The sticky header's height with the bar on one row: 16px above the bar, the
+   bar's 6px padding around a 44px row, and its two thick borders. The title
+   bands start this far behind it (hero.css, page.css). Derived, not a token. */
+:root {
+  --site-header-height: calc(16px + 6px + 44px + 6px + 2 * var(--border-thick-width));
+}
+
 .site-header {
   position: sticky;
   top: 0;
   z-index: 20;
   display: flex;
+  align-items: flex-start;
   justify-content: center;
   padding: 16px var(--gutter) 0;
+  container: site-header / inline-size;
 }
 
+/* Square, see-through over a 16px blur, with a thick ink edge and no shadow. */
 .site-nav {
   width: 100%;
   max-width: var(--content-max);
@@ -14,14 +24,13 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 10px 10px 10px 22px;
+  gap: 8px 16px;
+  padding: 6px 6px 6px 20px;
   border-radius: var(--radius-pill);
   background: var(--color-surface-strong);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-nav);
-  -webkit-backdrop-filter: blur(16px) saturate(130%);
-  backdrop-filter: blur(16px) saturate(130%);
+  border: var(--border-thick);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
@@ -33,7 +42,7 @@
 .site-nav__brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 24px;
   min-height: 44px;
   font: 18px/1 var(--font-pixel);
   letter-spacing: 1px;
@@ -45,6 +54,7 @@
 
 .site-nav__links {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 4px;
 }
@@ -54,24 +64,96 @@
   align-items: center;
   min-height: 44px;
   padding: 0 14px;
-  font-size: 14px;
-  line-height: 1;
+  font: 13px/1 var(--font-pixel);
+  letter-spacing: 1px;
+  text-transform: uppercase;
   color: var(--color-ink);
 }
 .site-nav__links a:not(.pill):hover {
   color: var(--color-accent);
 }
 
-/* No drawer: the links wrap under the brand, and the two-row bar takes the
-   panel radius so it doesn't turn into a tall stadium. */
-@media (max-width: 480px) {
+/* Where the full wordmark and the menu button can't share one row (a header
+   under 350px, so phones narrower than about 382px, and the design-system
+   preview), the wordmark steps down so the closed bar stays one row. */
+@container site-header (max-width: 349px) {
   .site-nav {
-    border-radius: var(--radius-panel);
+    padding-left: 12px;
+    column-gap: 8px;
   }
+  .site-nav__brand {
+    gap: 12px;
+    font-size: 14px;
+  }
+}
+
+/* Without the menu (no JavaScript), the links wrap under the brand. */
+@media (max-width: 480px) {
   .site-nav__links {
     flex: 1 1 100%;
   }
   .site-nav__links .pill {
     margin-left: auto;
+  }
+}
+
+/* The menu button: icon only, no text and no border, a 44px target. It shows
+   only at 720px and below, and only with JavaScript (the data-js flag is set
+   before first paint, so the collapsed bar paints first). */
+.site-nav__menu {
+  display: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-button);
+  background: transparent;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+.site-nav__menu:hover {
+  background: var(--color-card);
+}
+.site-nav__glyph-close,
+.site-nav.is-open .site-nav__glyph-open {
+  display: none;
+}
+.site-nav.is-open .site-nav__glyph-close {
+  display: block;
+}
+
+@media (max-width: 720px) {
+  /* The header keeps its one-row height, so the open menu drops over the
+     page instead of pushing it down. */
+  html[data-js] .site-header {
+    height: var(--site-header-height);
+  }
+  html[data-js] .site-nav__menu {
+    display: inline-flex;
+  }
+  html[data-js] .site-nav__links {
+    display: none;
+  }
+
+  /* Open: the links stack as full-width rows under an ink rule, with the
+     pill full width at the bottom. */
+  html[data-js] .site-nav.is-open .site-nav__links {
+    display: flex;
+    flex: 1 1 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 4px 0 6px;
+    border-top: var(--border-thick-width) solid var(--color-ink);
+  }
+  html[data-js] .site-nav.is-open .site-nav__links a:not(.pill) {
+    padding: 0 8px;
+    border-bottom: 1px solid var(--color-border);
+  }
+  html[data-js] .site-nav.is-open .site-nav__links .pill {
+    justify-content: center;
+    margin: 8px 0 0;
   }
 }

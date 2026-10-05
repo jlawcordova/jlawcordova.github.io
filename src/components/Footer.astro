@@ -1,17 +1,23 @@
 ---
+import JLMark from './JLMark.astro';
 import { site } from '../site';
 
 const builtAt = new Date();
 ---
 
 <footer class="site-footer">
-  <p class="site-footer__copy">
-    &copy; <time datetime={builtAt.toISOString()}>{builtAt.getUTCFullYear()}</time> J. LAW. CORDOVA
-  </p>
-  <nav class="site-footer__links" aria-label="Elsewhere">
-    <a href={site.author.github}>GITHUB</a>
-    <a href={site.author.linkedin}>LINKEDIN</a>
-    <a href={site.author.twitter}>X</a>
-    <a href="/blog/">BLOG</a>
-  </nav>
+  <div class="site-footer__inner">
+    <p class="site-footer__copy">
+      <span class="site-footer__chip"><JLMark height={16} /></span>
+      <span>&copy; <time datetime={builtAt.toISOString()}>{builtAt.getUTCFullYear()}</time> J. LAW. CORDOVA</span>
+    </p>
+    <nav class="site-footer__links" aria-label="Elsewhere">
+      <a href={site.author.github}>GITHUB</a>
+      <a href={site.author.linkedin}>LINKEDIN</a>
+      <a href={site.author.twitter}>X</a>
+      <a href="/blog/">BLOG</a>
+      <!-- #top: the hero on the home page, and the top of the page anywhere without that id. -->
+      <a class="site-footer__top" href="#top"><span aria-hidden="true">↑</span> TOP</a>
+    </nav>
+  </div>
 </footer>

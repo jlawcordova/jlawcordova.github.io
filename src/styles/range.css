@@ -3,18 +3,23 @@
 section.range {
   background: var(--color-forest);
   color: var(--color-on-forest);
-  padding: 96px var(--gutter) 112px;
+  padding: 96px var(--gutter) 0;
+  /* The console runs off the bottom edge, like a handheld half out of frame.
+     clip, not just hidden: a hidden box can still be scrolled by
+     scrollIntoView or focus, which would slide the cut-off part into view. */
+  overflow: hidden;
+  overflow: clip;
 }
 
-/* Focus on the dark ground: light outline, forest halo. The stage inside
-   the panel is light, so it keeps the default ring. */
+/* Focus on the dark ground: light outline, forest halo. */
 .range :where(a, button):focus-visible {
   outline-color: var(--color-on-forest);
   box-shadow: 0 0 0 5px var(--color-forest);
 }
-.range__stage :where(a, button):focus-visible {
+/* On the gold console: ink outline, gold halo. */
+.range__console :where(button):focus-visible {
   outline-color: var(--color-ink);
-  box-shadow: 0 0 0 5px var(--color-card);
+  box-shadow: 0 0 0 5px var(--color-gold);
 }
 
 /* The section supplies the gutter, so this isn't .container. */
@@ -22,81 +27,97 @@ section.range {
   max-width: var(--content-max);
   margin-inline: auto;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   align-items: center;
-  gap: 56px;
+  gap: 48px;
 }
 
-.range__panel {
-  flex: 1 1 460px;
-  min-width: 0;
-  border-radius: var(--radius-panel);
-  padding: 20px;
-  background: var(--color-on-forest-surface);
-  border: 1px solid var(--color-on-forest-border);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-}
-
-.range__stage {
-  border-radius: var(--radius-stage);
-  background-color: var(--color-card);
-  padding: 28px 20px 24px;
+.range__copy {
+  max-width: 640px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  text-align: center;
+}
+
+.range__copy h2 {
+  margin: 0;
+  font-size: clamp(34px, 3.6vw, 48px);
+  line-height: 1.08;
+  letter-spacing: -1px;
+  color: var(--color-on-forest);
+}
+
+.range__copy .gold {
+  color: var(--color-gold);
+}
+
+.range__copy p {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--color-on-forest-muted);
+}
+
+/* The handheld: a gold shell, open at the bottom, where it leaves the section. */
+.range__console {
+  width: 100%;
+  max-width: 540px;
+  margin-bottom: -96px;
+  padding: 28px 28px 0;
+  background: var(--color-gold);
+  border: var(--border-thick);
+  border-bottom: 0;
+}
+
+.range__bezel {
+  padding: 19px 21px 17px;
+  background: var(--color-ink);
+}
+
+.range__stage {
+  overflow: hidden;
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  padding: 20px 18px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   color: var(--color-ink);
 }
 
+/* label type, on paper: the class color's swatch, then its name. */
 .range__nameplate {
+  align-self: flex-start;
   margin: 0;
   min-height: 44px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  padding: 0 18px;
-  background: var(--color-ink);
-  color: var(--color-page);
-  font: 18px/1 var(--font-pixel);
-  letter-spacing: 1px;
-  box-shadow: 4px 4px 0 var(--class-shadow);
-}
-
-.range__controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  max-width: 100%;
-}
-
-.range__arrow,
-.range__toggle {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  border: 0;
-  background: transparent;
+  gap: 10px;
+  padding: 0 12px;
+  background: var(--color-page);
   color: var(--color-ink);
-  cursor: pointer;
+  border: var(--border-thick);
+  font: 12px/1 var(--font-pixel);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.range__arrow {
-  width: 56px;
-  height: 56px;
-}
-
-/* The auto-advance nudge on the Next arrow, as in the mock. */
-.range__arrow.is-pulsing {
-  transform: translateX(4px) scale(0.88);
-  color: var(--color-accent);
+.range__swatch {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  background: var(--class-shadow);
+  border: 2px solid var(--color-ink);
 }
 
 .range__sprite {
   margin: 0;
   min-width: 0;
+  max-width: 100%;
   display: flex;
   justify-content: center;
 }
@@ -123,87 +144,161 @@ section.range {
   display: inline;
 }
 
-.range__pager {
+.range__controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 28px;
+}
+
+:where(.range__controls button) {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
 }
 
-.range__dot {
-  width: 10px;
-  height: 10px;
-  background: rgba(90, 62, 43, 0.25);
+/* D-pad: 44px cells in ink. */
+.range__dpad {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 44px);
+  grid-template-rows: repeat(3, 44px);
 }
-.range__dot.is-current {
+.range__dpad-arm {
   background: var(--color-ink);
 }
-
-.range__toggle {
-  width: 44px;
-  height: 44px;
-  margin-left: 8px;
+.range__dpad-hub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.range__dpad-hub::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  background: var(--color-footer);
 }
 
-.range__toggle[aria-pressed="true"] .range__icon-pause,
-.range__toggle[aria-pressed="false"] .range__icon-play {
-  display: none;
+.range__arrow {
+  width: 44px;
+  height: 44px;
+  background: var(--color-ink);
+  color: var(--color-gold);
+}
+/* Hover, and the auto-advance nudge on the Next arrow. */
+.range__arrow:hover,
+.range__arrow.is-pulsing {
+  background: var(--color-footer);
+  color: var(--color-page);
+}
+
+/* Silkscreen at 10px, under or beside the key it names. Decoration: each
+   button's own name says the same. */
+.range__key-label {
+  font: 10px/1 var(--font-pixel);
+  letter-spacing: 1px;
+  color: var(--color-footer);
+}
+
+/* START: a pixel slot over its label. */
+.range__toggle {
+  min-width: 64px;
+  min-height: 44px;
+  padding: 4px 6px;
+  flex-direction: column;
+  gap: 6px;
+  background: transparent;
+}
+.range__slot {
+  width: 48px;
+  height: 12px;
+  background: var(--color-ink);
+}
+.range__toggle:hover .range__slot {
+  background: var(--color-footer);
+}
+.range__toggle:active {
+  transform: translate(1px, 1px);
+}
+
+/* A and B: square accent keys that press in 2px. */
+.range__ab {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.range__key {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.range__button {
+  width: 52px;
+  height: 52px;
+  border: var(--border-thick);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font: 15px/1 var(--font-pixel);
+  transition: transform 0.12s steps(2);
+}
+.range__button:hover {
+  background: var(--color-accent-hover);
+}
+.range__button:active {
+  transform: translate(2px, 2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .range__button {
+    transition: none;
+  }
+  /* A only makes the sprite hop, which reduced motion turns off (spec R12). */
+  .range__key--a {
+    visibility: hidden;
+  }
 }
 
 /* Without JS the controls do nothing, so hide them without moving anything. */
-.range:not(.is-ready) .range__arrow,
-.range:not(.is-ready) .range__toggle {
+.range:not(.is-ready) .range__controls {
   visibility: hidden;
 }
 
-.range__copy {
-  flex: 1 1 380px;
-  min-width: 0;
+/* Speaker slots, cut off by the section's edge with the rest of the shell. */
+.range__speaker {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  justify-content: flex-end;
+  gap: 8px;
+  height: 150px;
+  padding: 26px 8px 0;
 }
-
-.range__copy h2 {
-  margin: 0;
-  font-size: clamp(40px, 5vw, 64px);
-  line-height: 1.04;
-  letter-spacing: -1px;
-  color: var(--color-on-forest);
-}
-
-.range__copy .gold {
-  color: var(--color-gold);
-}
-
-.range__copy p {
-  margin: 0;
-  max-width: 480px;
-  font-size: 18px;
-  line-height: 1.65;
-  color: var(--color-on-forest-muted);
+.range__speaker span {
+  width: 6px;
+  height: 56px;
+  background: var(--color-ink);
+  opacity: 0.4;
 }
 
 @media (max-width: 480px) {
   section.range {
-    padding: 64px var(--gutter) 72px;
+    padding-top: 64px;
   }
-  /* Give the sprite as much of the narrow stage as the 44px arrows allow. */
-  .range__panel {
+  .range__console {
+    padding: 16px 16px 0;
+  }
+  /* Give the sprite and the longest name (Security & Governance) the room. */
+  .range__bezel {
     padding: 12px;
   }
   .range__stage {
-    padding-inline: 12px;
+    padding: 14px 10px 10px;
   }
-  .range__controls {
-    gap: 4px;
-  }
-  .range__arrow {
-    width: 44px;
-  }
-  /* The longest class name (Security & Governance) stays on one line at
-     390px, for every class, so the nameplate never changes height. */
   .range__nameplate {
-    padding-inline: 14px;
-    font-size: 14px;
+    gap: 8px;
+    padding-inline: 10px;
   }
 }

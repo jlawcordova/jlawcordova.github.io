@@ -1,6 +1,8 @@
 /*
  * Accomplishments as achievement rows (gamified accomplishments spec D4): the
- * home section, the /accomplishments/ pages, the rows and their tooltip.
+ * home section, the /accomplishments/ pages, the rows and their tooltip. Rows
+ * are square with a 3px edge (pixel-first look spec, Accomplishments), and a
+ * row's panel drops in with Motion (the script in AccomplishmentRow.astro).
  */
 
 /* The icon sheet rows crop from. A zero size, not display:none, so <use> still draws it. */
@@ -17,28 +19,72 @@
   padding: 96px var(--gutter) 112px;
 }
 
-/* The section supplies the gutter, so this isn't .container. */
+/*
+ * The section supplies the gutter, so this isn't .container. Two columns at
+ * 1:2 above 720px, by grid area: the heading, lede and "Show more" on the
+ * left, the rows on the right. The last left row takes the list's spare height.
+ */
 .accomplishments__inner {
   max-width: var(--content-max);
   margin-inline: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  grid-template-rows: auto auto auto 1fr;
+  grid-template-areas:
+    "title list"
+    "lede list"
+    "more list"
+    ". list";
+  column-gap: 48px;
+  align-items: start;
+  justify-items: start;
 }
 
 .accomplishments__title {
-  margin: 0 0 40px;
-  font-size: clamp(36px, 5vw, 64px);
-  line-height: 1.04;
-  letter-spacing: -1px;
+  grid-area: title;
+  margin: 0 0 16px;
+  font-size: clamp(30px, 3vw, 40px);
+  line-height: 1.1;
+  letter-spacing: -0.8px;
+}
+
+.accomplishments__lede {
+  grid-area: lede;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-ink-muted);
 }
 
 .accomplishments .achievement-list {
-  align-self: stretch;
+  grid-area: list;
+  justify-self: stretch;
 }
 
 .accomplishments__more {
-  margin-top: 28px;
+  grid-area: more;
+  margin-top: 24px;
+}
+
+/* Stacked: the heading and lede, the rows, then "Show more" under them. */
+@media (max-width: 720px) {
+  .accomplishments__inner {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-template-areas:
+      "title"
+      "lede"
+      "list"
+      "more";
+  }
+
+  .accomplishments__lede {
+    margin-bottom: 32px;
+  }
+
+  .accomplishments__more {
+    margin-top: 28px;
+  }
 }
 
 /* Full-list pages */
@@ -71,7 +117,7 @@
 .achievement-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -79,9 +125,8 @@
 
 .achievement {
   position: relative;
-  border-radius: var(--radius-card);
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: var(--border-thick-width) solid var(--color-border);
 }
 
 .achievement[data-state="done"]:hover {
@@ -91,7 +136,7 @@
 
 .achievement[data-state="locked"] {
   background: transparent;
-  border: 1px dashed var(--color-border-strong);
+  border: var(--border-thick-width) dashed var(--color-border-strong);
 }
 
 /* The row: icon, fun title and short description, date, and the open marker. */
@@ -103,7 +148,6 @@
   column-gap: 16px;
   min-height: 72px;
   padding: 11px 18px 11px 12px;
-  border-radius: calc(var(--radius-card) - 1px);
 }
 
 summary.achievement__row {
@@ -180,32 +224,26 @@ summary.achievement__row:focus-visible {
 .achievement__chevron {
   grid-area: mark;
   color: var(--color-ink-muted);
-  transition: transform 0.2s ease;
+  transition: transform 0.2s steps(2);
 }
 
 .achievement__details[open] .achievement__chevron {
   transform: rotate(180deg);
 }
 
-/* The opened panel: plain title, full description, tags and links. */
+/*
+ * The opened panel: plain title, full description, tags and links. It fades
+ * and drops in with Motion as it opens, and closes at once. No CSS animates
+ * it, so without JavaScript or under reduced motion it simply shows.
+ */
 .achievement__panel {
-  display: grid;
-  grid-template-rows: 1fr;
-  transition: grid-template-rows 0.25s ease;
-}
-
-@starting-style {
-  .achievement__details[open] .achievement__panel {
-    grid-template-rows: 0fr;
-  }
+  display: block;
 }
 
 .achievement__body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 0;
-  overflow: hidden;
   padding-inline: 76px 18px;
 }
 
@@ -257,7 +295,6 @@ summary.achievement__row:focus-visible {
   padding: 4px 8px;
   background: var(--color-card);
   color: var(--color-ink);
-  border-radius: 6px;
   overflow-wrap: anywhere;
 }
 
@@ -276,6 +313,7 @@ summary.achievement__row:focus-visible {
   min-height: 44px;
   color: var(--color-accent);
   font-weight: 500;
+  overflow-wrap: anywhere;
 }
 .achievement__links a:hover {
   color: var(--color-accent-hover);
@@ -309,10 +347,9 @@ summary.achievement__row:focus-visible {
     max-width: min(560px, calc(100% - 80px));
     margin: 0;
     padding: 10px 14px;
-    border-radius: var(--radius-button);
+    border: var(--border-thick);
     background: var(--color-ink);
     color: var(--color-page);
-    box-shadow: 4px 4px 0 var(--color-accent);
     font-size: 14px;
     line-height: 1.55;
     white-space: pre-line;
@@ -333,7 +370,6 @@ summary.achievement__row:focus-visible {
     --tip-fade: 0s;
   }
 
-  .achievement__panel,
   .achievement__chevron {
     transition: none;
   }
@@ -342,10 +378,6 @@ summary.achievement__row:focus-visible {
 @media (max-width: 480px) {
   .accomplishments {
     padding: 64px var(--gutter) 72px;
-  }
-
-  .accomplishments__title {
-    margin-bottom: 28px;
   }
 
   /* The date stacks under the title. */

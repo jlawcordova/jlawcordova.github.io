@@ -102,8 +102,12 @@ async function exportText(page) {
   return text;
 }
 
-/** Presses Tab until the control with this role and name has focus. */
-async function tabTo(page, role, name, { back = false, max = 120 } = {}) {
+/**
+ * Presses Tab until the control with this role and name has focus. Every
+ * library object is a tab stop in the lab, so `max` leaves room for the
+ * library to grow: at 120 it ran out when the footer tiles were added.
+ */
+async function tabTo(page, role, name, { back = false, max = 240 } = {}) {
   const target = page.getByRole(role, { name, exact: true });
   for (let i = 0; i < max; i++) {
     if (await target.evaluate((el) => el === document.activeElement).catch(() => false)) return;
@@ -186,10 +190,15 @@ describe('the page (R15, R24)', () => {
   });
 
   test('R24: the editor JS is within 30 KB gzip, and only the lab page loads its JS and CSS', async () => {
-    const html = await readFile(join(DIST, 'lab/pixel-art/index.html'), 'utf8');
-    const assets = [...html.matchAll(/(?:src|href)="\/_astro\/([^"]+\.(?:js|css))"/g)].map((m) => m[1]);
-    const scripts = assets.filter((a) => a.endsWith('.js'));
-    assert.ok(scripts.length > 0, 'the lab loads no script');
+    const assetsOf = async (page) =>
+      [...(await readFile(join(DIST, page), 'utf8')).matchAll(/(?:src|href)="\/_astro\/([^"]+\.(?:js|css))"/g)].map((m) => m[1]);
+    const assets = await assetsOf('lab/pixel-art/index.html');
+    // The site's own scripts, such as the nav's menu (pixel-first look spec
+    // R7), load on every page, the lab included. They aren't the editor's code,
+    // so the editor's scripts are the lab's minus the ones a plain page loads.
+    const site = new Set(await assetsOf('404.html'));
+    const scripts = assets.filter((a) => a.endsWith('.js') && !site.has(a));
+    assert.ok(scripts.length > 0, 'the lab loads no script of its own');
     let gzip = 0;
     for (const script of scripts) gzip += gzipSync(await readFile(join(DIST, '_astro', script))).length;
     assert.ok(gzip <= JS_BUDGET, `editor JS is ${gzip} bytes gzip, over ${JS_BUDGET}`);

@@ -18,7 +18,8 @@
   },
   "dependencies": {
     "@astrojs/prism": "4.0.2",
-    "astro": "7.3.5"
+    "astro": "7.3.5",
+    "motion": "14.0.0"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",

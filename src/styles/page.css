@@ -4,6 +4,15 @@
   padding: 56px var(--gutter) 40px;
 }
 
+/* At the top of a page the band starts behind the sticky header, so the gap
+   above the bar and the blur behind it show the band (pixel-first look spec,
+   Shell). The page's first band only: not, say, a design-system preview. */
+main > .page-head:first-child,
+main > :first-child > .page-head:first-child {
+  margin-top: calc(-1 * var(--site-header-height));
+  padding-top: calc(var(--site-header-height) + 56px);
+}
+
 /* The bands supply the gutter, so these aren't .container. */
 .page-head__inner,
 .page-body__inner {
@@ -33,6 +42,10 @@
 @media (max-width: 480px) {
   .page-head {
     padding: 40px var(--gutter) 32px;
+  }
+  main > .page-head:first-child,
+  main > :first-child > .page-head:first-child {
+    padding-top: calc(var(--site-header-height) + 40px);
   }
   .page-body {
     padding: 32px var(--gutter) 72px;

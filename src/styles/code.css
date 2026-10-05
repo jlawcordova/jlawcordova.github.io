@@ -9,7 +9,7 @@ code {
   font-size: 0.9em;
   background: var(--color-card);
   color: var(--color-ink);
-  border-radius: 6px;
+  border-radius: var(--radius-chip);
   overflow-wrap: anywhere;
 }
 
@@ -20,7 +20,6 @@ pre {
   border-radius: var(--radius-button);
   padding: 16px 20px;
   overflow-x: auto;
-  box-shadow: 4px 4px 0 var(--color-accent);
   font-size: 14px;
   line-height: 1.6;
   tab-size: 4;
