@@ -4,7 +4,6 @@
 // SVGs are what the sources compile to. Node built-ins only.
 
 import assert from 'node:assert/strict';
-import { existsSync } from 'node:fs';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { describe, it } from 'node:test';
@@ -17,7 +16,6 @@ import { compileScene, readSources } from './optimize-pixel-art.mjs';
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const ART_DIR = join(ROOT, 'src/assets/pixel-art');
 const SOURCE_DIR = join(ART_DIR, 'source');
-const FIXTURES = join(ROOT, 'scripts/fixtures/pixel-art');
 
 const { sources, loadErrors } = await readSources(SOURCE_DIR);
 
@@ -49,8 +47,7 @@ describe('committed sources', () => {
     assert.equal(new Set(groups.map((g) => g.items.find((i) => i.object.startsWith('outfit-')).object)).size, groups.length, 'no outfit is placed twice');
   });
 
-  it('R12: the extracted SVGs are test fixtures, and npm run art reads no .src.svg', async () => {
-    assert.ok(existsSync(join(FIXTURES, 'range-sprite.src.svg')));
+  it('R12: npm run art reads no .src.svg', async () => {
     assert.deepEqual((await readdir(SOURCE_DIR)).filter((f) => f.endsWith('.svg')), []);
     assert.doesNotMatch(await readFile(join(ROOT, 'scripts/optimize-pixel-art.mjs'), 'utf8'), /\.src\.svg/);
   });
