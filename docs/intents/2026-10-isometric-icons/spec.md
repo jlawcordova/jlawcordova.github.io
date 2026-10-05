@@ -45,7 +45,7 @@ Each keeps its subject from the [gamified accomplishments spec D5](../2026-10-ga
 | Id | Subject | Isometric treatment |
 | --- | --- | --- |
 | `star` | gold star (fallback) | a thick gold star, lit top and two shaded edge faces |
-| `lock` | padlock (locked mark) | a small box body with a shackle, in the cell's upper-right corner as today (C2) |
+| `lock` | padlock (locked mark) | a gold box body built like the clouds, with a squared steel shackle that has its own thickness, in the cell's upper-right corner (C2) |
 | `sprout` | a sprout | two leaves on a stem in a small clump of soil, no ground tile |
 | `hammer` | a hammer | wood handle and a steel head box, lying at an angle |
 | `rocket` | a rocket | upright body with fins and a flame, its round body shaded left to right |
@@ -98,7 +98,7 @@ Each keeps its subject from the [gamified accomplishments spec D5](../2026-10-ga
 ## Areas of concern
 
 - **C1. Detail versus a 16×16 cell. Resolved: keep 16×16.** An isometric object has less room than a front-on one, because its top takes part of the height. The owner decided to keep the cell at 16×16, shown at 3×, which matches the Range's pixel size and changes no code. A 24×24 cell at 2× was the alternative: more pixels, but finer than the Range's beside it, and a change to `CELL`, the sheet's viewBox and the size test. Detail is fitted to 16×16, and the sample review checks that each icon still reads.
-- **C2. The lock and the star (the intent's open question). Resolved: both are redrawn.** The owner decided both get the new look. The star is shown as a row's icon, so a flat outlined star next to isometric ones would stand out as the old style. The lock sits over a dimmed gray icon, so its gold and steel shades contrast without an outline, and an outlined lock would be the one `ink` object left. The lock keeps its place (upper-right of its cell) and about its size (7×8, a little more if its isometric box needs it), so the CSS offset still works.
+- **C2. The lock and the star (the intent's open question). Resolved: both are redrawn.** The owner decided both get the new look. The star is shown as a row's icon, so a flat outlined star next to isometric ones would stand out as the old style. The lock sits over a dimmed gray icon, so its gold and steel shades contrast without an outline, and an outlined lock would be the one `ink` object left. The lock keeps its place (upper-right of its cell), so the CSS offset still works. *(Update, 2026-10-05, from the owner's round 1 review: the lock grew to about 10×12, columns 6–15 and rows 0–11, so its box and shackle read as solid blocks. It covers about the upper-right third of the icon under it, which the owner accepted.)*
 - **C3. Art quality is subjective.** An icon can meet every rule and still not read at 48px. As for the Range and the first icons (gamified spec C6), the previews decide, and the plan pauses after the sample icons for the owner's review.
 - **C4. Weight.** Three shades and texture cost bytes: each extra run is about 15 B raw. The sheet has 2.3 KB gzip of headroom under its 6 KB budget, which should hold for 18 small icons. If it doesn't, the fallback in gamified spec C2 (inline only the icons a page uses) is a code change, so the plan stops and the owner decides before taking it.
 - **C5. The intent said 15 icons, the set has 16. Resolved: the intent is fixed.** `ICONS` has 16 choices (plus `star` and `lock`, 18 objects), and a test pins the 16 published ids. The owner confirmed the 15 was a miscount, and the intent now says 16, in its own commit.
