@@ -1,5 +1,5 @@
 # Spec: A pixel-first look, with Motion transitions (from intent.md 2026-10-04)
-Status: draft.
+Status: approved. Amended 2026-10-05 while planning: `feat/hero-island-detail` (#86) has merged, so the hero is no longer held back, and `lab.css` joins the theme step.
 
 This spec turns the [intent](intent.md) into requirements and a design. It builds the site to match two sources:
 
@@ -39,7 +39,7 @@ Traced to the intent's Problem, Proposed outcome and Constraints. Each is checka
 - **R16. Kept from before.** The visible focus ring, 44px tap targets, colors (except `color-surface-strong`'s opacity), copy (except where [Home page](#home-page) names a change), post URLs, `/blog/pageN/`, `/atom.xml` and the committed `"unavailable"` accomplishments placeholder are unchanged. *(Constraints; CLAUDE.md)*
 - **R17. Budgets.** As in [Budgets](#budgets). *(Design system: Motion budget)*
 - **R18. Reviewed.** Every page that changes is screenshotted at 1440px and 390px with no horizontal scroll, and an independent verifier checks each PR. *(CLAUDE.md)*
-- **R19. The hero waits for the island.** No work on the hero files starts until `feat/hero-island-detail` has merged into `main`, as set out in [Sequencing](#sequencing). *(Owner's decision, 2026-10-05)*
+- **R19. The hero waits for the island.** No work on the hero files starts until `feat/hero-island-detail` has merged into `main`, as set out in [Sequencing](#sequencing). *(Owner's decision, 2026-10-05; met the same day, when #86 merged)*
 
 ## Design
 
@@ -79,7 +79,7 @@ The intent's constraint that colors stay as they are has one exception, which th
 - The links are **Range** (`/#range`), **Lately** (`/#accomplishments`) and **Blog** (`/blog/`), then the **Contact** pill. Lately renders only when the home page's accomplishments section renders (`homeSelection(getAccomplishments()).visible`), so it never points at a missing section. The section keeps its `id="accomplishments"`.
 - **Small screens:** a pre-paint inline script in `BaseLayout.astro`'s `<head>` sets `data-js` on `<html>`, so the collapsed bar paints first with no layout shift. At 720px and below, `html[data-js] .site-nav__links` is hidden until the bar has `.is-open`, and the menu button shows. The open menu sits under a `border-thick-width` `color-ink` rule inside the bar. Links stack as full-width 44px rows divided by `color-border`, with the pill full width at the bottom. The glyphs are the canvas's pixel paths in `currentColor`: three bars, and a pixel × while open.
 - A small client script in `Navigation.astro` toggles the menu and handles R7's closing rules. It loads Motion with a dynamic `import('motion')` the first time the button is hovered, focused or touched, and staggers the links in (opacity 0→1, y −8→0, 0.2s, `steps(4)`, 0.04s stagger). If Motion isn't loaded when the menu opens, the links show at once. So pages that use no other Motion don't download it unless someone opens the menu.
-- The page head (`.page-head`) starts behind the sticky header, so the 16px gap above the bar and the blur behind it show the band's color at the top of the page. Its top padding grows by the header's height, and anchors keep `--header-offset`. The hero band does the same, in the hero slice ([Sequencing](#sequencing)).
+- The page head (`.page-head`) starts behind the sticky header, so the 16px gap above the bar and the blur behind it show the band's color at the top of the page. Its top padding grows by the header's height, and anchors keep `--header-offset`. The hero band does the same.
 
 **Footer** (`Footer.astro`, `footer.css`):
 
@@ -90,8 +90,6 @@ The intent's constraint that colors stay as they are has one exception, which th
 ### Home page
 
 **Hero** (`Hero.astro`, `hero.css`):
-
-This is the hero slice, which starts after `feat/hero-island-detail` merges ([Sequencing](#sequencing)). Until then the hero changes only through the shared Button styles and tokens.
 
 - Layout as today: copy left, the island right, wrapping when they don't fit. The greeting line (`.hero__pretitle`) is removed. The title is unchanged. The lede becomes the canvas's: "Senior developer and tech lead in Davao City. I lead full-stack teams, design data platforms on Microsoft Fabric, and run releases with sign-offs and rollback." The buttons follow the new Button.
 - The hero band starts behind the sticky header, as the page head does.
@@ -126,7 +124,7 @@ This is the hero slice, which starts after `feat/hero-island-detail` merges ([Se
 - **Blog list and posts:** cards, pagination, featured images, inline code, code blocks and blockquotes go square, and their pixel shadows go. Post cards stagger in on the blog list. Post pages get no entrance motion, since people read them.
 - **`/accomplishments/`:** as Accomplishments above, plus square pagination.
 - **Design-system page:** the previews update (R15). `design-system.css`'s radius uses resolve to 0 through the tokens.
-- **Lab:** `lab.css` goes square through the tokens, which reach it without editing the file. Its two `shadow-pixel` uses become `border-thick` in the hero slice, since `feat/hero-island-detail` also edits `lab.css`. Its spread-only selection rings stay, and the lab gets no Motion.
+- **Lab:** `lab.css` goes square through the tokens. Its two `shadow-pixel` uses become `border-thick` in the theme step, with every other stylesheet. Its spread-only selection rings stay, and the lab gets no Motion.
 
 ### Motion module
 
@@ -150,12 +148,9 @@ The plan measures these from `npm run build` and records the numbers. The redesi
 
 ### Sequencing
 
-The owner's decision on 2026-10-05 (C7): nothing that touches the hero files starts until `feat/hero-island-detail` has merged into `main`. That covers `Hero.astro`, `HeroIsland.astro`, `hero.css` and `lab.css`, which the island branch also edits.
+The owner decided on 2026-10-05 (C7) that nothing touching the hero files would start until `feat/hero-island-detail` merged into `main`. It merged the same day (#86), so the hero is built with the nav and footer.
 
-1. **Now:** tokens, buttons, pill, cards, pagination, code, prose, the nav and its menu, the footer and `footer-grass`, the page head behind the header, the Range console, the accomplishments section and rows, the blog list, the Motion module, the design-system previews, and their tests. Through the shared Button styles and tokens, the hero's buttons and the lab's corners change here too, without their files being edited.
-2. **After `feat/hero-island-detail` merges:** the hero slice. It removes the greeting, changes the lede, runs the band behind the header, adds the hero's load motion, moves `.floaty` to an inner wrapper, and gives the lab `border-thick` in place of its pixel shadows. It's rebased onto the merged island.
-
-The plan splits the work along this line.
+This section first listed `lab.css` among the files the island branch also edits. It didn't: #86 changed the lab's TypeScript, not its stylesheet, and it touched none of `Hero.astro`, `HeroIsland.astro` or `hero.css`. So `lab.css` goes square, and loses its pixel shadows, in the theme step with every other stylesheet. The order of the work is in [plan.md](plan.md).
 
 ### Tests
 
@@ -192,7 +187,7 @@ The owner resolved C1–C5 and C7 on 2026-10-05. Each is kept with its decision,
 - **C4. The grass block needs new pixel art.** *Resolved: in scope.* The intent's out-of-scope line now excepts a footer grass tile. `footer-grass` is drawn in the world palette with the `pixel-art` skill, so CLAUDE.md's rules on colors and pixel-art sources still hold.
 - **C5. Earlier requirements change.** *Resolved: the canvas wins.* The Range's pager dots, which the redesign spec required, are removed. The nameplate's colored shadow becomes a swatch. The accomplishments panel's CSS transition, which the gamified accomplishments spec's R20 tests, becomes Motion. The tests change as listed in [Tests](#tests), and each earlier spec gets a dated note pointing here.
 - **C6. Content hidden for an entrance.** Policy: "Pages still work and show all their content without JavaScript", and the design system's "Never hide content". Scroll entrances must hide elements below the fold until they arrive, so a failure between hiding and revealing could leave a row invisible. The [Motion module](#motion-module) only hides elements from the same script that reveals them, never in CSS, and reveals everything before printing. The e2e tests block the Motion chunk to prove it. **No decision needed** unless the owner wants entrances on load only, with nothing waiting for scroll.
-- **C7. The work in flight on the hero island.** *Resolved: wait.* The hero files aren't touched until `feat/hero-island-detail` merges ([Sequencing](#sequencing)).
+- **C7. The work in flight on the hero island.** *Resolved: wait.* The hero files weren't touched until `feat/hero-island-detail` merged. It merged on 2026-10-05 ([Sequencing](#sequencing)).
 
 ## Open questions
 
