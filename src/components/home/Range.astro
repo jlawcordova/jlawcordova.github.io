@@ -9,47 +9,49 @@ const [first] = rangeClasses;
 
 <section id="range" class="range" data-current="0" aria-labelledby="range-title">
   <div class="range__inner">
-    <div class="range__panel">
-      <div class="range__stage isogrid">
-        <p class="range__nameplate" aria-live="off" style={`--class-shadow: ${first.shadow}`}>
-          <span class="range__name">{first.name}</span><span class="visually-hidden range__position"
-            >, class 1 of {rangeClasses.length}</span
-          >
-        </p>
-        <div class="range__controls">
-          <button type="button" class="range__arrow" data-dir="-1" aria-label="Previous class">
-            <svg class="pixel-art" width="28" height="36" viewBox="0 0 7 9" aria-hidden="true">
-              <path fill="currentColor" d="M5 0h2v9h-2zM3 1h2v7h-2zM1 3h2v3h-2zM0 4h1v1h-1z"></path>
-            </svg>
-          </button>
-          <figure class="range__sprite" role="img" aria-label={`Pixel-art character dressed for ${first.name}`}>
-            <Fragment set:html={sprite} />
-          </figure>
-          <button type="button" class="range__arrow" data-dir="1" aria-label="Next class">
-            <svg class="pixel-art" width="28" height="36" viewBox="0 0 7 9" aria-hidden="true">
-              <path fill="currentColor" d="M0 0h2v9h-2zM2 1h2v7h-2zM4 3h2v3h-2zM6 4h1v1h-1z"></path>
-            </svg>
-          </button>
-        </div>
-        <div class="range__pager">
-          {rangeClasses.map((_, i) => <span class:list={['range__dot', { 'is-current': i === 0 }]} aria-hidden="true" />)}
-          <button type="button" class="range__toggle" aria-pressed="false" aria-label="Pause class rotation">
-            <svg class="pixel-art range__icon-pause" width="20" height="28" viewBox="0 0 5 7" aria-hidden="true">
-              <path fill="currentColor" d="M0 0h2v7h-2zM3 0h2v7h-2z"></path>
-            </svg>
-            <svg class="pixel-art range__icon-play" width="20" height="28" viewBox="0 0 5 7" aria-hidden="true">
-              <path fill="currentColor" d="M0 0h1v7h-1zM1 1h1v5h-1zM2 2h1v3h-1zM3 3h1v1h-1z"></path>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
     <div class="range__copy">
       <h2 id="range-title">Many hats. <span class="gold">One craftsman.</span></h2>
       <p>
         These are the disciplines I work in, from Figma designs to production releases. I set up AI workflows that plan,
         build and check each change before it ships.
       </p>
+    </div>
+    <div class="range__console">
+      <div class="range__bezel">
+        <div class="range__stage isogrid">
+          <p class="range__nameplate" aria-live="off" style={`--class-shadow: ${first.shadow}`}>
+            <span class="range__swatch" aria-hidden="true"></span><span class="range__name">{first.name}</span><span
+              class="visually-hidden range__position">, class 1 of {rangeClasses.length}</span
+            >
+          </p>
+          <figure class="range__sprite" role="img" aria-label={`Pixel-art character dressed for ${first.name}`}>
+            <Fragment set:html={sprite} />
+          </figure>
+        </div>
+      </div>
+      <div class="range__controls">
+        <button type="button" class="range__arrow" data-dir="-1" aria-label="Previous class">
+          <svg class="pixel-art" width="28" height="36" viewBox="0 0 7 9" aria-hidden="true">
+            <path fill="currentColor" d="M5 0h2v9h-2zM3 1h2v7h-2zM1 3h2v3h-2zM0 4h1v1h-1z"></path>
+          </svg>
+        </button>
+        <button type="button" class="range__toggle" aria-pressed="false" aria-label="Pause class rotation">
+          <svg class="pixel-art range__icon-pause" width="20" height="28" viewBox="0 0 5 7" aria-hidden="true">
+            <path fill="currentColor" d="M0 0h2v7h-2zM3 0h2v7h-2z"></path>
+          </svg>
+          <svg class="pixel-art range__icon-play" width="20" height="28" viewBox="0 0 5 7" aria-hidden="true">
+            <path fill="currentColor" d="M0 0h1v7h-1zM1 1h1v5h-1zM2 2h1v3h-1zM3 3h1v1h-1z"></path>
+          </svg>
+        </button>
+        <button type="button" class="range__arrow" data-dir="1" aria-label="Next class">
+          <svg class="pixel-art" width="28" height="36" viewBox="0 0 7 9" aria-hidden="true">
+            <path fill="currentColor" d="M0 0h2v9h-2zM2 1h2v7h-2zM4 3h2v3h-2zM6 4h1v1h-1z"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="range__speaker" aria-hidden="true">
+        {Array.from({ length: 5 }, () => <span />)}
+      </div>
     </div>
   </div>
 </section>
@@ -64,8 +66,7 @@ const [first] = rangeClasses;
     const sprite = $('.range__sprite');
     const next = $<HTMLElement>('[data-dir="1"]');
     const toggle = $<HTMLButtonElement>('.range__toggle');
-    const panel = $('.range__panel');
-    const dots = section.querySelectorAll('.range__dot');
+    const panel = $('.range__console');
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
     const count = rangeClasses.length;
     let [index, playing, hovered, focused] = [0, !motion.matches, false, false];
@@ -82,7 +83,6 @@ const [first] = rangeClasses;
       $('.range__position').textContent = `, class ${index + 1} of ${count}`;
       plate.style.setProperty('--class-shadow', shadow);
       sprite.setAttribute('aria-label', `Pixel-art character dressed for ${name}`);
-      dots.forEach((dot, i) => dot.classList.toggle('is-current', i === index));
     };
 
     const schedule = () => {
