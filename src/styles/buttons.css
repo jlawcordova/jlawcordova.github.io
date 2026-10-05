@@ -1,40 +1,33 @@
+/* Buttons and the pill: square, pixel type, a thick ink border and no shadow. */
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   min-height: 52px;
   padding: 0 24px;
+  border: var(--border-thick);
   border-radius: var(--radius-button);
-  font-size: 15px;
-  line-height: 1;
+  font: 15px/1 var(--font-pixel);
+  letter-spacing: 1px;
+  text-transform: uppercase;
   text-decoration: none;
 }
 
 .btn--primary {
   background: var(--color-accent);
   color: var(--color-on-accent);
-  font-family: var(--font-pixel);
-  box-shadow: var(--shadow-pixel);
 }
 .btn--primary:hover {
   background: var(--color-accent-hover);
   color: var(--color-on-accent);
 }
-/* Reads as a pressed key. */
-.btn--primary:active {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0 var(--color-ink);
-}
 
 .btn--ghost {
   background: var(--color-surface-ghost);
-  border: 1px solid var(--color-border-strong);
   color: var(--color-ink);
-  font-family: var(--font-text);
-  font-weight: 500;
 }
 .btn--ghost:hover {
-  background: var(--color-page);
+  background: var(--color-card);
   color: var(--color-ink);
 }
 
@@ -43,13 +36,33 @@
   align-items: center;
   min-height: 44px;
   padding: 0 18px;
+  border: var(--border-thick);
   border-radius: var(--radius-pill);
   background: var(--color-accent);
   color: var(--color-on-accent);
-  font: 13px var(--font-pixel);
+  font: 13px/1 var(--font-pixel);
+  letter-spacing: 1px;
+  text-transform: uppercase;
   text-decoration: none;
 }
 .pill:hover {
   background: var(--color-accent-hover);
   color: var(--color-on-accent);
+}
+
+/* A pressed key: it moves 2px down and right, in two steps. Nothing else changes. */
+.btn--primary,
+.pill {
+  transition: transform 0.12s steps(2);
+}
+.btn--primary:active,
+.pill:active {
+  transform: translate(2px, 2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn--primary,
+  .pill {
+    transition: none;
+  }
 }

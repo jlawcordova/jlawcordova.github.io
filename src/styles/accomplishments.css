@@ -103,7 +103,7 @@
   column-gap: 16px;
   min-height: 72px;
   padding: 11px 18px 11px 12px;
-  border-radius: calc(var(--radius-card) - 1px);
+  border-radius: var(--radius-card);
 }
 
 summary.achievement__row {
@@ -257,7 +257,7 @@ summary.achievement__row:focus-visible {
   padding: 4px 8px;
   background: var(--color-card);
   color: var(--color-ink);
-  border-radius: 6px;
+  border-radius: var(--radius-chip);
   overflow-wrap: anywhere;
 }
 
@@ -309,10 +309,10 @@ summary.achievement__row:focus-visible {
     max-width: min(560px, calc(100% - 80px));
     margin: 0;
     padding: 10px 14px;
+    border: var(--border-thick);
     border-radius: var(--radius-button);
     background: var(--color-ink);
     color: var(--color-page);
-    box-shadow: 4px 4px 0 var(--color-accent);
     font-size: 14px;
     line-height: 1.55;
     white-space: pre-line;

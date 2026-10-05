@@ -260,12 +260,11 @@
 .lab-mode:hover {
   background: var(--color-card);
 }
-/* The current tool reads like the Range nameplate. */
+/* The current tool is an ink fill, like the Range nameplate. */
 .lab-tool[aria-pressed="true"],
 .lab-mode[aria-pressed="true"] {
   background: var(--color-ink);
   color: var(--color-page);
-  box-shadow: var(--shadow-pixel);
 }
 .lab-mode[aria-disabled="true"] {
   color: var(--color-ink-muted);
