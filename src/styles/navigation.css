@@ -10,6 +10,7 @@
   top: 0;
   z-index: 20;
   display: flex;
+  align-items: flex-start;
   justify-content: center;
   padding: 16px var(--gutter) 0;
 }
@@ -109,6 +110,11 @@
 }
 
 @media (max-width: 720px) {
+  /* The header keeps its one-row height, so the open menu drops over the
+     page instead of pushing it down. */
+  html[data-js] .site-header {
+    height: var(--site-header-height);
+  }
   html[data-js] .site-nav__menu {
     display: inline-flex;
   }

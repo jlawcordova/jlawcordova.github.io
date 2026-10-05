@@ -62,6 +62,9 @@
   padding: 0 12px;
   color: var(--color-on-footer);
 }
+.site-footer__top {
+  gap: 0.5em; /* the space after the arrow, which a flex item would drop */
+}
 .site-footer__links a:hover,
 .site-footer__links .site-footer__top {
   color: var(--color-gold);
