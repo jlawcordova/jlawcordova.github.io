@@ -1,24 +1,55 @@
+/* The footer is a grass block: a 28px pixel grass edge over speckled dirt
+   (pixel-first look spec R8). Both tiles are compiled by `npm run art`. */
 .site-footer {
-  background: var(--color-footer);
-  padding: 22px var(--gutter);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  font: 12px var(--font-pixel);
+  position: relative;
+  padding: 52px var(--gutter) 40px;
+  background: url('../assets/pixel-art/footer-dirt.svg') left top / 64px 48px repeat var(--color-footer);
+  image-rendering: pixelated;
+  font: 13px/1 var(--font-pixel);
   letter-spacing: 1px;
   color: var(--color-on-footer);
 }
 
+/* The grass sits on plain dirt, so no speckle shows through its drips. */
+.site-footer::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 28px;
+  background: url('../assets/pixel-art/footer-grass.svg') left top / 48px 28px repeat-x var(--color-footer);
+  pointer-events: none;
+}
+
+.site-footer__inner {
+  position: relative;
+  max-width: var(--content-max);
+  margin-inline: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 32px;
+}
+
 .site-footer__copy {
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* The two-ink mark reads on light grounds only. */
+.site-footer__chip {
+  display: inline-flex;
+  padding: 6px 8px;
+  border-radius: var(--radius-chip);
+  background: var(--color-card);
 }
 
 .site-footer__links {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 4px;
 }
 
 /* 44px targets, even for the one-letter X. */
@@ -28,12 +59,15 @@
   justify-content: center;
   min-width: 44px;
   min-height: 44px;
+  padding: 0 12px;
   color: var(--color-on-footer);
 }
+.site-footer__top {
+  gap: 0.5em; /* the space after the arrow, which a flex item would drop */
+}
 .site-footer__links a:hover,
-.site-footer__links a:focus-visible {
-  color: var(--color-on-footer);
-  text-decoration: underline;
+.site-footer__links .site-footer__top {
+  color: var(--color-gold);
 }
 
 .site-footer :where(a, button):focus-visible {

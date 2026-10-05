@@ -28,6 +28,8 @@ const description = article ? article.description : site.description;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Before first paint, so the small-screen nav paints collapsed with no shift (pixel-first look spec R7). -->
+    <script is:inline>document.documentElement.dataset.js = '';</script>
     {
       article ? (
         <>

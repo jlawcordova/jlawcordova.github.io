@@ -6,19 +6,36 @@ import { site } from '../../site';
 <section id="top" class="hero isogrid">
   <div class="hero__inner">
     <div class="hero__copy">
-      <p class="hero__pretitle">Hi, I’m J. Law. Cordova.</p>
       <h1 class="hero__title">I take software from estimate <span class="accent">to production.</span></h1>
       <p class="hero__lede">
-        Senior developer and tech lead at Netzon in Davao City. I lead full-stack teams, design data platforms on Microsoft
-        Fabric, and run releases with sign-offs and rollback.
+        Senior developer and tech lead in Davao City. I lead full-stack teams, design data platforms on Microsoft Fabric, and
+        run releases with sign-offs and rollback.
       </p>
       <div class="hero__actions">
         <a class="btn btn--primary" href="#range">Press start</a>
         <a class="btn btn--ghost" href={site.author.linkedin}>Get in touch</a>
       </div>
     </div>
-    <div class="hero__art floaty">
-      <HeroIsland />
+    <!-- Two wrappers, so the entrance and the floaty loop don't fight over one transform. -->
+    <div class="hero__art">
+      <div class="hero__float floaty">
+        <HeroIsland />
+      </div>
     </div>
   </div>
 </section>
+
+<script>
+  // The hero's entrance (pixel-first look spec, Hero): the copy staggers in,
+  // then the island rises. Each start state is set by the call that animates
+  // it, and nothing runs under reduced motion.
+  import { play, px, stagger } from '../../lib/motion';
+
+  const hero = document.querySelector('.hero');
+  if (hero) {
+    const copy = [...hero.querySelectorAll('.hero__title, .hero__lede, .hero__actions')];
+    play(copy, { opacity: [0, 1], y: [16, 0] }, { duration: 0.4, delay: stagger(0.08), ease: px(6) });
+    const art = hero.querySelector('.hero__art');
+    if (art) play(art, { opacity: [0, 1], y: [24, 0] }, { duration: 0.5, delay: 0.2, ease: px(6) });
+  }
+</script>
