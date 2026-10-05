@@ -30,7 +30,7 @@ export const normalize = (value) => String(value).toLowerCase().replace(/\s+/g, 
 
 /** Every token in tokens.json's list families, with its family. */
 export const tokenList = (tokens) =>
-  ['color', 'radius', 'spacing', 'shadow', 'layout'].flatMap((family) =>
+  ['color', 'radius', 'border', 'spacing', 'shadow', 'layout'].flatMap((family) =>
     (tokens[family]?.tokens ?? []).map((token) => ({ family, ...token })),
   );
 
