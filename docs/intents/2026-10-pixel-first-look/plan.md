@@ -37,7 +37,8 @@ While planning, the owner asked for `write-plan` to make the main-session branch
   - `src/assets/pixel-art/source/objects/footer-grass.mjs` and `footer-dirt.mjs`
   - `scenes/footer-grass.mjs` and `scenes/footer-dirt.mjs`
   - outputs `src/assets/pixel-art/footer-grass.svg` and `footer-dirt.svg`
-- Previews: `docs/design-system/components/{Button,Pill,Card,Pagination,CodeBlock}/preview.html`
+- Previews: `docs/design-system/components/{Button,Pill,Card,Pagination,CodeBlock}/preview.html`. None of their markup needed to change, since they render the site's CSS.
+- `scripts/e2e/editor.e2e.mjs`: the `tabTo` helper's limit rises from 120 to 240 presses. Every library object is a tab stop in the lab, and the keyboard R18 test needed 118 presses before the two footer tiles and 120 after. No assertion changes. *(Added while building.)*
 
 **Slice A, shell and hero (PR 2):**
 - `src/layouts/BaseLayout.astro`: the pre-paint `data-js` inline script
@@ -47,6 +48,7 @@ While planning, the owner asked for `write-plan` to make the main-session branch
 - `src/components/home/Hero.astro`, `src/styles/hero.css`
 - Previews: `docs/design-system/components/{Navigation,Footer,PageHead}/preview.html`
 - `scripts/e2e/shell.e2e.mjs` (new)
+- `scripts/e2e/editor.e2e.mjs`: R24 now counts only the editor's own scripts: the lab's scripts minus those a plain page (the 404) loads. The nav's menu script loads on every page and isn't editor code. The assertions are unchanged: the editor's JS stays within 30 KB gzip and loads on no other page. *(Added while building, by the main session.)*
 
 **Slice B, Range (PR 3):**
 - `src/components/home/Range.astro`, `src/styles/range.css`, `scripts/e2e/range.e2e.mjs`
@@ -250,6 +252,8 @@ The main session merges each slice once its checks and CI are green, in the orde
 **Independent review:** one `verify-change` run on PR 5, against the whole spec, in a fresh subagent given only "Use the `verify-change` skill on PR #<n>." It's a large feature branch that changes shared tokens. Blocking findings are fixed on the branch. The slices get no verifier: `pixel-first-look.test.mjs`, the e2e suites and the final run cover them.
 
 ## Risks
+
+*Found after merging (2026-10-05), by the verifier on #92: `shell.e2e.mjs`'s Escape check couldn't fail, because focus was already on the button before Escape was pressed. Fixed in a follow-up PR: focus moves into the menu first, and removing `button.focus()` from the nav now fails the test.*
 
 *Changed after launch (2026-10-05): the owner found the stepped UI motion laggy on the deployed site. It held 60 fps, but `steps()` moves in 3–8 jumps by design. A follow-up replaces every `px(n)` and `steps(2)` in UI motion with a smooth ease-out (`easeOut` in `src/lib/motion.ts`, `ease-out` in CSS). The pixel-art loops stay stepped. Bundle size is unchanged.*
 
