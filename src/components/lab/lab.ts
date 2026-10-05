@@ -52,7 +52,7 @@ const copy = <T>(value: T): T => JSON.parse(JSON.stringify(value));
 
 /** A draft's view can be at most this wide or tall, a few times the largest committed scene. */
 const MAX_VIEW = 2048;
-/** A draft's map can be at most this wide or tall; range-island, the largest, is 99×62. */
+/** A draft's map can be at most this wide or tall; the largest committed object is under 64×64. */
 const MAX_MAP = 512;
 
 const isRecord = (v: unknown): v is Record<string, any> => typeof v === 'object' && v !== null && !Array.isArray(v);

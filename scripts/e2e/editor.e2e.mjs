@@ -1177,7 +1177,7 @@ describe('layout (R22, R5)', () => {
       await screenshot(page, `editor-${width}`);
 
       // Object mode, on the outfit (its gutter) and the largest map.
-      for (const name of ['outfit-security-governance', 'range-island']) {
+      for (const name of ['outfit-security-governance', 'house']) {
         await pickObject(page, name);
         assert.ok(await fits(), `${name} in Object mode`);
         if (width < 960) {
@@ -1231,7 +1231,7 @@ describe('layout (R22, R5)', () => {
         }
       };
       await everyTab('Scene mode', ['Library', 'Items', 'Inspector']);
-      for (const name of ['tree', 'outfit-security-governance', 'range-island', 'block']) {
+      for (const name of ['tree', 'outfit-security-governance', 'house', 'block']) {
         await pickObject(page, name);
         await everyTab(`Object mode, ${name}`, ['Library', 'Palette', 'Inspector']);
       }
