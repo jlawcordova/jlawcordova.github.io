@@ -1,4 +1,14 @@
 # Plan: A pixel-first look, with Motion transitions (from intent.md 2026-10-04)
+Status: done, 2026-10-05: built on `feat/pixel-first-look` in [#88](https://github.com/jlawcordova/jlawcordova.github.io/pull/88) (theme), [#91](https://github.com/jlawcordova/jlawcordova.github.io/pull/91) (shell and hero), [#89](https://github.com/jlawcordova/jlawcordova.github.io/pull/89) (Range) and [#90](https://github.com/jlawcordova/jlawcordova.github.io/pull/90) (lists), and shipped to `main` in [#92](https://github.com/jlawcordova/jlawcordova.github.io/pull/92). Follow-ups after launch: [#93](https://github.com/jlawcordova/jlawcordova.github.io/pull/93) (the menu's Escape test) and [#94](https://github.com/jlawcordova/jlawcordova.github.io/pull/94) (smooth UI motion) and [#96](https://github.com/jlawcordova/jlawcordova.github.io/pull/96) (the isometric grid).
+
+**As built.** The work departed from this plan in these ways:
+- **Interruptions.** All three slice agents stopped partway through when a usage limit hit. Each was resumed with its context intact and finished its own slice.
+- **Agents.** The `pixel-artist` agent wasn't registered in the coordinating session, so a general-purpose agent drew the footer tiles with `.claude/agents/pixel-artist.md` as its instructions. A worktree's HEAD isn't always the coordinator's branch, so each agent branched from `origin/feat/pixel-first-look` explicitly.
+- **Cross-slice fixes by the main session.** It raised the lab's tab-helper limit in PR 1 and changed the lab's R24 check on slice A's branch (see Files that change). It merged the feature branch into slice A after #89 and #90 landed, and re-ran every check before merging it.
+- **Integration.** `motion.e2e.mjs` passed 11/11, and hiding the blog cards in CSS made 6 of its checks fail.
+- **Verification.** The verifier ran after the owner had merged [#92](https://github.com/jlawcordova/jlawcordova.github.io/pull/92). It couldn't read `spec.md`, so the spec trace wasn't done. Its one blocking finding was fixed in [#93](https://github.com/jlawcordova/jlawcordova.github.io/pull/93).
+- **Missed from the canvas.** The hero's isometric grid wasn't in the plan, because the site already had `.isogrid`, and nobody noticed it drew only corner ticks. The owner spotted it after launch, and [#96](https://github.com/jlawcordova/jlawcordova.github.io/pull/96) fixed it.
+- **After launch.** Stepped easing was replaced by smooth easing in [#94](https://github.com/jlawcordova/jlawcordova.github.io/pull/94). That PR also fixed a race in the Range test's settle helper, which the change exposed.
 
 ## Context
 

@@ -202,9 +202,11 @@ export class Stage {
       this.canvas.style.height = `${h * z}px`;
     }
     // The faint .isogrid behind the canvas, scaled and lined up with the tiles.
+    // Its lines are each cell's diagonals, so shifting it half a cell (16px)
+    // puts them on the tile edges around the origin's top-face center.
     const [ox, oy] = this.origin;
     this.sheet.style.backgroundSize = `${32 * z}px ${16 * z}px`;
-    this.sheet.style.backgroundPosition = `${(ox - vx) * z}px ${(oy - vy) * z}px`;
+    this.sheet.style.backgroundPosition = `${(ox - vx + 16) * z}px ${(oy - vy) * z}px`;
 
     ctx.imageSmoothingEnabled = false;
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);

@@ -1,5 +1,24 @@
 # Spec: A pixel-first look, with Motion transitions (from intent.md 2026-10-04)
-Status: approved. Amended 2026-10-05 while planning: `feat/hero-island-detail` (#86) has merged, so the hero is no longer held back, and `lab.css` joins the theme step. Amended again 2026-10-05 after launch: the owner found stepped UI motion laggy on the deployed site, so UI motion now eases smoothly (the shared `easeOut`), and only the pixel art's CSS loops stay stepped. The steps named below are replaced by it.
+Status: done, 2026-10-05: built on `feat/pixel-first-look` in [#88](https://github.com/jlawcordova/jlawcordova.github.io/pull/88) (theme), [#91](https://github.com/jlawcordova/jlawcordova.github.io/pull/91) (shell and hero), [#89](https://github.com/jlawcordova/jlawcordova.github.io/pull/89) (Range) and [#90](https://github.com/jlawcordova/jlawcordova.github.io/pull/90) (lists), and shipped to `main` in [#92](https://github.com/jlawcordova/jlawcordova.github.io/pull/92). Follow-ups after launch: [#93](https://github.com/jlawcordova/jlawcordova.github.io/pull/93) (the menu's Escape test) and [#94](https://github.com/jlawcordova/jlawcordova.github.io/pull/94) (smooth UI motion) and [#96](https://github.com/jlawcordova/jlawcordova.github.io/pull/96) (the isometric grid).
+
+**As built.** These differ from the text below, each with the owner's approval:
+- **Smooth, not stepped.** After launch the owner found the stepped UI motion laggy. The site held 60 fps, but `steps()` jumps through a few positions by design. Every Motion move now uses one shared `easeOut`, and CSS presses and turns use `ease-out` ([#94](https://github.com/jlawcordova/jlawcordova.github.io/pull/94)). Only the pixel art's own CSS loops step. The steps named below were rewritten to match, and a guard test keeps `steps()` out of UI motion.
+- **The isometric grid.** The canvas's hero has a continuous diamond lattice across the whole section. `.isogrid`, which predates this change, only painted a sliver in each cell's corner. [#96](https://github.com/jlawcordova/jlawcordova.github.io/pull/96) switched it to the canvas's gradient across the hero, page heads, Range stage and lab, shifted the lab's grid half a cell to keep it on the tile edges, and added a guard test.
+- **Two tests changed their limits, not their assertions.** The lab's keyboard tab helper rose from 120 to 240 presses, because every library object is a tab stop and the footer tiles tipped it over. The lab's R24 check counts only the editor's own scripts, because the nav's menu script loads on every page and isn't editor code.
+- **A test that couldn't fail.** The menu's "Escape returns focus" check pressed Escape with focus already on the button. The verifier on [#92](https://github.com/jlawcordova/jlawcordova.github.io/pull/92) found it, and [#93](https://github.com/jlawcordova/jlawcordova.github.io/pull/93) fixed it.
+- **Small choices while building:**
+  - the island fades in as well as rising;
+  - the nav blur is plain `blur(16px)`;
+  - the open small-screen menu overlays the page instead of pushing it down;
+  - the wordmark steps down below a 350px-wide header so the bar stays one row on 320px phones;
+  - the footer is two tiles, `footer-grass` and `footer-dirt`;
+  - the Range section clips with `overflow: clip`.
+- **The open question.** A is hidden under reduced motion, as recommended. The owner didn't choose otherwise.
+- **Verification.** The verifier on [#92](https://github.com/jlawcordova/jlawcordova.github.io/pull/92) passed every gate (tests, build, art, 98/98 browser checks, dependencies, budgets) and caught 8 of 9 mutations. It couldn't read this spec, because a permission check blocked the read, so the requirement-by-requirement trace wasn't done.
+- **Known risk.** At 720px and below, if JavaScript runs but the nav's own script fails to load, the links stay behind a button that doesn't work. Without JavaScript at all they show as normal.
+- **Budgets, gzip:** home JS 22.3 KB of 32 KB, a post or the 404 1.3 KB of 4 KB, CSS 6.8 KB of 8 KB, home total 57.6 KB of 160 KB. Lighthouse wasn't run.
+
+Status before building: approved. Amended 2026-10-05 while planning: `feat/hero-island-detail` (#86) has merged, so the hero is no longer held back, and `lab.css` joins the theme step. Amended again 2026-10-05 after launch: the owner found stepped UI motion laggy on the deployed site, so UI motion now eases smoothly (the shared `easeOut`), and only the pixel art's CSS loops stay stepped. The steps named below are replaced by it.
 
 This spec turns the [intent](intent.md) into requirements and a design. It builds the site to match two sources:
 
