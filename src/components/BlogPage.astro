@@ -1,4 +1,6 @@
 ---
+// One page of the blog list: on page 1 the newest post as a featured card,
+// then the rest as post cards that rise in as they scroll into view.
 import PageHead from './PageHead.astro';
 import PostListItem from './PostListItem.astro';
 import type { Post } from '../lib/posts';
@@ -76,3 +78,12 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
     }
   </div>
 </div>
+
+<script>
+  // Post cards still below the fold rise in as the list scrolls into view
+  // (pixel-first look spec, Other pages). Cards already on screen, and every
+  // card without JavaScript or under reduced motion, are never hidden.
+  import { reveal } from '../lib/motion';
+
+  reveal(document.querySelectorAll('.post-list > li'), { y: 16, stagger: 0.06, duration: 0.4, frames: 6 });
+</script>

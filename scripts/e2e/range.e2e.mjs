@@ -1,9 +1,14 @@
 // Browser checks for the home page's Range carousel (Range class characters
-// spec R1, R5–R8): the dots, nameplate, "class N of M" text and sprite label
-// follow src/data/home.ts; exactly one outfit shows at a time; the arrows wrap
-// both ways; auto-advance, pause, hover and focus pause and reduced motion
+// spec R1, R5–R8): the nameplate, its swatch, "class N of M" text and sprite
+// label follow src/data/home.ts; exactly one outfit shows at a time; the arrows
+// wrap both ways; auto-advance, pause, hover and focus pause and reduced motion
 // behave; and at 390px and 1440px every name fits on one line with no
 // horizontal scroll and 44px tap targets.
+//
+// The handheld console (pixel-first look spec, Range; R4, R10, R12): START
+// pauses and plays, B goes back, A makes the sprite hop without changing the
+// class and is hidden under reduced motion, and every console button is at
+// least 44px. The pager dots are gone (C5).
 //
 // Run with `npm run e2e` after `npm run build`.
 
@@ -53,21 +58,46 @@ const state = (page) =>
     const range = /** @type {HTMLElement} */ (document.querySelector('.range'));
     const name = /** @type {HTMLElement} */ (document.querySelector('.range__name'));
     const nameBox = name.getBoundingClientRect();
+    const plate = /** @type {HTMLElement} */ (document.querySelector('.range__nameplate'));
+    const plateBox = plate.getBoundingClientRect();
+    const stageBox = document.querySelector('.range__stage').getBoundingClientRect();
     const shown = [...document.querySelectorAll('.range__sprite g[data-class]')].filter((g) => getComputedStyle(g).display !== 'none');
     return {
       current: Number(range.dataset.current),
       name: name.textContent,
       position: document.querySelector('.range__position')?.textContent,
       label: document.querySelector('.range__sprite')?.getAttribute('aria-label'),
-      dots: document.querySelectorAll('.range__dot').length,
-      currentDot: [...document.querySelectorAll('.range__dot')].findIndex((d) => d.classList.contains('is-current')),
-      shadow: getComputedStyle(/** @type {HTMLElement} */ (document.querySelector('.range__nameplate'))).getPropertyValue('--class-shadow').trim(),
+      shadow: getComputedStyle(plate).getPropertyValue('--class-shadow').trim(),
+      swatch: getComputedStyle(document.querySelector('.range__swatch')).backgroundColor,
       shown: shown.map((g) => g.getAttribute('data-class')),
       lines: Math.round(nameBox.height / parseFloat(getComputedStyle(name).lineHeight || `${nameBox.height}`)),
-      plateHeight: Math.round(document.querySelector('.range__nameplate').getBoundingClientRect().height),
+      plateHeight: Math.round(plateBox.height),
+      plateInside: plateBox.left >= stageBox.left && plateBox.right <= stageBox.right,
+      live: plate.getAttribute('aria-live'),
       scrollWidth: document.documentElement.scrollWidth,
     };
   });
+
+/** '#8A6AA6' → 'rgb(138, 106, 166)', as getComputedStyle reports it. */
+const rgb = (hex) => `rgb(${[1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(', ')})`;
+
+/**
+ * Waits until the nameplate and sprite have finished their class-change
+ * moves, so their boxes are measured at rest.
+ */
+const settled = (page) =>
+  page.waitForFunction(() =>
+    ['.range__nameplate', '.range__sprite'].every((s) => {
+      const t = getComputedStyle(document.querySelector(s)).transform;
+      return t === 'none' || t === 'matrix(1, 0, 0, 1, 0, 0)';
+    }),
+  );
+
+/** Clicking leaves the pointer over the console and focus on a button, and either one pauses it. */
+const release = async (page) => {
+  await page.mouse.move(0, 0);
+  await page.evaluate(() => /** @type {HTMLElement} */ (document.activeElement)?.blur());
+};
 
 const pause = async (page) => {
   const toggle = page.locator('.range__toggle');
@@ -77,22 +107,24 @@ const next = (page) => page.locator('.range__arrow[data-dir="1"]').click();
 const prev = (page) => page.locator('.range__arrow[data-dir="-1"]').click();
 
 for (const width of [390, 1440]) {
-  test(`R6, R8: at ${width}px every class has its dot, name, label and shadow on one line, with no horizontal scroll`, async () => {
+  test(`R6, R8: at ${width}px every class has its name, label and swatch on one line, with no horizontal scroll`, async () => {
     const page = await openRange({ width });
     await pause(page);
     const home = await readFile(new URL('src/data/home.ts', `file://${ROOT}`), 'utf8');
     const shadows = [...home.matchAll(/shadow: '(#[0-9A-Fa-f]{6})'/g)].map((m) => m[1].toUpperCase());
+    assert.equal(await page.locator('.range__dot').count(), 0, 'the pager dots are gone (C5)');
     for (let i = 0; i < names.length; i += 1) {
+      await settled(page);
       const s = await state(page);
       assert.equal(s.current, i);
       assert.equal(s.name, names[i]);
       assert.equal(s.position, `, class ${i + 1} of ${names.length}`);
       assert.equal(s.label, `Pixel-art character dressed for ${names[i]}`);
-      assert.equal(s.dots, names.length);
-      assert.equal(s.currentDot, i);
       assert.equal(s.shadow.toUpperCase(), shadows[i]);
+      assert.equal(s.swatch, rgb(shadows[i]), 'the swatch shows the class color');
       assert.deepEqual(s.shown, [String(i)], 'exactly one outfit shows (R5)');
       assert.equal(s.lines, 1, `${names[i]} fits on one line`);
+      assert.ok(s.plateInside, `${names[i]}'s nameplate fits inside the stage`);
       assert.equal(s.plateHeight, 44, 'the nameplate keeps its height');
       assert.equal(s.scrollWidth, width, 'no horizontal scroll');
       await next(page);
@@ -162,3 +194,104 @@ test('R7: with reduced motion it does not auto-advance', async () => {
   assert.equal((await state(page)).current, 0);
   await page.close();
 });
+
+/** Waits for the carousel to move off `from`, within one interval. */
+const advancesFrom = (page, from) =>
+  page.waitForFunction(
+    (was) => Number(/** @type {HTMLElement} */ (document.querySelector('.range')).dataset.current) !== was,
+    from,
+    { timeout: STEP_MS + 400 },
+  );
+
+test('Console: START pauses and plays the rotation', async () => {
+  const page = await openRange();
+  const start = page.getByRole('button', { name: 'Start: pause the class rotation' });
+  assert.equal(await start.count(), 1, 'START is named for its visible word');
+  assert.equal(await start.getAttribute('aria-pressed'), 'false', 'it starts out playing');
+
+  await start.click();
+  await release(page);
+  assert.equal(await start.getAttribute('aria-pressed'), 'true', 'pressing START pauses');
+  const at = (await state(page)).current;
+  await page.waitForTimeout(STEP_MS + 400);
+  assert.equal((await state(page)).current, at, 'paused');
+
+  await start.click();
+  await release(page);
+  assert.equal(await start.getAttribute('aria-pressed'), 'false', 'pressing START again plays');
+  await advancesFrom(page, at);
+  assert.equal((await state(page)).current, (at + 1) % names.length, 'and the rotation moves on');
+  await page.close();
+});
+
+test('Console: B goes back a class, like Previous, and announces it', async () => {
+  const page = await openRange();
+  await pause(page);
+  const b = page.getByRole('button', { name: 'B: previous class' });
+  assert.equal(await b.count(), 1);
+  await b.click();
+  let s = await state(page);
+  assert.equal(s.current, names.length - 1, 'B from the first goes to the last');
+  assert.equal(s.name, names[names.length - 1]);
+  assert.equal(s.live, 'polite', 'a change the visitor asked for is announced');
+  await b.click();
+  s = await state(page);
+  assert.equal(s.current, names.length - 2);
+  assert.equal(s.label, `Pixel-art character dressed for ${names[names.length - 2]}`);
+  await page.close();
+});
+
+test('Console: A makes the sprite hop and leaves the class alone', async () => {
+  const page = await openRange();
+  await pause(page);
+  await settled(page);
+  const before = await state(page);
+  // Record every transform Motion writes on the sprite while it hops.
+  await page.evaluate(() => {
+    const sprite = /** @type {HTMLElement} */ (document.querySelector('.range__sprite'));
+    const seen = /** @type {string[]} */ ([]);
+    Object.assign(window, { hopFrames: seen });
+    new MutationObserver(() => seen.push(sprite.style.transform)).observe(sprite, { attributes: true, attributeFilter: ['style'] });
+  });
+  const a = page.getByRole('button', { name: 'A: jump' });
+  assert.equal(await a.count(), 1);
+  await a.click();
+  // It rises (a negative translateY), then lands back where it was.
+  await page.waitForFunction(() =>
+    /** @type {{ hopFrames: string[] }} */ (/** @type {unknown} */ (window)).hopFrames.some((t) => /translateY\(-\d/.test(t)),
+  );
+  await settled(page);
+  const after = await state(page);
+  assert.equal(after.current, before.current, 'the class does not change');
+  assert.equal(after.name, before.name);
+  assert.equal(after.live, before.live, 'nothing is announced');
+  await page.close();
+});
+
+test('Console: under reduced motion A and its JUMP label are hidden, and B stays', async () => {
+  const page = await openRange({ reducedMotion: 'reduce' });
+  assert.equal(await page.locator('.range__a').isVisible(), false, 'A is hidden');
+  assert.equal(await page.locator('.range__key--a .range__key-label').isVisible(), false, 'JUMP is hidden');
+  assert.equal(await page.locator('.range__b').isVisible(), true, 'B is still there');
+  await page.close();
+
+  const moving = await openRange();
+  assert.equal(await moving.locator('.range__a').isVisible(), true, 'A shows when motion is allowed');
+  await moving.close();
+});
+
+for (const width of [390, 1440]) {
+  test(`Console: at ${width}px every console button is at least 44px, with no horizontal scroll`, async () => {
+    const page = await openRange({ width });
+    const boxes = await page.evaluate(() =>
+      [...document.querySelectorAll('.range__console button')].map((b) => {
+        const r = b.getBoundingClientRect();
+        return [b.getAttribute('aria-label'), r.width, r.height];
+      }),
+    );
+    assert.equal(boxes.length, 5, 'Previous, Next, START, A and B');
+    for (const [label, w, h] of boxes) assert.ok(w >= 44 && h >= 44, `${label}: ${w}×${h}`);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width, 'no horizontal scroll');
+    await page.close();
+  });
+}
