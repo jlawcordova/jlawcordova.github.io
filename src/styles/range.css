@@ -151,29 +151,116 @@ section.range {
   padding-top: 28px;
 }
 
-.range__arrow,
-.range__toggle {
+:where(.range__controls button) {
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
   padding: 0;
   border: 0;
-  background: transparent;
-  color: var(--color-ink);
   cursor: pointer;
 }
 
-/* The auto-advance nudge on the Next arrow. */
-.range__arrow.is-pulsing {
-  color: var(--color-accent);
+/* D-pad: 44px cells in ink. */
+.range__dpad {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 44px);
+  grid-template-rows: repeat(3, 44px);
+}
+.range__dpad-arm {
+  background: var(--color-ink);
+}
+.range__dpad-hub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.range__dpad-hub::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  background: var(--color-footer);
 }
 
-.range__toggle[aria-pressed="true"] .range__icon-pause,
-.range__toggle[aria-pressed="false"] .range__icon-play {
-  display: none;
+.range__arrow {
+  width: 44px;
+  height: 44px;
+  background: var(--color-ink);
+  color: var(--color-gold);
+}
+/* Hover, and the auto-advance nudge on the Next arrow. */
+.range__arrow:hover,
+.range__arrow.is-pulsing {
+  background: var(--color-footer);
+  color: var(--color-page);
+}
+
+/* Silkscreen at 10px, under or beside the key it names. Decoration: each
+   button's own name says the same. */
+.range__key-label {
+  font: 10px/1 var(--font-pixel);
+  letter-spacing: 1px;
+  color: var(--color-footer);
+}
+
+/* START: a pixel slot over its label. */
+.range__toggle {
+  min-width: 64px;
+  min-height: 44px;
+  padding: 4px 6px;
+  flex-direction: column;
+  gap: 6px;
+  background: transparent;
+}
+.range__slot {
+  width: 48px;
+  height: 12px;
+  background: var(--color-ink);
+}
+.range__toggle:hover .range__slot {
+  background: var(--color-footer);
+}
+.range__toggle:active {
+  transform: translate(1px, 1px);
+}
+
+/* A and B: square accent keys that press in 2px. */
+.range__ab {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.range__key {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.range__button {
+  width: 52px;
+  height: 52px;
+  border: var(--border-thick);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font: 15px/1 var(--font-pixel);
+  transition: transform 0.12s steps(2);
+}
+.range__button:hover {
+  background: var(--color-accent-hover);
+}
+.range__button:active {
+  transform: translate(2px, 2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .range__button {
+    transition: none;
+  }
+  /* A only makes the sprite hop, which reduced motion turns off (spec R12). */
+  .range__key--a {
+    visibility: hidden;
+  }
 }
 
 /* Without JS the controls do nothing, so hide them without moving anything. */

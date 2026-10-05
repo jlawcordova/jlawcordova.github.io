@@ -30,24 +30,40 @@ const [first] = rangeClasses;
         </div>
       </div>
       <div class="range__controls">
-        <button type="button" class="range__arrow" data-dir="-1" aria-label="Previous class">
-          <svg class="pixel-art" width="28" height="36" viewBox="0 0 7 9" aria-hidden="true">
-            <path fill="currentColor" d="M5 0h2v9h-2zM3 1h2v7h-2zM1 3h2v3h-2zM0 4h1v1h-1z"></path>
-          </svg>
+        <!-- A 3 × 3 D-pad: left and right are the class buttons, the rest is plastic. -->
+        <div class="range__dpad">
+          <span aria-hidden="true"></span>
+          <span class="range__dpad-arm" aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <button type="button" class="range__arrow" data-dir="-1" aria-label="Previous class">
+            <svg class="pixel-art" width="12" height="15" viewBox="0 0 4 5" aria-hidden="true">
+              <path fill="currentColor" d="M3 0h1v5h-1zM2 1h1v3h-1zM1 2h1v1h-1z"></path>
+            </svg>
+          </button>
+          <span class="range__dpad-arm range__dpad-hub" aria-hidden="true"></span>
+          <button type="button" class="range__arrow" data-dir="1" aria-label="Next class">
+            <svg class="pixel-art" width="12" height="15" viewBox="0 0 4 5" aria-hidden="true">
+              <path fill="currentColor" d="M0 0h1v5h-1zM1 1h1v3h-1zM2 2h1v1h-1z"></path>
+            </svg>
+          </button>
+          <span aria-hidden="true"></span>
+          <span class="range__dpad-arm" aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </div>
+        <button type="button" class="range__toggle" aria-pressed="false" aria-label="Start: pause the class rotation">
+          <span class="range__slot" aria-hidden="true"></span>
+          <span class="range__key-label" aria-hidden="true">START</span>
         </button>
-        <button type="button" class="range__toggle" aria-pressed="false" aria-label="Pause class rotation">
-          <svg class="pixel-art range__icon-pause" width="20" height="28" viewBox="0 0 5 7" aria-hidden="true">
-            <path fill="currentColor" d="M0 0h2v7h-2zM3 0h2v7h-2z"></path>
-          </svg>
-          <svg class="pixel-art range__icon-play" width="20" height="28" viewBox="0 0 5 7" aria-hidden="true">
-            <path fill="currentColor" d="M0 0h1v7h-1zM1 1h1v5h-1zM2 2h1v3h-1zM3 3h1v1h-1z"></path>
-          </svg>
-        </button>
-        <button type="button" class="range__arrow" data-dir="1" aria-label="Next class">
-          <svg class="pixel-art" width="28" height="36" viewBox="0 0 7 9" aria-hidden="true">
-            <path fill="currentColor" d="M0 0h2v9h-2zM2 1h2v7h-2zM4 3h2v3h-2zM6 4h1v1h-1z"></path>
-          </svg>
-        </button>
+        <div class="range__ab">
+          <div class="range__key range__key--a">
+            <button type="button" class="range__button range__a" aria-label="A: jump">A</button>
+            <span class="range__key-label" aria-hidden="true">JUMP</span>
+          </div>
+          <div class="range__key">
+            <button type="button" class="range__button range__b" data-dir="-1" aria-label="B: previous class">B</button>
+            <span class="range__key-label" aria-hidden="true">BACK</span>
+          </div>
+        </div>
       </div>
       <div class="range__speaker" aria-hidden="true">
         {Array.from({ length: 5 }, () => <span />)}
@@ -98,7 +114,8 @@ const [first] = rangeClasses;
       }, 2200);
     };
 
-    section.querySelectorAll<HTMLElement>('.range__arrow').forEach((arrow) =>
+    // The D-pad's arrows, and B, which goes back like Previous.
+    section.querySelectorAll<HTMLElement>('button[data-dir]').forEach((arrow) =>
       arrow.addEventListener('click', () => (show(Number(arrow.dataset.dir), true), schedule())),
     );
     toggle.addEventListener('click', () => ((playing = !playing), schedule()));
