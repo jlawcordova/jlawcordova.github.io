@@ -248,7 +248,7 @@ The lab at `/lab/pixel-art/` (or `npm run dev`, then http://localhost:4321/lab/p
 
 ## Achievement icons
 
-The 16×16 icons beside the accomplishments on the site are objects named `icon-<id>`, placed in the `achievement-icons` scene. They follow every rule here and have a few of their own (size, anchor, sheet order, the icon list). Use the `achievement-icon` skill to add or change one.
+The 16×16 icons beside the accomplishments on the site are objects named `icon-<id>`, placed in the `achievement-icons` scene. They're drawn in the [island and Range look](#island-and-range-look), following [Isometric icons](#isometric-icons), and have a few rules of their own (size, anchor, sheet order, the icon list). Use the `achievement-icon` skill to add or change one.
 
 ## The art that's already on the site
 
@@ -264,7 +264,7 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
 
 ## Island and Range look
 
-The style of the hero island's objects and of the Range: its platform and its characters ([hero island detail spec](../../../docs/intents/2026-10-hero-island-detail/spec.md), [Isometric Range spec](../../../docs/intents/2026-10-range-isometric/spec.md)). Detailed, calm, no outlines. The `pixel-artist` agent (`.claude/agents/pixel-artist.md`) draws in it. Achievement icons keep their own outlined style (the `achievement-icon` skill).
+The style of the hero island's objects, of the Range (its platform and its characters) and of the achievement icons ([hero island detail spec](../../../docs/intents/2026-10-hero-island-detail/spec.md), [Isometric Range spec](../../../docs/intents/2026-10-range-isometric/spec.md), [isometric icons spec](../../../docs/intents/2026-10-isometric-icons/spec.md)). Detailed, calm, no outlines. The `pixel-artist` agent (`.claude/agents/pixel-artist.md`) draws in it.
 
 - **Shade order.**
   - Each material uses its own ramp. The lit top is shade 2. The left face is the mid shade and the right face the dark one (for soil, `soil-2` and `soil-3`).
@@ -344,6 +344,20 @@ The Range's characters are built like the clouds: stacked boxes, no outline, no 
   - A long prop (a sword, a staff) is a vertical 2-px stroke, lit on the left and dark on the right, 1 px clear of the head, with the fist drawn over its grip.
   - A prop too big for 24×32 is its own `prop-<class>-<name>` object, placed by `tile` next to the figure inside that class's `data-class` group, so it shows and hides with it: listed before the outfit when it's behind, after it when it's in front.
 - **Check at 1× and 3× on the grass.** 3× is the Range's size on the page. Where a lit face is close to `grass-2`, give it a lighter rim on its lit side. With no outline, a figure has less edge contrast at 1× than the old outlined ones; the owner accepted that.
+
+### Isometric icons
+
+The achievement icons are solid objects built like the clouds and the bridge, on a 16×16 cell. The chest (`icon-chest`), the star (`icon-star`) and the lock (`icon-lock`) are the references, as approved in the owner's review ([isometric icons spec](../../../docs/intents/2026-10-isometric-icons/spec.md)).
+
+- **One object, no ground.** A 16×16 sprite with one layer, anchor `[8, 15]`, no tile, block, grass or shadow under it, and no `ink`. Columns 0 and 15 stay transparent so neighbours in the sheet don't touch. Its lowest pixels sit on row 15, near the anchor (the chest's are at columns 9–10, the star's two feet at 3–4 and 11–12).
+- **Build it from boxes on the 2:1 grid** (screen x = u − v, y = (u + v)/2 − z). A box shows a lit top, a mid left face and a dark right face, with crisp edges between them. Each face holds 2–3 shades at most. The chest is a 9×5 box with a barrel lid; the lock is a 6×4×3 box with a 2-px-thick shackle bar that steps down 1 row per 2 px, like the bridge rail.
+- **Shade order.** The lit top is the ramp's shade 2 with a shade 1 rim or crest along its lit back-left edge; the left face is shade 3 and the right face shade 4 (the chest: `wood-2` top, `wood-3` front, `wood-4` end; the lock's body: `gold-2`, `gold-3`, `gold-4`). A top of shade 1 beside a left face of shade 2 merges into one flat face at 3×. The main material shows at least three shades.
+- **Even thickness.** A flat shape (a star, a key, a heart) lies on the grid and is extruded by one constant vector, straight down, 4 px for the star. Every edge that faces the viewer gets the same band height: left-facing edges mid, right-facing edges dark. Upright on a face plane, a shape shears and one side comes out twice as thick as the other, which breaks the illusion; the owner rejected that for the star.
+- **Edges without outlines.** Where the old outline pixel went, use the darker shade of the face it borders. The icons sit on a near-cream row background (`--color-surface`), so a *lighter* rim vanishes there: the lit edge is carried by shade 1 of the material (the chest's `gold-1` strap tips, the star's `gold-1` rim), never `cream`. A `cream` glint pixel reads as a hole on that background; the lit facets carry the shine instead.
+- **Steel is the `path` ramp** (`path-2` top, `path-3` face, `path-4` shade), since the world palette has no neutral gray. Keep `path-2` to tops and single pixels; it washes out on cream.
+- **Colors.** 4–8 per icon. The star uses four shades of gold and nothing else.
+- **Check at 3× and 1×, and dimmed.** 3× is the icon's 48px size on the page. A locked row shows the icon in grayscale at 40% opacity with the lock over its upper-right third, so a shape must still read by its left half and its shade steps when gray. Judge it on `--color-surface`, not only on the preview's card color, which is darker and makes gold look faint.
+- **The lock** stays in its cell's upper-right corner (columns 6–15, rows 0–11) and is drawn in full color over the dimmed icon.
 
 ## Pitfalls
 
