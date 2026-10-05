@@ -12,7 +12,7 @@ Every accomplishment icon is redrawn to look like it belongs with the island and
 - **Richer detail,** with more shading depth than today's flat icons.
 - **No platform.** Each icon is a single object that stands on its own, not on a tile or block.
 
-The set stays the same: the same 15 icons with the same meanings. Each one is still recognisable at a glance as the kind of work it stands for, and the fallback and locked states still work with the new look.
+The set stays the same: the same 16 icons with the same meanings. Each one is still recognisable at a glance as the kind of work it stands for, and the fallback and locked states still work with the new look.
 
 ## Affected users and systems
 Visitors reading the accomplishments on the home page and the full list. The owner, who adds new icons in the same style later. The icon pixel art, its sheet and the skill for creating icons.
