@@ -91,7 +91,7 @@ Two places can play: **accomplishments** and **buttons**. Everything else uses t
 - Sections and bands supply their own `gutter`, which drops to `gutter-narrow` at `breakpoint-narrow` (480px). Home sections pad `space-section-y` top and bottom.
 - Cards pad `space-card-pad-y` × `space-card-pad-x`. Lists of cards sit in a grid with a 12px gap.
 - Two-column grids stack below `breakpoint-stack` (720px). Pages never scroll sideways at 390px.
-- The isometric grid (`.isogrid`, `color-grid`, a 32 × 16 tile) sits behind title bands and stages only.
+- The isometric grid (`.isogrid`, `color-grid`, a 32 × 16 tile) is a continuous diamond lattice at the pixel art's 2:1 slope. It covers the whole hero band, the page title bands and stages, and nothing else.
 
 ### Shape and depth
 

@@ -129,6 +129,18 @@ describe('pixel-first look', () => {
     assert.deepEqual(bad, []);
   });
 
+  it('the isometric grid draws whole lines through each cell, at the pixel art\'s 2:1 slope', async () => {
+    // A stop at the gradient's start (`color 1px, transparent 1px`) only paints
+    // a sliver in each cell's corner; the canvas's grid is a full lattice.
+    const css = stripComments(await read('src/styles/layout.css'));
+    const rule = (css.match(/\.isogrid\s*\{([^}]*)\}/)?.[1] ?? '').replace(/\s+/g, ' ').replace(/\( /g, '(').replace(/ \)/g, ')');
+    const line = 'transparent calc(50% - 0.5px), var(--color-grid) calc(50% - 0.5px), var(--color-grid) calc(50% + 0.5px), transparent calc(50% + 0.5px)';
+    for (const angle of ['26.565deg', '-26.565deg']) {
+      assert.ok(rule.includes(`linear-gradient(${angle}, ${line})`), `a ${angle} line through the middle of each cell`);
+    }
+    assert.match(rule, /background-size:\s*32px 16px/);
+  });
+
   it('R3: border-thick is in both token files, with the same value', async () => {
     const tokens = JSON.parse(await read('docs/design-system/tokens.json'));
     const thick = tokens.border?.tokens?.find((t) => t.name === 'border-thick');

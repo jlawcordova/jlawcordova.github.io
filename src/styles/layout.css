@@ -1,8 +1,25 @@
-/* Faint isometric grid behind the hero, stages and page title bands. */
+/*
+ * Faint isometric grid behind the hero, stages and page title bands: a
+ * continuous diamond lattice at the pixel art's 2:1 slope (26.565°). Each
+ * 32 × 16 cell draws its two diagonals as 1px lines through its middle, so
+ * neighbouring cells join into unbroken lines across the whole band.
+ */
 .isogrid {
   background-image:
-    linear-gradient(26.57deg, var(--color-grid) 1px, transparent 1px),
-    linear-gradient(-26.57deg, var(--color-grid) 1px, transparent 1px);
+    linear-gradient(
+      26.565deg,
+      transparent calc(50% - 0.5px),
+      var(--color-grid) calc(50% - 0.5px),
+      var(--color-grid) calc(50% + 0.5px),
+      transparent calc(50% + 0.5px)
+    ),
+    linear-gradient(
+      -26.565deg,
+      transparent calc(50% - 0.5px),
+      var(--color-grid) calc(50% - 0.5px),
+      var(--color-grid) calc(50% + 0.5px),
+      transparent calc(50% + 0.5px)
+    );
   background-size: 32px 16px;
 }
 
