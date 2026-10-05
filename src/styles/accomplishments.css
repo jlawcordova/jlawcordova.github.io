@@ -1,6 +1,8 @@
 /*
  * Accomplishments as achievement rows (gamified accomplishments spec D4): the
- * home section, the /accomplishments/ pages, the rows and their tooltip.
+ * home section, the /accomplishments/ pages, the rows and their tooltip. Rows
+ * are square with a 3px edge (pixel-first look spec, Accomplishments), and a
+ * row's panel drops in with Motion (the script in AccomplishmentRow.astro).
  */
 
 /* The icon sheet rows crop from. A zero size, not display:none, so <use> still draws it. */
@@ -115,7 +117,7 @@
 .achievement-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -123,9 +125,8 @@
 
 .achievement {
   position: relative;
-  border-radius: var(--radius-card);
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: var(--border-thick-width) solid var(--color-border);
 }
 
 .achievement[data-state="done"]:hover {
@@ -135,7 +136,7 @@
 
 .achievement[data-state="locked"] {
   background: transparent;
-  border: 1px dashed var(--color-border-strong);
+  border: var(--border-thick-width) dashed var(--color-border-strong);
 }
 
 /* The row: icon, fun title and short description, date, and the open marker. */
@@ -147,7 +148,6 @@
   column-gap: 16px;
   min-height: 72px;
   padding: 11px 18px 11px 12px;
-  border-radius: var(--radius-card);
 }
 
 summary.achievement__row {
@@ -224,32 +224,26 @@ summary.achievement__row:focus-visible {
 .achievement__chevron {
   grid-area: mark;
   color: var(--color-ink-muted);
-  transition: transform 0.2s ease;
+  transition: transform 0.2s steps(2);
 }
 
 .achievement__details[open] .achievement__chevron {
   transform: rotate(180deg);
 }
 
-/* The opened panel: plain title, full description, tags and links. */
+/*
+ * The opened panel: plain title, full description, tags and links. It fades
+ * and drops in with Motion as it opens, and closes at once. No CSS animates
+ * it, so without JavaScript or under reduced motion it simply shows.
+ */
 .achievement__panel {
-  display: grid;
-  grid-template-rows: 1fr;
-  transition: grid-template-rows 0.25s ease;
-}
-
-@starting-style {
-  .achievement__details[open] .achievement__panel {
-    grid-template-rows: 0fr;
-  }
+  display: block;
 }
 
 .achievement__body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-height: 0;
-  overflow: hidden;
   padding-inline: 76px 18px;
 }
 
@@ -301,7 +295,6 @@ summary.achievement__row:focus-visible {
   padding: 4px 8px;
   background: var(--color-card);
   color: var(--color-ink);
-  border-radius: var(--radius-chip);
   overflow-wrap: anywhere;
 }
 
@@ -320,6 +313,7 @@ summary.achievement__row:focus-visible {
   min-height: 44px;
   color: var(--color-accent);
   font-weight: 500;
+  overflow-wrap: anywhere;
 }
 .achievement__links a:hover {
   color: var(--color-accent-hover);
@@ -354,7 +348,6 @@ summary.achievement__row:focus-visible {
     margin: 0;
     padding: 10px 14px;
     border: var(--border-thick);
-    border-radius: var(--radius-button);
     background: var(--color-ink);
     color: var(--color-page);
     font-size: 14px;
@@ -377,7 +370,6 @@ summary.achievement__row:focus-visible {
     --tip-fade: 0s;
   }
 
-  .achievement__panel,
   .achievement__chevron {
     transition: none;
   }
