@@ -1,5 +1,5 @@
 # Intent: Isometric Range
-Author: J. Law. Cordova (site owner). Status: accepted.
+Author: J. Law. Cordova (site owner). Status: done, 2026-10-05: built on `feat/range-isometric` in [#100](https://github.com/jlawcordova/jlawcordova.github.io/pull/100) (platform), [#101](https://github.com/jlawcordova/jlawcordova.github.io/pull/101) (base and knight), [#102](https://github.com/jlawcordova/jlawcordova.github.io/pull/102) (the other six classes) and [#105](https://github.com/jlawcordova/jlawcordova.github.io/pull/105) (the Back-end laptop, from the owner's review), and shipped to `main` in [#103](https://github.com/jlawcordova/jlawcordova.github.io/pull/103). Follow-up: [#104](https://github.com/jlawcordova/jlawcordova.github.io/pull/104) (the console's labels at 320px). Checked on the live site the same day: the home page serves the committed `range-sprite.svg` with seven `data-class` groups, no script, link or text, and no `ink`, and there's no horizontal scroll at 1440px, 390px or 320px, where the console's labels stay inside the shell. Before building it was accepted.
 
 ## Problem
 
