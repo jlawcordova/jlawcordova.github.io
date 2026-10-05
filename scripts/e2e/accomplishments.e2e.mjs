@@ -1,7 +1,9 @@
 // Browser checks for the accomplishments as achievement rows (gamified
 // accomplishments spec R1–R3, R5–R9, R13, R17, R20; plan "Requirements to
 // checks"): the rows, the home section, the paginated /accomplishments/ pages,
-// the tooltip, the icon crop and the site's layout rules.
+// the tooltip, the icon crop and the site's layout rules. The pixel-first look
+// (its spec's Accomplishments, R3, R10–R12 and Tests) adds the rows' 3px
+// edges, the two-column home section, and the Motion panel and entrances.
 //
 // These checks need four datasets, not the one dist/ the runner serves, so
 // this suite builds its own. In `before` it copies each fixture in
@@ -159,19 +161,65 @@ function serve(dir) {
 // ------------------------------------------------------------------ helpers
 
 /**
- * A fresh page on a variant's build.
+ * A fresh page on a variant's build. Unless `settle` is false, every row's
+ * scroll entrance has run and ended before it's returned (see settle()).
  * @param {string} variant
  * @param {string} path
- * @param {Parameters<import('playwright').Browser['newPage']>[0]} [options]
+ * @param {Parameters<import('playwright').Browser['newPage']>[0] & { settle?: boolean }} [options]
  */
-async function open(variant, path, options = {}) {
+async function open(variant, path, { settle: wait = true, ...options } = {}) {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1, ...options });
   const response = await page.goto(`${sites[variant].url}${path}`);
   assert.equal(response?.status(), 200, `${variant} ${path} loads`);
   await page.evaluate(() => document.fonts.ready);
+  if (wait) await settle(page);
   if (!options.hasTouch) await page.mouse.move(0, 0);
   return page;
 }
+
+/**
+ * Scrolls each row into view, so its scroll entrance runs (pixel-first look
+ * spec R10), then back to the top, and waits until every row is at rest:
+ * fully opaque and in its place (R11). It fails if an entrance leaves a row
+ * hidden.
+ */
+async function settle(page) {
+  for (const row of await page.locator('li.achievement').elementHandles()) {
+    await row.evaluate((el) => el.scrollIntoView({ block: 'center', behavior: 'instant' }));
+    await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
+  }
+  await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
+  await page.waitForFunction(
+    () =>
+      [...document.querySelectorAll('li.achievement')].every((el) => {
+        const s = getComputedStyle(el);
+        return Number(s.opacity) === 1 && (s.transform === 'none' || s.transform === 'matrix(1, 0, 0, 1, 0, 0)');
+      }),
+    undefined,
+    { timeout: 5_000 },
+  );
+}
+
+/** A token's color as the browser computes it, to compare with computed styles. */
+const tokenColor = (page, token) =>
+  page.evaluate((name) => {
+    const probe = document.createElement('div');
+    probe.style.color = `var(${name})`;
+    document.body.append(probe);
+    const color = getComputedStyle(probe).color;
+    probe.remove();
+    return color;
+  }, token);
+
+/** A row's four edges, as [width, style, color], and its four corner radii. */
+const edgesOf = (row) =>
+  row.evaluate((li) => {
+    const s = getComputedStyle(li);
+    return {
+      sides: ['Top', 'Right', 'Bottom', 'Left'].map((side) => [s[`border${side}Width`], s[`border${side}Style`], s[`border${side}Color`]]),
+      corners: [s.borderTopLeftRadius, s.borderTopRightRadius, s.borderBottomRightRadius, s.borderBottomLeftRadius],
+    };
+  });
 
 /** The row whose lead is `text`. */
 const rowNamed = (page, text) =>
@@ -258,9 +306,24 @@ describe('rows', () => {
         assert.ok(when.y >= text.y + text.height - 1, 'the date stacks under the text below 480px');
       }
 
+      // The pixel-first look: a square 3px color-border edge, 12px from the next row.
+      const border = await tokenColor(page, '--color-border');
+      const { sides, corners } = await edgesOf(done);
+      for (const side of sides) assert.deepEqual(side, ['3px', 'solid', border], 'a 3px solid color-border edge');
+      assert.deepEqual(corners, ['0px', '0px', '0px', '0px'], 'square corners');
+      const gap = await done.evaluate((li) => {
+        const rows = [.../** @type {Element} */ (li.parentElement).querySelectorAll(':scope > li')];
+        return rows[rows.indexOf(li) + 1].getBoundingClientRect().top - li.getBoundingClientRect().bottom;
+      });
+      assert.equal(gap, 12, 'rows are 12px apart');
+
       const goal = richLocked[0];
       const locked = rowNamed(page, goal.funTitle);
       assert.equal(await locked.getAttribute('data-state'), 'locked');
+      const strong = await tokenColor(page, '--color-border-strong');
+      const lockedEdges = await edgesOf(locked);
+      for (const side of lockedEdges.sides) assert.deepEqual(side, ['3px', 'dashed', strong], 'a 3px dashed color-border-strong edge');
+      assert.deepEqual(lockedEdges.corners, ['0px', '0px', '0px', '0px'], 'square corners when locked');
       assert.equal(await locked.locator('.achievement__date').textContent(), 'Not done yet');
       assert.equal(await locked.locator('.achievement__short').textContent(), goal.shortDescription);
       assert.equal(await locked.locator('svg.achievement__lock').count(), 1, 'the lock mark');
@@ -531,6 +594,47 @@ describe('the home section', () => {
     await page.close();
   });
 
+  for (const width of [1440, 390]) {
+    const layout = width > 720 ? 'in two columns at 1:2, with "Show more" on the left' : 'stacked, with "Show more" under the rows';
+    test(`pixel-first look: at ${width}px the section has its lede, ${layout}`, async () => {
+      const page = await open('rich', '/', { viewport: { width, height: 900 } });
+      const section = page.locator('#accomplishments');
+      const lede = section.locator('.accomplishments__lede');
+      assert.equal(await lede.textContent(), 'A running log of what I’ve shipped recently.');
+      assert.equal(await lede.evaluate((p) => getComputedStyle(p).color), await tokenColor(page, '--color-ink-muted'), 'the lede is color-ink-muted');
+      assert.equal(
+        await section.locator('ol.achievement-list').evaluate((ol) => ol.nextElementSibling?.matches('a.accomplishments__more')),
+        true,
+        '"Show more" comes after the list in the DOM',
+      );
+      const box = async (selector) => {
+        const b = await section.locator(selector).boundingBox();
+        assert.ok(b, selector);
+        return b;
+      };
+      const inner = await box('.accomplishments__inner');
+      const title = await box('#accomplishments-title');
+      const text = await box('.accomplishments__lede');
+      const list = await box('ol.achievement-list');
+      const more = await box('.accomplishments__more');
+      if (width > 720) {
+        const left = (inner.width - 48) / 3;
+        assert.ok(Math.abs(list.width - 2 * left) <= 1, `the rows take two thirds after a 48px gap (${list.width} of ${inner.width})`);
+        assert.ok(Math.abs(list.x - (inner.x + left + 48)) <= 1, 'the rows start after the left column and the gap');
+        for (const [name, b] of [['heading', title], ['lede', text], ['Show more', more]]) {
+          assert.ok(b.x + b.width <= list.x - 48 + 1, `the ${name} is in the left column`);
+        }
+        assert.ok(title.y < text.y && text.y < more.y, 'the heading, the lede, then "Show more"');
+        assert.ok(more.y + more.height <= list.y + list.height, '"Show more" sits beside the rows, not under them');
+      } else {
+        assert.ok(Math.abs(list.x - title.x) <= 1 && Math.abs(list.width - inner.width) <= 1, 'the rows take the full width');
+        assert.ok(text.y > title.y && list.y > text.y + text.height, 'the heading, the lede, then the rows');
+        assert.ok(more.y >= list.y + list.height, '"Show more" is under the rows');
+      }
+      await page.close();
+    });
+  }
+
   test('R8: with the "unavailable" placeholder the section doesn\'t render', async () => {
     const page = await open('unavailable', '/');
     assert.equal(await page.locator('#accomplishments').count(), 0);
@@ -637,24 +741,71 @@ describe('layout and accessibility', () => {
     });
   }
 
-  test('R20: reduced motion turns off the opening, chevron and tooltip transitions', async () => {
-    const durations = async (reducedMotion) => {
-      const page = await open('rich', '/', { reducedMotion });
-      const result = await page.evaluate(() => {
+  /**
+   * Opens a row by clicking its summary, and reads its panel every frame until
+   * the panel has been at rest for 0.4 s, longer than its 0.25 s opening (3 s
+   * at most). Reports whether it ever moved, and how it ended.
+   */
+  const watchOpening = (row) =>
+    row.locator('details').evaluate(async (details) => {
+      const panel = /** @type {HTMLElement} */ (details.querySelector('.achievement__panel'));
+      const still = () => {
+        const s = getComputedStyle(panel);
+        return Number(s.opacity) === 1 && (s.transform === 'none' || s.transform === 'matrix(1, 0, 0, 1, 0, 0)');
+      };
+      /** @type {HTMLElement} */ (details.querySelector('summary')).click();
+      let moved = false;
+      let restingSince = performance.now();
+      for (const start = performance.now(); performance.now() - start < 3000; ) {
+        await new Promise((done) => requestAnimationFrame(done));
+        if (!still()) {
+          moved = true;
+          restingSince = performance.now();
+        } else if (performance.now() - restingSince > 400) break;
+      }
+      return { open: /** @type {HTMLDetailsElement} */ (details).open, moved, rests: still(), inline: panel.getAttribute('style') ?? '' };
+    });
+
+  test('R20, pixel-first look R12: reduced motion stops the panel\'s Motion opening and the row entrances, and turns off the chevron and tooltip transitions', async () => {
+    const run = async (reducedMotion) => {
+      const page = await open('rich', '/', { reducedMotion, settle: false });
+      // The rows below the fold at load: hidden for their entrance, or not.
+      const atLoad = await page
+        .locator('#accomplishments li.achievement')
+        .evaluateAll((all) => all.filter((li) => li.getBoundingClientRect().top > innerHeight).map((li) => Number(getComputedStyle(li).opacity)));
+      await settle(page);
+      const durations = await page.evaluate(() => {
         const of = (selector) => getComputedStyle(/** @type {Element} */ (document.querySelector(selector))).transitionDuration;
         return { panel: of('.achievement__panel'), chevron: of('.achievement__chevron'), tip: of('.achievement__tip') };
       });
+      const row = rowNamed(page, richDone[0].funTitle);
+      await row.scrollIntoViewIfNeeded();
+      const opening = await watchOpening(row);
+      const animations = await page.evaluate(() => document.getAnimations().length);
       await page.close();
-      return result;
+      return { atLoad, durations, opening, animations };
     };
-    const moving = await durations('no-preference');
-    assert.notEqual(moving.panel, '0s', 'the panel animates by default');
-    assert.notEqual(moving.chevron, '0s');
-    assert.match(moving.tip, /[1-9]/, 'the tooltip fades by default');
-    const still = await durations('reduce');
-    for (const [name, value] of Object.entries(still)) {
+
+    const moving = await run('no-preference');
+    assert.ok(moving.atLoad.length > 0, 'some rows start below the fold');
+    for (const opacity of moving.atLoad) assert.equal(opacity, 0, 'a row below the fold waits for its entrance');
+    assert.equal(moving.durations.panel, '0s', 'the panel has no CSS transition: Motion opens it');
+    assert.notEqual(moving.durations.chevron, '0s', 'the chevron turns by default');
+    assert.match(moving.durations.tip, /[1-9]/, 'the tooltip fades by default');
+    assert.equal(moving.opening.open, true);
+    assert.equal(moving.opening.moved, true, 'the panel fades and drops in as it opens');
+    assert.equal(moving.opening.rests, true, 'and ends fully shown in its place');
+
+    const still = await run('reduce');
+    for (const opacity of still.atLoad) assert.equal(opacity, 1, 'no row is hidden for an entrance');
+    for (const [name, value] of Object.entries(still.durations)) {
       for (const part of value.split(',')) assert.equal(part.trim(), '0s', `${name}: ${value}`);
     }
+    assert.equal(still.opening.open, true);
+    assert.equal(still.opening.moved, false, 'the panel opens without moving');
+    assert.equal(still.opening.rests, true);
+    assert.equal(still.opening.inline, '', 'Motion never touched the panel');
+    assert.equal(still.animations, 0, 'nothing on the page is animating');
   });
 
   test('R20: icons are decorative (aria-hidden) and the rows read as text', async () => {
