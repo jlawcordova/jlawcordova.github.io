@@ -4,9 +4,9 @@ A link-styled action in two weights: primary for the one thing to do next, ghost
 
 ## Use
 
-- **Primary** (`.btn.btn--primary`): one per view. It's set in `button-primary` (Silkscreen) on `color-accent`, with `shadow-pixel`. While pressed it moves 2px and drops to `shadow-pixel-pressed`, so it reads as a key.
-- **Ghost** (`.btn.btn--ghost`): secondary actions. It's set in `button-ghost` (Sora 500) on `color-surface-ghost` with a `color-border-strong` outline.
-- Both are 52px tall with 24px of horizontal padding, `radius-button` corners, and a 10px gap for an optional icon.
+- **Primary** (`.btn.btn--primary`): one per view. It's set in `button-primary` (Silkscreen, uppercase) on `color-accent`, with `border-thick`. While pressed it moves 2px down and right, so it reads as a key.
+- **Ghost** (`.btn.btn--ghost`): secondary actions. It's set in Silkscreen, uppercase, on `color-surface-ghost` with `border-thick`. On hover the fill turns `color-card`.
+- Both are 52px tall with 24px of horizontal padding, square corners, no shadow, and a 10px gap for an optional icon.
 
 ## What you provide
 
@@ -16,4 +16,5 @@ A link-styled action in two weights: primary for the one thing to do next, ghost
 
 - Don't put two primaries side by side.
 - Don't use exclamation marks or hype in labels.
-- The ghost outline is 1.4:1. Never rely on the outline alone to show it's a control. The label must say what it does.
+- Don't round the corners or add a shadow.
+- The label must say what it does. Don't rely on the border alone to show it's a control.
