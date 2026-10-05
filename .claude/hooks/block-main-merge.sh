@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # PreToolUse hook: agents may merge pull requests into feature branches
-# (feat/**), never into main. Merging to main deploys the site, so the owner
+# (feat/**), never into main, and never push to main. Merging to main deploys the site, so the owner
 # does it by hand. Exit 2 blocks the tool call and shows the message to Claude.
 input=$(cat)
 tool=$(jq -r '.tool_name' <<<"$input")
@@ -79,12 +79,15 @@ if [[ "$tool" == "Bash" ]]; then
   dir=$(jq -r '.cwd // empty' <<<"$input")
   # A direct push to main deploys too. Check each simple command on its own,
   # so a later word "main" elsewhere in the line doesn't count.
+  merge=
   while IFS= read -r segment; do
     check_push "$segment"
+    # A merge is a command that starts with gh pr merge, not those words in a body.
+    [[ "$segment" =~ ^[[:space:]]*gh[[:space:]]+pr[[:space:]]+merge([[:space:]]|$) ]] && merge=$segment
   done < <(sed -E 's/(&&|\|\||;|\||&)/\n/g' <<<"$cmd")
-  [[ "$cmd" =~ gh[[:space:]]+pr[[:space:]]+merge ]] || exit 0
+  [[ -n "$merge" ]] || exit 0
   # A pull request number after "merge", or the current branch's PR when none.
-  pr=$(grep -oE 'gh[[:space:]]+pr[[:space:]]+merge[[:space:]]+#?[0-9]+' <<<"$cmd" | grep -oE '[0-9]+$')
+  pr=$(grep -oE 'gh[[:space:]]+pr[[:space:]]+merge[[:space:]]+#?[0-9]+' <<<"$merge" | grep -oE '[0-9]+$')
   base=$(gh pr view ${pr:+"$pr"} --json baseRefName -q .baseRefName 2>/dev/null)
 elif [[ "$tool" == *merge_pull_request ]]; then
   owner=$(jq -r '.tool_input.owner' <<<"$input")

@@ -1,12 +1,12 @@
 // The PreToolUse hook that keeps agents from updating main
 // (.claude/hooks/block-main-merge.sh) blocks every push whose destination is
-// main, and only those: a later word "main" elsewhere in a command, such as
-// in a PR body, doesn't count. Runs the hook with bash, jq and git; no network
-// (the gh pr merge path is not exercised here).
+// main and every PR merge into a base outside feat/**, and only those: the
+// same words inside a PR body or an echo don't count. Runs the hook with bash,
+// jq and git, and a stub gh, so there's no network.
 
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { chmodSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, before, describe, it } from 'node:test';
@@ -15,11 +15,17 @@ import { fileURLToPath } from 'node:url';
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const HOOK = join(ROOT, '.claude/hooks/block-main-merge.sh');
 
+// A stub gh: PR 1 merges into feat/x, any other PR (or none) into main.
+const BIN = mkdtempSync(join(tmpdir(), 'push-guard-bin-'));
+writeFileSync(join(BIN, 'gh'), '#!/usr/bin/env bash\n[[ "$3" == 1 ]] && echo feat/x || echo main\n');
+chmodSync(join(BIN, 'gh'), 0o755);
+
 /** Runs the hook on a Bash tool call and returns its exit code. */
 const run = (command, cwd = ROOT) =>
   spawnSync('bash', [HOOK], {
     input: JSON.stringify({ tool_name: 'Bash', tool_input: { command }, cwd }),
     encoding: 'utf8',
+    env: { ...process.env, PATH: `${BIN}:${process.env.PATH}` },
   }).status;
 
 describe('push guard (block-main-merge.sh)', () => {
@@ -39,7 +45,26 @@ describe('push guard (block-main-merge.sh)', () => {
     git('switch', '-q', '-c', 'tracks-main', '--track', 'origin/main');
     git('switch', '-q', '-c', 'no-upstream');
   });
-  after(() => rmSync(join(repo, '..'), { recursive: true, force: true }));
+  after(() => {
+    rmSync(join(repo, '..'), { recursive: true, force: true });
+    rmSync(BIN, { recursive: true, force: true });
+  });
+
+  it('blocks a PR merge outside feat/**, and allows one into it', () => {
+    assert.equal(run('gh pr merge 2 --merge'), 2, 'into main');
+    assert.equal(run('gh pr merge --merge'), 2, "the current branch's PR, into main");
+    assert.equal(run('npm test && gh pr merge 2'), 2, 'after another command');
+    assert.equal(run('gh pr merge 1 --merge'), 0, 'into feat/x');
+  });
+
+  it('ignores "gh pr merge" that is only text in another command', () => {
+    for (const command of [
+      'gh pr create --base main --body "The gh pr merge path is unchanged"',
+      'echo "gh pr merge 2"',
+    ]) {
+      assert.equal(run(command), 0, command);
+    }
+  });
 
   it('blocks a push that names main as its destination', () => {
     for (const command of [
