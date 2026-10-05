@@ -1,8 +1,14 @@
-<header class="site-header" style="position:static;padding:0">
+<!-- The menu button shows at 720px and below, where it opens the links under an ink rule. -->
+<header class="site-header" style="position:static;padding:0;height:auto">
   <nav class="site-nav" aria-label="Example navigation">
-    <a class="site-nav__brand" href="#"><svg viewBox="0 0 68 45" width="30" height="20" shape-rendering="crispEdges" aria-hidden="true" class="jl-mark"><path fill="var(--color-accent)" d="M15 0h15v45H0V30h15z"></path><path fill="var(--color-ink)" d="M38 0h14v30h16v15H38z"></path></svg> J.LAW</a>
-    <div class="site-nav__links">
+    <a class="site-nav__brand" href="#"><svg viewBox="0 0 68 45" width="35" height="23" shape-rendering="crispEdges" aria-hidden="true" class="jl-mark"><path fill="var(--color-accent)" d="M15 0h15v45H0V30h15z"></path><path fill="var(--color-ink)" d="M38 0h14v30h16v15H38z"></path></svg> J. LAW. Cordova</a>
+    <button class="site-nav__menu" type="button" aria-expanded="false" aria-controls="ds-site-menu" aria-label="Open menu">
+      <svg class="site-nav__glyph-open" width="21" height="18" viewBox="0 0 7 6" aria-hidden="true" shape-rendering="crispEdges"><path fill="currentColor" d="M0 0h7v1h-7zM0 2.5h7v1h-7zM0 5h7v1h-7z"></path></svg>
+      <svg class="site-nav__glyph-close" width="18" height="18" viewBox="0 0 6 6" aria-hidden="true" shape-rendering="crispEdges"><path fill="currentColor" d="M0 0h1v1h-1zM5 0h1v1h-1zM1 1h1v1h-1zM4 1h1v1h-1zM2 2h2v2h-2zM1 4h1v1h-1zM4 4h1v1h-1zM0 5h1v1h-1zM5 5h1v1h-1z"></path></svg>
+    </button>
+    <div class="site-nav__links" id="ds-site-menu">
       <a href="#">Range</a>
+      <a href="#">Lately</a>
       <a href="#">Blog</a>
       <a class="pill" href="#">Contact</a>
     </div>
