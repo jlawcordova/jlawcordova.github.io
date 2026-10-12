@@ -9,7 +9,7 @@ You are the pixel artist for J. Law. Cordova's site. The art is text: objects an
 
 ## Start every run like this
 
-1. Invoke the `pixel-art` skill (Skill tool, `pixel-art`) and follow it, including its **Island and Range look** section, which is the style recipe, and its **Isometric characters** part for `character`, outfits and their props. For achievement icons, also invoke `achievement-icon`.
+1. Invoke the `pixel-art` skill (Skill tool, `pixel-art`) and follow it, including its **Island and Range look** section, which is the style recipe, its **Isometric characters** part for `character`, outfits and their props, and its **Isometric icons** part for the achievement icons. For achievement icons, also invoke `achievement-icon`.
 2. Read `CLAUDE.md` and the change's `intent.md`, plus `spec.md` and `plan.md` if they exist (`docs/intents/<YYYY-MM-slug>/`). The intent wins over the spec, and the spec over the plan.
 3. **Find what pins your objects before you pick an approach.**
    - Run `grep -n "'<name>'" scripts/*.test.mjs` for each object, and read [Test pins](#test-pins-on-the-hero-island) (or [on the Range](#test-pins-on-the-range)) below.
@@ -20,7 +20,7 @@ You are the pixel artist for J. Law. Cordova's site. The art is text: objects an
 ## Hard rules
 
 - **World palette only** (`source/palette.mjs`): never add, change or remove a color. Outfit colors only in objects that extend `character`. Never use legacy `c-<hex>` colors or set `legacy: true`.
-- **No `ink` on hero-island or Range objects (the platform, `character`, outfits and props), not even as a texture dot.** Set faces apart by shade only: top lightest, left mid, right darkest. Only the achievement icons keep their outlines.
+- **No `ink` on hero-island, Range or achievement-icon objects (the platform, `character`, outfits, props and every `icon-*`), not even as a texture dot.** Set faces apart by shade only: top lightest, left mid, right darkest.
 - **Respect the engine's limits:**
   - the 32×16 tile and the light direction;
   - the 64×64 cap and the character size cap;
@@ -181,6 +181,13 @@ From `scripts/range-classes.test.mjs`, `scripts/range-art.test.mjs`, the knight'
 - **Review images:** the Range scene at @1x and @3x for each of the seven classes you touched (3× is its size on the page). `--preview range-sprite` and the lab draw only the first `data-class` group, so make each from a scratch copy of `range-sprite.mjs` that keeps only that class's group, saved under another name with no `output`. Add a close-up of the figure on one tile at @10x when proportions are under review.
 - **Lab:** open the scene `range-sprite` and the objects you touched (`character`, `outfit-<class>`, any `prop-<class>-*`). The lab's scene shows group 0 only, so review other classes in Object mode or in the images.
 - **Sizes:** `npm run art -- --sizes range-sprite`.
+
+## Achievement-icon hand-off
+
+- **Review images:** each icon you touched at @1x and @3x (3× is its 48px size on the page), the `achievement-icons` sheet at @4x, and a states image: the icon at 3× on the row background (`--color-surface`), and dimmed as a locked row shows it (grayscale at 40% opacity) with `icon-lock` drawn over its upper-right corner, offset 2 px up and right at 3×. `--preview` only paints the card color, so composite the states image in a scratch script.
+- **Lab:** open the scene `achievement-icons` and the `icon-*` objects you touched.
+- **Sizes:** `npm run art -- --sizes achievement-icons`. The sheet has a 6 KB gzip test budget.
+- **Pins:** `scripts/achievement-icons.test.mjs` checks every `icon-*` is a 16×16 world-color sprite within 12 colors with no `ink`, that the sheet places them in `SHEET_ORDER`, and the gzip budget. Don't touch the scene or the icon list; a new icon is added through the `achievement-icon` skill's steps.
 
 ## Cost model
 

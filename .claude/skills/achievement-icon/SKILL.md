@@ -10,11 +10,11 @@ This skill covers what's specific to icons. Everything about drawing (the palett
 
 ## What an icon is
 
-- **A flat 16×16 sprite,** front-on, not isometric. It's one object, `src/assets/pixel-art/source/objects/icon-<id>.mjs`, with a single layer and the anchor at `[8, 15]`.
-- **World colors only,** at most 12 (aim for 6–8), no legacy colors. Outline it in `ink`. Light comes from the upper left: the lit side uses shade 1, the right and lower side shade 3 or 4, as on the island.
+- **A 16×16 isometric sprite** in the [island and Range look](../pixel-art/SKILL.md#island-and-range-look): one solid object on the same 2:1 grid as the island, seen from the same angle, with no outline and no platform under it. It's one object, `src/assets/pixel-art/source/objects/icon-<id>.mjs`, with a single layer and the anchor at `[8, 15]`. The `pixel-art` skill's [Isometric icons](../pixel-art/SKILL.md#isometric-icons) part is the recipe; the chest, star and lock are the references.
+- **World colors only,** at most 12 (aim for 6–8), no legacy colors and **no `ink`**, not even as a dot. Faces are set apart by shade: top lightest, left face mid, right face darkest, as on the island. The main material shows at least three shades of its ramp. Where today's outline pixel would go, use the darker shade of the face it borders.
 - **Generic and public-safe.** No names, logos, brands or likenesses. A picture of a kind of work, such as a rocket for "shipped", never of a person or a client.
 - **Named for the kind of work,** not the discipline and not a specific accomplishment. The set stays small and reusable: add a new icon only when the kind of work isn't covered by any existing meaning. Check the table below first.
-- **Two icons are special** and aren't offered as choices: `star` (the fallback, shown for a missing or unknown icon) and `lock` (a 7×8 padlock in the upper-right corner of its cell, with a solid ink outline, drawn over the icon of an accomplishment that isn't done yet; that icon gets a darkened or washed-out filter, which comes later).
+- **Two icons are special** and aren't offered as choices: `star` (the fallback, shown for a missing or unknown icon) and `lock` (a block-built gold padlock, about 10×12, in the upper-right corner of its cell at columns 6–15 and rows 0–11, drawn in full color over the icon of an accomplishment that isn't done yet; the row dims that icon with `opacity: 0.4; filter: grayscale(1)`, so the lock must read against a gray, faded icon).
 
 ## The set
 
@@ -49,7 +49,7 @@ The set is the 16 icons above, and a test fails if this table disagrees with `ac
 2. **Start a file:** `npm run art -- --new object icon-<id> --size 16x16`, then set the anchor to `[8, 15]`.
 3. **Draw it,** whole rows of 16 characters, 16 rows, using `keys` from the world palette. `.` is transparent.
 4. **Check it:** `npm run art -- --check icon-<id>` must pass.
-5. **Look at it:** `npm run art -- --preview icon-<id>` and open the PNG. Judge it at 1× and 4×: it's drawn at about 48px on the site, so it must read at a glance. The picture, not the text, decides.
+5. **Look at it:** `npm run art -- --preview icon-<id> --scale 3` and open the PNGs. Judge it at 3× (its 48px size on the site) and at 1×, and also dimmed as a locked row shows it (grayscale at 40% opacity on the row's `--color-surface`), since the lock is drawn over that. It must read at a glance. The picture, not the text, decides.
 6. **List it:** add `{ id, meaning }` to `ICONS` in `src/lib/achievement-icons.mjs`, and a row to the table above.
 7. **Place it in the sheet:** add an item to `src/assets/pixel-art/source/scenes/achievement-icons.mjs`, in the same position as in `SHEET_ORDER` (`star`, `lock`, then `ICONS` in order). Group `{ 'data-icon': '<id>' }`, at `px: [index × 16 + 8, 15]`, and widen the `viewBox` to `[0, 0, 16 × count, 16]`. Re-save the scene in canonical form if `npm test` says it isn't.
 8. **Compile and test:** `npm run art`, then `npm test` (it checks the list, the objects, the sheet order, the caps and the 6 KB gzip budget for the sheet).

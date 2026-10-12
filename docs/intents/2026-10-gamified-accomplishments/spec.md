@@ -100,6 +100,8 @@ There is no way to change a record today (`list`, `add`, `delete` only). Marking
 
 ### D5. The icons (this repo)
 
+*(Update, 2026-10-05: the icons are now isometric, unoutlined objects in the island and Range look, and the lock is a block-built padlock of about 10×12. The flat, front-on, `ink`-outlined description below is the original design; [Accomplishment icons in the island and Range style](../2026-10-isometric-icons/spec.md) replaces it.)*
+
 - **Where they live.** Sprite objects `src/assets/pixel-art/source/objects/icon-<name>.mjs` (the engine reads `objects/` flat, so the name carries a prefix), each 16×16, at most 12 colors (aim for 6–8), world palette only, no legacy colors. They're flat (front-on) pictures, not isometric, lit from the upper left so the shading matches the world's top-light, left-mid, right-shadow rule.
 - **The sheet.** One scene, `scenes/achievement-icons.mjs`, places all 18 icons in a row on a 16px grid, each in a group with `data-icon="<name>"`, and writes `achievement-icons.svg`. A component, `AchievementIcons.astro`, inlines it once per page inside a hidden `<svg>` as a `<g id="achievement-icons">`. A row draws its icon with `<svg viewBox="<16 × index> 0 16 16"><use href="#achievement-icons"/></svg>`, so each page carries the art once however many rows it has. The icon-to-index map comes from one `achievement-icons.mjs` list that a test keeps in step with the objects.
 - **Budget.** The sheet is at most 20 KB raw and 6 KB gzip, measured in the PR.
