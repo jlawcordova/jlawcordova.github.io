@@ -19,7 +19,7 @@ New art must fit the existing world. The engine enforces every rule here except 
   - **legacy**: the 81 colors extracted from the redesign's art (`c-<hex>`), frozen. **Only imported art (`legacy: true`) may use them.** Never use one in new art, and never set `legacy: true` yourself.
   - Colors are added to the palette by hand, in a reviewed commit. Brand entries keep their `src/styles/variables.css` values.
 - **Light** comes from the same side as on the island: tops are the light shade, left faces the mid shade, right faces the shadow shade.
-- **Size caps.** A map is at most 64×64. A character (`character`, or anything that extends it) paints a figure of at most 24×32 (raised from 16×24 for the Range class characters, so a held prop fits); today's figures are about 14×23. A prop too big to hold is its own `prop-<name>` scene object. An object uses at most 12 colors; aim for 6–8. Imported legacy objects are exempt.
+- **Size caps.** A map is at most 64×64. A character (`character`, or anything that extends it) paints a figure of at most 24×32 (raised from 16×24 for the Range class characters, so a held prop fits); the isometric base is 14×24, and the knight with its shield and sword 22×27. A prop too big to hold is its own `prop-<class>-<name>` object. An object uses at most 12 colors; aim for 6–8. Imported legacy objects are exempt.
 
 ## Formats
 
@@ -142,16 +142,14 @@ export default {
   kind: 'sprite',
   extends: 'character',
   keys: {
-    b: 'ink',
-    c: 'gold-2',
-    d: 'soil-3',
-    e: 'ink',
-    f: 'soil-3',
-    t: 'cream',
+    g: 'roof-1',
+    h: 'roof-2',
+    i: 'roof-3',
+    t: 'gold-2',
   },
   rows: {
     1: {
-      24: '....................attttta.....',
+      24: '...............hhhthhhihhii.....',
     },
   },
 };
@@ -159,8 +157,9 @@ export default {
 
 - `rows` is `{ <layer index>: { <row index>: '<whole row>' } }`. A row override must be the full width of the base's map.
 - `keys` adds keys, or overrides the base's: the base's order comes first, then new keys.
-- `character` uses world colors only (`a` ink, `b` and `e` `soil-4`, `c` and `d` skin, `f` `wood-4`). An outfit may recolor those keys, as the knight and the suit do for armor and trousers. `--new object <name> --extends character` writes a starter outfit; it would re-key any legacy color of its base to the nearest allowed one, though `character` has none now.
-- `character` is a 32×35 canvas, with anchor `[0, 0]` at its top left. The figure (head rows 19–23, legs rows 30–34) is in its `cbob` layer, columns 18–30; each outfit draws the top of the head (row 18), any hat above it, and the torso (rows 24–29). Draw held props in the `cbob` layer too, so they bob with the character. A prop goes left of the body (columns 8–17) or in front of it (as the Back-end laptop does, columns 22–31); there is no room right of column 31. A new outfit keeps its figure, with any prop it holds, within 24×32. A larger prop is a separate `prop-<name>` object, placed beside the character in a scene.
+- The example recolors the base's shirt keys (`g`, `h`, `i`) red and adds a gold buckle `t` on one row of the chest.
+- `character` uses world colors only, with no `ink` and no outline; its keys are in [Isometric characters](#isometric-characters). An outfit may recolor those keys or add its own. `--new object <name> --extends character` writes a starter outfit; it would re-key any legacy color of its base to the nearest allowed one, though `character` has none now.
+- `character` is a 32×35 canvas, with anchor `[20, 29]` on the ground under the figure, so a scene places it by `tile`. The figure is in its `cbob` layer (layer 1; layer 0 is empty): head rows 7–20, body rows 18–27, legs rows 25–30, columns 13–26. Draw held props in the `cbob` layer too, so they bob with the character. A prop goes left of the body (columns 8–12) or right of it (columns 27–31). A new outfit keeps its figure, with any prop it holds, within 24×32. A larger prop is a separate `prop-<class>-<name>` object (see [Isometric characters](#isometric-characters)).
 
 ### Scenes (`source/scenes/<name>.mjs`)
 
@@ -171,7 +170,7 @@ export default {
   viewBox: [-51, -9, 103, 72],
   origin: [0, 32],
   items: [
-    { object: 'range-island', at: { px: [-49, -1] } },
+    { object: 'tile', at: { tile: [0, 0, 0] } },
     { object: 'small-rock', at: { tile: [1, 2, 0] } },
     { object: 'small-rock', class: 'pcloud pc0', at: { px: [30, 0] } },
     {
@@ -249,7 +248,7 @@ The lab at `/lab/pixel-art/` (or `npm run dev`, then http://localhost:4321/lab/p
 
 ## Achievement icons
 
-The 16×16 icons beside the accomplishments on the site are objects named `icon-<id>`, placed in the `achievement-icons` scene. They follow every rule here and have a few of their own (size, anchor, sheet order, the icon list). Use the `achievement-icon` skill to add or change one.
+The 16×16 icons beside the accomplishments on the site are objects named `icon-<id>`, placed in the `achievement-icons` scene. They're drawn in the [island and Range look](#island-and-range-look), following [Isometric icons](#isometric-icons), and have a few rules of their own (size, anchor, sheet order, the icon list). Use the `achievement-icon` skill to add or change one.
 
 ## The art that's already on the site
 
@@ -259,14 +258,13 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
   - `truck`, placed with class `itruck it1`, and `truck-green`, placed with `itruck it2`;
   - the pieces listed after the trucks, so they paint over them: `bridge-rail`, `boxes` (a stack of cardboard boxes), the crane as `crane-mast` with `crane-jib` stacked on it, and the front trees. `fence` is in the library but off the island (the owner's Stage 2 review);
   - `cloud-a`, `cloud-b` and `cloud-c`, placed with `pcloud pc0` to `pc2`.
-- **The Range sprite** (`scenes/range-sprite.mjs`) is `range-island` (the one legacy object left: imported with `scripts/import-pixel-art.mjs`, marked `legacy: true`, in the legacy palette, exempt from the caps, and a pixel-for-pixel copy of the original until someone changes it on purpose) plus seven outfits that extend `character`, one per `data-class` group, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). The outfits and `character` were redrawn in world and outfit colors by the [Range class characters](../../../docs/intents/2026-10-sixth-range-class/intent.md) change, so they're no longer legacy.
+- **The Range sprite** (`scenes/range-sprite.mjs`) is a 3×3 platform laid from the island's own blocks (`tile`, `block-right`, `block-left`, `block`, with `island-shadow` under the front edges), a library `tree` and six `flower` objects (`flower`, `flower-pink`, `flower-gold`, two of each, placed by `px`), plus seven outfits that extend `character`, one per `data-class` group, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). Each outfit stands on the center tile, placed by `{ tile: [1, 1, 0] }`. It uses no legacy art. The characters are isometric figures in the [island and Range look](#island-and-range-look), with no `ink` outline ([Isometric Range](../../../docs/intents/2026-10-range-isometric/spec.md)). `--preview range-sprite` and the lab draw only the first `data-class` group; to see another class, preview a scratch copy of the scene that keeps only that group.
 - **Recolors.** `truck-green` is `truck` with other colors: it `extends: 'truck'` and lists only the keys that differ. Use the same pattern for a variant that changes colors but not shape.
-- **Moving legacy art to world colors** (`range-island`, and the legacy palette with it) changes how it looks, so do it one object at a time, in its own PR, with before and after previews. Don't do it as part of other work.
 - **Keep the CSS hooks.** `pixel-art.css` animates the classes on these groups (`wf w0`…, `itruck it1`, `pcloud pc0`, `cbob`). Don't rename a loop, prefix or placement class unless you change the CSS in the same PR.
 
-## Hero island look
+## Island and Range look
 
-The style of the hero island's objects ([hero island detail spec](../../../docs/intents/2026-10-hero-island-detail/spec.md)). Detailed, calm, no outlines. The `pixel-artist` agent (`.claude/agents/pixel-artist.md`) draws in it.
+The style of the hero island's objects, of the Range (its platform and its characters) and of the achievement icons ([hero island detail spec](../../../docs/intents/2026-10-hero-island-detail/spec.md), [Isometric Range spec](../../../docs/intents/2026-10-range-isometric/spec.md), [isometric icons spec](../../../docs/intents/2026-10-isometric-icons/spec.md)). Detailed, calm, no outlines. The `pixel-artist` agent (`.claude/agents/pixel-artist.md`) draws in it.
 
 - **Shade order.**
   - Each material uses its own ramp. The lit top is shade 2. The left face is the mid shade and the right face the dark one (for soil, `soil-2` and `soil-3`).
@@ -285,7 +283,7 @@ The style of the hero island's objects ([hero island detail spec](../../../docs/
   - Bands stay in the upper material's own ramp: grass bands are grass greens, a road's band is `path-3`, last row `path-4`, and a river's is in the water ramp.
   - Every top material on a cliff hangs its own band, so where the river or the road reaches the edge, the edge piece under it carries that material's band (`block-road`, and `block-river` under the river).
 - **Edges and joints.**
-  - No outlines, and no `ink` on island objects.
+  - No outlines, and no `ink` on island or Range objects.
   - Where cubes line a cliff, both of each cube's corner columns show on both cliffs. So joints are hidden with separate edge pieces (`block`, `block-left`, `block-right`, `block-road`), never with an in-between shade or a corner-color swap.
   - When an object loses its outline, recolor the outline pixels with the darker shade of the face they border, which keeps the silhouette. On a small face, count those darker pixels as detail (a box's rear edge reads as a rib, a chassis as tyres) before adding strokes, or it turns stripy.
   - Where an object's lit color matches the ground under it (`grass-2` foliage on `grass-2` grass), give it a lighter rim on the lit side; the darker-shade rule only covers the shaded side.
@@ -304,7 +302,62 @@ The style of the hero island's objects ([hero island detail spec](../../../docs/
   - Each horizontal run costs about 15 B, and rows of the same width merge, so vertical strokes are cheap.
   - An isolated texture pixel costs about 30 B raw and 6 B gzip, times the number of placements and loop frames.
   - Prefer a few deliberate clusters and horizontal adjacency.
-  - Check with `npm run art -- --sizes hero-island`.
+  - Check with `npm run art -- --sizes hero-island` (or `range-sprite`).
+
+### Isometric characters
+
+The Range's characters are built like the clouds: stacked boxes, no outline, no `ink`. The knight (`outfit-security-governance`) is the reference, as approved in the owner's review.
+
+- **Grid and light.** Boxes sit on the 2:1 grid: screen x = u − v and y = (u + v)/2 − z, where u runs right-down, v left-down and z up. Each box has its top lightest, its left face mid and its right face darkest. The figure faces down-left, so the head's left face is the face.
+- **Body plan** (iso units, 1 unit = 1 px across):
+  - legs: two boxes 2 wide, 2 deep, 4 tall, with a 2-unit gap;
+  - body: 8 wide, 4 deep, 7 tall;
+  - arms: 2×2×6 boxes beside the body;
+  - head: a full cube, 8 wide, 6 deep, 8 tall (a short-sided cloud cube leaves no room for eyes and a fringe).
+  - That is about 14×24 px. With its props, a figure stays within 24×32.
+- **Canvas.** 32×35, anchor `[20, 29]` at the ground under the body's center, placed on the Range by `{ tile: [1, 1, 0] }`, the center tile. Props have room at columns 8–12 on the left and 27–31 on the right.
+- **Face.** On the head's left face, 8 px wide and 8 tall, sloping 2:1:
+  - hair is a band on its top two rows, plus a sideburn at its left end;
+  - eyes are 1×2 dark pixels in columns 15 and 18, so they follow the slope;
+  - the head's right face is hair above and shaded skin below.
+- **Keys of `character`:**
+  - `a` `soil-4`: hair's right face, and shoes;
+  - `b` `soil-3`: hair's left face (fringe and sideburn);
+  - `c` `skin-1` and `d` `wood-1`: lit and shaded skin;
+  - `e` `soil-4`: eyes;
+  - `f` `soil-3` and `F` `soil-4`: trousers, left and right;
+  - `g`, `h`, `i` (`path-1`, `path-2`, `path-3`): shirt top, left and right;
+  - `j` `soil-2`: hair's top.
+- **Parts without outlines.**
+  - Give each part's bottom row its face's darker shade (the head's last row, a belt).
+  - Light shoulder or pauldron tops.
+  - A 1-px gap between the arm and the body.
+  - Use 6–8 colors, and at most 4 from the outfit tier.
+- **What an outfit changes.** It overrides whole rows of layer 1 only.
+  - A hat or helmet recolors the head box and its top rows. Anything above the head (a plume, a hat's crown) adds rows over it.
+  - The torso recolors the body and arm boxes.
+  - The legs change only their colors.
+  - Keep the base's face where the outfit shows it, so every class reads as the same person (the knight wears an open helm).
+- **Props.**
+  - A held prop is drawn in the `cbob` layer.
+  - A flat prop (a shield) lies on the left face's plane, so its top and bottom, and any emblem bar, follow the 2:1 slope, with a 1-px darker edge on its right for its thickness.
+  - A long prop (a sword, a staff) is a vertical 2-px stroke, lit on the left and dark on the right, 1 px clear of the head, with the fist drawn over its grip.
+  - A prop too big for 24×32 is its own `prop-<class>-<name>` object, placed by `tile` next to the figure inside that class's `data-class` group, so it shows and hides with it: listed before the outfit when it's behind, after it when it's in front.
+- **Check at 1× and 3× on the grass.** 3× is the Range's size on the page. Where a lit face is close to `grass-2`, give it a lighter rim on its lit side. With no outline, a figure has less edge contrast at 1× than the old outlined ones; the owner accepted that.
+
+### Isometric icons
+
+The achievement icons are solid objects built like the clouds and the bridge, on a 16×16 cell. The chest (`icon-chest`), the star (`icon-star`) and the lock (`icon-lock`) are the references, as approved in the owner's review ([isometric icons spec](../../../docs/intents/2026-10-isometric-icons/spec.md)).
+
+- **One object, no ground.** A 16×16 sprite with one layer, anchor `[8, 15]`, no tile, block, grass or shadow under it, and no `ink`. Columns 0 and 15 stay transparent so neighbours in the sheet don't touch. Its lowest pixels sit on row 15, near the anchor (the chest's are at columns 9–10, the star's two feet at 3–4 and 11–12).
+- **Build it from boxes on the 2:1 grid** (screen x = u − v, y = (u + v)/2 − z). A box shows a lit top, a mid left face and a dark right face, with crisp edges between them. Each face holds 2–3 shades at most. The chest is a 9×5 box with a barrel lid; the lock is a 6×4×3 box with a 2-px-thick shackle bar that steps down 1 row per 2 px, like the bridge rail.
+- **Shade order.** The lit top is the ramp's shade 2 with a shade 1 rim or crest along its lit back-left edge; the left face is shade 3 and the right face shade 4 (the chest: `wood-2` top, `wood-3` front, `wood-4` end; the lock's body: `gold-2`, `gold-3`, `gold-4`). A top of shade 1 beside a left face of shade 2 merges into one flat face at 3×. The main material shows at least three shades.
+- **Even thickness.** A flat shape (a star, a key, a heart) lies on the grid and is extruded by one constant vector, straight down, 4 px for the star. Every edge that faces the viewer gets the same band height: left-facing edges mid, right-facing edges dark. Upright on a face plane, a shape shears and one side comes out twice as thick as the other, which breaks the illusion; the owner rejected that for the star.
+- **Edges without outlines.** Where the old outline pixel went, use the darker shade of the face it borders. The icons sit on a near-cream row background (`--color-surface`), so a *lighter* rim vanishes there: the lit edge is carried by shade 1 of the material (the chest's `gold-1` strap tips, the star's `gold-1` rim), never `cream`. A `cream` glint pixel reads as a hole on that background; the lit facets carry the shine instead.
+- **Steel is the `path` ramp** (`path-2` top, `path-3` face, `path-4` shade), since the world palette has no neutral gray. Keep `path-2` to tops and single pixels; it washes out on cream.
+- **Colors.** 4–8 per icon. The star uses four shades of gold and nothing else.
+- **Check at 3× and 1×, and dimmed.** 3× is the icon's 48px size on the page. A locked row shows the icon in grayscale at 40% opacity with the lock over its upper-right third, so a shape must still read by its left half and its shade steps when gray. Judge it on `--color-surface`, not only on the preview's card color, which is darker and makes gold look faint.
+- **The lock** stays in its cell's upper-right corner (columns 6–15, rows 0–11) and is drawn in full color over the dimmed icon.
 
 ## Pitfalls
 
@@ -312,14 +365,14 @@ The style of the hero island's objects ([hero island detail spec](../../../docs/
 - Keys are case-sensitive: `g` and `G` are different colors.
 - Long runs of one character are easy to miscount. Count against the preview, not the text, and let `--check` find ragged rows.
 - Legacy colors (`c-<hex>`) are off-limits for new art, and so is `legacy: true`.
-- Don't hand-edit `src/assets/pixel-art/*.svg`, and don't add `.src.svg` files. The extracted original of the Range sprite lives in `scripts/fixtures/pixel-art/` as a test fixture only.
+- Don't hand-edit `src/assets/pixel-art/*.svg`, and don't add `.src.svg` files.
 - `scripts/import-pixel-art.mjs` brings existing SVG art in as legacy sources. It's not for drawing new art.
 
 ## Before opening a PR
 
 - [ ] `npm run art -- --check <name>` passes for everything you touched, and `npm run art` reports every file `lossless` and none `OVER BUDGET`. For the hero island, paste `npm run art -- --sizes hero-island` into the PR.
 - [ ] No legacy colors in new art; within the caps; light from the island's side.
-- [ ] The preview PNGs (1× and 4× at least) are attached to the PR.
+- [ ] The preview PNGs (1× and 4× at least) are attached to the PR. For the Range, each class you touched at 1× and 3×, from a scratch copy of `range-sprite` that keeps only that class's group.
 - [ ] `npm test` shows `# fail 0`.
 - [ ] The art is generic and public-safe (`CLAUDE.md`): no names, logos or likenesses.
 - [ ] If you changed how art is made (formats, commands, rules), this skill is updated in the same PR.

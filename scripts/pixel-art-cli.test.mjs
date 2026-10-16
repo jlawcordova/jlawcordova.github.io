@@ -28,6 +28,35 @@ async function workspace() {
   return dir;
 }
 
+/** Writes a small legacy object into the workspace, the way imported art was, and returns its path. */
+async function addLegacyObject(dir) {
+  const path = join(dir, 'source/objects/legacy-rock.mjs');
+  await writeFile(
+    path,
+    [
+      '// Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md',
+      'export default {',
+      "  kind: 'sprite',",
+      '  legacy: true,',
+      '  anchor: [0, 0],',
+      '  keys: {',
+      "    a: 'c-7e9a60',",
+      '  },',
+      '  layers: [',
+      '    {',
+      '      map: [',
+      "        'aaaa',",
+      "        'aaaa',",
+      '      ],',
+      '    },',
+      '  ],',
+      '};',
+      '',
+    ].join('\n'),
+  );
+  return path;
+}
+
 /** Runs `npm run art -- <args>` against the workspace. */
 function art(dir, ...args) {
   const r = spawnSync(process.execPath, [SCRIPT, '--source', join(dir, 'source'), '--out', join(dir, 'out'), ...args], {
@@ -50,14 +79,14 @@ describe('npm run art (R38)', () => {
 
   it('R38: plain run writes nothing and exits 1 when any source has a problem', async () => {
     const dir = await workspace();
-    const path = join(dir, 'source/objects/range-island.mjs');
+    const path = await addLegacyObject(dir);
     const text = await readFile(path, 'utf8');
     const broken = text.replace(/(map: \[\n\s+')./, '$1');
     assert.notEqual(broken, text);
     await writeFile(path, broken);
     const { code, err } = art(dir);
     assert.equal(code, 1);
-    assert.match(err, /^objects\/range-island\.mjs: layer 0, row 0: 98 wide, expected 99$/m);
+    assert.match(err, /^objects\/legacy-rock\.mjs: layer 0, row 1: 4 wide, expected 3$/m);
     assert.match(err, /^1 problem; nothing written\.$/m);
     assert.ok(!existsSync(join(dir, 'out')));
   });
@@ -65,7 +94,7 @@ describe('npm run art (R38)', () => {
   it('R38: a source that does not load is reported with its file', async () => {
     const dir = await workspace();
     await writeFile(join(dir, 'source/objects/broken.mjs'), 'export default {');
-    const { code, err } = art(dir, '--check', 'range-island');
+    const { code, err } = art(dir, '--check', 'outfit-front-end');
     assert.equal(code, 0, 'a check of another object is not blocked');
     const all = art(dir);
     assert.equal(all.code, 1);
@@ -117,16 +146,17 @@ describe('--check (R38)', () => {
     const { code, out } = art(dir, '--check', 'outfit-front-end');
     assert.equal(code, 0);
     assert.equal(out, 'objects/outfit-front-end.mjs: ok · 32×35 · 11 colors (of 12) · 2 layers · 1 frame\n');
-    const legacy = art(dir, '--check', 'range-island');
+    await addLegacyObject(dir);
+    const legacy = art(dir, '--check', 'legacy-rock');
     assert.equal(legacy.code, 0);
-    assert.equal(legacy.out, 'objects/range-island.mjs: ok · 99×62 · 21 colors (legacy, no cap) · 1 layer · 1 frame\n');
+    assert.equal(legacy.out, 'objects/legacy-rock.mjs: ok · 4×2 · 1 color (legacy, no cap) · 1 layer · 1 frame\n');
   });
 
   it('R38: prints a one-line summary for a valid scene', async () => {
     const dir = await workspace();
     const { code, out } = art(dir, '--check', 'scenes/range-sprite');
     assert.equal(code, 0);
-    assert.equal(out, 'scenes/range-sprite.mjs: ok · 103×72 · 8 items · 9 objects · output range-sprite.svg\n');
+    assert.equal(out, 'scenes/range-sprite.mjs: ok · 103×72 · 27 items · 17 objects · output range-sprite.svg\n');
   });
 
   it('R38: prints every problem with file, place and rule, and exits 1', async () => {
@@ -148,20 +178,20 @@ describe('--check (R38)', () => {
   it('R38: a check covers what the target uses, and only that', async () => {
     const dir = await workspace();
     const path = join(dir, 'source/objects/character.mjs');
-    await writeFile(path, (await readFile(path, 'utf8')).replace("a: 'ink'", "a: 'no-such-color'"));
+    await writeFile(path, (await readFile(path, 'utf8')).replace("a: 'soil-4'", "a: 'no-such-color'"));
     assert.equal(art(dir, '--check', 'outfit-ux-design').code, 1, 'an outfit is checked with its base');
     assert.equal(art(dir, '--check', 'range-sprite').code, 1, 'a scene is checked with its objects');
-    assert.equal(art(dir, '--check', 'range-island').code, 0, 'an unrelated object is not');
+    assert.equal(art(dir, '--check', 'flower').code, 0, 'an unrelated object is not');
   });
 
   it('R38: --check and --preview report a source that does not load, by its file', async () => {
     const dir = await workspace();
-    const path = join(dir, 'source/objects/range-island.mjs');
+    const path = join(dir, 'source/objects/flower.mjs');
     await writeFile(path, `${await readFile(path, 'utf8')}export default {`);
-    for (const args of [['--check', 'range-island'], ['--check', 'objects/range-island'], ['--preview', 'range-island'], ['--check', 'range-sprite']]) {
+    for (const args of [['--check', 'flower'], ['--check', 'objects/flower'], ['--preview', 'flower'], ['--check', 'range-sprite']]) {
       const { code, err } = art(dir, ...args);
       assert.equal(code, 1, args.join(' '));
-      assert.match(err, /^objects\/range-island\.mjs: cannot be loaded: /m, args.join(' '));
+      assert.match(err, /^objects\/flower\.mjs: cannot be loaded: /m, args.join(' '));
       assert.doesNotMatch(err, /no object or scene named/, args.join(' '));
     }
     assert.ok(!existsSync(join(dir, '.art-preview')));
@@ -326,9 +356,9 @@ describe('--preview (R29, R38)', () => {
 
   it('R29: an object with problems gets no preview, and exits 1', async () => {
     const dir = await workspace();
-    const path = join(dir, 'source/objects/range-island.mjs');
+    const path = await addLegacyObject(dir);
     await writeFile(path, (await readFile(path, 'utf8')).replace("legacy: true,\n", ''));
-    const { code, err } = art(dir, '--preview', 'range-island');
+    const { code, err } = art(dir, '--preview', 'legacy-rock');
     assert.equal(code, 1);
     assert.match(err, /is a legacy color; only imported art may use it/);
     assert.ok(!existsSync(join(dir, '.art-preview')));

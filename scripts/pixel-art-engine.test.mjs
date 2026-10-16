@@ -1185,7 +1185,7 @@ describe('library (R13, R31)', () => {
     const demo = sources.scenes.get('library-demo');
     assert.equal(demo.output, undefined, 'a preview-only scene');
     const items = demo.items.filter((i) => i.object);
-    assert.deepEqual([...new Set(items.map((i) => i.object))].sort(), ['block', 'bridge', 'path', 'pebble', 'tile', 'tree', 'water']);
+    assert.deepEqual([...new Set(items.map((i) => i.object))].sort(), ['block', 'bridge', 'flower', 'path', 'pebble', 'tile', 'tree', 'water']);
     assert.ok(items.every((i) => i.at.tile.slice(0, 2).every((n) => n >= 0 && n <= 2)), 'every item sits within a 3×3 grid');
   });
 });

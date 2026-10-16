@@ -7,8 +7,9 @@
 //
 // The handheld console (pixel-first look spec, Range; R4, R10, R12): START
 // pauses and plays, B goes back, A makes the sprite hop without changing the
-// class and is hidden under reduced motion, and every console button is at
-// least 44px. The pager dots are gone (C5).
+// class and is hidden under reduced motion, every console button is at least
+// 44px, and at 320px, 390px and 1440px no button or key label runs past the
+// shell. The pager dots are gone (C5).
 //
 // Run with `npm run e2e` after `npm run build`.
 
@@ -296,8 +297,8 @@ test('Console: under reduced motion A and its JUMP label are hidden, and B stays
   await moving.close();
 });
 
-for (const width of [390, 1440]) {
-  test(`Console: at ${width}px every console button is at least 44px, with no horizontal scroll`, async () => {
+for (const width of [320, 390, 1440]) {
+  test(`Console: at ${width}px every console button is at least 44px, every button and key label is inside the shell, with no horizontal scroll`, async () => {
     const page = await openRange({ width });
     const boxes = await page.evaluate(() =>
       [...document.querySelectorAll('.range__console button')].map((b) => {
@@ -307,6 +308,16 @@ for (const width of [390, 1440]) {
     );
     assert.equal(boxes.length, 5, 'Previous, Next, START, A and B');
     for (const [label, w, h] of boxes) assert.ok(w >= 44 && h >= 44, `${label}: ${w}×${h}`);
+    // The section clips overflow, so a label past the shell is cut off, not scrolled to.
+    const outside = await page.evaluate(() => {
+      const shell = document.querySelector('.range__console').getBoundingClientRect();
+      const border = parseFloat(getComputedStyle(document.querySelector('.range__console')).borderLeftWidth);
+      return [...document.querySelectorAll('.range__controls button, .range__key-label')]
+        .map((e) => [e.getAttribute('aria-label') ?? e.textContent, e.getBoundingClientRect()])
+        .filter(([, r]) => r.left < shell.left + border || r.right > shell.right - border)
+        .map(([name, r]) => `${name}: ${r.left}–${r.right}`);
+    });
+    assert.deepEqual(outside, [], 'nothing runs past the shell');
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), width, 'no horizontal scroll');
     await page.close();
   });
