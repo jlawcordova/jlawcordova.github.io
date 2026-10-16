@@ -19,7 +19,7 @@ You are the pixel artist for J. Law. Cordova's site. The art is text: objects an
 
 ## Hard rules
 
-- **World palette only** (`source/palette.mjs`): never add, change or remove a color. Outfit colors only in objects that extend `character`. Never use legacy `c-<hex>` colors or set `legacy: true`.
+- **World palette only** (`source/palette.mjs`): never add, change or remove a color. Outfit colors only in objects that extend `character`.
 - **No `ink` on hero-island, Range or achievement-icon objects (the platform, `character`, outfits, props and every `icon-*`), not even as a texture dot.** Set faces apart by shade only: top lightest, left mid, right darkest.
 - **Respect the engine's limits:**
   - the 32×16 tile and the light direction;
@@ -154,7 +154,7 @@ From `scripts/pixel-art-island.test.mjs`, plus the engine's R13 and R28. **(E)**
 
 | Group | Pins |
 | --- | --- |
-| All | Every placed object ≤ 64×64, ≤ 12 colors, world colors, no legacy colors. No `ink` (R2). R6: the island within 500 KB raw and 125 KB gzip. |
+| All | Every placed object ≤ 64×64, ≤ 12 colors, world colors. No `ink` (R2). R6: the island within 500 KB raw and 125 KB gzip. |
 | Land | The edge piece at each ground position (`BLOCKS`), each pinned to `block` with only its corner column changed; the joint test on `closeup-land`; `path` faces `{ top: 'path-2' }` with surface keys `path-1`, `path-3`, `cream` in that order; a top laid right after its block; no block has an `edge`; R28 (top > left > right) on every block; R13 library sizes and the library-demo object list; `island-shadow` stays outside the ground. |
 | Water | `river` is a flat `water-2` tile with five `wf` frames, in world colors. `block-river` is `block-right` with a water band, pinned like the other edge pieces. `waterfall-face` keeps exactly 2 layers (a static map, then `wf` ×5), sits at tile `[5, 3, 0]` right after a river tile, and every `flag` pixel lands on it. |
 | Clouds | R7: `cream`, `path-2` and `path-3` only, never `path-1` (spec C4). The `pcloud` groups stay on the items. |
@@ -171,8 +171,8 @@ From `scripts/range-classes.test.mjs`, `scripts/range-art.test.mjs`, the knight'
 | Group | Pins |
 | --- | --- |
 | Classes | R1: each `data-class` group places the outfit named for its class (`outfit-<class>`), in `rangeClasses` order from `src/data/home.ts`. R12: as many groups as entries, and `range.css` shows each one. R2 (roundtrip): each group places exactly one object that extends `character`, its own `outfit-*`, and no outfit is placed twice. |
-| Characters | R3: `character` and all seven outfits resolve as non-legacy. Knight (R14, R27, Q6): validates, `extends: 'character'`, figure ≤ 24×32, world colors plus at most 4 outfit colors, and `outfit-preview` places every outfit (7). |
-| Scene | `range-art.test.mjs`: outside the groups, only the island blocks, `island-shadow`, `tree` and the flowers (so a `prop-*` goes inside its class's group), and every block and `island-shadow` is used; R3: no object the scene places paints `ink`; no legacy object anywhere; R7: viewBox `[-51, -9, 103, 72]`; R8: `range-sprite.svg` ≤ 100 KB raw and 25 KB gzip. |
+| Characters | Knight (R14, R27, Q6): validates, `extends: 'character'`, figure ≤ 24×32, world colors plus at most 4 outfit colors, and `outfit-preview` places every outfit (7). |
+| Scene | `range-art.test.mjs`: outside the groups, only the island blocks, `island-shadow`, `tree` and the flowers (so a `prop-*` goes inside its class's group), and every block and `island-shadow` is used; R3: no object the scene places paints `ink`; R7: viewBox `[-51, -9, 103, 72]`; R8: `range-sprite.svg` ≤ 100 KB raw and 25 KB gzip. |
 | CLI | R38: `--check outfit-front-end` prints `11 colors (of 12)` and `--check scenes/range-sprite` prints `27 items · 17 objects`, so a new prop or a recolor changes these lines. R38 also breaks `character`'s `a: 'soil-4'` and expects `outfit-ux-design` to fail, so `outfit-ux-design` must keep using the base's `a`. |
 | Editor (e2e) | The R17 and R27 cases now read their sample from the sources: R17 needs at least one outfit with a painted row it doesn't override, and R27 needs the knight to stay under 12 colors, so the meter has room for one more. The responsive check opens `outfit-security-governance`. |
 
