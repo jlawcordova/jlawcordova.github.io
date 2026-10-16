@@ -74,7 +74,11 @@ const [first] = rangeClasses;
 
 <script>
   import { rangeClasses } from '../../data/home';
+  import { RANGE_TIMING, schedule as buildSchedule, SETTLE_EASE } from '../../lib/island-entrance.mjs';
   import { easeOut, play, reveal } from '../../lib/motion';
+
+  /** How often the carousel advances, in ms: long enough for a setting to rest after it builds (Range settings spec R7). */
+  const INTERVAL = 3000;
 
   const section = document.querySelector<HTMLElement>('.range');
   if (section) {
@@ -90,6 +94,31 @@ const [first] = rangeClasses;
     let timer: ReturnType<typeof setInterval> | undefined;
     let pulse: ReturnType<typeof setTimeout> | undefined;
 
+    const art = $('.range__sprite-art');
+    let building: ReturnType<typeof play>[] = [];
+
+    // The current class's setting builds itself like the hero island (Range
+    // settings spec R4–R6): its floor rows float up left to right, then its
+    // objects and the character, by x. A running build completes first, so a
+    // quick double press never leaves a piece half-risen. While some classes
+    // still share the grass setting, its pieces build with them when it shows.
+    const build = () => {
+      building.forEach((a) => a?.complete());
+      const groups = [...art.querySelectorAll<SVGGElement>(`g[data-class="${index}"] .enter, g[data-setting] .enter`)].filter(
+        (g) => getComputedStyle(g.closest('[data-setting], [data-class]')!).display !== 'none',
+      );
+      const entrances = buildSchedule(
+        groups.map((g) => ({ enter: g.dataset.enter, row: Number(g.dataset.row), x: Number(g.dataset.x) })),
+        RANGE_TIMING,
+      );
+      building = groups.map((group, i) => {
+        const entrance = entrances[i];
+        if (!entrance) return undefined;
+        const { keyframes, delay, duration, times, move } = entrance;
+        return play(group, keyframes, { delay, duration, times, ease: move === 'float' ? [easeOut, SETTLE_EASE] : easeOut });
+      });
+    };
+
     // User-triggered changes are announced; auto-advance isn't.
     const show = (step: number, announce: boolean) => {
       index = (index + step + count) % count;
@@ -100,8 +129,8 @@ const [first] = rangeClasses;
       $('.range__position').textContent = `, class ${index + 1} of ${count}`;
       plate.style.setProperty('--class-shadow', shadow);
       sprite.setAttribute('aria-label', `Pixel-art character dressed for ${name}`);
-      // The new outfit slides in from the side it came from, and the plate pops.
-      play(sprite, { x: [step * 24, 0] }, { duration: 0.25, ease: easeOut });
+      // The new class's setting builds itself, and the plate pops.
+      build();
       play(plate, { scale: [0.88, 1.06, 1] }, { duration: 0.2, ease: 'easeOut' });
     };
 
@@ -115,7 +144,7 @@ const [first] = rangeClasses;
         next.classList.add('is-pulsing');
         clearTimeout(pulse);
         pulse = setTimeout(() => next.classList.remove('is-pulsing'), 200);
-      }, 2200);
+      }, INTERVAL);
     };
 
     // The D-pad's arrows, and B, which goes back like Previous.
@@ -139,5 +168,15 @@ const [first] = rangeClasses;
     schedule();
     // Last, so the controls work even if the entrance can't run.
     reveal([panel], { y: 48, duration: 0.4 });
+    // The first setting builds when the stage first comes into view.
+    const firstView = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        firstView.disconnect();
+        build();
+      },
+      { threshold: 0.5 },
+    );
+    firstView.observe(art);
   }
 </script>

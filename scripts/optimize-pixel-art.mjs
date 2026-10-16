@@ -55,9 +55,12 @@ const ART_DIR = fileURLToPath(new URL('../src/assets/pixel-art/', import.meta.ur
 const SOURCE_DIR = join(ART_DIR, 'source');
 const PREVIEW_DIR = '.art-preview';
 const MAX_SCALE = 16;
-/** Each output's budget in bytes: the engine's, or its own (hero island detail spec R10). */
+/** Each output's budget in bytes: the engine's, or its own (hero island detail spec R10, Range settings spec R11). */
 export const BUDGET = { raw: 100 * 1024, gzip: 25 * 1024 };
-export const OUTPUT_BUDGETS = { 'hero-island.svg': { raw: 500 * 1024, gzip: 125 * 1024 } };
+export const OUTPUT_BUDGETS = {
+  'hero-island.svg': { raw: 500 * 1024, gzip: 125 * 1024 },
+  'range-sprite.svg': { raw: 200 * 1024, gzip: 50 * 1024 },
+};
 
 // Just enough XML for the sources: elements with double-quoted attributes,
 // and text. Comments, CDATA and processing instructions are refused.

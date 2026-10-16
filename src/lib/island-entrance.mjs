@@ -1,7 +1,8 @@
 // @ts-check
-// The hero island's build-up entrance (island build entrance spec R3–R7): when
-// each of its `enter` groups starts and how it moves. Pure data in, timings out,
-// so node:test can check the order without a browser; Hero.astro plays it.
+// The build-up entrances: when each `enter` group starts and how it moves, for
+// the hero island (island build entrance spec R3–R7) and for each Range setting
+// (Range settings spec R4, R5). Pure data in, timings out, so node:test can
+// check the order without a browser; Hero.astro and Range.astro play it.
 
 /** The owner's tuned timing, from the prototype rounds (spec R6). Seconds and art pixels. */
 export const TIMING = {
@@ -25,6 +26,21 @@ export const TIMING = {
   skyDrift: 6,
 };
 
+/**
+ * A Range setting's build-up on each class change (Range settings spec R5).
+ * Quicker than the island's, since it replays on every switch, with its own
+ * object sweep, because a setting has three rows to the island's six.
+ * @type {typeof TIMING & { sweep?: number }}
+ */
+export const RANGE_TIMING = {
+  ...TIMING,
+  start: 0,
+  rowGap: 0.08,
+  duration: 0.5,
+  objectLead: 0.1,
+  sweep: 0.3,
+};
+
 /** The ease back down onto the spot, after the rise's ease-out (cubic-bezier). */
 export const SETTLE_EASE = /** @type {[number, number, number, number]} */ ([0.45, 0, 0.55, 1]);
 
@@ -44,19 +60,19 @@ export const SETTLE_EASE = /** @type {[number, number, number, number]} */ ([0.4
  * Each piece's entrance, in the order given, or null for a piece it doesn't know.
  * Ground rows float up left to right: the highest row (the left cliff) first.
  * Objects follow just before the ground finishes, left to right by their x,
- * over the same span the rows take. The shadow fades in first, and the clouds
- * drift in as the objects begin.
+ * over the timing's sweep, or else the span the rows take. The shadow fades
+ * in first, and the clouds drift in as the objects begin.
  * @param {Piece[]} pieces
+ * @param {typeof TIMING & { sweep?: number }} [t]  the timing; the island's by default
  * @returns {(Entrance | null)[]}
  */
-export function schedule(pieces) {
-  const t = TIMING;
+export function schedule(pieces, t = TIMING) {
   const rows = pieces.filter((p) => p.enter === 'ground').map((p) => Number(p.row));
   const xs = pieces.filter((p) => p.enter === 'object').map((p) => Number(p.x));
   const lastRow = Math.max(0, ...rows);
   const groundEnd = t.start + t.rowGap * (lastRow + 1) + t.duration;
   const objectStart = groundEnd - t.objectLead;
-  const sweep = t.rowGap * lastRow;
+  const sweep = t.sweep ?? t.rowGap * lastRow;
   const [minX, maxX] = [Math.min(...xs), Math.max(...xs)];
 
   /** @param {number} delay @returns {Entrance} */

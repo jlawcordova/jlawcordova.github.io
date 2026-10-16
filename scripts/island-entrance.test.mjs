@@ -1,19 +1,22 @@
-// Tests for the hero island's build-up schedule (island build entrance spec
-// R3–R7), run against the groups in the compiled hero-island.svg. Node
-// built-ins only.
+// Tests for the build-up schedule: the hero island's (island build entrance
+// spec R3–R7), run against the groups in the compiled hero-island.svg, and a
+// Range setting's (Range settings spec R4, R5), run against the groups in the
+// compiled range-sprite.svg. Node built-ins only.
 
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { describe, it } from 'node:test';
 
-import { schedule, TIMING } from '../src/lib/island-entrance.mjs';
+import { RANGE_TIMING, schedule, TIMING } from '../src/lib/island-entrance.mjs';
 
-const svg = await readFile(new URL('../src/assets/pixel-art/hero-island.svg', import.meta.url), 'utf8');
-/** The island's enter groups, as Hero.astro reads them. */
-const pieces = [...svg.matchAll(/<g class="enter" ([^>]*)>/g)].map(([, attrs]) => {
-  const data = Object.fromEntries([...attrs.matchAll(/data-(\w+)="([^"]*)"/g)].map(([, k, v]) => [k, v]));
-  return { enter: data.enter, row: data.row === undefined ? undefined : Number(data.row), x: data.x === undefined ? undefined : Number(data.x) };
-});
+const read = (name) => readFile(new URL(`../src/assets/pixel-art/${name}`, import.meta.url), 'utf8');
+/** An SVG's enter groups, as Hero.astro and Range.astro read them. */
+const enterGroups = (svg) =>
+  [...svg.matchAll(/<g class="enter" ([^>]*)>/g)].map(([, attrs]) => {
+    const data = Object.fromEntries([...attrs.matchAll(/data-(\w+)="([^"]*)"/g)].map(([, k, v]) => [k, v]));
+    return { enter: data.enter, row: data.row === undefined ? undefined : Number(data.row), x: data.x === undefined ? undefined : Number(data.x) };
+  });
+const pieces = enterGroups(await read('hero-island.svg'));
 const plan = schedule(pieces);
 const of = (kind) => pieces.flatMap((p, i) => (p.enter === kind ? [{ ...p, ...plan[i] }] : []));
 const end = (e) => e.delay + e.duration;
@@ -72,5 +75,57 @@ describe('island entrance schedule', () => {
     const [object, unknown] = schedule([{ enter: 'object', x: 3 }, { enter: 'weather' }]);
     assert.ok(Number.isFinite(object.delay));
     assert.equal(unknown, null);
+  });
+});
+
+// Every enter group in the sprite: each setting's floor rows and objects. Range.astro plays one setting at a time, and
+// each has the same three rows, so the whole sprite's groups schedule as one setting would.
+const range = enterGroups(await read('range-sprite.svg'));
+const rangePlan = schedule(range, RANGE_TIMING);
+const ofRange = (kind) => range.flatMap((p, i) => (p.enter === kind ? [{ ...p, ...rangePlan[i] }] : []));
+
+describe('Range setting schedule', () => {
+  it('reads the sprite\'s groups: floor rows and objects only', () => {
+    assert.ok(range.length >= 10, `${range.length} groups`);
+    assert.deepEqual([...new Set(range.map((p) => p.enter))].sort(), ['ground', 'object']);
+    assert.ok(rangePlan.every(Boolean));
+  });
+
+  it('R4, R5: the rows float up left to right, the left cliff (row 2) first, 0.08s apart, from the switch', () => {
+    const rows = [...new Map(ofRange('ground').map((r) => [r.row, r])).values()].sort((a, b) => a.delay - b.delay);
+    assert.deepEqual(rows.map((r) => r.row), [2, 1, 0]);
+    close(rows[0].delay, 0.08, 'the first row');
+    for (let i = 1; i < rows.length; i++) close(rows[i].delay - rows[i - 1].delay, 0.08, `row ${rows[i].row}`);
+  });
+
+  it('R5: each piece rises 10 art px to 2 px past its spot over 0.5s, as on the island', () => {
+    for (const piece of [...ofRange('ground'), ...ofRange('object')]) {
+      assert.equal(piece.move, 'float');
+      assert.deepEqual(piece.keyframes, { opacity: [0, 1, 1], y: [10, -2, 0] });
+      assert.deepEqual(piece.times, [0, 0.55, 1]);
+      assert.equal(piece.duration, 0.5);
+    }
+  });
+
+  it('R4, R5: objects start 0.1s before the floor lands, then sweep left to right by x over 0.3s', () => {
+    const floorEnd = Math.max(...ofRange('ground').map(end));
+    const objects = ofRange('object');
+    const byX = [...objects].sort((a, b) => a.x - b.x || a.delay - b.delay);
+    close(byX[0].delay, floorEnd - 0.1, 'the leftmost object');
+    for (let i = 1; i < byX.length; i++) assert.ok(byX[i].delay >= byX[i - 1].delay, `x ${byX[i].x} starts no earlier than x ${byX[i - 1].x}`);
+    close(byX.at(-1).delay - byX[0].delay, 0.3, 'the sweep');
+  });
+
+  it('R5: a setting has settled by 1.5s', () => {
+    const last = Math.max(...rangePlan.map(end));
+    assert.ok(last <= 1.5, `settled at ${last.toFixed(2)}s`);
+  });
+
+  it('the island keeps its own numbers', () => {
+    assert.deepEqual(
+      [TIMING.start, TIMING.rowGap, TIMING.duration, TIMING.rise, TIMING.overshoot, TIMING.peak, TIMING.objectLead],
+      [0.2, 0.12, 0.65, 10, 2, 0.55, 0.08],
+    );
+    assert.equal(/** @type {any} */ (TIMING).sweep, undefined, 'the island\'s objects sweep over its rows\' span');
   });
 });
