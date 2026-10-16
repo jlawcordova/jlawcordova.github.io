@@ -1,6 +1,6 @@
 # Plan: Retire legacy pixel art (from intent.md 2026-10-05)
 
-Status: draft, with the intent and [`spec.md`](spec.md) in [#99](https://github.com/jlawcordova/jlawcordova.github.io/pull/99). The owner approves all three by merging it (spec C1).
+Status: built on 2026-10-16 in [#99](https://github.com/jlawcordova/jlawcordova.github.io/pull/99), with the intent and [`spec.md`](spec.md), as written: steps 1–5 as five commits. The owner approves all three documents by merging it (spec C1). `verify-change` on #99 is still to run.
 
 ## Files that change
 
