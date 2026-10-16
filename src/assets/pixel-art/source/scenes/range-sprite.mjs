@@ -127,9 +127,57 @@ export default {
       group: { 'data-class': '4' },
       items: [
         {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '0' },
+          items: [
+            { object: 'block-lab', at: { tile: [0, 0, 0] } },
+            { object: 'block-lab', at: { tile: [1, 0, 0] } },
+            { object: 'block-lab-right', at: { tile: [2, 0, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '1' },
+          items: [
+            { object: 'block-lab', at: { tile: [0, 1, 0] } },
+            { object: 'block-lab', at: { tile: [1, 1, 0] } },
+            { object: 'block-lab-right', at: { tile: [2, 1, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '2' },
+          items: [
+            { object: 'block-lab-left', at: { tile: [0, 2, 0] } },
+            { object: 'block-lab-left', at: { tile: [1, 2, 0] } },
+            { object: 'block-lab', at: { tile: [2, 2, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '16' },
+          items: [
+            { object: 'prop-data-engineering-shelf', at: { tile: [1, 0, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '-16' },
+          items: [
+            { object: 'prop-data-engineering-bench', at: { tile: [0, 1, 0] } },
+          ],
+        },
+        {
           group: { class: 'enter', 'data-enter': 'object', 'data-x': '0' },
           items: [
             { object: 'outfit-data-engineering', at: { tile: [1, 1, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '16' },
+          items: [
+            { object: 'prop-data-engineering-book', at: { tile: [2, 1, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '-16' },
+          items: [
+            { object: 'prop-data-engineering-cauldron', at: { tile: [1, 2, 0] } },
           ],
         },
       ],

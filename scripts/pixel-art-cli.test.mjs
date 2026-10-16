@@ -155,7 +155,7 @@ describe('--check (R38)', () => {
     const dir = await workspace();
     const { code, out } = art(dir, '--check', 'scenes/range-sprite');
     assert.equal(code, 0);
-    assert.equal(out, 'scenes/range-sprite.mjs: ok · 103×72 · 27 items · 16 objects · output range-sprite.svg\n');
+    assert.equal(out, 'scenes/range-sprite.mjs: ok · 103×72 · 40 items · 23 objects · output range-sprite.svg\n');
   });
 
   it('R38: prints every problem with file, place and rule, and exits 1', async () => {
