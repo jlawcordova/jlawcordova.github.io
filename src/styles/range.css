@@ -149,7 +149,8 @@ section.range {
 .range[data-current="1"] .range__sprite g[data-setting="grass"],
 .range[data-current="2"] .range__sprite g[data-setting="grass"],
 .range[data-current="3"] .range__sprite g[data-setting="grass"],
-.range[data-current="4"] .range__sprite g[data-setting="grass"] {
+.range[data-current="4"] .range__sprite g[data-setting="grass"],
+.range[data-current="5"] .range__sprite g[data-setting="grass"] {
   display: none;
 }
 

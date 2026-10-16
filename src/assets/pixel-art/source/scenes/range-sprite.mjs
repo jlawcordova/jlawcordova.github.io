@@ -372,6 +372,54 @@ export default {
       group: { 'data-class': '5' },
       items: [
         {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '0' },
+          items: [
+            { object: 'block-rampart', at: { tile: [0, 0, 0] } },
+            { object: 'block-rampart', at: { tile: [1, 0, 0] } },
+            { object: 'block-rampart-right', at: { tile: [2, 0, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '1' },
+          items: [
+            { object: 'block-rampart', at: { tile: [0, 1, 0] } },
+            { object: 'block-rampart', at: { tile: [1, 1, 0] } },
+            { object: 'block-rampart-right', at: { tile: [2, 1, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '2' },
+          items: [
+            { object: 'block-rampart-left', at: { tile: [0, 2, 0] } },
+            { object: 'block-rampart-left', at: { tile: [1, 2, 0] } },
+            { object: 'block-rampart-corner', at: { tile: [2, 2, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '-16' },
+          items: [
+            { object: 'prop-security-governance-parapet-left', at: { tile: [0, 1, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '16' },
+          items: [
+            { object: 'prop-security-governance-parapet-right', at: { tile: [1, 0, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '32' },
+          items: [
+            { object: 'prop-security-governance-banner', at: { tile: [2, 0, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '-32' },
+          items: [
+            { object: 'prop-security-governance-brazier', at: { tile: [0, 2, 0] } },
+          ],
+        },
+        {
           group: { class: 'enter', 'data-enter': 'object', 'data-x': '0' },
           items: [
             { object: 'outfit-security-governance', at: { tile: [1, 1, 0] } },
