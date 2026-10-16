@@ -119,11 +119,13 @@ One map can't fix both, so the island uses separate edge pieces, all with no in-
 
 | Object | Where | Corner columns |
 | --- | --- | --- |
-| `block` | `[5, 5]` and the library demo | True corner: left col 14 left-face, right col 0 right-face |
+| `block` | `[5, 5]`, every inland grass cube and the library demo | True corner: left col 14 left-face, right col 0 right-face |
 | `block-left` | left cliff `[0–4, 5]`, except the road end | Right col 0 copies left col 14: the left band, then `soil-2` |
 | `block-right` | right cliff `[5, 0–4]` | Left col 14 copies right col 0: the right band, then `soil-3` |
-| `block-road` | road end `[2, 5]` | As `block-left`, with a path band (`path-3`, last row `path-4`); the scene still lays `path` on top |
-| `block-river` (Stage 2, water group) | river end `[5, 3]` | As `block-right`, with a water band under the river top, in the water ramp |
+| `block-road` | road end `[2, 5]`, and inland under the road `[2, 0–4]` | As `block-left`, with a path band (`path-3`, last row `path-4`); the scene still lays `path` on top |
+| `block-river` (Stage 2, water group) | river end `[5, 3]`, and inland under the river `[1–4, 3]` | As `block-right`, with a water band under the river top, in the water ramp |
+
+Inland cubes' sides only show while the island's entrance floats them up; at rest the cubes in front hide them.
 
 - Keep the corner columns free of speckles and drips, so the copies join cleanly.
 - A copied corner column writes the other face's base key explicitly (`s` for `soil-2` on the right map, `S` for `soil-3` on the left), because `.` there shows the wrong face's color.
@@ -157,6 +159,7 @@ From `scripts/pixel-art-island.test.mjs`, plus the engine's R13 and R28. **(E)**
 | All | Every placed object ≤ 64×64, ≤ 12 colors, world colors. No `ink` (R2). R6: the island within 500 KB raw and 125 KB gzip. |
 | Land | The edge piece at each ground position (`BLOCKS`), each pinned to `block` with only its corner column changed; the joint test on `closeup-land`; `path` faces `{ top: 'path-2' }` with surface keys `path-1`, `path-3`, `cream` in that order; a top laid right after its block; no block has an `edge`; R28 (top > left > right) on every block; R13 library sizes and the library-demo object list; `island-shadow` stays outside the ground. |
 | Water | `river` is a flat `water-2` tile with five `wf` frames, in world colors. `block-river` is `block-right` with a water band, pinned like the other edge pieces. `waterfall-face` keeps exactly 2 layers (a static map, then `wf` ×5), sits at tile `[5, 3, 0]` right after a river tile, and every `flag` pixel lands on it. |
+| Entrance | Every item sits in one top-level `enter` group: one `shadow`, six `ground` rows (`data-row` matches each item's row), `object` groups whose `data-x` is each object's foot (shades take their tree's, the crane's jib and box the mast's), one `sky`. R2: the settled island paints exactly what the old flat inland tiles painted, in every loop frame. The ground paints row by row. |
 | Clouds | R7: `cream`, `path-2` and `path-3` only, never `path-1` (spec C4). The `pcloud` groups stay on the items. |
 | Trees | R3: pinned positions; each trunk foot on grass, not river or road. R5: crossing order with the trucks; 4 trees before the trucks and 4 after. |
 | Office | `house` anchor `[21, 41]` at `[-59, 59]`; it covers tile `[0, 3]` except `-34,31` and `-34,32` (checked before the next pin, so a worktree can confirm the mask while it fails); a world color at x −35, y 30–32. |
@@ -195,13 +198,13 @@ From `scripts/range-classes.test.mjs`, `scripts/range-art.test.mjs`, the knight'
 - **An isolated texture pixel on a base costs about 30 B raw and 6 B gzip.** That's its own rect plus the base run it splits.
 - **Loop frames are full copies.** Their texture doesn't split the base, but it's paid once per frame per placement.
 - **Multiply by placements:**
-  - tiles: 17;
-  - edge blocks: 11 (4 `block-left`, 1 `block-road`, 5 `block-right`, 1 `block`);
+  - cubes: 36 (18 `block`, 4 `block-left`, 4 `block-right`, 5 `block-road`, 5 `block-river`), hidden faces included;
   - `path`: 5;
   - `river`: 5 tiles × 5 frames;
   - `pine` and `tree-small`: 4 each;
   - `island-shadow`: 11;
   - the truck's map is compiled twice, once per truck;
+  - each `enter` group compiles on its own, so runs don't merge across groups;
   - `crane-box`: 6 frames.
 - **New detail gzips at about 4.2:1.** The land sample measured +15.3 KB raw and +3.7 KB gzip.
 - **Measure in the first iteration,** with `npm run art -- --sizes hero-island`. It prints raw and gzip bytes per object and per color, against `HEAD`. If your group runs far over the plan's estimate, trim: fewer, deliberate clusters; horizontal adjacency; texture kept out of loop frames.
