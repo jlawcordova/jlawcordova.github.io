@@ -2,7 +2,7 @@
 
 | | |
 | --- | --- |
-| **Status** | Implemented in [#49](https://github.com/jlawcordova/jlawcordova.github.io/pull/49) as one PR (see [Departures](#departures)), awaiting independent verification and the owner's review |
+| **Status** | Done, 2026-10-03: implemented and merged in [#49](https://github.com/jlawcordova/jlawcordova.github.io/pull/49) as one PR (see [Departures](#departures)). The classes were later redrawn as isometric characters by the [isometric Range](../2026-10-range-isometric/intent.md) change |
 | **Intent** | [`intent.md`](intent.md) (accepted) |
 | **Spec** | [`spec.md`](spec.md) (approved). R*n* and C*n* below refer to its requirements and concerns |
 

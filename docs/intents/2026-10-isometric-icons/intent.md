@@ -1,5 +1,5 @@
 # Intent: Accomplishment icons in the island and Range style
-Author: J. Law. Cordova (site owner). Status: accepted.
+Author: J. Law. Cordova (site owner). Status: done, 2026-10-12: built and merged in [#109](https://github.com/jlawcordova/jlawcordova.github.io/pull/109).
 
 ## Problem
 The accomplishment icons are flat, front-on pictures with ink outlines. The hero island and the Range characters have since moved to an isometric view with shaded faces and more detail. Next to them, the icons look like they belong to an older, different site, so the accomplishments list doesn't match the rest of the pixel-art world.
