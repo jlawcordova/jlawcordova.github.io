@@ -4,9 +4,9 @@
 // only when the menu is reached for; the nav is square with a 16px blur and no
 // shadow; Lately shows only with the accomplishments section; the footer's
 // links are 44px targets and "↑ TOP" goes to the top; the hero's greeting is
-// gone, its island keeps the floaty loop, and its entrance ends visible or
-// doesn't run under reduced motion; nothing is rounded and nothing scrolls
-// sideways.
+// gone, its island keeps the floaty loop, and its entrance (the copy and each
+// of the island's enter groups) ends visible or doesn't run under reduced
+// motion; nothing is rounded and nothing scrolls sideways.
 //
 // Run with `npm run e2e` after `npm run build`. Tests poll for end states and
 // never sleep for a fixed time.
@@ -329,10 +329,11 @@ test('R5, Hero: the greeting is gone and the island keeps its floaty loop on an 
   await close(page);
 });
 
-test('R10, R11: the hero entrance ends with everything fully visible in place', async () => {
+test('R10, R11: the hero entrance ends with everything fully visible in place, every island piece included', async () => {
   const page = await open('/', { width: WIDE });
+  // The island's enter groups build it up over about 2.75s (island build entrance spec R6).
   await page.waitForFunction(() =>
-    [...document.querySelectorAll('.hero__title, .hero__lede, .hero__actions, .hero__art')].every((el) => {
+    [...document.querySelectorAll('.hero__title, .hero__lede, .hero__actions, .hero__art, .hero-island .enter')].every((el) => {
       const style = getComputedStyle(el);
       return style.opacity === '1' && (style.transform === 'none' || style.transform === 'matrix(1, 0, 0, 1, 0, 0)');
     }),
@@ -344,12 +345,13 @@ test('R11, R12: without JavaScript and under reduced motion the hero shows at on
   for (const options of [{ javaScriptEnabled: false }, { reducedMotion: 'reduce' }]) {
     const page = await open('/', { width: WIDE, ...options });
     const els = await page.evaluate(() =>
-      [...document.querySelectorAll('.hero__title, .hero__lede, .hero__actions, .hero__art, .hero__float')].map((el) => {
+      [...document.querySelectorAll('.hero__title, .hero__lede, .hero__actions, .hero__art, .hero__float, .hero-island .enter')].map((el) => {
         const style = getComputedStyle(el);
         return { float: el.classList.contains('hero__float'), opacity: style.opacity, transform: style.transform, animations: el.getAnimations().length };
       }),
     );
-    assert.equal(els.length, 5);
+    // The copy, the two wrappers and the island's enter groups (island build entrance spec R9).
+    assert.ok(els.length > 5 + 20, `${els.length} elements`);
     for (const el of els) {
       assert.equal(el.opacity, '1', JSON.stringify(options));
       // The floaty loop moves the inner wrapper whenever motion is allowed.

@@ -17,7 +17,7 @@ const BASE = process.env.E2E_BASE_URL ?? 'http://localhost:4321';
 
 /** What animates on each page, by selector. */
 const PAGES = {
-  '/': ['.hero__copy > *', '.hero__art', '.range__panel'],
+  '/': ['.hero__copy > *', '.hero__art', '.hero-island .enter', '.range__panel'],
   '/blog/': ['.post-list > li'],
 };
 
