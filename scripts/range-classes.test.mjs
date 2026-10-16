@@ -23,6 +23,12 @@ export const classNames = (homeTs) => {
 /** The outfit object named for a class: 'Cloud & DevOps' → 'outfit-cloud-devops'. */
 export const outfitFor = (name) => `outfit-${name.toLowerCase().replace(/&/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
 
+/** A scene's class groups: its top-level groups with a data-class (Range settings spec, The scene). */
+const classGroups = (scene) => scene.items.filter((i) => i.group?.['data-class'] !== undefined);
+
+/** A group's items, flattened out of its entrance groups. */
+const flatten = (items) => items.flatMap((item) => (item.group ? flatten(item.items) : [item]));
+
 /** The data-class values of a compiled SVG's groups, in document order. */
 export const svgClasses = (svg) => [...svg.matchAll(/<g data-class="(\d+)"/g)].map((m) => m[1]);
 
@@ -36,7 +42,7 @@ describe('Range classes (R12)', () => {
   it('R12: the scene has the same groups as the data', async () => {
     const names = classNames(await read('src/data/home.ts'));
     const scene = (await import('../src/assets/pixel-art/source/scenes/range-sprite.mjs')).default;
-    const groups = scene.items.filter((i) => i.group).map((i) => i.group['data-class']);
+    const groups = classGroups(scene).map((i) => i.group['data-class']);
     assert.deepEqual(groups, names.map((_, i) => String(i)));
   });
 
@@ -61,7 +67,7 @@ describe('Range class order (R1)', () => {
   it('R1: each data-class places the outfit named for its class, in rangeClasses order', async () => {
     const names = classNames(await read('src/data/home.ts'));
     const scene = (await import('../src/assets/pixel-art/source/scenes/range-sprite.mjs')).default;
-    const placed = scene.items.filter((i) => i.group).map((g) => g.items.find((i) => i.object.startsWith('outfit-')).object);
+    const placed = classGroups(scene).map((g) => flatten(g.items).find((i) => i.object.startsWith('outfit-')).object);
     assert.deepEqual(placed, names.map(outfitFor));
   });
 

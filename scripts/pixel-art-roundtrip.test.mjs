@@ -37,14 +37,16 @@ describe('committed sources', () => {
   });
 
   it('R2: each Range class places one outfit, its own object extending character', () => {
-    const groups = sources.scenes.get('range-sprite').items.filter((i) => i.group);
+    // The class groups, each flattened out of its entrance groups (Range settings spec, The scene).
+    const groups = sources.scenes.get('range-sprite').items.filter((i) => i.group?.['data-class'] !== undefined);
+    const flatten = (items) => items.flatMap((item) => (item.group ? flatten(item.items) : [item]));
     for (const group of groups) {
-      const outfits = group.items.map((i) => i.object).filter((name) => sources.objects.get(name)?.extends === 'character');
+      const outfits = flatten(group.items).map((i) => i.object).filter((name) => sources.objects.get(name)?.extends === 'character');
       assert.equal(outfits.length, 1, `data-class ${group.group['data-class']} places one outfit`);
       assert.match(outfits[0], /^outfit-/);
       assert.equal(resolve(sources, outfits[0]).character, true);
     }
-    assert.equal(new Set(groups.map((g) => g.items.find((i) => i.object.startsWith('outfit-')).object)).size, groups.length, 'no outfit is placed twice');
+    assert.equal(new Set(groups.map((g) => flatten(g.items).find((i) => i.object.startsWith('outfit-')).object)).size, groups.length, 'no outfit is placed twice');
   });
 
   it('R12: npm run art reads no .src.svg', async () => {
