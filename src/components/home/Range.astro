@@ -100,13 +100,10 @@ const [first] = rangeClasses;
     // The current class's setting builds itself like the hero island (Range
     // settings spec R4–R6): its floor rows float up left to right, then its
     // objects and the character, by x. A running build completes first, so a
-    // quick double press never leaves a piece half-risen. While some classes
-    // still share the grass setting, its pieces build with them when it shows.
+    // quick double press never leaves a piece half-risen.
     const build = () => {
       building.forEach((a) => a?.complete());
-      const groups = [...art.querySelectorAll<SVGGElement>(`g[data-class="${index}"] .enter, g[data-setting] .enter`)].filter(
-        (g) => getComputedStyle(g.closest('[data-setting], [data-class]')!).display !== 'none',
-      );
+      const groups = [...art.querySelectorAll<SVGGElement>(`g[data-class="${index}"] .enter`)];
       const entrances = buildSchedule(
         groups.map((g) => ({ enter: g.dataset.enter, row: Number(g.dataset.row), x: Number(g.dataset.x) })),
         RANGE_TIMING,

@@ -168,7 +168,7 @@ test('R7: the arrows wrap both ways', async () => {
 const settingPieces = (page) =>
   page.evaluate(() =>
     [...document.querySelectorAll('.range__sprite .enter')]
-      .filter((g) => getComputedStyle(/** @type {Element} */ (g.closest('[data-setting], [data-class]'))).display !== 'none')
+      .filter((g) => getComputedStyle(/** @type {Element} */ (g.closest('[data-class]'))).display !== 'none')
       .map((g) => ({ opacity: getComputedStyle(g).opacity, transform: getComputedStyle(g).transform })),
   );
 const pieceAtRest = ({ opacity, transform }) => opacity === '1' && (transform === 'none' || transform === 'matrix(1, 0, 0, 1, 0, 0)');
@@ -181,7 +181,7 @@ test('Settings R4, R8: a switch builds the new setting, and a quick double press
   await page.waitForFunction(
     () =>
       [...document.querySelectorAll('.range__sprite .enter')].some(
-        (g) => getComputedStyle(/** @type {Element} */ (g.closest('[data-setting], [data-class]'))).display !== 'none' && Number(getComputedStyle(g).opacity) < 1,
+        (g) => getComputedStyle(/** @type {Element} */ (g.closest('[data-class]'))).display !== 'none' && Number(getComputedStyle(g).opacity) < 1,
       ),
     undefined,
     { timeout: 1000 },

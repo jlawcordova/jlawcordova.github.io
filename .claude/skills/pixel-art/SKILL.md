@@ -270,8 +270,8 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
   - Four `island-shadow` pieces sit outside every group, shared by all classes.
   - Seven `data-class` groups follow, one per class, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). Each holds its whole setting in entrance groups, as on the hero island: three `ground` rows (`data-row` 0 to 2) of one-level cubes from the setting's own floor set, then one `object` group per prop and one for the outfit, each with its foot `data-x`. `Range.astro` floats them up on every class change with `RANGE_TIMING` from `src/lib/island-entrance.mjs`.
   - Each outfit extends `character` and stands on the center tile, placed by `{ tile: [1, 1, 0] }` in an `object` group with `data-x="0"`. The characters are isometric figures in the [island and Range look](#island-and-range-look), with no `ink` outline ([Isometric Range](../../../docs/intents/2026-10-range-isometric/spec.md)).
-  - **While settings are being added,** the classes without their own setting share the old grass platform (its cubes, `tree` and flowers) in a `{ 'data-setting': 'grass' }` group, and `range.css` hides it for each class that has one (`.range[data-current="4"] .range__sprite g[data-setting="grass"]`). A test checks the two agree.
-  - `--preview range-sprite` and the lab draw the grass group and only the first `data-class` group. To see another class, preview a scratch copy of the scene that keeps the shadow and only that class's group (and the grass group only if that class still uses it).
+  - A test requires seven class groups, each with a floor set no other class uses.
+  - `--preview range-sprite` and the lab draw only the first `data-class` group. To see another class, preview a scratch copy of the scene that keeps the shadow and only that class's group.
 - **Recolors.** `truck-green` is `truck` with other colors: it `extends: 'truck'` and lists only the keys that differ. Use the same pattern for a variant that changes colors but not shape.
 - **Keep the CSS hooks.** `pixel-art.css` animates the classes on these groups (`wf w0`…, `itruck it1`, `pcloud pc0`, `cbob`). Don't rename a loop, prefix or placement class unless you change the CSS in the same PR.
 
@@ -356,7 +356,7 @@ The Range's characters are built like the clouds: stacked boxes, no outline, no 
   - A flat prop (a shield) lies on the left face's plane, so its top and bottom, and any emblem bar, follow the 2:1 slope, with a 1-px darker edge on its right for its thickness.
   - A long prop (a sword, a staff) is a vertical 2-px stroke, lit on the left and dark on the right, 1 px clear of the head, with the fist drawn over its grip.
   - A prop too big for 24×32 is its own `prop-<class>-<name>` object, placed by `tile` next to the figure inside that class's `data-class` group, so it shows and hides with it: listed before the outfit when it's behind, after it when it's in front.
-- **Check at 1× and 3× on the grass.** 3× is the Range's size on the page. Where a lit face is close to `grass-2`, give it a lighter rim on its lit side. With no outline, a figure has less edge contrast at 1× than the old outlined ones; the owner accepted that.
+- **Check at 1× and 3× in the class's setting.** 3× is the Range's size on the page. Where a lit face is close to the floor under it, give it a lighter rim on its lit side. With no outline, a figure has less edge contrast at 1× than the old outlined ones; the owner accepted that.
 
 ### Range settings
 
