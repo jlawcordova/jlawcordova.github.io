@@ -379,8 +379,8 @@ describe('--sizes (hero island detail spec, Tooling)', () => {
     assert.equal(Number(raw.replaceAll(',', '')), committed.length, 'the raw total is the compiled SVG');
     assert.ok(Number(gzip.replaceAll(',', '')) > 0);
     assert.match(out, /^HEAD: not available \(not in a git repository with a HEAD commit\)$/m);
-    const [name, placed, objectRaw, deltaRaw] = row(out, 'tile');
-    assert.deepEqual([name, placed, deltaRaw], ['tile', '17', '—']);
+    const [name, placed, objectRaw, deltaRaw] = row(out, 'block');
+    assert.deepEqual([name, placed, deltaRaw], ['block', '18', '—']);
     assert.ok(Number(objectRaw.replaceAll(',', '')) > 0);
     assert.ok(row(out, 'grass-2 #8FA56E'), 'colors are listed by their world name');
   });
@@ -392,14 +392,14 @@ describe('--sizes (hero island detail spec, Tooling)', () => {
     git(dir, 'commit', '-q', '-m', 'sources');
     const path = join(dir, 'source/scenes/hero-island.mjs');
     const text = await readFile(path, 'utf8');
-    const fewer = text.replace(/^ *\{ object: 'tile', at: \{ tile: \[[^\]]*\] \} \},\n/m, '');
+    const fewer = text.replace(/^ *\{ object: 'block', at: \{ tile: \[[^\]]*\] \} \},\n/m, '');
     assert.notEqual(fewer, text);
     await writeFile(path, fewer);
     const { code, out, err } = art(dir, '--sizes', 'scenes/hero-island');
     assert.equal(code, 0, err);
     assert.match(out, /^HEAD: [\d,]+ B raw, [\d,]+ B gzip \(-[\d,]+ raw, -[\d,]+ gzip\)$/m);
-    const [, placed, , deltaRaw] = row(out, 'tile');
-    assert.equal(placed, '16');
+    const [, placed, , deltaRaw] = row(out, 'block');
+    assert.equal(placed, '17');
     assert.match(deltaRaw, /^-[\d,]+$/);
     assert.equal(row(out, 'cloud-a')[3], '+0', 'an object far from the change costs the same raw bytes');
   });

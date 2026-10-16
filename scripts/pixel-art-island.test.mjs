@@ -197,9 +197,9 @@ describe('hero island structure', () => {
     assert.equal(painted.size, all.size, 'nothing else is painted between the trucks and the crane-box');
   });
 
-  it('R1, R3: the ground is 36 library objects on a [col, row, 0] grid: blocks on the two front edges (the edge pieces, and block at the corner), the river along row 3, the road along column 2, flat tiles elsewhere', () => {
+  it('R1, R3: the ground is 36 cubes on a [col, row, 0] grid: the edge pieces on the two front edges, block at the corner and inland, block-river under the river along row 3 and block-road under the road along column 2 (island build entrance spec R1)', () => {
     const items = scene.items.filter((item) => GROUND.includes(item.object));
-    // The first item at a position is its ground; a later one at the same position is a flat top laid over it.
+    // The first item at a position is its cube; a later one at the same position is a flat top laid over it.
     const seen = new Map();
     const ground = [];
     const tops = [];
@@ -219,19 +219,24 @@ describe('hero island structure', () => {
       // The road runs along column 2, on the trucks' line, and crosses the river on the bridge at [2, 3].
       // The front corner is the true cube; the left cliff (row 5) takes block-left, block-road under the road's end, and the
       // right cliff (column 5) block-right, block-river under the river's end (spec, Hidden joints; the owner's land review).
+      // Inland, the flat tiles became cubes so they have depth as they float up (island build entrance spec R1): the
+      // material's cube under the river and the road, and block elsewhere.
       const edge = col === 5 && row === 5 ? 'block' : row === 5 ? (col === 2 ? 'block-road' : 'block-left') : row === 3 ? 'block-river' : 'block-right';
-      const want = col === 5 || row === 5 ? edge : row === 3 && col >= 1 ? 'river' : col === 2 ? 'path' : 'tile';
+      const want = col === 5 || row === 5 ? edge : row === 3 && col >= 1 ? 'block-river' : col === 2 ? 'block-road' : 'block';
       assert.equal(item.object, want, `[${col}, ${row}]`);
     }
-    // Where the river and the road cross the front edges, the block gets a river or path top, listed right after it.
-    assert.deepEqual(tops.map((item) => [item.object, item.at.tile]), [['path', [2, 5, 0]], ['river', [5, 3, 0]]]);
+    // Wherever the river and the road run, the cube gets a river or path top, listed right after it.
+    const roadAndRiver = [...[0, 1, 2].map((row) => ['path', [2, row, 0]]), ...[1, 2, 3, 4, 5].map((col) => ['river', [col, 3, 0]]), ...[4, 5].map((row) => ['path', [2, row, 0]])];
+    assert.deepEqual(tops.map((item) => [item.object, item.at.tile]), roadAndRiver);
     for (const top of tops) {
       const i = scene.items.indexOf(top);
       assert.ok(BLOCKS.includes(scene.items[i - 1].object), `${top.object} is laid over the block before it`);
       assert.deepEqual(scene.items[i - 1].at, top.at);
     }
-    const order = ground.map((item) => item.at.tile[0] + item.at.tile[1]);
-    assert.deepEqual(order, [...order].sort((a, b) => a - b), 'ground paints back to front (col + row, smallest first)');
+    // Row by row, then by column: a cube only covers the cubes at [col + 1, row] and [col, row + 1], which both come later,
+    // so this is still back to front, and each row is one run that can enter as one group (island build entrance spec).
+    const order = ground.map((item) => item.at.tile[1] * 6 + item.at.tile[0]);
+    assert.deepEqual(order, [...order].sort((a, b) => a - b), 'ground paints row by row, then by column');
     for (const name of BLOCKS) assert.deepEqual(resolve(sources, name).block.size, [1, 1, 1], `${name} is a cube`);
     // Each edge piece is block with one corner column recolored to the cliff's face (block-road also swaps the grass band
     // for a path band): the same top, faces and surface, the same right face (block-right) or the same left face (block-left).
@@ -268,6 +273,33 @@ describe('hero island structure', () => {
     const flow = sources.objects.get('river');
     assert.deepEqual([flow.size, flow.faces, flow.surface.loop, flow.surface.prefix, flow.surface.frames.length], [[1, 1, 0], { top: 'water-2' }, 'wf', 'w', 5]);
     for (const color of Object.values(flow.surface.keys)) assert.ok(color in sources.palette.world && color !== 'ink', `river uses ${color}`);
+  });
+
+  it('R2 (island build entrance): the settled island paints exactly what it painted with flat inland tiles, in every loop frame', () => {
+    // Today's ground, rebuilt: each inland cube goes back to the flat tile it replaced (block → tile, block-road with its path
+    // top → path, block-river with its river top → river), and the ground paints by diagonal (col + row), as it did.
+    const FLAT = { block: 'tile', 'block-road': 'path', 'block-river': 'river' };
+    const inland = (item) => item.at.tile && item.at.tile[0] < 5 && item.at.tile[1] < 5;
+    const isGround = (item) => GROUND.includes(item.object) || item.object === 'waterfall-face';
+    const first = scene.items.findIndex(isGround);
+    const last = scene.items.findLastIndex(isGround);
+    const ground = scene.items.slice(first, last + 1);
+    assert.ok(ground.every(isGround), 'the ground is one run');
+    const flat = [];
+    ground.forEach((item, i) => {
+      if (!inland(item)) return flat.push(item);
+      if (item.object in FLAT) return flat.push({ ...item, object: FLAT[item.object] });
+      const cube = ground[i - 1];
+      assert.ok(cube && cube.object in FLAT && JSON.stringify(cube.at) === JSON.stringify(item.at), `${item.object} at ${item.at.tile} tops a cube`);
+    });
+    const diagonal = (item) => item.at.tile[0] + item.at.tile[1];
+    flat.sort((a, b) => diagonal(a) - diagonal(b) || b.at.tile[0] - a.at.tile[0]);
+    const before = [...scene.items.slice(0, first), ...flat, ...scene.items.slice(last + 1)];
+    const paint = (items, frame) => {
+      sources.scenes.set('island-probe', { viewBox: scene.viewBox, origin: scene.origin, items });
+      return [...composite(renderScene(sources, 'island-probe').root, { frame })].sort();
+    };
+    for (let frame = 0; frame < 6; frame++) assert.deepEqual(paint(scene.items, frame), paint(before, frame), `frame ${frame}`);
   });
 
   it('R1, R2, R4: the waterfall-face falls down the front block at [5, 3], in world colors, with its own wf loop and the flag\'s streaks on it', () => {

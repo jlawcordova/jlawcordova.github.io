@@ -11,6 +11,7 @@
   - `src/components/home/Hero.astro`: plays the schedule, and drops the whole-island rise.
 - **Tests:**
   - `scripts/pixel-art-island.test.mjs`: the tests that change and the new art tests (spec, Tests).
+  - `scripts/pixel-art-cli.test.mjs`: the `--sizes` tests sample `block` instead of `tile`, since the island no longer places `tile` (found in step 1).
   - `scripts/island-entrance.test.mjs` (new): the schedule.
   - `scripts/e2e/shell.e2e.mjs` and `scripts/e2e/motion.e2e.mjs`: the island's groups end in place, and show at once without JavaScript, with Motion blocked and under reduced motion.
 - **Docs:**
