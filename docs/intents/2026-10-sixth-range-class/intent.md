@@ -1,5 +1,5 @@
 # Intent: Range class characters
-Author: J. Law. Cordova (site owner). Status: accepted. Implemented in [#49](https://github.com/jlawcordova/jlawcordova.github.io/pull/49), awaiting verification.
+Author: J. Law. Cordova (site owner). Status: done, 2026-10-03: built and merged in [#49](https://github.com/jlawcordova/jlawcordova.github.io/pull/49). The classes were later redrawn as isometric characters by the [isometric Range](../2026-10-range-isometric/intent.md) change.
 
 ## Problem
 

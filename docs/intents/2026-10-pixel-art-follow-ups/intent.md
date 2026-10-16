@@ -1,5 +1,5 @@
 # Intent: Pixel-art engine follow-ups
-Author: J. Law. Cordova (site owner). Status: accepted.
+Author: J. Law. Cordova (site owner). Status: cancelled, 2026-10-16: no longer applicable. Retiring the legacy tier is now its own change, [retire legacy art](../2026-10-retire-legacy-art/intent.md); the editor's file opening, draft differences and palette swaps are dropped. Kept as history, since other documents link here.
 
 ## Problem
 
