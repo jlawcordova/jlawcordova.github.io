@@ -367,7 +367,7 @@ Each Range class stands in a setting that fits it, built from its own blocks. Th
   - `block-<setting>-left` for the left cliff, `[0, 2]` and `[1, 2]`, where right column 0 copies left column 14;
   - `block-<setting>-right` for the right cliff, `[2, 0]` and `[2, 1]`, where left column 14 copies right column 0.
 
-  Follow the island's joint rules, so any courses or seams run unbroken across the joints. Generate the three from one script.
+  Follow the island's joint rules, so any courses or seams run unbroken across the joints. A pattern that runs along the face, such as the worksite's diagonal hazard stripes, copies map column 15 instead of 14 into the joint column, since the joint sits where column 15 would be; that keeps the stripes exact across it. Check the rendered joint rows either way. Generate the three from one script.
 - **The lab's floor** is running-bond brick: a `path-2` top with `path-3` joints, bricks one tile long and half a tile wide along the down-right axis; `path-3` left faces with `path-4` mortar courses; `path-4` right faces with `soil-3` mortar. Each setting picks its own material and pattern, in world colors.
 - **Hidden faces may be plain.** An inland cube's sides show only while it floats up, and then only for a row or two during the overshoot, so a face hidden at rest may be plain to save bytes. Give the front corner its own `block-<setting>-corner` with full sides when you do. The settled setting must look the same either way.
 - **Props** are `prop-<class>-<name>` objects, two to four of them, balanced left and right of the character:
