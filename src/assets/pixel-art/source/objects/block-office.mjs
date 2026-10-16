@@ -1,0 +1,35 @@
+// Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md
+export default {
+  kind: 'block',
+  size: [1, 1, 1],
+  faces: {
+    top: 'roof-2',
+    left: 'wood-3',
+    right: 'wood-4',
+  },
+  surface: {
+    keys: {
+      b: 'roof-3',
+      f: 'roof-1',
+      F: 'roof-2',
+    },
+    map: [
+      '................................',
+      '................................',
+      '................................',
+      '................f...............',
+      '.......bb......f.......bb.......',
+      '.....bbbbbb..........bbbbbb.....',
+      '...bbbbbbbbbb......bbbbbbbbbb...',
+      '.bbbbbbbFbbbbbb..bbbbbbbFbbbbbb.',
+      '.bbbbbbFbbbbbbb..bbbbbbFbbbbbbb.',
+      '...bbbbbbbbbb......bbbbbbbbbb...',
+      '.....bbbbbb..........bbbbbb.....',
+      '.......bb.......f......bb.......',
+      '...............f................',
+      '................................',
+      '................................',
+      '................................',
+    ],
+  },
+};

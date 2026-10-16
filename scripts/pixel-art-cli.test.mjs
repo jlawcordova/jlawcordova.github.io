@@ -155,7 +155,7 @@ describe('--check (R38)', () => {
     const dir = await workspace();
     const { code, out } = art(dir, '--check', 'scenes/range-sprite');
     assert.equal(code, 0);
-    assert.equal(out, 'scenes/range-sprite.mjs: ok · 103×72 · 104 items · 62 objects · output range-sprite.svg\n');
+    assert.equal(out, 'scenes/range-sprite.mjs: ok · 103×72 · 101 items · 63 objects · output range-sprite.svg\n');
   });
 
   it('R38: prints every problem with file, place and rule, and exits 1', async () => {
@@ -187,7 +187,8 @@ describe('--check (R38)', () => {
     const dir = await workspace();
     const path = join(dir, 'source/objects/flower.mjs');
     await writeFile(path, `${await readFile(path, 'utf8')}export default {`);
-    for (const args of [['--check', 'flower'], ['--check', 'objects/flower'], ['--preview', 'flower'], ['--check', 'range-sprite']]) {
+    // library-demo is a scene that places flower (the Range did until each class got its own setting).
+    for (const args of [['--check', 'flower'], ['--check', 'objects/flower'], ['--preview', 'flower'], ['--check', 'library-demo']]) {
       const { code, err } = art(dir, ...args);
       assert.equal(code, 1, args.join(' '));
       assert.match(err, /^objects\/flower\.mjs: cannot be loaded: /m, args.join(' '));
