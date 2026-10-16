@@ -712,12 +712,6 @@
   margin: 8px 0 4px;
   font-size: 11px;
 }
-.lab-palette__legacy summary {
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
 
 .lab-swatches {
   display: flex;

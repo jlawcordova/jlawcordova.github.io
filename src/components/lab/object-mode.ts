@@ -499,7 +499,7 @@ export class ObjectMode {
       const canvas = $<HTMLCanvasElement>(id);
       canvas.width = w;
       canvas.height = h;
-      // Height follows the width, so a big legacy map shrinks to the column.
+      // Height follows the width, so a big map shrinks to the column.
       canvas.style.width = `${w * scale}px`;
       const ctx = canvas.getContext('2d')!;
       ctx.clearRect(0, 0, w, h);
@@ -529,20 +529,19 @@ export class ObjectMode {
     const { lab } = this;
     const doc = lab.doc;
     const r = this.resolved;
-    const legacy = Boolean(r?.legacy);
     const facts: [string, string][] = [
       ['Name', lab.name],
-      ['Kind', `${doc.kind}${legacy ? ', legacy' : ''}`],
+      ['Kind', doc.kind],
     ];
     if (doc.extends) facts.push(['Extends', doc.extends]);
     if (r) {
-      facts.push(['Size', `${r.width} × ${r.height}${legacy ? ' (legacy, no cap)' : ` (max ${CAPS.size} × ${CAPS.size})`}`]);
+      facts.push(['Size', `${r.width} × ${r.height} (max ${CAPS.size} × ${CAPS.size})`]);
       if (r.character) {
         const [fw, fh] = paintedSize(r);
         facts.push(['Figure', `${fw} × ${fh} (max ${CAPS.characterWidth} × ${CAPS.characterHeight})`]);
       }
       const colors = usedColors(lab.sources, r).length;
-      facts.push(['Colors', `${colors}${legacy ? '' : ` of ${CAPS.colors}`}`]);
+      facts.push(['Colors', `${colors} of ${CAPS.colors}`]);
     }
     if (doc.extends) {
       const rows = overriddenRows(doc);
@@ -620,8 +619,7 @@ export class ObjectMode {
       wrap.append(lbl, step(-1, '−', `Decrease ${name}`), input, step(1, '+', `Increase ${name}`));
       return wrap;
     };
-    const legacy = doc.legacy === true;
-    const cap = legacy ? 512 : CAPS.size;
+    const cap = CAPS.size;
     if (doc.kind === 'block') {
       const faces = ['top', 'left', 'right', 'edge'].map((face) => {
         const wrap = document.createElement('div');
@@ -651,10 +649,10 @@ export class ObjectMode {
       if (field === 'anchor-x' || field === 'anchor-y') {
         const anchor = [...(r?.anchor ?? [0, 0])];
         anchor[field === 'anchor-x' ? 0 : 1] = value;
-        // Keep the canonical key order: kind, legacy, extends, anchor, keys…
-        const { kind, legacy, extends: ext, anchor: _old, ...rest } = doc;
+        // Keep the canonical key order: kind, extends, anchor, keys…
+        const { kind, extends: ext, anchor: _old, ...rest } = doc;
         for (const key of Object.keys(doc)) delete doc[key];
-        Object.assign(doc, { kind, ...(legacy ? { legacy } : {}), ...(ext ? { extends: ext } : {}), anchor, ...rest });
+        Object.assign(doc, { kind, ...(ext ? { extends: ext } : {}), anchor, ...rest });
       } else if (field === 'width' || field === 'height') {
         resize(doc, field === 'width' ? value : (r?.width ?? 1), field === 'height' ? value : (r?.height ?? 1));
       } else if (field.startsWith('size-')) {

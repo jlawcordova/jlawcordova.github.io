@@ -59,16 +59,6 @@ const driveSteps = async () => {
 };
 
 describe('hero island structure', () => {
-  it('R2: no object the island places uses legacy colors, with no exceptions', () => {
-    for (const name of new Set(placed)) {
-      const obj = resolve(sources, name);
-      const legacyKeys = Object.values(obj.keys).filter((color) => /^c-[0-9a-f]{6}$/.test(color));
-      assert.equal(obj.legacy, false, `${name} is marked legacy`);
-      assert.deepEqual(legacyKeys, [], `${name} uses legacy colors`);
-      assert.equal(sources.objects.get(name).legacy, undefined, `${name} sets legacy: true`);
-    }
-  });
-
   it('R7: flag and crane-box keep their loops and frame counts, in world colors', () => {
     for (const [name, [loop, prefix, count]] of Object.entries({ flag: ['ff', 'f', 4], 'crane-box': ['hf', 'h', 6] })) {
       const obj = resolve(sources, name);
@@ -282,7 +272,6 @@ describe('hero island structure', () => {
 
   it('R1, R2, R4: the waterfall-face falls down the front block at [5, 3], in world colors, with its own wf loop and the flag\'s streaks on it', () => {
     const obj = resolve(sources, 'waterfall-face');
-    assert.equal(obj.legacy, false);
     assert.ok(obj.width <= CAPS.size && obj.height <= CAPS.size, `${obj.width}×${obj.height}`);
     assert.ok(usedColors(sources, obj).length <= CAPS.colors);
     for (const color of Object.values(obj.keys)) assert.ok(color in sources.palette.world, `waterfall-face uses ${color}`);
@@ -318,7 +307,6 @@ describe('hero island structure', () => {
 
   it('R1, R2: island-shadow is a small world-color object, painted under the ground and outside the island', () => {
     const obj = resolve(sources, 'island-shadow');
-    assert.equal(obj.legacy, false);
     assert.ok(obj.width <= CAPS.size && obj.height <= CAPS.size, `${obj.width}×${obj.height}`);
     assert.ok(usedColors(sources, obj).length <= CAPS.colors);
     for (const color of Object.values(obj.keys)) assert.match(color, /^path-[1-4]$/, `shadow color ${color}`);
@@ -360,7 +348,6 @@ describe('hero island structure', () => {
 
   it('R1, R2, R3: the bridge is a small world-color object on the road where it crosses the river, painted over the ground', () => {
     const obj = resolve(sources, 'bridge');
-    assert.equal(obj.legacy, false);
     assert.ok(obj.width <= CAPS.size && obj.height <= CAPS.size, `${obj.width}×${obj.height}`);
     assert.ok(usedColors(sources, obj).length <= CAPS.colors);
     for (const color of Object.values(obj.keys)) assert.ok(color in sources.palette.world, `bridge uses ${color}`);
@@ -403,7 +390,6 @@ describe('hero island structure', () => {
 
   it('R1, R2, R3: the house is a small world-color object, where the house stood, painted after the ground and before the trucks', () => {
     const obj = resolve(sources, 'house');
-    assert.equal(obj.legacy, false);
     assert.ok(obj.width <= CAPS.size && obj.height <= CAPS.size, `${obj.width}×${obj.height}`);
     assert.ok(usedColors(sources, obj).length <= CAPS.colors);
     for (const color of Object.values(obj.keys)) assert.ok(color in sources.palette.world, `house uses ${color}`);

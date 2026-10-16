@@ -19,7 +19,6 @@ import { encodePng, renderPreview } from './pixel-art-preview.mjs';
 const PALETTE = {
   world: { ink: '#2E2418', cream: '#F4EDE0', 'grass-2': '#8FA56E', 'grass-4': '#4E6B3A', 'wood-3': '#7A4E2D' },
   outfit: { 'teal-1': '#7FA89B' },
-  legacy: { 'c-6f8a55': '#6F8A55', 'c-2e2418': '#2E2418' },
 };
 
 /** Sources from inline objects and scenes. */
@@ -192,22 +191,27 @@ describe('design language (R26, R27)', () => {
     assert.deepEqual(validate(src({ character: sprite(body(32)) })), []);
     assert.deepEqual(validate(src({ character: sprite(body(33)) })), ['objects/character.mjs: the figure is 24×33; a character is at most 24×32']);
     assert.deepEqual(validate(src({ character: sprite(body(32, 25)) })), ['objects/character.mjs: the figure is 25×32; a character is at most 24×32']);
-    const legacyBase = { character: sprite(body(33), undefined, { legacy: true }), hat: { kind: 'sprite', extends: 'character' } };
-    assert.deepEqual(validate(src(legacyBase)), ['objects/hat.mjs: the figure is 24×33; a character is at most 24×32']);
+    const tall = { character: sprite(body(33)), hat: { kind: 'sprite', extends: 'character' } };
+    assert.deepEqual(validate(src(tall)), [
+      'objects/character.mjs: the figure is 24×33; a character is at most 24×32',
+      'objects/hat.mjs: the figure is 24×33; a character is at most 24×32',
+    ]);
   });
 
   it('R27: a character\'s cap is on the figure it paints, not its canvas', () => {
     const canvas = (figureWidth) => Array.from({ length: 38 }, (_, y) => (y < 32 ? `${'.'.repeat(10)}${'g'.repeat(figureWidth)}`.padEnd(40, '.') : '.'.repeat(40)));
-    const base = { character: sprite(canvas(24), undefined, { legacy: true }) };
+    const base = { character: sprite(canvas(24)) };
     assert.deepEqual(validate(src({ ...base, coat: { kind: 'sprite', extends: 'character' } })), []);
     const prop = { kind: 'sprite', extends: 'character', rows: { 0: { 37: 'g'.padEnd(40, '.') } } };
     assert.deepEqual(validate(src({ ...base, coat: prop })), ['objects/coat.mjs: the figure is 34×38; a character is at most 24×32']);
   });
 
-  it('R26: rejects a legacy color in a new object', () => {
-    assert.deepEqual(validate(src({ tree: sprite(['g'], { g: 'c-6f8a55' }) })), [
-      "objects/tree.mjs: key 'g': 'c-6f8a55' is a legacy color; only imported art may use it",
-    ]);
+  it('R26: a c-<hex> name is not in the palette', () => {
+    assert.deepEqual(validate(src({ tree: sprite(['g'], { g: 'c-6f8a55' }) })), ["objects/tree.mjs: key 'g': 'c-6f8a55' is not in the palette"]);
+  });
+
+  it('retire legacy R3: an object with legacy: true is rejected', () => {
+    assert.deepEqual(validate(src({ tree: sprite(['g'], undefined, { legacy: true }) })), ["objects/tree.mjs: unknown property 'legacy'"]);
   });
 
   it('R26: an outfit color only in objects that extend character', () => {
@@ -218,35 +222,28 @@ describe('design language (R26, R27)', () => {
     assert.deepEqual(validate(src(objects)), []);
   });
 
-  it('R26: an outfit inherits the colors it uses, so a legacy base must be re-keyed', () => {
-    const objects = { character: sprite(['l'], { l: 'c-6f8a55' }, { legacy: true }), coat: { kind: 'sprite', extends: 'character' } };
-    assert.deepEqual(validate(src(objects)), ["objects/coat.mjs: key 'l': 'c-6f8a55' is a legacy color; only imported art may use it"]);
-    objects.coat.keys = { l: 'grass-2' };
-    assert.deepEqual(validate(src(objects)), []);
-  });
-
-  it('R27: legacy objects are exempt from the caps and the tiers', () => {
-    const map = Array.from({ length: 70 }, () => `${twelve}m`.repeat(6));
-    assert.deepEqual(validate(src({ base: sprite(map, { ...manyColors(13), l: 'c-6f8a55' }, { legacy: true }) }, {}, wide)), []);
-  });
-
   it('R26: palette tiers over their caps', () => {
     const big = (n, prefix) => Object.fromEntries([...Array(n).keys()].map((i) => [`${prefix}-${i}`, `#00${String(i).padStart(4, '0')}`]));
-    const problems = validate(loadSources({ palette: { world: big(33, 'w'), outfit: big(17, 'o'), legacy: big(90, 'l') } }));
+    const problems = validate(loadSources({ palette: { world: big(33, 'w'), outfit: big(17, 'o') } }));
     assert.deepEqual(problems, ['palette.mjs: world has 33 colors, max 32', 'palette.mjs: outfit has 17 colors, max 16']);
   });
 
+  it('retire legacy R2: the palette has two tiers, and a legacy tier is unknown', () => {
+    const problems = validate(loadSources({ palette: { world: {}, outfit: {}, legacy: { 'c-6f8a55': '#6F8A55' } } }));
+    assert.deepEqual(problems, ["palette.mjs: unknown tier 'legacy'"]);
+  });
+
   it('R26: palette values are uppercase hex with no alpha, and names are unique across tiers', () => {
-    const palette = { world: { ink: '#2e2418', cream: '#F4EDE0AA' }, outfit: {}, legacy: { ink: '#2E2418' } };
+    const palette = { world: { ink: '#2e2418', cream: '#F4EDE0AA' }, outfit: { ink: '#2E2418' } };
     assert.deepEqual(validate(loadSources({ palette })), [
       "palette.mjs: world 'ink': '#2e2418' must be uppercase #RRGGBB, with no alpha",
       "palette.mjs: world 'cream': '#F4EDE0AA' must be uppercase #RRGGBB, with no alpha",
-      "palette.mjs: 'ink' is in both world and legacy; names must be unique",
+      "palette.mjs: 'ink' is in both world and outfit; names must be unique",
     ]);
   });
 
   it('R26: the same value may be in two tiers under different names', () => {
-    assert.deepEqual(validate(src()), []);
+    assert.deepEqual(validate(src({}, {}, { ...PALETTE, outfit: { ...PALETTE.outfit, 'teal-0': '#2E2418' } })), []);
   });
 
   it('R27, L4: random oversize objects fail with their exact size', () => {
@@ -381,7 +378,6 @@ describe('serializer (R9)', () => {
   it('R9: writes the canonical text for a sprite', () => {
     const obj = {
       kind: 'sprite',
-      legacy: true,
       anchor: [5, 13],
       keys: { L: 'grass-2', "'": 'ink' },
       layers: [{ map: ['.L.', "'L'"] }, { class: 'cbob', map: ['...', '.L.'] }, { loop: 'wf', prefix: 'w', frames: [['L..', '...'], ['.L.', '...']] }],
@@ -391,7 +387,6 @@ describe('serializer (R9)', () => {
       `// Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md
 export default {
   kind: 'sprite',
-  legacy: true,
   anchor: [5, 13],
   keys: {
     L: 'grass-2',
@@ -496,7 +491,7 @@ export default {
       const layers = [{ map: map() }];
       if (r() < 0.5) layers.push({ class: 'cbob', map: map() });
       if (r() < 0.5) layers.push({ loop: 'hf', prefix: 'h', frames: Array.from({ length: 1 + Math.floor(r() * 5) }, map) });
-      const obj = { kind: 'sprite', ...(r() < 0.5 ? { legacy: true } : {}), anchor: [Math.floor(r() * w), Math.floor(r() * h)], keys: Object.fromEntries(keyList.map((k) => [k, 'ink'])), layers };
+      const obj = { kind: 'sprite', anchor: [Math.floor(r() * w), Math.floor(r() * h)], keys: Object.fromEntries(keyList.map((k) => [k, 'ink'])), layers };
       const text = serialize(obj);
       const loaded = await load(text);
       assert.deepEqual(loaded, obj, `seed ${seed}`);
@@ -824,7 +819,7 @@ describe('blocks (R28, D3, D4)', () => {
 
   it('R26, R27: a block may use world colors only, at most 12 colors and 64×64 pixels', () => {
     const blk = (obj) => validate(src({ blk: obj }));
-    assert.deepEqual(blk({ ...BLOCK, faces: { ...BLOCK.faces, top: 'c-6f8a55' } }), ["objects/blk.mjs: faces.top: 'c-6f8a55' is a legacy color; only imported art may use it"]);
+    assert.deepEqual(blk({ ...BLOCK, faces: { ...BLOCK.faces, top: 'c-6f8a55' } }), ["objects/blk.mjs: faces.top: 'c-6f8a55' is not in the palette"]);
     assert.deepEqual(blk({ ...BLOCK, faces: { ...BLOCK.faces, top: 'teal-1' } }), ["objects/blk.mjs: faces.top: 'teal-1' is an outfit color; only objects that extend character may use it"]);
     assert.deepEqual(blk({ ...FLAT, size: [2, 2, 0] }), []);
     assert.deepEqual(blk({ ...FLAT, size: [3, 3, 0] }), ['objects/blk.mjs: 94×48, max 64×64']);
@@ -925,7 +920,7 @@ describe('blocks (R28, D3, D4)', () => {
 describe('block sides (hero island detail spec R6)', () => {
   // One world color per letter: t, l and r for the faces, a to f for the
   // side textures. Pictures show faces in uppercase and textures in lowercase.
-  const SIDE_PALETTE = { world: Object.fromEntries([...'tlrabcdef'].map((n, i) => [n, `#0000${(16 + i).toString(16).toUpperCase()}`])), outfit: {}, legacy: {} };
+  const SIDE_PALETTE = { world: Object.fromEntries([...'tlrabcdef'].map((n, i) => [n, `#0000${(16 + i).toString(16).toUpperCase()}`])), outfit: {} };
   const sideMap = (cell) => Array.from({ length: 16 }, (_, r) => Array.from({ length: 16 }, (_, c) => cell(r, c) ?? '.').join(''));
   /** A two-row band on the left (with column 15 and one speckle marked) and one row on the right (with one speckle). */
   const SIDES = {
@@ -1104,7 +1099,7 @@ describe('block sides (hero island detail spec R6)', () => {
     const blk = (sides) => validate(src({ blk: { ...cube([1, 1, 1]), faces: { top: 'grass-2', left: 'wood-3', right: 'grass-4' }, sides } }));
     const one = (color) => ({ keys: { a: color }, left: sideMap((r) => (r === 0 ? 'a' : undefined)), right: sideMap(() => undefined) });
     assert.deepEqual(blk(one('cream')), []);
-    assert.deepEqual(blk(one('c-6f8a55')), ["objects/blk.mjs: sides, key 'a': 'c-6f8a55' is a legacy color; only imported art may use it"]);
+    assert.deepEqual(blk(one('c-6f8a55')), ["objects/blk.mjs: sides, key 'a': 'c-6f8a55' is not in the palette"]);
     assert.deepEqual(blk(one('teal-1')), ["objects/blk.mjs: sides, key 'a': 'teal-1' is an outfit color; only objects that extend character may use it"]);
     const wide = { ...SIDE_PALETTE, world: { ...SIDE_PALETTE.world, ...Object.fromEntries([...Array(10).keys()].map((i) => [`w-${i}`, `#0001${String(i).padStart(2, '0')}`])) } };
     const keys = Object.fromEntries([...Array(10).keys()].map((i) => [String(i), `w-${i}`]));
@@ -1144,12 +1139,22 @@ describe('library (R13, R31)', () => {
     return loadSources({ palette: (await import(new URL('palette.mjs', dir).href)).default, objects: await read('objects'), scenes: await read('scenes') });
   };
 
+  it('retire legacy R1, R2, R3: no committed source has a legacy tier, flag or color', async () => {
+    const sources = await committed();
+    assert.deepEqual(Object.keys(sources.palette), ['world', 'outfit']);
+    const legacy = /^c-[0-9a-f]{6}$/;
+    for (const [name, obj] of sources.objects) {
+      assert.ok(!('legacy' in obj), `${name} sets legacy`);
+      const colors = [...Object.values(obj.keys ?? {}), ...Object.values(obj.faces ?? {}), ...Object.values(obj.surface?.keys ?? {}), ...Object.values(obj.sides?.keys ?? {})];
+      for (const color of colors) assert.doesNotMatch(color, legacy, `${name} names ${color}`);
+    }
+  });
+
   it('R13: the library has a block, a flat tile, a water block with a frame loop and a tree, in world colors only', async () => {
     const sources = await committed();
     assert.deepEqual(validate(sources), []);
     for (const name of ['block', 'tile', 'water', 'tree']) {
       const resolved = resolve(sources, name);
-      assert.equal(resolved.legacy, false, `${name} is not legacy`);
       for (const color of [...Object.values(resolved.block?.faces ?? {}), ...usedKeys(resolved).map((k) => resolved.keys[k])]) {
         assert.equal(sources.colors.get(color).tier, 'world', `${name} uses ${color}`);
       }
@@ -1204,12 +1209,11 @@ describe('security and governance outfit (R14, Q6)', () => {
   };
   const NAME = 'outfit-security-governance';
 
-  it('R14: the outfit validates, extends character and is not legacy', async () => {
+  it('R14: the outfit validates and extends character', async () => {
     const sources = await committed();
     assert.deepEqual(validate(sources), []);
     const outfit = sources.objects.get(NAME);
     assert.equal(outfit.extends, 'character');
-    assert.equal(resolve(sources, NAME).legacy, false);
   });
 
   it('R27: the figure stays within 24×32', async () => {
@@ -1218,11 +1222,11 @@ describe('security and governance outfit (R14, Q6)', () => {
     assert.ok(w <= 24 && h <= 32, `the figure is ${w}×${h}`);
   });
 
-  it('Q6: it uses world colors plus at most 4 outfit colors, and no legacy ones', async () => {
+  it('Q6: it uses world colors plus at most 4 outfit colors', async () => {
     const sources = await committed();
     const resolved = resolve(sources, NAME);
     const tiers = [...new Set(usedKeys(resolved).map((k) => resolved.keys[k]))].map((c) => sources.colors.get(c).tier);
-    assert.ok(!tiers.includes('legacy'), 'no legacy colors');
+    assert.ok(tiers.every((t) => t === 'world' || t === 'outfit'), 'world and outfit colors only');
     assert.ok(tiers.filter((t) => t === 'outfit').length <= 4, 'at most 4 outfit colors');
     const { outfit } = (await import('../src/assets/pixel-art/source/palette.mjs')).default;
     assert.ok(Object.keys(outfit).length <= 16, 'the outfit tier has at most 16 colors');
@@ -1271,22 +1275,6 @@ describe('palette (R6, R26)', () => {
       assert.ok(shades.every((l, i) => i === 0 || l < shades[i - 1]), `${m}: shade 1 is the lightest and 4 the darkest`);
     }
     assert.equal(new Set(Object.values(world)).size, 32, 'no two world colors share a value');
-  });
-
-  it('R31: the world ramps come from the island: each is mostly exact legacy values', async () => {
-    const { world, legacy } = await palette();
-    const legacyValues = new Set(Object.values(legacy));
-    const exact = Object.values(world).filter((hex) => legacyValues.has(hex)).length;
-    assert.ok(exact >= 24, `${exact} of 32 world colors are legacy values`);
-  });
-
-  it('R26: the legacy tier is the 81 extracted colors, named c-<hex> and sorted by value', async () => {
-    const { legacy } = await palette();
-    const entries = Object.entries(legacy);
-    assert.equal(entries.length, 81);
-    for (const [name, hex] of entries) assert.equal(name, `c-${hex.slice(1).toLowerCase()}`);
-    const hexes = entries.map(([, hex]) => hex);
-    assert.deepEqual(hexes, [...hexes].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)));
   });
 });
 
@@ -1478,8 +1466,7 @@ describe('editing objects (R17)', () => {
   it('R17: the editor\'s starters are the same documents as npm run art -- --new writes', () => {
     assert.deepEqual(starterSprite(4, 3), { kind: 'sprite', anchor: [2, 2], keys: { o: 'ink' }, layers: [{ map: ['....', '....', '....'] }] });
     assert.deepEqual(starterScene(), { viewBox: [-64, -64, 128, 128], origin: [0, 0], items: [] });
-    const body = sprite(['gc'], { g: 'grass-2', c: 'c-6f8a55' }, { legacy: true });
-    assert.deepEqual(starterExtends(src({ body }), 'body'), { kind: 'sprite', extends: 'body', keys: { c: 'grass-2' }, rows: {} });
+    assert.deepEqual(starterExtends('body'), { kind: 'sprite', extends: 'body', keys: {}, rows: {} });
     assert.deepEqual(starterBlock(), { kind: 'block', size: [1, 1, 1], faces: { top: 'grass-2', left: 'soil-2', right: 'soil-3' } });
   });
 });

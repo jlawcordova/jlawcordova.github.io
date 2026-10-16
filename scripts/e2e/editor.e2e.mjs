@@ -563,7 +563,7 @@ describe('drafts (R20)', () => {
 // -------------------------------------------------------- object mode
 
 /** A swatch's accessible name: "grass-2, #8FA56E". */
-const swatch = (name) => `${name}, ${palette.world[name] ?? palette.outfit[name] ?? palette.legacy[name]}`;
+const swatch = (name) => `${name}, ${palette.world[name] ?? palette.outfit[name]}`;
 
 /** Opens an object with the pointer. */
 const pickObject = (page, name) => page.getByRole('combobox', { name: 'Open' }).selectOption(`object:${name}`);

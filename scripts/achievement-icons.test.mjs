@@ -46,7 +46,6 @@ test('R12: every icon is a 16×16 sprite using world colors only', async () => {
   for (const id of SHEET_ORDER) {
     const object = (await import(new URL(`objects/icon-${id}.mjs`, SOURCE).href)).default;
     assert.equal(object.kind, 'sprite', id);
-    assert.ok(!object.legacy, `${id} is not legacy`);
     for (const layer of object.layers) {
       assert.equal(layer.map.length, CELL, `${id} is ${CELL} rows`);
       for (const row of layer.map) assert.equal(row.length, CELL, `${id} is ${CELL} wide`);

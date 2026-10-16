@@ -16,10 +16,9 @@ New art must fit the existing world. The engine enforces every rule here except 
 - **Palette tiers** (`source/palette.mjs`):
   - **world**: exactly 32 colors, as seven material ramps of 4 shades (`grass-1` highlight … `grass-4` shadow, and the same for soil, wood, path, water, roof and gold), plus `ink`, `cream`, `skin-1` and `skin-2`. They were picked from the island's own shades. `npm run art -- --preview palette` writes the swatch sheet: a row per material, shade 1 to 4 across. The tier is full, so a new color means dropping one.
   - **outfit**: at most 16 clothing colors (full: the `silver`, `violet`, `slate`, `orange`, `sky` and `navy` ramps, light to dark; a new color means dropping one), only for objects that extend `character`.
-  - **legacy**: the 81 colors extracted from the redesign's art (`c-<hex>`), frozen. **Only imported art (`legacy: true`) may use them.** Never use one in new art, and never set `legacy: true` yourself.
   - Colors are added to the palette by hand, in a reviewed commit. Brand entries keep their `src/styles/variables.css` values.
 - **Light** comes from the same side as on the island: tops are the light shade, left faces the mid shade, right faces the shadow shade.
-- **Size caps.** A map is at most 64×64. A character (`character`, or anything that extends it) paints a figure of at most 24×32 (raised from 16×24 for the Range class characters, so a held prop fits); the isometric base is 14×24, and the knight with its shield and sword 22×27. A prop too big to hold is its own `prop-<class>-<name>` object. An object uses at most 12 colors; aim for 6–8. Imported legacy objects are exempt.
+- **Size caps.** A map is at most 64×64. A character (`character`, or anything that extends it) paints a figure of at most 24×32 (raised from 16×24 for the Range class characters, so a held prop fits); the isometric base is 14×24, and the knight with its shield and sword 22×27. A prop too big to hold is its own `prop-<class>-<name>` object. An object uses at most 12 colors; aim for 6–8. Every object is held to these caps.
 
 ## Formats
 
@@ -158,7 +157,7 @@ export default {
 - `rows` is `{ <layer index>: { <row index>: '<whole row>' } }`. A row override must be the full width of the base's map.
 - `keys` adds keys, or overrides the base's: the base's order comes first, then new keys.
 - The example recolors the base's shirt keys (`g`, `h`, `i`) red and adds a gold buckle `t` on one row of the chest.
-- `character` uses world colors only, with no `ink` and no outline; its keys are in [Isometric characters](#isometric-characters). An outfit may recolor those keys or add its own. `--new object <name> --extends character` writes a starter outfit; it would re-key any legacy color of its base to the nearest allowed one, though `character` has none now.
+- `character` uses world colors only, with no `ink` and no outline; its keys are in [Isometric characters](#isometric-characters). An outfit may recolor those keys or add its own. `--new object <name> --extends character` writes a starter outfit with no keys or rows of its own yet.
 - `character` is a 32×35 canvas, with anchor `[20, 29]` on the ground under the figure, so a scene places it by `tile`. The figure is in its `cbob` layer (layer 1; layer 0 is empty): head rows 7–20, body rows 18–27, legs rows 25–30, columns 13–26. Draw held props in the `cbob` layer too, so they bob with the character. A prop goes left of the body (columns 8–12) or right of it (columns 27–31). A new outfit keeps its figure, with any prop it holds, within 24×32. A larger prop is a separate `prop-<class>-<name>` object (see [Isometric characters](#isometric-characters)).
 
 ### Scenes (`source/scenes/<name>.mjs`)
@@ -252,13 +251,13 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
 
 ## The art that's already on the site
 
-- **The hero island** (`scenes/hero-island.mjs`, written to `hero-island.svg`) is built from library and island objects, all in world colors and within the caps. It has no legacy objects. Its pieces are:
+- **The hero island** (`scenes/hero-island.mjs`, written to `hero-island.svg`) is built from library and island objects, all in world colors and within the caps. Its pieces are:
   - the ground, road, bridge, `house`, back trees (`tree-small` and `pine`, three of them on a `tree-shade`) as world-color objects;
   - the river's `river` tiles and `waterfall-face`, `flag` and `crane-box` (the crane's hanging cardboard box): frame loops `wf` (5 frames, one set per piece), `ff` (4) and `hf` (6);
   - `truck`, placed with class `itruck it1`, and `truck-green`, placed with `itruck it2`;
   - the pieces listed after the trucks, so they paint over them: `bridge-rail`, `boxes` (a stack of cardboard boxes), the crane as `crane-mast` with `crane-jib` stacked on it, and the front trees. `fence` is in the library but off the island (the owner's Stage 2 review);
   - `cloud-a`, `cloud-b` and `cloud-c`, placed with `pcloud pc0` to `pc2`.
-- **The Range sprite** (`scenes/range-sprite.mjs`) is a 3×3 platform laid from the island's own blocks (`tile`, `block-right`, `block-left`, `block`, with `island-shadow` under the front edges), a library `tree` and six `flower` objects (`flower`, `flower-pink`, `flower-gold`, two of each, placed by `px`), plus seven outfits that extend `character`, one per `data-class` group, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). Each outfit stands on the center tile, placed by `{ tile: [1, 1, 0] }`. It uses no legacy art. The characters are isometric figures in the [island and Range look](#island-and-range-look), with no `ink` outline ([Isometric Range](../../../docs/intents/2026-10-range-isometric/spec.md)). `--preview range-sprite` and the lab draw only the first `data-class` group; to see another class, preview a scratch copy of the scene that keeps only that group.
+- **The Range sprite** (`scenes/range-sprite.mjs`) is a 3×3 platform laid from the island's own blocks (`tile`, `block-right`, `block-left`, `block`, with `island-shadow` under the front edges), a library `tree` and six `flower` objects (`flower`, `flower-pink`, `flower-gold`, two of each, placed by `px`), plus seven outfits that extend `character`, one per `data-class` group, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). Each outfit stands on the center tile, placed by `{ tile: [1, 1, 0] }`. The characters are isometric figures in the [island and Range look](#island-and-range-look), with no `ink` outline ([Isometric Range](../../../docs/intents/2026-10-range-isometric/spec.md)). `--preview range-sprite` and the lab draw only the first `data-class` group; to see another class, preview a scratch copy of the scene that keeps only that group.
 - **Recolors.** `truck-green` is `truck` with other colors: it `extends: 'truck'` and lists only the keys that differ. Use the same pattern for a variant that changes colors but not shape.
 - **Keep the CSS hooks.** `pixel-art.css` animates the classes on these groups (`wf w0`…, `itruck it1`, `pcloud pc0`, `cbob`). Don't rename a loop, prefix or placement class unless you change the CSS in the same PR.
 
@@ -364,14 +363,12 @@ The achievement icons are solid objects built like the clouds and the bridge, on
 - `.` is transparent. A space is not a valid key.
 - Keys are case-sensitive: `g` and `G` are different colors.
 - Long runs of one character are easy to miscount. Count against the preview, not the text, and let `--check` find ragged rows.
-- Legacy colors (`c-<hex>`) are off-limits for new art, and so is `legacy: true`.
 - Don't hand-edit `src/assets/pixel-art/*.svg`, and don't add `.src.svg` files.
-- `scripts/import-pixel-art.mjs` brings existing SVG art in as legacy sources. It's not for drawing new art.
 
 ## Before opening a PR
 
 - [ ] `npm run art -- --check <name>` passes for everything you touched, and `npm run art` reports every file `lossless` and none `OVER BUDGET`. For the hero island, paste `npm run art -- --sizes hero-island` into the PR.
-- [ ] No legacy colors in new art; within the caps; light from the island's side.
+- [ ] World colors only (outfit colors only in an outfit); within the caps; light from the island's side.
 - [ ] The preview PNGs (1× and 4× at least) are attached to the PR. For the Range, each class you touched at 1× and 3×, from a scratch copy of `range-sprite` that keeps only that class's group.
 - [ ] `npm test` shows `# fail 0`.
 - [ ] The art is generic and public-safe (`CLAUDE.md`): no names, logos or likenesses.

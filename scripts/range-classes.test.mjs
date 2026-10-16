@@ -1,17 +1,14 @@
 // The Range carousel's data and art can't drift (Range class characters spec
-// R1, R3, R12): src/data/home.ts lists as many classes as the compiled sprite
+// R1, R12): src/data/home.ts lists as many classes as the compiled sprite
 // and its scene have data-class groups, numbered 0 to N − 1 in order, each
-// group places the outfit named for its class, range.css shows each one, and
-// the character and its outfits stay off legacy colors. Node built-ins only.
+// group places the outfit named for its class, and range.css shows each one.
+// Node built-ins only.
 
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
-
-import { resolve } from '../src/lib/pixel-art/engine.mjs';
-import { readSources } from './optimize-pixel-art.mjs';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const read = (path) => readFile(join(ROOT, path), 'utf8');
@@ -72,14 +69,5 @@ describe('Range class order (R1)', () => {
     assert.equal(outfitFor('Cloud & DevOps'), 'outfit-cloud-devops');
     assert.equal(outfitFor('Security & Governance'), 'outfit-security-governance');
     assert.equal(outfitFor('Back-end'), 'outfit-back-end');
-  });
-});
-
-describe('Range characters off legacy colors (R3, R3a)', () => {
-  it('R3: character and every outfit resolve as non-legacy', async () => {
-    const { sources } = await readSources(join(ROOT, 'src/assets/pixel-art/source'));
-    const outfits = [...sources.objects.keys()].filter((n) => n.startsWith('outfit-'));
-    assert.equal(outfits.length, 7);
-    for (const name of ['character', ...outfits]) assert.equal(resolve(sources, name).legacy, false, `${name} is not legacy`);
   });
 });
