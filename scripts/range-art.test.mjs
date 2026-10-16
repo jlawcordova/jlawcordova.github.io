@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
 import { composite, renderScene, resolve } from '../src/lib/pixel-art/engine.mjs';
-import { readSources } from './optimize-pixel-art.mjs';
+import { OUTPUT_BUDGETS, readSources } from './optimize-pixel-art.mjs';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const SOURCE = join(ROOT, 'src/assets/pixel-art/source');
@@ -122,9 +122,10 @@ describe('Range art (Isometric Range spec, Range settings spec)', () => {
     assert.deepEqual(scene.viewBox, [-51, -9, 103, 72]);
   });
 
-  it('R8: the compiled SVG is within the engine budget', async () => {
+  it('R8, R11 (settings): the compiled SVG is within its own budget, 200 KB raw and 50 KB gzip', async () => {
     const svg = await readFile(join(ROOT, 'src/assets/pixel-art/range-sprite.svg'));
-    assert.ok(svg.length <= 100 * 1024, `${svg.length} B raw`);
-    assert.ok(gzipSync(svg).length <= 25 * 1024, 'gzip within 25 KB');
+    assert.deepEqual(OUTPUT_BUDGETS['range-sprite.svg'], { raw: 200 * 1024, gzip: 50 * 1024 });
+    assert.ok(svg.length <= 200 * 1024, `${svg.length} B raw`);
+    assert.ok(gzipSync(svg).length <= 50 * 1024, 'gzip within 50 KB');
   });
 });
