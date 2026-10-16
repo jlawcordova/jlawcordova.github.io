@@ -195,9 +195,57 @@ export default {
       group: { 'data-class': '2' },
       items: [
         {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '0' },
+          items: [
+            { object: 'block-studio', at: { tile: [0, 0, 0] } },
+            { object: 'block-studio', at: { tile: [1, 0, 0] } },
+            { object: 'block-studio-right', at: { tile: [2, 0, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '1' },
+          items: [
+            { object: 'block-studio', at: { tile: [0, 1, 0] } },
+            { object: 'block-studio', at: { tile: [1, 1, 0] } },
+            { object: 'block-studio-right', at: { tile: [2, 1, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '2' },
+          items: [
+            { object: 'block-studio-left', at: { tile: [0, 2, 0] } },
+            { object: 'block-studio-left', at: { tile: [1, 2, 0] } },
+            { object: 'block-studio-corner', at: { tile: [2, 2, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '32' },
+          items: [
+            { object: 'prop-ux-design-easel', at: { tile: [2, 0, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '-32' },
+          items: [
+            { object: 'prop-ux-design-cabinet', at: { tile: [0, 2, 0] } },
+          ],
+        },
+        {
           group: { class: 'enter', 'data-enter': 'object', 'data-x': '0' },
           items: [
             { object: 'outfit-ux-design', at: { tile: [1, 1, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '16' },
+          items: [
+            { object: 'prop-ux-design-stool', at: { tile: [2, 1, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '-16' },
+          items: [
+            { object: 'prop-ux-design-cans', at: { tile: [1, 2, 0] } },
           ],
         },
       ],
