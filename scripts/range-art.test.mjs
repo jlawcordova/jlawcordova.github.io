@@ -11,7 +11,7 @@ import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
-import { composite, renderScene, resolve } from '../src/lib/pixel-art/engine.mjs';
+import { resolve } from '../src/lib/pixel-art/engine.mjs';
 import { OUTPUT_BUDGETS, readSources } from './optimize-pixel-art.mjs';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
@@ -23,13 +23,10 @@ const css = await readFile(join(ROOT, 'src/styles/range.css'), 'utf8');
 
 /** A scene's items in paint order, flattened out of their groups. */
 const flatten = (items) => items.flatMap((item) => (item.group ? flatten(item.items) : [item]));
-/** The class groups, and the shared grass setting while some classes still use it (Range settings spec, While settings are being added). */
+/** The class groups, each holding its own setting (Range settings spec, The scene). */
 const classes = scene.items.filter((i) => i.group?.['data-class'] !== undefined);
-const grass = scene.items.find((i) => i.group?.['data-setting'] === 'grass');
-/** The entrance groups directly inside a setting. */
+/** The entrance groups directly inside a class group. */
 const enters = (setting, kind) => setting.items.filter((i) => i.group?.class === 'enter' && i.group['data-enter'] === kind);
-/** The classes whose setting is the shared grass: those without a floor of their own. */
-const grassClasses = classes.filter((c) => enters(c, 'ground').length === 0).map((c) => c.group['data-class']);
 
 /** The x of an object's foot: a tile's center, or the center of a sprite's bottom row (island build entrance spec). */
 const footX = (item) => {
@@ -38,27 +35,18 @@ const footX = (item) => {
   return Math.round(item.at.px[0] - r.anchor[0] + r.width / 2);
 };
 
-/** What these items paint on their own, in scene pixels, as sorted 'x,y' → color entries. */
-const paintOf = (items) => {
-  sources.scenes.set('range-probe', { viewBox: scene.viewBox, origin: scene.origin, items });
-  return [...composite(renderScene(sources, 'range-probe').root)].sort();
-};
-
 describe('Range art (Isometric Range spec, Range settings spec)', () => {
   it('R1 (settings): outside the groups the scene places only the shared shadow, and range-island is gone', () => {
     const outside = scene.items.filter((i) => i.object).map((i) => i.object);
     assert.deepEqual([...new Set(outside)], ['island-shadow']);
     assert.ok(!sources.objects.has('range-island'), 'range-island is gone');
-    for (const item of scene.items.filter((i) => i.group)) {
-      assert.ok(item.group['data-class'] !== undefined || item.group['data-setting'] === 'grass', 'every group is a class or the shared grass');
-    }
+    for (const item of scene.items.filter((i) => i.group)) assert.ok(item.group['data-class'] !== undefined, 'every group is a class');
   });
 
   it('R1, R4 (settings): each floor is three ground rows, left cliff last, of three one-level cubes on their own row', () => {
-    for (const setting of [...classes, ...(grass ? [grass] : [])]) {
+    for (const setting of classes) {
       const rows = enters(setting, 'ground');
-      const name = setting.group['data-class'] ?? 'grass';
-      if (setting !== grass && rows.length === 0) continue;
+      const name = setting.group['data-class'];
       assert.deepEqual(rows.map((r) => r.group['data-row']), ['0', '1', '2'], `${name}: rows 0 to 2, in paint order`);
       for (const row of rows) {
         assert.deepEqual(row.items.map((i) => i.at.tile), [0, 1, 2].map((col) => [col, Number(row.group['data-row']), 0]), `${name}: row ${row.group['data-row']} by column`);
@@ -75,7 +63,7 @@ describe('Range art (Isometric Range spec, Range settings spec)', () => {
   });
 
   it('R4 (settings): each object group\'s data-x is its first object\'s foot', () => {
-    for (const setting of [...classes, ...(grass ? [grass] : [])]) {
+    for (const setting of classes) {
       for (const group of enters(setting, 'object')) {
         const [first] = flatten(group.items);
         assert.equal(Number(group.group['data-x']), footX(first), `${first.object}'s foot`);
@@ -83,27 +71,17 @@ describe('Range art (Isometric Range spec, Range settings spec)', () => {
     }
   });
 
-  it('R1 (settings): a class with its own floor hides the shared grass, and a class without one shows it', () => {
-    const hidden = [...css.matchAll(/\.range\[data-current="(\d+)"\] \.range__sprite g\[data-setting="grass"\]/g)].map((m) => m[1]);
-    const own = classes.map((c) => c.group['data-class']).filter((c) => !grassClasses.includes(c));
-    assert.deepEqual(hidden.sort(), own.sort());
-    assert.equal(Boolean(grass), grassClasses.length > 0, 'the shared grass is there only while a class uses it');
-  });
-
-  it('settings spec, the transition: the shared grass, with its inland cubes, paints what the old flat platform did, for each class on it', () => {
-    if (!grass) return;
-    // The old platform, rebuilt: inland cubes go back to flat tiles, and the ground paints by diagonal (col + row), as it did.
-    const shadow = scene.items.filter((i) => i.object);
-    const ground = flatten(enters(grass, 'ground')).map((i) => (i.at.tile[0] < 2 && i.at.tile[1] < 2 ? { ...i, object: 'tile' } : i));
-    const diagonal = (item) => item.at.tile[0] + item.at.tile[1];
-    ground.sort((a, b) => diagonal(a) - diagonal(b) || b.at.tile[0] - a.at.tile[0]);
-    const scenery = flatten(enters(grass, 'object'));
-    for (const name of grassClasses) {
-      const cls = classes.find((c) => c.group['data-class'] === name);
-      const now = paintOf([...shadow, ...grass.items, ...cls.items]);
-      const before = paintOf([...shadow, ...ground, ...scenery, ...flatten(cls.items)]);
-      assert.deepEqual(now, before, `class ${name}`);
-    }
+  it('R1, R2 (settings): every class has its own setting, and no two share a floor set', () => {
+    assert.equal(classes.length, 7);
+    const floors = classes.map((c) => new Set(flatten(enters(c, 'ground')).map((i) => i.object)));
+    floors.forEach((floor, i) => {
+      assert.ok(floor.size >= 3, `class ${i} has a floor set of its own pieces`);
+      floors.slice(i + 1).forEach((other, j) => {
+        assert.deepEqual([...floor].filter((name) => other.has(name)), [], `classes ${i} and ${i + j + 1} share no floor piece`);
+      });
+    });
+    assert.ok(classes.every((c) => flatten(c.items).some((i) => sources.objects.get(i.object)?.extends === 'character')), 'each setting has its character');
+    assert.doesNotMatch(css, /data-setting/, 'no shared setting is left in range.css');
   });
 
   it('R3: nothing range-sprite places paints ink, so the characters have no outline', () => {

@@ -49,7 +49,7 @@ main ── feat/range-settings ────────────────
           ├─ PR 5  Cloud & DevOps            ◀─ feat/range-settings-cloud-devops │ the owner reviews them together
           ├─ PR 6  Security & Governance     ◀─ feat/range-settings-security     │ in the final PR
           ├─ PR 7  Project Management        ◀─ feat/range-settings-project-management ┘
-          └─ steps 14–15 on feat/range-settings: remove the grass, then mark the final PR ready
+          └─ step 15 on feat/range-settings: status and proof, then mark the final PR ready (step 14 landed in PR 7)
 ```
 
 The slices run strictly one after another. The owner asked for one subagent at a time, each setting approved before the next starts (spec R12). PRs 2–7 follow the carousel's order, skipping Data Engineering, whose lab lands in PR 1.
@@ -88,12 +88,13 @@ The slices run strictly one after another. The owner asked for one subagent at a
 
 13. **What reviews teach** goes into the skill's "Range settings" part, in the PR where the owner gave the feedback, so the next subagent starts from it.
 
-**Final steps (on `feat/range-settings`)**
+**Final steps**
 
-14. **Remove the grass.**
+14. **Remove the grass** (as built, in PR 7: once the office gave the last class its own floor, the test that ties the shared grass to the classes using it could only pass with the grass gone, so the office and this step landed together).
     - The shared group, its CSS rule and `build()`'s clause.
     - Add the "every class has its own setting" test, and drop the R1 allowance for the shared group.
     - Take the transitional note out of the skill.
+    - The transition's settled-pixels test goes with the grass group it checked, and the CLI's broken-source check points at `library-demo`, which still places `flower`.
 15. **Status and proof.**
     - Set the status lines.
     - Measure the home page's HTML from `dist/`.
@@ -109,7 +110,7 @@ The slices run strictly one after another. The owner asked for one subagent at a
 | 1–6 | Main session (the lab's art is the prototype's, drawn by the `pixel-artist` agent) | `feat/range-settings-groundwork`, PR 1 | **Owner review 1** |
 | 7 | One `pixel-artist` subagent draws; the main session finishes and commits | `feat/range-settings-front-end`, PR 2 | **Owner review 2** |
 | 8–12, each | One `pixel-artist` subagent draws; the main session finishes and commits | `feat/range-settings-<class>`, PRs 3–7 | Merged once its checks pass; next slice starts |
-| 14–15 | Main session | `feat/range-settings` | Final PR ready; **owner reviews PRs 3–7's settings together**, then merges |
+| 14 (in PR 7), 15 | Main session | `feat/range-settings-project-management`, then `feat/range-settings` | Final PR ready; **owner reviews PRs 3–7's settings together**, then merges |
 
 - **One at a time.** A slice's subagent starts only once the previous slice is finished: its art, its CSS rule and its pins are committed and every local check passes. It works in the main checkout on the slice branch, since nothing else runs at the same time, so no worktree is needed. From PR 4 on, so GitHub's CI doesn't hold the next agent up, the next slice's branch is cut from the previous slice's branch, and the previous PR merges into `feat/range-settings` when its CI passes. The next PR then shows only its own commits.
 - **The subagent's brief.** Each brief names:
