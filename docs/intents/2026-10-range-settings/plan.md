@@ -1,5 +1,7 @@
 # Plan: Each Range character in its own setting (from intent.md 2026-10-16)
 
+Status: built on `feat/range-settings` in [#114](https://github.com/jlawcordova/jlawcordova.github.io/pull/114)–[#120](https://github.com/jlawcordova/jlawcordova.github.io/pull/120), with the departures noted in Workflow and Order of work; reviewed in [#113](https://github.com/jlawcordova/jlawcordova.github.io/pull/113).
+
 Plans [`spec.md`](spec.md) (R1–R15). The owner asked for the intent, spec and plan to be written together and the work to start on them, so all three are reviewed in the final PR.
 
 ## Files that change

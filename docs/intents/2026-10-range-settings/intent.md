@@ -1,5 +1,5 @@
 # Intent: Each Range character in its own setting
-Author: J. Law. Cordova (site owner). Status: draft. The owner asked for the intent, spec and plan to be written together, and the work to start on them, so they're reviewed in the change's final PR rather than merged one by one.
+Author: J. Law. Cordova (site owner). Status: built on `feat/range-settings` in [#114](https://github.com/jlawcordova/jlawcordova.github.io/pull/114)–[#120](https://github.com/jlawcordova/jlawcordova.github.io/pull/120); accepted when the owner merges [#113](https://github.com/jlawcordova/jlawcordova.github.io/pull/113). The owner asked for the intent, spec and plan to be written together, and the work to start on them, so they're reviewed in the change's final PR rather than merged one by one.
 
 ## Problem
 Every Range character stands on the same grass platform, so the scene says nothing about the discipline beside it: the alchemist, the knight and the person in a suit all stand in the same field. And when the carousel changes class, the new character just slides in from the side. The hero island now builds itself from its blocks as the page loads, and the Range doesn't share that feel.
