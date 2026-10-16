@@ -13,6 +13,7 @@ import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
 import { CAPS, composite, renderScene, resolve, usedColors } from '../src/lib/pixel-art/engine.mjs';
+import { tileToPx } from '../src/lib/pixel-art/iso.mjs';
 import { compileScene, readSources } from './optimize-pixel-art.mjs';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
@@ -20,7 +21,10 @@ const ART_DIR = join(ROOT, 'src/assets/pixel-art');
 
 const { sources } = await readSources(join(ART_DIR, 'source'));
 const scene = sources.scenes.get('hero-island');
-const placed = scene.items.map((item) => item.object);
+/** The scene's items in paint order, flattened out of their entrance groups (island build entrance spec). */
+const flatten = (items) => items.flatMap((item) => (item.group ? flatten(item.items) : [item]));
+const items = flatten(scene.items);
+const placed = items.map((item) => item.object);
 const svg = compileScene(sources, 'hero-island').output;
 
 /**
@@ -44,7 +48,7 @@ const BEHIND_TRUCKS = ['island-shadow', 'tile', ...BLOCKS, 'river', 'waterfall-f
 const IN_FRONT_OF_TRUCKS = ['bridge-rail', 'boxes', 'crane-mast', 'crane-jib', 'crane-box'];
 const TREES = ['tree', 'tree-small', 'pine'];
 
-const indexesOf = (names) => scene.items.flatMap((item, i) => (names.includes(item.object) ? [i] : []));
+const indexesOf = (names) => items.flatMap((item, i) => (names.includes(item.object) ? [i] : []));
 
 /** What these items paint on their own, in scene pixels: a Map of 'x,y' to color name. */
 const paintOf = (items) => {
@@ -104,7 +108,7 @@ describe('hero island structure', () => {
     assert.deepEqual(scene.viewBox, [-100, -84, 225, 212]);
     assert.match(svg, /^<svg [^>]*viewBox="-100 -84 225 212"/);
     for (const cls of ['itruck it1', 'itruck it2']) {
-      const item = scene.items.find((i) => i.class === cls);
+      const item = items.find((i) => i.class === cls);
       assert.ok(item, `${cls} is placed`);
       assert.deepEqual(item.at, { px: [31, 6] }, `${cls} position`);
     }
@@ -116,7 +120,8 @@ describe('hero island structure', () => {
   });
 
   it('R4: the groups the CSS animates are all there, in order, and the CSS still names them', async () => {
-    const groups = [...svg.matchAll(/<g class="([^"]+)"/g)].map((m) => m[1]);
+    // The entrance groups wrap these and animate from the hero's script, not the CSS (island build entrance spec).
+    const groups = [...svg.matchAll(/<g class="([^"]+)"/g)].map((m) => m[1]).filter((cls) => cls !== 'enter');
     // Each river tile carries its own wf loop, and the falling face one more.
     const rivers = indexesOf(['river', 'waterfall-face']).length;
     assert.equal(rivers, 6, 'five river tiles (one a top on the front block) and the falling face');
@@ -140,9 +145,9 @@ describe('hero island structure', () => {
     const trucks = indexesOf(['truck', 'truck-green']);
     assert.equal(trucks.length, 2);
     const [firstTruck, lastTruck] = [Math.min(...trucks), Math.max(...trucks)];
-    for (const i of indexesOf(BEHIND_TRUCKS)) assert.ok(i < firstTruck, `${scene.items[i].object} paints before the trucks`);
+    for (const i of indexesOf(BEHIND_TRUCKS)) assert.ok(i < firstTruck, `${items[i].object} paints before the trucks`);
     for (const name of IN_FRONT_OF_TRUCKS) assert.ok(placed.includes(name), `${name} is in the scene`);
-    for (const i of indexesOf(IN_FRONT_OF_TRUCKS)) assert.ok(i > lastTruck, `${scene.items[i].object} paints after the trucks`);
+    for (const i of indexesOf(IN_FRONT_OF_TRUCKS)) assert.ok(i > lastTruck, `${items[i].object} paints after the trucks`);
     // Four trees stand behind the road (the old island-base map drew them) and four in front of it.
     const trees = indexesOf(TREES);
     assert.deepEqual([trees.filter((i) => i < firstTruck).length, trees.filter((i) => i > lastTruck).length], [4, 4]);
@@ -152,11 +157,11 @@ describe('hero island structure', () => {
     const trucks = indexesOf(['truck', 'truck-green']);
     const steps = (await driveSteps()).filter(([, , shown]) => shown);
     const map = resolve(sources, 'truck').layers[0].map;
-    const [tx, ty] = scene.items[trucks[0]].at.px;
+    const [tx, ty] = items[trucks[0]].at.px;
     const truckFoot = ty + map.length - 1;
     let crossings = 0;
     for (const i of indexesOf(TREES)) {
-      const item = scene.items[i];
+      const item = items[i];
       const tree = paintOf([item]);
       const treeFoot = item.at.px[1];
       for (const [dx, dy] of steps) {
@@ -181,7 +186,7 @@ describe('hero island structure', () => {
       }
     }
     const lastTruck = Math.max(...indexesOf(['truck', 'truck-green']));
-    const front = scene.items.filter((item, i) => i > lastTruck && !item.class && item.object !== 'crane-box');
+    const front = items.filter((item, i) => i > lastTruck && !item.class && item.object !== 'crane-box');
     assert.equal(front.length, 4 + 4, 'the rail, boxes, mast and jib, and four trees');
     const all = paintOf(front);
     const hex = (color) => sources.colors.get(color).hex.toUpperCase();
@@ -198,12 +203,12 @@ describe('hero island structure', () => {
   });
 
   it('R1, R3: the ground is 36 cubes on a [col, row, 0] grid: the edge pieces on the two front edges, block at the corner and inland, block-river under the river along row 3 and block-road under the road along column 2 (island build entrance spec R1)', () => {
-    const items = scene.items.filter((item) => GROUND.includes(item.object));
+    const groundItems = items.filter((item) => GROUND.includes(item.object));
     // The first item at a position is its cube; a later one at the same position is a flat top laid over it.
     const seen = new Map();
     const ground = [];
     const tops = [];
-    for (const item of items) {
+    for (const item of groundItems) {
       const [col, row, level] = item.at.tile;
       assert.equal(level, 0, 'ground sits at level 0');
       assert.ok(col >= 0 && col <= 5 && row >= 0 && row <= 5, `[${col}, ${row}] is on the grid`);
@@ -229,9 +234,9 @@ describe('hero island structure', () => {
     const roadAndRiver = [...[0, 1, 2].map((row) => ['path', [2, row, 0]]), ...[1, 2, 3, 4, 5].map((col) => ['river', [col, 3, 0]]), ...[4, 5].map((row) => ['path', [2, row, 0]])];
     assert.deepEqual(tops.map((item) => [item.object, item.at.tile]), roadAndRiver);
     for (const top of tops) {
-      const i = scene.items.indexOf(top);
-      assert.ok(BLOCKS.includes(scene.items[i - 1].object), `${top.object} is laid over the block before it`);
-      assert.deepEqual(scene.items[i - 1].at, top.at);
+      const i = items.indexOf(top);
+      assert.ok(BLOCKS.includes(items[i - 1].object), `${top.object} is laid over the block before it`);
+      assert.deepEqual(items[i - 1].at, top.at);
     }
     // Row by row, then by column: a cube only covers the cubes at [col + 1, row] and [col, row + 1], which both come later,
     // so this is still back to front, and each row is one run that can enter as one group (island build entrance spec).
@@ -281,9 +286,9 @@ describe('hero island structure', () => {
     const FLAT = { block: 'tile', 'block-road': 'path', 'block-river': 'river' };
     const inland = (item) => item.at.tile && item.at.tile[0] < 5 && item.at.tile[1] < 5;
     const isGround = (item) => GROUND.includes(item.object) || item.object === 'waterfall-face';
-    const first = scene.items.findIndex(isGround);
-    const last = scene.items.findLastIndex(isGround);
-    const ground = scene.items.slice(first, last + 1);
+    const first = items.findIndex(isGround);
+    const last = items.findLastIndex(isGround);
+    const ground = items.slice(first, last + 1);
     assert.ok(ground.every(isGround), 'the ground is one run');
     const flat = [];
     ground.forEach((item, i) => {
@@ -294,12 +299,12 @@ describe('hero island structure', () => {
     });
     const diagonal = (item) => item.at.tile[0] + item.at.tile[1];
     flat.sort((a, b) => diagonal(a) - diagonal(b) || b.at.tile[0] - a.at.tile[0]);
-    const before = [...scene.items.slice(0, first), ...flat, ...scene.items.slice(last + 1)];
+    const before = [...items.slice(0, first), ...flat, ...items.slice(last + 1)];
     const paint = (items, frame) => {
       sources.scenes.set('island-probe', { viewBox: scene.viewBox, origin: scene.origin, items });
       return [...composite(renderScene(sources, 'island-probe').root, { frame })].sort();
     };
-    for (let frame = 0; frame < 6; frame++) assert.deepEqual(paint(scene.items, frame), paint(before, frame), `frame ${frame}`);
+    for (let frame = 0; frame < 6; frame++) assert.deepEqual(paint(items, frame), paint(before, frame), `frame ${frame}`);
   });
 
   it('R1, R2, R4: the waterfall-face falls down the front block at [5, 3], in world colors, with its own wf loop and the flag\'s streaks on it', () => {
@@ -313,17 +318,17 @@ describe('hero island structure', () => {
     assert.deepEqual([obj.layers[1].loop, obj.layers[1].prefix, obj.layers[1].frames.length], ['wf', 'w', 5]);
     const i = indexesOf(['waterfall-face']);
     assert.equal(i.length, 1);
-    assert.deepEqual(scene.items[i[0]].at, { tile: [5, 3, 0] });
-    assert.equal(scene.items[i[0] - 1].object, 'river', 'it follows the river top it falls from');
+    assert.deepEqual(items[i[0]].at, { tile: [5, 3, 0] });
+    assert.equal(items[i[0] - 1].object, 'river', 'it follows the river top it falls from');
     assert.ok(i[0] < indexesOf(['flag'])[0], 'the flag\'s streaks paint over it');
     // Every streak of the flag (ff), in every frame, lands on the falling water.
     const render = (names) => {
-      sources.scenes.set('slice-4-probe', { viewBox: scene.viewBox, origin: scene.origin, items: scene.items.filter((item) => names.includes(item.object)) });
+      sources.scenes.set('slice-4-probe', { viewBox: scene.viewBox, origin: scene.origin, items: items.filter((item) => names.includes(item.object)) });
       return composite(renderScene(sources, 'slice-4-probe').root);
     };
     const face = render(['waterfall-face']);
     const flag = resolve(sources, 'flag');
-    const [fx, fy] = scene.items.find((item) => item.object === 'flag').at.px;
+    const [fx, fy] = items.find((item) => item.object === 'flag').at.px;
     let streaks = 0;
     for (const frame of flag.layers[0].frames) {
       frame.forEach((row, y) => {
@@ -348,7 +353,7 @@ describe('hero island structure', () => {
     assert.ok(Math.max(...shadows) < Math.min(...ground), 'the shadow paints before the ground');
     // Everything the shadow paints that survives is below or beside the island, so it only shows as a rim.
     const only = (names) => {
-      sources.scenes.set('slice-3-probe', { viewBox: scene.viewBox, origin: scene.origin, items: scene.items.filter((item) => names.includes(item.object)) });
+      sources.scenes.set('slice-3-probe', { viewBox: scene.viewBox, origin: scene.origin, items: items.filter((item) => names.includes(item.object)) });
       return composite(renderScene(sources, 'slice-3-probe').root);
     };
     const island = only(GROUND);
@@ -360,7 +365,7 @@ describe('hero island structure', () => {
   });
 
   it('R3: the 11 shadow pieces are pinned under the island\'s front tiles, so moving one fails', () => {
-    const at = scene.items.filter((item) => item.object === 'island-shadow').map((item) => item.at);
+    const at = items.filter((item) => item.object === 'island-shadow').map((item) => item.at);
     // One per front tile, from the right and left corners in to the front corner, 32 pixels below its top face.
     assert.deepEqual(at, [
       { px: [80, 80] },
@@ -385,7 +390,7 @@ describe('hero island structure', () => {
     for (const color of Object.values(obj.keys)) assert.ok(color in sources.palette.world, `bridge uses ${color}`);
     const i = indexesOf(['bridge']);
     assert.equal(i.length, 1);
-    assert.deepEqual(scene.items[i[0]].at, { tile: [2, 3, 0] });
+    assert.deepEqual(items[i[0]].at, { tile: [2, 3, 0] });
     assert.ok(i[0] > Math.max(...indexesOf(GROUND)), 'it paints over the ground, both banks included');
   });
 
@@ -393,7 +398,7 @@ describe('hero island structure', () => {
     const css = await readFile(join(ROOT, 'src/styles/pixel-art.css'), 'utf8');
     const steps = [...css.match(/@keyframes idrive\{(.*?)\}\}/)[1].matchAll(/translate\((-?\d+)px,(-?\d+)px\);opacity:(\d)/g)].map((m) => m.slice(1).map(Number));
     assert.equal(steps.length, 59, 'idrive is unchanged');
-    sources.scenes.set('slice-5-road', { viewBox: scene.viewBox, origin: scene.origin, items: scene.items.filter((item) => ['path', 'bridge'].includes(item.object)) });
+    sources.scenes.set('slice-5-road', { viewBox: scene.viewBox, origin: scene.origin, items: items.filter((item) => ['path', 'bridge'].includes(item.object)) });
     const road = composite(renderScene(sources, 'slice-5-road').root);
     for (const name of ['truck', 'truck-green']) {
       const map = resolve(sources, name).layers[0].map;
@@ -401,7 +406,7 @@ describe('hero island structure', () => {
       for (let x = 0; x < map[0].length; x++) {
         for (let y = map.length - 1; y >= 0; y--) if (map[y][x] !== '.') { feet.push([x, y]); break; }
       }
-      const [tx, ty] = scene.items.find((item) => item.object === name).at.px;
+      const [tx, ty] = items.find((item) => item.object === name).at.px;
       const onRoad = (dx, dy) => feet.filter(([x, y]) => road.has(`${tx + dx + x},${ty + dy + y}`) || road.has(`${tx + dx + x},${ty + dy + y + 1}`)).length;
       for (const [dx, dy, shown] of steps) {
         // The last visible steps (dx < -88) are checked below, not here.
@@ -429,12 +434,12 @@ describe('hero island structure', () => {
     assert.equal(i.length, 1);
     // Its anchor is the front corner of its walls; [-59, 59] is where the old house's front corner stood.
     assert.deepEqual(obj.anchor, [21, 41]);
-    assert.deepEqual(scene.items[i[0]].at, { px: [-59, 59] });
+    assert.deepEqual(items[i[0]].at, { px: [-59, 59] });
     assert.ok(i[0] > Math.max(...indexesOf(GROUND)), 'it paints over the ground');
     // It covers the river's grass end at [0, 3], which is why that tile stays grass: all but the 2 pixels of its right corner, by the river.
     sources.scenes.set('slice-6-probe', { viewBox: scene.viewBox, origin: scene.origin, items: [{ object: 'tile', at: { tile: [0, 3, 0] } }] });
     const tile = composite(renderScene(sources, 'slice-6-probe').root);
-    sources.scenes.set('slice-6-probe', { viewBox: scene.viewBox, origin: scene.origin, items: [scene.items[i[0]]] });
+    sources.scenes.set('slice-6-probe', { viewBox: scene.viewBox, origin: scene.origin, items: [items[i[0]]] });
     const house = composite(renderScene(sources, 'slice-6-probe').root);
     const showing = [...tile.keys()].filter((p) => !house.has(p));
     assert.deepEqual(showing, ['-34,31', '-34,32'], 'the house hides the tile at [0, 3]');
@@ -465,7 +470,7 @@ describe('hero island structure', () => {
   it('R1, R3: the crane is two stacked objects, the jib right on top of the mast, too tall for one', () => {
     assert.equal(indexesOf(['crane-mast']).length, 1);
     assert.equal(indexesOf(['crane-jib']).length, 1);
-    const [mast, jib] = ['crane-mast', 'crane-jib'].map((name) => ({ obj: resolve(sources, name), item: scene.items[indexesOf([name])[0]] }));
+    const [mast, jib] = ['crane-mast', 'crane-jib'].map((name) => ({ obj: resolve(sources, name), item: items[indexesOf([name])[0]] }));
     assert.ok(mast.obj.height + jib.obj.height > CAPS.size, 'as one object it would break the 64-pixel cap');
     // The mast's top-left pixel sits right under the jib's anchor, the bottom-left of the jib's own piece of mast.
     const top = [mast.item.at.px[0] - mast.obj.anchor[0], mast.item.at.px[1] - mast.obj.anchor[1]];
@@ -476,12 +481,12 @@ describe('hero island structure', () => {
     assert.deepEqual(ends(jib.obj, jib.obj.anchor[1], jib.obj.anchor[0]), mastEnds, 'the jib carries on the mast\'s top row');
     for (const color of mastEnds) assert.ok(color && color !== 'ink' && color in sources.palette.world, `the mast's edge is ${color}`);
     // The crane-box (the crane's swinging load) hangs from the jib: the pixel above its cable is the jib's.
-    const box = scene.items.find((item) => item.object === 'crane-box');
+    const box = items.find((item) => item.object === 'crane-box');
     assert.ok(paintOf([jib.item]).has(`${box.at.px[0] + 9},${box.at.px[1] - 1}`), 'the jib is right above the crane-box\'s cable');
   });
 
   it('R3: the front pieces and trees are pinned, and each stands on the grass, not on the river or the road', () => {
-    const at = (names) => scene.items.filter((item) => names.includes(item.object)).map((item) => [item.object, item.at.px ?? item.at.tile]);
+    const at = (names) => items.filter((item) => names.includes(item.object)).map((item) => [item.object, item.at.px ?? item.at.tile]);
     assert.deepEqual(at(['tree-shade', ...TREES, ...IN_FRONT_OF_TRUCKS]), [
       ['tree-shade', [-1, 19]],
       ['tree-shade', [-25, 29]],
@@ -502,11 +507,11 @@ describe('hero island structure', () => {
     ]);
     // Each shade lies under a back tree's trunk.
     for (const [, px] of at(['tree-shade'])) {
-      assert.ok(scene.items.some((item) => TREES.includes(item.object) && String(item.at.px) === String(px)), `a tree stands on the shade at ${px}`);
+      assert.ok(items.some((item) => TREES.includes(item.object) && String(item.at.px) === String(px)), `a tree stands on the shade at ${px}`);
     }
     // Where each piece meets the ground: a tree's or the mast's anchor (the foot of its trunk), and the lowest pixel of every column of the boxes.
-    const feet = scene.items.filter((item) => [...TREES, 'crane-mast'].includes(item.object)).map((item) => [item.object, item.at.px]);
-    for (const item of scene.items.filter((item) => item.object === 'boxes')) {
+    const feet = items.filter((item) => [...TREES, 'crane-mast'].includes(item.object)).map((item) => [item.object, item.at.px]);
+    for (const item of items.filter((item) => item.object === 'boxes')) {
       const lowest = new Map();
       for (const p of paintOf([item]).keys()) {
         const [x, y] = p.split(',').map(Number);
@@ -514,8 +519,8 @@ describe('hero island structure', () => {
       }
       for (const [x, y] of lowest) feet.push([item.object, [x, y]]);
     }
-    const ground = paintOf(scene.items.filter((item) => GROUND.includes(item.object)));
-    const wet = paintOf(scene.items.filter((item) => ['river', 'path', 'bridge', 'waterfall-face'].includes(item.object)));
+    const ground = paintOf(items.filter((item) => GROUND.includes(item.object)));
+    const wet = paintOf(items.filter((item) => ['river', 'path', 'bridge', 'waterfall-face'].includes(item.object)));
     for (const [name, [x, y]] of feet) {
       assert.ok(ground.has(`${x},${y}`), `${name} stands on the island at ${x},${y}`);
       assert.ok(!wet.has(`${x},${y}`), `${name} stands on the river or the road at ${x},${y}`);
@@ -546,10 +551,67 @@ describe('hero island structure', () => {
   });
 });
 
+describe('entrance groups (island build entrance spec, Entrance groups)', () => {
+  const groups = scene.items;
+  const attr = (group, name) => group.group[name];
+  const ofKind = (kind) => groups.filter((group) => attr(group, 'data-enter') === kind);
+
+  it('every item sits in exactly one top-level enter group, of four kinds', () => {
+    for (const group of groups) {
+      assert.ok(group.group, 'every top-level item is a group');
+      assert.equal(attr(group, 'class'), 'enter');
+      assert.ok(['shadow', 'ground', 'object', 'sky'].includes(attr(group, 'data-enter')), attr(group, 'data-enter'));
+      assert.ok(group.items.every((item) => !item.group), 'groups do not nest');
+    }
+    assert.deepEqual(ofKind('shadow').flatMap((g) => g.items).map((i) => i.object), Array(11).fill('island-shadow'), 'the 11 shadow pieces');
+    assert.deepEqual(ofKind('sky').flatMap((g) => g.items).map((i) => i.object), ['cloud-a', 'cloud-b', 'cloud-c'], 'the three clouds');
+    assert.equal(ofKind('shadow').length + ofKind('sky').length, 2, 'one shadow group and one sky group');
+  });
+
+  it('each grid row is one ground group, rows 0 to 5 in paint order, holding exactly that row', () => {
+    const ground = ofKind('ground');
+    assert.deepEqual(ground.map((g) => attr(g, 'data-row')), ['0', '1', '2', '3', '4', '5']);
+    for (const group of ground) {
+      for (const item of group.items) {
+        assert.ok(item.at.tile, `${item.object} is placed on the grid`);
+        assert.equal(String(item.at.tile[1]), attr(group, 'data-row'), `${item.object} at ${item.at.tile} is in its row's group`);
+      }
+    }
+    const inGround = new Set(ground.flatMap((g) => g.items));
+    const tiled = items.filter((item) => !inGround.has(item) && item.at.tile && !['bridge', 'bridge-rail'].includes(item.object));
+    assert.deepEqual(tiled, [], 'every tile-placed item but the bridge and its rail is ground');
+  });
+
+  it('each object group\'s data-x is its objects\' foot: shades take their tree\'s, and the crane\'s jib and box take the mast\'s', () => {
+    const foot = (item) => {
+      if (item.at.tile) return tileToPx(item.at.tile, scene.origin)[0];
+      const { anchor, width } = resolve(sources, item.object);
+      return Math.round(item.at.px[0] - anchor[0] + width / 2);
+    };
+    const objects = ofKind('object').flatMap((g) => g.items);
+    const mast = objects.find((item) => item.object === 'crane-mast');
+    const xOf = (item) => {
+      if (item.object === 'tree-shade') return foot(objects.find((o) => o.object !== 'tree-shade' && String(o.at.px) === String(item.at.px)));
+      if (item.object === 'crane-jib' || item.object === 'crane-box') return foot(mast);
+      return foot(item);
+    };
+    for (const group of ofKind('object')) {
+      for (const item of group.items) assert.equal(attr(group, 'data-x'), String(xOf(item)), `${item.object} at ${JSON.stringify(item.at)}`);
+    }
+    assert.equal(objects.length, items.length - 11 - 3 - ofKind('ground').flatMap((g) => g.items).length, 'every other item is an object');
+  });
+
+  it('the groups survive compiling, in order, with their data attributes', () => {
+    const compiled = [...svg.matchAll(/<g class="enter" ([^>]*)>/g)].map((m) => m[1]);
+    const want = groups.map((group) => Object.entries(group.group).filter(([k]) => k !== 'class').map(([k, v]) => `${k}="${v}"`).join(' '));
+    assert.deepEqual(compiled, want);
+  });
+});
+
 describe('close-up scenes (hero island detail plan, step 5)', () => {
   const CLOSEUPS = ['closeup-land', 'closeup-road-end', 'closeup-water', 'closeup-crane', 'closeup-office', 'closeup-front-trees', 'closeup-sky'];
   const key = (item) => JSON.stringify([item.object, item.class, item.at]);
-  const order = new Map(scene.items.map((item, i) => [key(item), i]));
+  const order = new Map(items.map((item, i) => [key(item), i]));
 
   it('each is preview-only and shows island items where the island places them, in the island\'s paint order', () => {
     for (const name of CLOSEUPS) {
