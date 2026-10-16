@@ -199,7 +199,7 @@ You don't need the editor or a browser.
 
 A name can be written `objects/<name>` or `scenes/<name>` when an object and a scene share it.
 
-**Sizes.** Each SVG must stay within its budget, or `npm run art` reports it `OVER BUDGET` and exits 1: `hero-island.svg` 500 KB raw and 125 KB gzip, every other SVG 100 KB and 25 KB. `npm run art -- --sizes <scene>` shows where the bytes go: the scene's total, then what each object adds (the scene compiled without it) and what each color's path takes, raw and gzip, each against the sources at `HEAD`.
+**Sizes.** Each SVG must stay within its budget, or `npm run art` reports it `OVER BUDGET` and exits 1: `hero-island.svg` 500 KB raw and 125 KB gzip, `range-sprite.svg` 200 KB and 50 KB, every other SVG 100 KB and 25 KB. `npm run art -- --sizes <scene>` shows where the bytes go: the scene's total, then what each object adds (the scene compiled without it) and what each color's path takes, raw and gzip, each against the sources at `HEAD`.
 
 **Close-ups.** Preview-only scenes frame each part of the hero island tightly, so every review round renders the same view. Preview them with `--scale 6`:
 
@@ -266,7 +266,12 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
   - `'data-enter': 'sky'`: the clouds.
 
   A new object goes in its own `object` group with its foot x, in paint order; a test checks every x. Groups don't merge colors across each other, so they cost bytes.
-- **The Range sprite** (`scenes/range-sprite.mjs`) is a 3×3 platform laid from the island's own blocks (`tile`, `block-right`, `block-left`, `block`, with `island-shadow` under the front edges), a library `tree` and six `flower` objects (`flower`, `flower-pink`, `flower-gold`, two of each, placed by `px`), plus seven outfits that extend `character`, one per `data-class` group, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). Each outfit stands on the center tile, placed by `{ tile: [1, 1, 0] }`. The characters are isometric figures in the [island and Range look](#island-and-range-look), with no `ink` outline ([Isometric Range](../../../docs/intents/2026-10-range-isometric/spec.md)). `--preview range-sprite` and the lab draw only the first `data-class` group; to see another class, preview a scratch copy of the scene that keeps only that group.
+- **The Range sprite** (`scenes/range-sprite.mjs`) puts each character in its own setting ([Range settings spec](../../../docs/intents/2026-10-range-settings/spec.md)):
+  - Four `island-shadow` pieces sit outside every group, shared by all classes.
+  - Seven `data-class` groups follow, one per class, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). Each holds its whole setting in entrance groups, as on the hero island: three `ground` rows (`data-row` 0 to 2) of one-level cubes from the setting's own floor set, then one `object` group per prop and one for the outfit, each with its foot `data-x`. `Range.astro` floats them up on every class change with `RANGE_TIMING` from `src/lib/island-entrance.mjs`.
+  - Each outfit extends `character` and stands on the center tile, placed by `{ tile: [1, 1, 0] }` in an `object` group with `data-x="0"`. The characters are isometric figures in the [island and Range look](#island-and-range-look), with no `ink` outline ([Isometric Range](../../../docs/intents/2026-10-range-isometric/spec.md)).
+  - **While settings are being added,** the classes without their own setting share the old grass platform (its cubes, `tree` and flowers) in a `{ 'data-setting': 'grass' }` group, and `range.css` hides it for each class that has one (`.range[data-current="4"] .range__sprite g[data-setting="grass"]`). A test checks the two agree.
+  - `--preview range-sprite` and the lab draw the grass group and only the first `data-class` group. To see another class, preview a scratch copy of the scene that keeps the shadow and only that class's group (and the grass group only if that class still uses it).
 - **Recolors.** `truck-green` is `truck` with other colors: it `extends: 'truck'` and lists only the keys that differ. Use the same pattern for a variant that changes colors but not shape.
 - **Keep the CSS hooks.** `pixel-art.css` animates the classes on these groups (`wf w0`…, `itruck it1`, `pcloud pc0`, `cbob`). Don't rename a loop, prefix or placement class unless you change the CSS in the same PR.
 
@@ -353,6 +358,27 @@ The Range's characters are built like the clouds: stacked boxes, no outline, no 
   - A prop too big for 24×32 is its own `prop-<class>-<name>` object, placed by `tile` next to the figure inside that class's `data-class` group, so it shows and hides with it: listed before the outfit when it's behind, after it when it's in front.
 - **Check at 1× and 3× on the grass.** 3× is the Range's size on the page. Where a lit face is close to `grass-2`, give it a lighter rim on its lit side. With no outline, a figure has less edge contrast at 1× than the old outlined ones; the owner accepted that.
 
+### Range settings
+
+Each Range class stands in a setting that fits it, built from its own blocks. The alchemist's lab (Data Engineering, class 4) is the reference, as the owner approved it: `block-lab`, `block-lab-left`, `block-lab-right` and the four `prop-data-engineering-*` objects.
+
+- **The floor** is a 3×3 grid of one-level cubes, all from the setting's own floor set, so no two settings share a floor:
+  - `block-<setting>` for the inland tiles and the front corner `[2, 2]`;
+  - `block-<setting>-left` for the left cliff, `[0, 2]` and `[1, 2]`, where right column 0 copies left column 14;
+  - `block-<setting>-right` for the right cliff, `[2, 0]` and `[2, 1]`, where left column 14 copies right column 0.
+
+  Follow the island's joint rules, so any courses or seams run unbroken across the joints. Generate the three from one script.
+- **The lab's floor** is running-bond brick: a `path-2` top with `path-3` joints, bricks one tile long and half a tile wide along the down-right axis; `path-3` left faces with `path-4` mortar courses; `path-4` right faces with `soil-3` mortar. Each setting picks its own material and pattern, in world colors.
+- **Hidden faces may be plain.** An inland cube's sides show only while it floats up, and then only for a row or two during the overshoot, so a face hidden at rest may be plain to save bytes. Give the front corner its own `block-<setting>-corner` with full sides when you do. The settled setting must look the same either way.
+- **Props** are `prop-<class>-<name>` objects, two to four of them, balanced left and right of the character:
+  - None covers the figure, which spans about x −12 to +6 and y 0 to 24 in scene pixels, with its held prop on its left.
+  - Tall props go at the back, where the viewBox's top is y −9.
+  - A prop may reuse a library object (one of the island's clouds, a tree) and may loop with `wf`, `ff` or `hf`, with frame 0 as its rest pose.
+  - Screens, boards and books show shapes and color, never text.
+- **Order inside the class group:** the three `ground` rows (0, 1, 2, each by column), then the `object` groups back to front by `col + row`, with props behind the character before it and props in front after it. `data-x` is each group's first object's foot: a tile-placed object's tile center, `(col − row) × 16`, or a `px`-placed sprite's `at.px[0] − anchor[0] + width / 2`, rounded.
+- **Budget:** about 22 KB raw and 5 KB gzip per setting, from `npm run art -- --sizes range-sprite`. The lab is 21 KB and 4.6 KB, of which the brick floor is 16 KB. Plain hidden faces and joints on the row seams are the cheapest trims.
+- **Check** each setting at 1× and 3× on the stage's background, and watch it build on the dev server: every piece must look right arriving on its own.
+
 ### Isometric icons
 
 The achievement icons are solid objects built like the clouds and the bridge, on a 16×16 cell. The chest (`icon-chest`), the star (`icon-star`) and the lock (`icon-lock`) are the references, as approved in the owner's review ([isometric icons spec](../../../docs/intents/2026-10-isometric-icons/spec.md)).
@@ -378,7 +404,7 @@ The achievement icons are solid objects built like the clouds and the bridge, on
 
 - [ ] `npm run art -- --check <name>` passes for everything you touched, and `npm run art` reports every file `lossless` and none `OVER BUDGET`. For the hero island, paste `npm run art -- --sizes hero-island` into the PR.
 - [ ] World colors only (outfit colors only in an outfit); within the caps; light from the island's side.
-- [ ] The preview PNGs (1× and 4× at least) are attached to the PR. For the Range, each class you touched at 1× and 3×, from a scratch copy of `range-sprite` that keeps only that class's group.
+- [ ] The preview PNGs (1× and 4× at least) are attached to the PR. For the Range, each class you touched at 1× and 3×, from a scratch copy of `range-sprite` that keeps the shadow and only that class's group, and a new floor set at 6×.
 - [ ] `npm test` shows `# fail 0`.
 - [ ] The art is generic and public-safe (`CLAUDE.md`): no names, logos or likenesses.
 - [ ] If you changed how art is made (formats, commands, rules), this skill is updated in the same PR.
