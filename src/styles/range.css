@@ -146,6 +146,7 @@ section.range {
 /* While some classes still share the grass setting, a class with its own
    setting hides it (Range settings spec, While settings are being added). */
 .range[data-current="0"] .range__sprite g[data-setting="grass"],
+.range[data-current="1"] .range__sprite g[data-setting="grass"],
 .range[data-current="4"] .range__sprite g[data-setting="grass"] {
   display: none;
 }
