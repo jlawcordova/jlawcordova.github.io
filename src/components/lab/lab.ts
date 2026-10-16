@@ -102,7 +102,6 @@ export function usableObject(doc: unknown): boolean {
   if (doc.kind !== 'sprite') return false;
   if ('keys' in doc && !strings(doc.keys)) return false;
   if ('anchor' in doc && !wholes(doc.anchor, 2)) return false;
-  if ('legacy' in doc && doc.legacy !== true) return false;
   if ('extends' in doc) return typeof doc.extends === 'string' && !('layers' in doc) && (doc.rows === undefined || (isRecord(doc.rows) && Object.values(doc.rows).every(strings)));
   return Array.isArray(doc.layers) && doc.layers.length > 0 && doc.layers.length <= 64 && doc.layers.every(isLayer);
 }

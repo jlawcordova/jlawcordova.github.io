@@ -18,11 +18,10 @@ const groups = [
   { title: 'Blocks', open: true, names: [] as string[] },
   { title: 'Objects', open: true, names: [] as string[] },
   { title: 'Characters', open: false, names: [] as string[] },
-  { title: 'Legacy', open: false, names: [] as string[] },
 ];
 for (const name of Object.keys(objects)) {
   const obj = objects[name];
-  const group = obj.kind === 'block' ? 0 : isCharacter(name) ? 2 : obj.legacy ? 3 : 1;
+  const group = obj.kind === 'block' ? 0 : isCharacter(name) ? 2 : 1;
   groups[group].names.push(name);
 }
 ---
