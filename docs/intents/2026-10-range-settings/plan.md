@@ -44,11 +44,11 @@ main ── feat/range-settings ────────────────
           │  docs: intent, spec, plan (committed here first; the final PR opens as a draft)
           ├─ PR 1  groundwork + the lab      ◀─ feat/range-settings-groundwork   ▲ owner review
           ├─ PR 2  Front-end (mage)          ◀─ feat/range-settings-front-end    ▲ owner review
-          ├─ PR 3  Back-end                  ◀─ feat/range-settings-back-end     ▲ owner review
-          ├─ PR 4  UX Design                 ◀─ feat/range-settings-ux-design    ▲ owner review
-          ├─ PR 5  Cloud & DevOps            ◀─ feat/range-settings-cloud-devops ▲ owner review
-          ├─ PR 6  Security & Governance     ◀─ feat/range-settings-security     ▲ owner review
-          ├─ PR 7  Project Management        ◀─ feat/range-settings-project-management ▲ owner review
+          ├─ PR 3  Back-end                  ◀─ feat/range-settings-back-end     ┐
+          ├─ PR 4  UX Design                 ◀─ feat/range-settings-ux-design    │ merged on passing checks;
+          ├─ PR 5  Cloud & DevOps            ◀─ feat/range-settings-cloud-devops │ the owner reviews them together
+          ├─ PR 6  Security & Governance     ◀─ feat/range-settings-security     │ in the final PR
+          ├─ PR 7  Project Management        ◀─ feat/range-settings-project-management ┘
           └─ steps 14–15 on feat/range-settings: remove the grass, then mark the final PR ready
 ```
 
@@ -107,8 +107,9 @@ The slices run strictly one after another. The owner asked for one subagent at a
 | --- | --- | --- | --- |
 | 0 | Main session | `feat/range-settings` | Draft final PR opened |
 | 1–6 | Main session (the lab's art is the prototype's, drawn by the `pixel-artist` agent) | `feat/range-settings-groundwork`, PR 1 | **Owner review 1** |
-| 7–12, each | One `pixel-artist` subagent draws; the main session finishes and commits | `feat/range-settings-<class>`, PRs 2–7 | **Owner review** of that setting |
-| 14–15 | Main session | `feat/range-settings` | Final PR ready; **owner merges** |
+| 7 | One `pixel-artist` subagent draws; the main session finishes and commits | `feat/range-settings-front-end`, PR 2 | **Owner review 2** |
+| 8–12, each | One `pixel-artist` subagent draws; the main session finishes and commits | `feat/range-settings-<class>`, PRs 3–7 | Merged once its checks pass; next slice starts |
+| 14–15 | Main session | `feat/range-settings` | Final PR ready; **owner reviews PRs 3–7's settings together**, then merges |
 
 - **One at a time.** A slice's subagent starts only after the previous slice's PR has merged into `feat/range-settings`. It works in the main checkout on the slice branch, since nothing else runs at the same time, so no worktree is needed.
 - **The subagent's brief.** Each brief names:
@@ -134,14 +135,13 @@ The slices run strictly one after another. The owner asked for one subagent at a
     - C3, the 200 KB and 50 KB budget.
 
     Approval fixes the lab as the reference for the other six.
-  - **Reviews 2–7.** Each setting's PR shows the before and after images, the floor set at 6×, the page at 1440px and 390px, and `--sizes`. The owner may change the theme, the floor or the props.
-  - **Feedback.** The same subagent is resumed with the owner's words. The main session commits the change to the same PR and asks again.
-  - **Approval.** The main session merges the PR into `feat/range-settings` once its checks pass, then starts the next slice without pausing.
+  - **Review 2 (PR 2, the mage).** The setting's PR shows the before and after images, the floor set at 6×, the page at 1440px and 390px, and `--sizes`. The owner may change the theme, the floor or the props. Feedback goes back to the same subagent, resumed with the owner's words; the main session commits the change to the same PR and asks again. On approval, the main session merges the PR and starts the next slice.
+  - **PRs 3–7, reviewed together.** After approving PR 2, the owner asked to go on to the end and review the remaining settings together (2026-10-16). Each of PRs 3–7 still carries its images, screenshots and `--sizes`, and still runs one subagent at a time. The main session merges each into `feat/range-settings` once its checks pass, then starts the next slice without pausing. The owner reviews Back-end, UX Design, Cloud & DevOps, Security & Governance and Project Management in the final PR. Feedback there goes to a `pixel-artist` subagent per setting, one at a time, as commits on `feat/range-settings`.
 - **Merge rules.**
-  - The main session merges PRs 1–7 into `feat/range-settings`, each after the owner's approval and passing checks.
+  - The main session merges PRs 1–7 into `feat/range-settings` once their checks pass: PRs 1 and 2 after the owner's approval, PRs 3–7 without a pause (Owner reviews).
   - If `main` moves, it merges `main` into `feat/range-settings` before the next slice starts.
   - Only the owner merges the final PR into `main`.
-- **Independent review.** None. The owner reviews every setting. The code lands in PR 1 with unit and e2e tests, and the art is checked by `npm run art` and the Range tests. The owner can still ask for a `verify-change` run on the final PR.
+- **Independent review.** None. The owner reviews every setting: the lab and the mage one by one, the rest together in the final PR. The code lands in PR 1 with unit and e2e tests, and the art is checked by `npm run art` and the Range tests. The owner can still ask for a `verify-change` run on the final PR.
 
 ## Risks
 

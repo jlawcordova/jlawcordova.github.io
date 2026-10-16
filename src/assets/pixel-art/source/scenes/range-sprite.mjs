@@ -142,9 +142,51 @@ export default {
       group: { 'data-class': '1' },
       items: [
         {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '0' },
+          items: [
+            { object: 'block-server', at: { tile: [0, 0, 0] } },
+            { object: 'block-server', at: { tile: [1, 0, 0] } },
+            { object: 'block-server-right', at: { tile: [2, 0, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '1' },
+          items: [
+            { object: 'block-server', at: { tile: [0, 1, 0] } },
+            { object: 'block-server', at: { tile: [1, 1, 0] } },
+            { object: 'block-server-right', at: { tile: [2, 1, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '2' },
+          items: [
+            { object: 'block-server-left', at: { tile: [0, 2, 0] } },
+            { object: 'block-server-left', at: { tile: [1, 2, 0] } },
+            { object: 'block-server-corner', at: { tile: [2, 2, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '32' },
+          items: [
+            { object: 'prop-back-end-rack', at: { tile: [2, 0, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '-32' },
+          items: [
+            { object: 'prop-back-end-network', at: { tile: [0, 2, 0] } },
+          ],
+        },
+        {
           group: { class: 'enter', 'data-enter': 'object', 'data-x': '0' },
           items: [
             { object: 'outfit-back-end', at: { tile: [1, 1, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '16' },
+          items: [
+            { object: 'prop-back-end-mug', at: { tile: [2, 1, 0] } },
           ],
         },
       ],
