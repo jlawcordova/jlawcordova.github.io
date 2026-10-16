@@ -28,19 +28,18 @@ async function workspace() {
   return dir;
 }
 
-/** Writes a small legacy object into the workspace, the way imported art was, and returns its path. */
-async function addLegacyObject(dir) {
-  const path = join(dir, 'source/objects/legacy-rock.mjs');
+/** Writes a small world-color object into the workspace and returns its path. */
+async function addStone(dir) {
+  const path = join(dir, 'source/objects/small-stone.mjs');
   await writeFile(
     path,
     [
       '// Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md',
       'export default {',
       "  kind: 'sprite',",
-      '  legacy: true,',
       '  anchor: [0, 0],',
       '  keys: {',
-      "    a: 'c-7e9a60',",
+      "    a: 'path-3',",
       '  },',
       '  layers: [',
       '    {',
@@ -79,14 +78,14 @@ describe('npm run art (R38)', () => {
 
   it('R38: plain run writes nothing and exits 1 when any source has a problem', async () => {
     const dir = await workspace();
-    const path = await addLegacyObject(dir);
+    const path = await addStone(dir);
     const text = await readFile(path, 'utf8');
     const broken = text.replace(/(map: \[\n\s+')./, '$1');
     assert.notEqual(broken, text);
     await writeFile(path, broken);
     const { code, err } = art(dir);
     assert.equal(code, 1);
-    assert.match(err, /^objects\/legacy-rock\.mjs: layer 0, row 1: 4 wide, expected 3$/m);
+    assert.match(err, /^objects\/small-stone\.mjs: layer 0, row 1: 4 wide, expected 3$/m);
     assert.match(err, /^1 problem; nothing written\.$/m);
     assert.ok(!existsSync(join(dir, 'out')));
   });
@@ -146,10 +145,10 @@ describe('--check (R38)', () => {
     const { code, out } = art(dir, '--check', 'outfit-front-end');
     assert.equal(code, 0);
     assert.equal(out, 'objects/outfit-front-end.mjs: ok · 32×35 · 11 colors (of 12) · 2 layers · 1 frame\n');
-    await addLegacyObject(dir);
-    const legacy = art(dir, '--check', 'legacy-rock');
-    assert.equal(legacy.code, 0);
-    assert.equal(legacy.out, 'objects/legacy-rock.mjs: ok · 4×2 · 1 color (legacy, no cap) · 1 layer · 1 frame\n');
+    await addStone(dir);
+    const stone = art(dir, '--check', 'small-stone');
+    assert.equal(stone.code, 0);
+    assert.equal(stone.out, 'objects/small-stone.mjs: ok · 4×2 · 1 color (of 12) · 1 layer · 1 frame\n');
   });
 
   it('R38: prints a one-line summary for a valid scene', async () => {
@@ -218,15 +217,14 @@ describe('--new (R38)', () => {
     assert.deepEqual(await load(path), { kind: 'sprite', anchor: [4, 5], keys: { o: 'ink' }, layers: [{ map: Array(6).fill('........') }] });
   });
 
-  it('R38: --new object --extends character writes an outfit that validates, re-keying legacy colors', async () => {
+  it('R38: --new object --extends character writes an outfit that validates, with no keys of its own yet', async () => {
     const dir = await workspace();
     const { code, out, err } = art(dir, '--new', 'object', 'outfit-test', '--extends', 'character');
     assert.equal(code, 0, out + err);
     const obj = await load(join(dir, 'source/objects/outfit-test.mjs'));
     assert.equal(obj.extends, 'character');
+    assert.deepEqual(obj.keys, {});
     assert.deepEqual(obj.rows, {});
-    const palette = await load(join(dir, 'source/palette.mjs'));
-    for (const color of Object.values(obj.keys)) assert.ok(color in palette.world || color in palette.outfit, `${color} is a world or outfit color`);
   });
 
   it('R38: --new object --kind block writes a canonical starter block that validates', async () => {
@@ -356,11 +354,11 @@ describe('--preview (R29, R38)', () => {
 
   it('R29: an object with problems gets no preview, and exits 1', async () => {
     const dir = await workspace();
-    const path = await addLegacyObject(dir);
-    await writeFile(path, (await readFile(path, 'utf8')).replace("legacy: true,\n", ''));
-    const { code, err } = art(dir, '--preview', 'legacy-rock');
+    const path = await addStone(dir);
+    await writeFile(path, (await readFile(path, 'utf8')).replace("'path-3'", "'c-7e9a60'"));
+    const { code, err } = art(dir, '--preview', 'small-stone');
     assert.equal(code, 1);
-    assert.match(err, /is a legacy color; only imported art may use it/);
+    assert.match(err, /'c-7e9a60' is not in the palette/);
     assert.ok(!existsSync(join(dir, '.art-preview')));
   });
 });

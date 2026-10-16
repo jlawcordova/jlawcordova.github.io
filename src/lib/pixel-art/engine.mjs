@@ -22,7 +22,6 @@ import { blockFaces, blockSize, footprint, LEVEL_H, tilePixels, TILE_H, TILE_W, 
  * @typedef {{
  *   name: string,
  *   block?: Block,
- *   legacy: boolean,
  *   character: boolean,
  *   anchor: [number, number],
  *   keys: Record<string, string>,
@@ -34,7 +33,7 @@ import { blockFaces, blockSize, footprint, LEVEL_H, tilePixels, TILE_H, TILE_W, 
  * @typedef {{ attrs: [string, string][], frame?: number, children: (Group | Layer)[] }} Group
  */
 
-export const TIERS = /** @type {const} */ (['world', 'outfit', 'legacy']);
+export const TIERS = /** @type {const} */ (['world', 'outfit']);
 export const CAPS = { world: 32, outfit: 16, size: 64, colors: 12, characterWidth: 24, characterHeight: 32 };
 
 const NAME = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
@@ -114,7 +113,7 @@ export function validate(sources) {
 function validatePalette({ palette }, problems) {
   const file = 'palette.mjs';
   if (!isRecord(palette)) {
-    problems.push(`${file}: must export an object with world, outfit and legacy`);
+    problems.push(`${file}: must export an object with world and outfit`);
     return;
   }
   for (const key of Object.keys(palette)) {
@@ -129,7 +128,7 @@ function validatePalette({ palette }, problems) {
       continue;
     }
     const names = Object.keys(colors);
-    if (tier !== 'legacy' && names.length > CAPS[tier]) problems.push(`${file}: ${tier} has ${names.length} colors, max ${CAPS[tier]}`);
+    if (names.length > CAPS[tier]) problems.push(`${file}: ${tier} has ${names.length} colors, max ${CAPS[tier]}`);
     for (const name of names) {
       if (!NAME.test(name)) problems.push(`${file}: ${tier} ${q(name)}: names are lowercase kebab-case`);
       if (typeof colors[name] !== 'string' || !HEX.test(colors[name])) {
@@ -142,7 +141,7 @@ function validatePalette({ palette }, problems) {
   }
 }
 
-const OBJECT_PROPS = ['kind', 'legacy', 'extends', 'anchor', 'keys', 'rows', 'layers'];
+const OBJECT_PROPS = ['kind', 'extends', 'anchor', 'keys', 'rows', 'layers'];
 const BLOCK_PROPS = ['kind', 'size', 'faces', 'surface', 'sides'];
 const SIDES_PROPS = ['keys', 'left', 'right'];
 /** A side map is one tile's face wide (its 16-pixel period along the face) and one level high. */
@@ -171,7 +170,6 @@ function validateObjectShape(sources, name, problems) {
   }
   for (const key of Object.keys(obj)) if (!OBJECT_PROPS.includes(key)) add(`unknown property ${q(key)}`);
   if (obj.kind !== 'sprite') add(`kind must be 'sprite' or 'block', got ${q(obj.kind)}`);
-  if ('legacy' in obj && obj.legacy !== true) add('legacy is either true or left out');
   if ('anchor' in obj && !isWhole(obj.anchor, 2)) add('anchor must be two whole numbers');
 
   const keys = obj.keys ?? {};
@@ -360,7 +358,6 @@ function validateBlockResolved(sources, name, problems) {
   for (const key of usedSideKeys(block)) named.push([`sides, key ${q(key)}`, /** @type {Sides} */ (block.sides).keys[key]]);
   for (const [where, color] of named) {
     const tier = sources.colors.get(color)?.tier;
-    if (tier === 'legacy') add(`${where}: ${q(color)} is a legacy color; only imported art may use it`);
     if (tier === 'outfit') add(`${where}: ${q(color)} is an outfit color; only objects that extend character may use it`);
   }
   if (resolved.width > CAPS.size || resolved.height > CAPS.size) add(`${resolved.width}×${resolved.height}, max ${CAPS.size}×${CAPS.size}`);
@@ -424,25 +421,22 @@ function validateResolved(sources, name, broken, problems) {
     }
   }
 
-  const outfit = resolved.character;
-  if (!resolved.legacy) {
-    for (const key of usedKeys(resolved)) {
-      const color = resolved.keys[key];
-      const tier = sources.colors.get(color)?.tier;
-      if (tier === 'legacy') add(`key ${q(key)}: ${q(color)} is a legacy color; only imported art may use it`);
-      if (tier === 'outfit' && !outfit) add(`key ${q(key)}: ${q(color)} is an outfit color; only objects that extend character may use it`);
+  for (const key of usedKeys(resolved)) {
+    const color = resolved.keys[key];
+    if (sources.colors.get(color)?.tier === 'outfit' && !resolved.character) {
+      add(`key ${q(key)}: ${q(color)} is an outfit color; only objects that extend character may use it`);
     }
-    const size = `${resolved.width}×${resolved.height}`;
-    if (resolved.width > CAPS.size || resolved.height > CAPS.size) add(`${size}, max ${CAPS.size}×${CAPS.size}`);
-    // A character's cap is on the figure it paints, since the shared canvas
-    // is as wide as the legacy outfits' props.
-    const figure = paintedSize(resolved);
-    if (resolved.character && (figure[0] > CAPS.characterWidth || figure[1] > CAPS.characterHeight)) {
-      add(`the figure is ${figure[0]}×${figure[1]}; a character is at most ${CAPS.characterWidth}×${CAPS.characterHeight}`);
-    }
-    const colors = usedColors(sources, resolved).length;
-    if (colors > CAPS.colors) add(`uses ${colors} colors, max ${CAPS.colors}`);
   }
+  const size = `${resolved.width}×${resolved.height}`;
+  if (resolved.width > CAPS.size || resolved.height > CAPS.size) add(`${size}, max ${CAPS.size}×${CAPS.size}`);
+  // A character's cap is on the figure it paints, since the shared canvas
+  // is wider than the figure, so a held prop fits.
+  const figure = paintedSize(resolved);
+  if (resolved.character && (figure[0] > CAPS.characterWidth || figure[1] > CAPS.characterHeight)) {
+    add(`the figure is ${figure[0]}×${figure[1]}; a character is at most ${CAPS.characterWidth}×${CAPS.characterHeight}`);
+  }
+  const colors = usedColors(sources, resolved).length;
+  if (colors > CAPS.colors) add(`uses ${colors} colors, max ${CAPS.colors}`);
 }
 
 /**
@@ -551,7 +545,6 @@ export function resolve(sources, name, seen = []) {
     const first = firstMap(layers[0]);
     return {
       name,
-      legacy: obj.legacy === true,
       character: name === 'character',
       anchor: anchor ?? [0, 0],
       keys: { ...obj.keys },
@@ -575,7 +568,6 @@ export function resolve(sources, name, seen = []) {
   }
   return {
     name,
-    legacy: obj.legacy === true,
     character: name === 'character' || base.character,
     anchor: anchor ?? base.anchor,
     keys: { ...base.keys, ...obj.keys },
@@ -601,7 +593,6 @@ function resolveBlock(name, obj) {
   return {
     name,
     block: { size: obj.size, faces: { ...obj.faces }, surface, ...(sides ? { sides } : {}) },
-    legacy: false,
     character: false,
     anchor: [0, 0],
     keys: { ...surface?.keys },
@@ -685,7 +676,7 @@ export function describeObject(sources, resolved) {
   const colors = usedColors(sources, resolved).length;
   const frames = Math.max(1, ...resolved.layers.map((l) => layerMaps(l).length));
   const plural = (/** @type {number} */ n, /** @type {string} */ word) => `${n} ${word}${n === 1 ? '' : 's'}`;
-  const cap = resolved.legacy ? 'legacy, no cap' : `of ${CAPS.colors}`;
+  const cap = `of ${CAPS.colors}`;
   if (resolved.block) {
     const [w, d, h] = resolved.block.size;
     return [`block ${w}×${d}×${h}`, `${resolved.width}×${resolved.height}`, `${plural(colors, 'color')} (${cap})`, plural(frames, 'frame')].join(' · ');

@@ -425,7 +425,7 @@ function sceneSizes(sources, name) {
     objects.set(object, { placed, raw: total.raw - less.raw, gzip: total.gzip - less.gzip });
   }
   sources.scenes.delete('sizes-probe');
-  // A hex can have several names; the first tier's (world before legacy) wins.
+  // A hex can have several names; the first tier's (world before outfit) wins.
   const names = new Map();
   for (const [color, { hex }] of sources.colors) if (!names.has(hex)) names.set(hex, color);
   const colors = new Map();
@@ -517,7 +517,7 @@ async function create(sources, dir, kind, name, opts) {
   } else if (opts.extends) {
     if (opts.size) throw new Problem('--size and --extends don\'t mix: an object that extends another has its size');
     if (!sources.objects.has(opts.extends)) throw new Problem(`--extends ${opts.extends}: no such object`);
-    text = serializeObject(starterExtends(sources, opts.extends));
+    text = serializeObject(starterExtends(opts.extends));
   } else {
     const m = /^(\d+)x(\d+)$/.exec(opts.size ?? '16x16');
     const [w, h] = m ? [Number(m[1]), Number(m[2])] : [0, 0];

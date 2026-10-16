@@ -1,6 +1,6 @@
 // The Range scene's art stays on the island's engine (Isometric Range spec
-// R1, R3, R5, R7, R8): the platform is laid from the island's blocks, nothing
-// in range-sprite paints ink or is legacy, the viewBox keeps the stage's size,
+// R1, R3, R7, R8): the platform is laid from the island's blocks, nothing in
+// range-sprite paints ink, the viewBox keeps the stage's size,
 // and the compiled SVG stays inside its budget. Node built-ins only.
 
 import assert from 'node:assert/strict';
@@ -44,15 +44,6 @@ describe('Range art (Isometric Range spec)', () => {
       const keys = { ...(r.keys ?? {}), ...(r.sides?.keys ?? {}), ...(r.surface?.keys ?? {}) };
       for (const color of Object.values(keys)) assert.notEqual(color, 'ink', `${name} paints ink`);
     }
-  });
-
-  it('R5: nothing range-sprite places is legacy', async () => {
-    const { sources } = await readSources(SOURCE);
-    const scene = sources.scenes.get('range-sprite');
-    const names = [];
-    const walk = (items) => items.forEach((i) => (i.group ? walk(i.items) : names.push(i.object)));
-    walk(scene.items);
-    for (const name of names) assert.equal(resolve(sources, name).legacy, false, `${name} is not legacy`);
   });
 
   it('R7: the viewBox keeps the stage size', async () => {

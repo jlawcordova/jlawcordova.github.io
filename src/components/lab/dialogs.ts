@@ -3,7 +3,7 @@
 // (starter.mjs), and their names are checked as you type. The problems list
 // opens from the status bar's count; choosing a problem goes to where it is.
 
-import { isName, loadSources } from '../../lib/pixel-art/engine.mjs';
+import { isName } from '../../lib/pixel-art/engine.mjs';
 import { MAX_NAME, starterBlock, starterExtends, starterScene, starterSprite } from '../../lib/pixel-art/starter.mjs';
 import type { Kind, Lab } from './lab';
 import type { ObjectMode } from './object-mode';
@@ -62,7 +62,7 @@ export function setUpDialogs(lab: Lab): (kind: Kind) => void {
     let doc;
     if (kind === 'scene') doc = starterScene();
     else if (objectKind() === 'block') doc = starterBlock();
-    else if (extend.checked) doc = starterExtends(loadSources({ palette: lab.data.palette, objects: lab.objects() }), 'character');
+    else if (extend.checked) doc = starterExtends('character');
     else doc = starterSprite(Number(width.value), Number(height.value));
     dialog.close();
     lab.create(kind, id, doc);

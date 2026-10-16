@@ -63,7 +63,6 @@ const layerText = (layer, depth) => `{\n${layerLines(layer, depth).map((l) => `$
 export function serializeObject(obj) {
   const lines = [`kind: ${str(obj.kind)}`];
   if (obj.kind === 'block') return serializeBlock(obj, lines);
-  if (obj.legacy) lines.push('legacy: true');
   if (obj.extends !== undefined) lines.push(`extends: ${str(obj.extends)}`);
   if (obj.anchor !== undefined) lines.push(`anchor: ${nums(obj.anchor)}`);
   if (obj.keys !== undefined) lines.push(`keys: ${stringRecord(obj.keys, 1)}`);
