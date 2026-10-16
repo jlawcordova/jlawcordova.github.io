@@ -83,9 +83,57 @@ export default {
       group: { 'data-class': '0' },
       items: [
         {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '0' },
+          items: [
+            { object: 'block-tower', at: { tile: [0, 0, 0] } },
+            { object: 'block-tower', at: { tile: [1, 0, 0] } },
+            { object: 'block-tower-right', at: { tile: [2, 0, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '1' },
+          items: [
+            { object: 'block-tower', at: { tile: [0, 1, 0] } },
+            { object: 'block-tower', at: { tile: [1, 1, 0] } },
+            { object: 'block-tower-right', at: { tile: [2, 1, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '2' },
+          items: [
+            { object: 'block-tower-left', at: { tile: [0, 2, 0] } },
+            { object: 'block-tower-left', at: { tile: [1, 2, 0] } },
+            { object: 'block-tower-corner', at: { tile: [2, 2, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '32' },
+          items: [
+            { object: 'prop-front-end-telescope', at: { tile: [2, 0, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '-32' },
+          items: [
+            { object: 'prop-front-end-lectern', at: { tile: [0, 2, 0] } },
+          ],
+        },
+        {
           group: { class: 'enter', 'data-enter': 'object', 'data-x': '0' },
           items: [
             { object: 'outfit-front-end', at: { tile: [1, 1, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '16' },
+          items: [
+            { object: 'prop-front-end-crystal-ball', at: { tile: [2, 1, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '-16' },
+          items: [
+            { object: 'prop-front-end-candles', at: { tile: [1, 2, 0] } },
           ],
         },
       ],
