@@ -254,9 +254,57 @@ export default {
       group: { 'data-class': '3' },
       items: [
         {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '0' },
+          items: [
+            { object: 'block-site', at: { tile: [0, 0, 0] } },
+            { object: 'block-site', at: { tile: [1, 0, 0] } },
+            { object: 'block-site-right', at: { tile: [2, 0, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '1' },
+          items: [
+            { object: 'block-site', at: { tile: [0, 1, 0] } },
+            { object: 'block-site', at: { tile: [1, 1, 0] } },
+            { object: 'block-site-right', at: { tile: [2, 1, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'ground', 'data-row': '2' },
+          items: [
+            { object: 'block-site-left', at: { tile: [0, 2, 0] } },
+            { object: 'block-site-left', at: { tile: [1, 2, 0] } },
+            { object: 'block-site-corner', at: { tile: [2, 2, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '25' },
+          items: [
+            { object: 'cloud-c', class: 'pcloud pc0', at: { px: [14, -9] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '32' },
+          items: [
+            { object: 'prop-cloud-devops-pipes', at: { tile: [2, 0, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '-32' },
+          items: [
+            { object: 'prop-cloud-devops-scaffold', at: { tile: [0, 2, 0] } },
+          ],
+        },
+        {
           group: { class: 'enter', 'data-enter': 'object', 'data-x': '0' },
           items: [
             { object: 'outfit-cloud-devops', at: { tile: [1, 1, 0] } },
+          ],
+        },
+        {
+          group: { class: 'enter', 'data-enter': 'object', 'data-x': '-16' },
+          items: [
+            { object: 'prop-cloud-devops-cone', at: { tile: [1, 2, 0] } },
           ],
         },
       ],

@@ -111,7 +111,7 @@ The slices run strictly one after another. The owner asked for one subagent at a
 | 8–12, each | One `pixel-artist` subagent draws; the main session finishes and commits | `feat/range-settings-<class>`, PRs 3–7 | Merged once its checks pass; next slice starts |
 | 14–15 | Main session | `feat/range-settings` | Final PR ready; **owner reviews PRs 3–7's settings together**, then merges |
 
-- **One at a time.** A slice's subagent starts only after the previous slice's PR has merged into `feat/range-settings`. It works in the main checkout on the slice branch, since nothing else runs at the same time, so no worktree is needed.
+- **One at a time.** A slice's subagent starts only once the previous slice is finished: its art, its CSS rule and its pins are committed and every local check passes. It works in the main checkout on the slice branch, since nothing else runs at the same time, so no worktree is needed. From PR 4 on, so GitHub's CI doesn't hold the next agent up, the next slice's branch is cut from the previous slice's branch, and the previous PR merges into `feat/range-settings` when its CI passes. The next PR then shows only its own commits.
 - **The subagent's brief.** Each brief names:
   - the class, its character and its proposed setting from the spec's table;
   - the lab (`block-lab*`, `prop-data-engineering-*`, class 4's group) as the reference;
