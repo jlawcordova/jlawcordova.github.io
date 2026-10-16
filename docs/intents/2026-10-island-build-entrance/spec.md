@@ -1,5 +1,5 @@
 # Spec: The hero island builds itself as it comes in (from intent.md 2026-10-16)
-Status: draft. The owner asked for the intent, spec, plan and build to land together in one PR ([#112](https://github.com/jlawcordova/jlawcordova.github.io/pull/112)), so each stage is reviewed there rather than merged on its own.
+Status: built in #112; approved when the owner merges it. The owner asked for the intent, spec, plan and build to land together in one PR ([#112](https://github.com/jlawcordova/jlawcordova.github.io/pull/112)), so each stage is reviewed there rather than merged on its own.
 
 The numbers below come from the owner's prototype rounds on 2026-10-16, where they tuned the entrance by feel: rows sweeping left to right, objects held back until the ground is nearly done, a slightly slower stagger and an overshoot on the float.
 

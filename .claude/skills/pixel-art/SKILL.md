@@ -213,7 +213,7 @@ A name can be written `objects/<name>` or `scenes/<name>` when an object and a s
 | `closeup-front-trees` | The front trees |
 | `closeup-sky` | The three clouds and the crane jib's head |
 
-They place the island's objects at the island's positions, in its paint order, and a test keeps them that way: when the island's scene renames or moves an object, change the close-ups in the same commit. The preview's card color is one shade off the hero's background, so the sky reads as it does on the site.
+They place the island's objects at the island's positions, in its paint order, and a test keeps them that way: when the island's scene renames or moves an object, change the close-ups in the same commit. They don't use the entrance groups. Where a close-up cuts the island off, the cubes at its edge show their sides. The preview's card color is one shade off the hero's background, so the sky reads as it does on the site.
 
 ## The editor (optional)
 
@@ -252,11 +252,20 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
 ## The art that's already on the site
 
 - **The hero island** (`scenes/hero-island.mjs`, written to `hero-island.svg`) is built from library and island objects, all in world colors and within the caps. Its pieces are:
-  - the ground, road, bridge, `house`, back trees (`tree-small` and `pine`, three of them on a `tree-shade`) as world-color objects;
+  - the ground: 36 one-level cubes on a 6×6 grid, listed row by row (row 0 to 5, then by column), which still paints back to front. Inland and at the corner it's `block`, the cliffs take the edge pieces, and the road and the river run on `block-road` and `block-river` with `path` and `river` laid over them. Inland cubes were flat tiles until the [island build entrance](../../../docs/intents/2026-10-island-build-entrance/spec.md) gave them depth for the entrance; their sides are hidden at rest, and a test checks the settled island paints what the flat tiles did;
+  - the road, bridge, `house`, back trees (`tree-small` and `pine`, three of them on a `tree-shade`) as world-color objects;
   - the river's `river` tiles and `waterfall-face`, `flag` and `crane-box` (the crane's hanging cardboard box): frame loops `wf` (5 frames, one set per piece), `ff` (4) and `hf` (6);
   - `truck`, placed with class `itruck it1`, and `truck-green`, placed with `itruck it2`;
   - the pieces listed after the trucks, so they paint over them: `bridge-rail`, `boxes` (a stack of cardboard boxes), the crane as `crane-mast` with `crane-jib` stacked on it, and the front trees. `fence` is in the library but off the island (the owner's Stage 2 review);
   - `cloud-a`, `cloud-b` and `cloud-c`, placed with `pcloud pc0` to `pc2`.
+
+  **Entrance groups.** Every item sits in one top-level group with class `enter`, which `Hero.astro` animates with the schedule in `src/lib/island-entrance.mjs`:
+  - `'data-enter': 'shadow'`: the 11 shadow pieces;
+  - `'data-enter': 'ground'` with `'data-row'`: one group per grid row;
+  - `'data-enter': 'object'` with `'data-x'`: one group per run of consecutive objects with the same foot x, in paint order. The foot is the center of the sprite's bottom row (`at.px[0] − anchor[0] + width / 2`, rounded), or a tile-placed object's tile center. A `tree-shade` takes its tree's x, and the crane's jib and box take the mast's;
+  - `'data-enter': 'sky'`: the clouds.
+
+  A new object goes in its own `object` group with its foot x, in paint order; a test checks every x. Groups don't merge colors across each other, so they cost bytes.
 - **The Range sprite** (`scenes/range-sprite.mjs`) is a 3×3 platform laid from the island's own blocks (`tile`, `block-right`, `block-left`, `block`, with `island-shadow` under the front edges), a library `tree` and six `flower` objects (`flower`, `flower-pink`, `flower-gold`, two of each, placed by `px`), plus seven outfits that extend `character`, one per `data-class` group, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). Each outfit stands on the center tile, placed by `{ tile: [1, 1, 0] }`. The characters are isometric figures in the [island and Range look](#island-and-range-look), with no `ink` outline ([Isometric Range](../../../docs/intents/2026-10-range-isometric/spec.md)). `--preview range-sprite` and the lab draw only the first `data-class` group; to see another class, preview a scratch copy of the scene that keeps only that group.
 - **Recolors.** `truck-green` is `truck` with other colors: it `extends: 'truck'` and lists only the keys that differ. Use the same pattern for a variant that changes colors but not shape.
 - **Keep the CSS hooks.** `pixel-art.css` animates the classes on these groups (`wf w0`…, `itruck it1`, `pcloud pc0`, `cbob`). Don't rename a loop, prefix or placement class unless you change the CSS in the same PR.

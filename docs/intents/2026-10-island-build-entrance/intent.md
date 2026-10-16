@@ -1,5 +1,5 @@
 # Intent: The hero island builds itself as it comes in
-Author: J. Law. Cordova (site owner). Status: draft.
+Author: J. Law. Cordova (site owner). Status: draft; built in [#112](https://github.com/jlawcordova/jlawcordova.github.io/pull/112), accepted when the owner merges it.
 
 ## Problem
 When the home page loads, the hero island rises in as one piece. It's the first thing a visitor sees beside the headline, and the entrance doesn't show off that the island is built from blocks and objects.
