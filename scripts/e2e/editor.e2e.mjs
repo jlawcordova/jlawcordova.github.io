@@ -167,8 +167,8 @@ async function walk(dir) {
 
 describe('the page (R15, R24)', () => {
   test('R15: the unlisted pages carry the robots meta, and no other page links to them', async () => {
-    // The lab, and the design system previews (design system copy spec R4a).
-    const unlisted = [join('lab', 'pixel-art', 'index.html'), join('design-system', 'index.html')];
+    // The labs, and the design system previews (design system copy spec R4a; island clock sweep spec R8).
+    const unlisted = [join('lab', 'pixel-art', 'index.html'), join('lab', 'island-entrance', 'index.html'), join('design-system', 'index.html')];
     // Text files, scripts and styles too, so a link built at run time would
     // show; the unlisted pages' own bundles are left out.
     const own = new Set();

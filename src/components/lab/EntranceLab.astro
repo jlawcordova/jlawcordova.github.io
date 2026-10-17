@@ -1,0 +1,298 @@
+---
+// The entrance lab's controls (island clock sweep spec R8): every order, move
+// and number of the build-up schedule in src/lib/island-entrance.mjs, played
+// on the hero island with the same code as the home page. Changing anything
+// replays it; R replays, H hides the controls, and the settings live in the
+// URL. Copy gives the changes to TIMING, ready to paste.
+import { GROUND_ORDERS, MOVES, OBJECT_ORDERS } from '../../lib/island-entrance.mjs';
+
+const label: Record<string, string> = {
+  rows: 'Rows, left cliff first',
+  cols: 'Columns, back-left first',
+  'back-front': 'Back to front',
+  'front-back': 'Front to back',
+  sweep: 'Sweep, left corner to right',
+  ltr: 'Left to right',
+  center: 'Ripple out from the middle',
+  edges: 'Ripple in from the edges',
+  clock: 'Clock sweep from the left corner',
+  checker: 'Checkerboard, two waves',
+  random: 'Random',
+  together: 'All at once',
+  same: 'Same order as the ground',
+  float: 'Float up, overshoot, settle',
+  drop: 'Drop from above, dip, settle',
+  pop: 'Pop up from its foot',
+  stepped: 'Float in whole art pixels',
+  fade: 'Fade only',
+};
+const options = (list: readonly string[]) => list.map((value) => ({ value, text: label[value] }));
+const selects = [
+  { name: 'ground', text: 'Ground order', options: options(GROUND_ORDERS) },
+  {
+    name: 'with',
+    text: 'Objects arrive',
+    options: [
+      { value: 'false', text: 'After the ground' },
+      { value: 'true', text: 'With the cube under them' },
+    ],
+  },
+  { name: 'objects', text: 'Object order', options: options(OBJECT_ORDERS), when: 'after' },
+  { name: 'move', text: 'Move', options: options(MOVES) },
+];
+const ranges = [
+  { name: 'groundSpan', text: 'Ground stagger span', min: 0, max: 2.5, step: 0.05, unit: 's' },
+  { name: 'cascade', text: 'Extra left-to-right cascade', min: 0, max: 1, step: 0.05, unit: 's' },
+  { name: 'objectSpan', text: 'Object stagger span', min: 0, max: 2.5, step: 0.05, unit: 's', when: 'after' },
+  { name: 'objectLead', text: 'Objects start before the ground lands', min: -0.5, max: 1, step: 0.02, unit: 's', when: 'after' },
+  { name: 'lag', text: 'Object lag after its cube', min: 0, max: 1, step: 0.02, unit: 's', when: 'with' },
+  { name: 'duration', text: 'Each piece takes', min: 0.2, max: 1.5, step: 0.05, unit: 's' },
+  { name: 'peak', text: 'Share of the move to its peak', min: 0.2, max: 0.9, step: 0.05, unit: '', when: 'moving' },
+  { name: 'rise', text: 'Rise', min: 0, max: 30, step: 1, unit: ' art px', when: 'travel' },
+  { name: 'overshoot', text: 'Overshoot', min: 0, max: 6, step: 0.5, unit: ' art px', when: 'travel' },
+  { name: 'popFrom', text: 'Pop from', min: 0, max: 1, step: 0.05, unit: '×', when: 'pop' },
+  { name: 'popPeak', text: 'Pop peak', min: 1, max: 1.5, step: 0.01, unit: '×', when: 'pop' },
+];
+---
+
+<aside class="entrance-lab" aria-label="Entrance controls">
+  <div class="entrance-lab__head">
+    <p class="label">Controls</p>
+    <p class="entrance-lab__keys"><kbd>R</kbd> replay · <kbd>H</kbd> hide</p>
+  </div>
+  <form class="entrance-lab__form">
+    {
+      selects.map((s) => (
+        <label class="entrance-lab__field" data-when={s.when}>
+          <span>{s.text}</span>
+          <select name={s.name}>
+            {s.options.map((o) => (
+              <option value={o.value}>{o.text}</option>
+            ))}
+          </select>
+        </label>
+      ))
+    }
+    {
+      ranges.map((r) => (
+        <label class="entrance-lab__field" data-range={r.name} data-when={r.when}>
+          <span>
+            {r.text}: <output data-unit={r.unit} />
+          </span>
+          <input type="range" name={r.name} min={r.min} max={r.max} step={r.step} />
+        </label>
+      ))
+    }
+    <label class="entrance-lab__field">
+      <span>Playback speed</span>
+      <select name="speed">
+        <option value="1">1×</option>
+        <option value="0.5">½×</option>
+        <option value="0.25">¼×</option>
+      </select>
+    </label>
+  </form>
+  <p class="entrance-lab__readout" aria-live="polite"></p>
+  <div class="entrance-lab__actions">
+    <button type="button" class="btn btn--primary" data-act="replay">Replay</button>
+    <button type="button" class="btn btn--ghost" data-act="seed">New shuffle</button>
+    <button type="button" class="btn btn--ghost" data-act="reset">Site version</button>
+    <button type="button" class="btn btn--ghost" data-act="copy">Copy</button>
+  </div>
+</aside>
+
+<style>
+  .entrance-lab {
+    display: grid;
+    gap: 12px;
+    align-content: start;
+    padding: 16px;
+    background: var(--color-page);
+    border: var(--border-thick);
+    border-radius: var(--radius-panel);
+    color: var(--color-ink);
+  }
+  .entrance-lab.is-hidden {
+    display: none;
+  }
+  .entrance-lab__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .entrance-lab__head p {
+    margin: 0;
+  }
+  .entrance-lab__keys {
+    color: var(--color-ink-muted);
+    font-size: 0.875rem;
+  }
+  .entrance-lab__form {
+    display: grid;
+    gap: 8px;
+  }
+  .entrance-lab__field {
+    display: grid;
+    gap: 2px;
+    font-size: 0.875rem;
+  }
+  .entrance-lab__field[hidden] {
+    display: none;
+  }
+  .entrance-lab select {
+    min-height: 44px;
+    padding: 0 8px;
+    font: inherit;
+    color: inherit;
+    background: var(--color-card);
+    border: 2px solid var(--color-earth);
+    border-radius: var(--radius-button);
+  }
+  .entrance-lab input[type='range'] {
+    width: 100%;
+    min-height: 32px;
+    accent-color: var(--color-accent);
+  }
+  .entrance-lab output {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+  }
+  .entrance-lab__readout {
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-size: 0.875rem;
+  }
+  .entrance-lab__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .entrance-lab :focus-visible {
+    outline: 3px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+</style>
+
+<script>
+
+  import { schedule, settledBy, TIMING, type Timing } from '../../lib/island-entrance.mjs';
+  import { play, reduced } from '../../lib/motion';
+  import { pieceOf, playEntrance } from '../../lib/play-entrance';
+
+  const lab = document.querySelector<HTMLElement>('.entrance-lab');
+  const form = lab?.querySelector<HTMLFormElement>('form');
+  const svg = document.querySelector<SVGSVGElement>('.entrance-stage .hero-island');
+
+  if (lab && form && svg) {
+    const groups = [...svg.querySelectorAll<SVGGElement>('.enter')];
+    const pieces = groups.map(pieceOf);
+    const readout = lab.querySelector('.entrance-lab__readout')!;
+    const shipped = settledBy(schedule(pieces, TIMING));
+
+    type Key = keyof Timing;
+    const parse = (key: Key, value: string) =>
+      typeof TIMING[key] === 'number' ? Number(value) : typeof TIMING[key] === 'boolean' ? value === 'true' : value;
+
+    const fromUrl = () => {
+      const t: Record<string, unknown> = { ...TIMING };
+      const q = new URLSearchParams(location.search);
+      for (const key of Object.keys(TIMING) as Key[]) {
+        const v = q.get(key);
+        if (v !== null) t[key] = parse(key, v);
+      }
+      return t as Timing;
+    };
+    let t = fromUrl();
+    let speed = Number(new URLSearchParams(location.search).get('speed') ?? 1) || 1;
+    let running: ReturnType<typeof playEntrance> = [];
+
+    const run = () => {
+      for (const c of running) c?.cancel();
+      // A cancelled move can leave its start state behind (a pop's scale, say),
+      // so every piece goes back in place before the next run starts.
+      play(groups, { opacity: 1, x: 0, y: 0, scale: 1 }, { duration: 0 });
+      const plan = schedule(pieces, t);
+      running = playEntrance(groups, plan, t);
+      for (const c of running) if (c) c.speed = speed;
+      readout.textContent = reduced()
+        ? 'Reduced motion is on, so nothing animates.'
+        : `Settles by ${settledBy(plan).toFixed(2)}s (the site's: ${shipped.toFixed(2)}s).`;
+    };
+
+    const changes = () => (Object.keys(TIMING) as Key[]).filter((key) => t[key] !== TIMING[key]);
+
+    const sync = () => {
+      for (const label of form.querySelectorAll<HTMLElement>('[data-range]')) {
+        const out = label.querySelector('output')!;
+        out.textContent = `${t[label.dataset.range as Key]}${out.dataset.unit}`;
+      }
+      const show: Record<string, boolean> = {
+        after: !t.with,
+        with: t.with,
+        moving: t.move !== 'fade',
+        travel: ['float', 'drop', 'stepped'].includes(t.move),
+        pop: t.move === 'pop',
+      };
+      for (const field of form.querySelectorAll<HTMLElement>('[data-when]')) field.hidden = !show[field.dataset.when!];
+      const q = new URLSearchParams();
+      for (const key of changes()) q.set(key, String(t[key]));
+      if (speed !== 1) q.set('speed', String(speed));
+      history.replaceState(null, '', `${location.pathname}${q.size ? `?${q}` : ''}`);
+    };
+
+    const fill = () => {
+      for (const el of [...form.elements] as (HTMLInputElement | HTMLSelectElement)[]) {
+        if (el.name === 'speed') el.value = String(speed);
+        else if (el.name in t) el.value = String(t[el.name as Key]);
+      }
+      sync();
+    };
+
+    form.addEventListener('input', (e) => {
+      const el = e.target as HTMLInputElement | HTMLSelectElement;
+      if (el.name === 'speed') speed = Number(el.value);
+      else t = { ...t, [el.name]: parse(el.name as Key, el.value) };
+      sync();
+      run();
+    });
+
+    lab.addEventListener('click', (e) => {
+      const act = (e.target as HTMLElement).closest<HTMLButtonElement>('button')?.dataset.act;
+      if (act === 'replay') run();
+      if (act === 'seed') {
+        t = { ...t, seed: t.seed + 1 };
+        sync();
+        run();
+      }
+      if (act === 'reset') {
+        t = { ...TIMING };
+        fill();
+        run();
+      }
+      if (act === 'copy') {
+        const list = changes().map((key) => `${key}: ${JSON.stringify(t[key])}`);
+        const text = list.length
+          ? `Entrance lab: changes to TIMING in src/lib/island-entrance.mjs: { ${list.join(', ')} }`
+          : 'Entrance lab: no changes to TIMING in src/lib/island-entrance.mjs';
+        void navigator.clipboard?.writeText(text).then(() => (readout.textContent = 'Copied.'));
+      }
+    });
+
+    addEventListener('keydown', (e) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const key = e.key.toLowerCase();
+      if (key === 'r') {
+        e.preventDefault();
+        run();
+      }
+      if (key === 'h') {
+        e.preventDefault();
+        lab.classList.toggle('is-hidden');
+      }
+    });
+
+    fill();
+    run();
+  }
+</script>
