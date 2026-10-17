@@ -1,5 +1,5 @@
 # Spec: Each Range character in its own setting (from intent.md 2026-10-16)
-Status: built on `feat/range-settings` in [#114](https://github.com/jlawcordova/jlawcordova.github.io/pull/114)–[#120](https://github.com/jlawcordova/jlawcordova.github.io/pull/120); approved when the owner merges [#113](https://github.com/jlawcordova/jlawcordova.github.io/pull/113). The owner approved C1–C3 at the first review. The owner asked for the intent, spec and plan to be written together and the work to start on them, so each stage is reviewed in the change's final PR.
+Status: built on `feat/range-settings` in [#114](https://github.com/jlawcordova/jlawcordova.github.io/pull/114)–[#120](https://github.com/jlawcordova/jlawcordova.github.io/pull/120); approved by the owner in [#113](https://github.com/jlawcordova/jlawcordova.github.io/pull/113), 2026-10-17, with C1–C3 approved at the first review. The owner asked for the intent, spec and plan to be written together and the work to start on them, so each stage is reviewed in the change's final PR.
 
 The numbers and the lab below come from the prototype the owner reviewed on 2026-10-16: the alchemist in a brick-floored lab, building up block by block on each switch, with the auto-advance slowed to 3 seconds.
 
