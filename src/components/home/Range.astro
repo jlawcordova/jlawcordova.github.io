@@ -74,8 +74,9 @@ const [first] = rangeClasses;
 
 <script>
   import { rangeClasses } from '../../data/home';
-  import { RANGE_TIMING, schedule as buildSchedule, SETTLE_EASE } from '../../lib/island-entrance.mjs';
-  import { easeOut, play, reveal } from '../../lib/motion';
+  import { RANGE_TIMING, schedule as buildSchedule } from '../../lib/island-entrance.mjs';
+  import { play, reveal } from '../../lib/motion';
+  import { pieceOf, playEntrance } from '../../lib/play-entrance';
 
   /** How often the carousel advances, in ms: long enough for a setting to rest after it builds (Range settings spec R7). */
   const INTERVAL = 3000;
@@ -97,23 +98,14 @@ const [first] = rangeClasses;
     const art = $('.range__sprite-art');
     let building: ReturnType<typeof play>[] = [];
 
-    // The current class's setting builds itself like the hero island (Range
+    // The current class's setting builds itself, as the hero island does (Range
     // settings spec R4–R6): its floor rows float up left to right, then its
     // objects and the character, by x. A running build completes first, so a
     // quick double press never leaves a piece half-risen.
     const build = () => {
       building.forEach((a) => a?.complete());
       const groups = [...art.querySelectorAll<SVGGElement>(`g[data-class="${index}"] .enter`)];
-      const entrances = buildSchedule(
-        groups.map((g) => ({ enter: g.dataset.enter, row: Number(g.dataset.row), x: Number(g.dataset.x) })),
-        RANGE_TIMING,
-      );
-      building = groups.map((group, i) => {
-        const entrance = entrances[i];
-        if (!entrance) return undefined;
-        const { keyframes, delay, duration, times, move } = entrance;
-        return play(group, keyframes, { delay, duration, times, ease: move === 'float' ? [easeOut, SETTLE_EASE] : easeOut });
-      });
+      building = playEntrance(groups, buildSchedule(groups.map(pieceOf), RANGE_TIMING), RANGE_TIMING);
     };
 
     // User-triggered changes are announced; auto-advance isn't.

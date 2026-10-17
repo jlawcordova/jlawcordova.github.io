@@ -381,7 +381,7 @@ describe('--sizes (hero island detail spec, Tooling)', () => {
     assert.ok(Number(gzip.replaceAll(',', '')) > 0);
     assert.match(out, /^HEAD: not available \(not in a git repository with a HEAD commit\)$/m);
     const [name, placed, objectRaw, deltaRaw] = row(out, 'block');
-    assert.deepEqual([name, placed, deltaRaw], ['block', '18', '—']);
+    assert.deepEqual([name, placed, deltaRaw], ['block', '17', '—'], 'the 17 grass cubes (island clock sweep spec R7)');
     assert.ok(Number(objectRaw.replaceAll(',', '')) > 0);
     assert.ok(row(out, 'grass-2 #8FA56E'), 'colors are listed by their world name');
   });
@@ -400,7 +400,7 @@ describe('--sizes (hero island detail spec, Tooling)', () => {
     assert.equal(code, 0, err);
     assert.match(out, /^HEAD: [\d,]+ B raw, [\d,]+ B gzip \(-[\d,]+ raw, -[\d,]+ gzip\)$/m);
     const [, placed, , deltaRaw] = row(out, 'block');
-    assert.equal(placed, '17');
+    assert.equal(placed, '16');
     assert.match(deltaRaw, /^-[\d,]+$/);
     assert.equal(row(out, 'cloud-a')[3], '+0', 'an object far from the change costs the same raw bytes');
   });

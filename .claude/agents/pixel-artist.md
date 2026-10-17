@@ -123,7 +123,7 @@ One map can't fix both, so the island uses separate edge pieces, all with no in-
 | `block-left` | left cliff `[0–4, 5]`, except the road end | Right col 0 copies left col 14: the left band, then `soil-2` |
 | `block-right` | right cliff `[5, 0–4]` | Left col 14 copies right col 0: the right band, then `soil-3` |
 | `block-road` | road end `[2, 5]`, and inland under the road `[2, 0–4]` | As `block-left`, with a path band (`path-3`, last row `path-4`); the scene still lays `path` on top |
-| `block-river` (Stage 2, water group) | river end `[5, 3]`, and inland under the river `[1–4, 3]` | As `block-right`, with a water band under the river top, in the water ramp |
+| `block-river` (Stage 2, water group) | river end `[5, 3]`, and inland under the river `[0–4, 3]`, behind the house too | As `block-right`, with a water band under the river top, in the water ramp |
 
 Inland cubes' sides only show while the island's entrance floats them up; at rest the cubes in front hide them.
 

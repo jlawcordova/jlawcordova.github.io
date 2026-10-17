@@ -80,6 +80,12 @@ main > .hero:first-child {
   overflow: visible;
 }
 
+/* Each piece of the island pops up from its own foot (island clock sweep spec R3). */
+.hero-island .enter {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
 @media (max-width: 480px) {
   .hero {
     padding: 48px var(--gutter) 64px;

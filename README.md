@@ -24,7 +24,7 @@ npm run e2e -- scripts/e2e/accomplishments.e2e.mjs  # one suite only
 | --- | --- |
 | `src/content/posts/` | Blog posts in Markdown. The filename sets the date and URL slug: `YYYY-MM-DD-slug.md`. |
 | `src/content.config.ts` | Frontmatter schema for posts. |
-| `src/pages/` | Routes: home, `/blog/` (paginated as `/blog/page2/`, ...), posts, `/accomplishments/` (every accomplishment, 12 a page as `/accomplishments/page2/`, ..., with the locked ones on page 1), `/atom.xml`, 404, and the unlisted `/lab/pixel-art/` and `/design-system/`. |
+| `src/pages/` | Routes: home, `/blog/` (paginated as `/blog/page2/`, ...), posts, `/accomplishments/` (every accomplishment, 12 a page as `/accomplishments/page2/`, ..., with the locked ones on page 1), `/atom.xml`, 404, and the unlisted `/lab/pixel-art/`, `/lab/island-entrance/` and `/design-system/`. |
 | `src/layouts/`, `src/components/` | Page shell, navigation, footer, and shared pieces. |
 | `src/components/Accomplishment*.astro`, `AchievementIcons.astro` | Accomplishments as achievement rows: `AccomplishmentRow` (one row, a `<details>` when done, plain and locked when not), `Accomplishments` (the home section: three newest done, the newest locked, "Show more"), `AccomplishmentsPage` (one page of `/accomplishments/`) and `AchievementIcons` (the icon sheet, inlined once per page, plus the tooltip's Escape script). Styles in `src/styles/accomplishments.css`. |
 | `src/styles/` | Plain CSS. `global.css` imports the rest in order; `variables.css` holds the design tokens. |
@@ -32,6 +32,7 @@ npm run e2e -- scripts/e2e/accomplishments.e2e.mjs  # one suite only
 | `src/lib/accomplishment-list.mjs`, `src/lib/accomplishments.ts` | The accomplishments' logic (done and locked, what a row shows, the home selection, dates), in plain `.mjs` so `npm test` can import it; `accomplishments.ts` feeds it the data file. |
 | `src/lib/paginate.mjs`, `src/lib/pagination.ts` | `paginate(items, perPage)` and page paths, shared by `/blog/` and `/accomplishments/`. |
 | `src/lib/motion.ts` | The one importer of Motion: `reduced()`, stepped `px(n)` easing, `play()` and `reveal()`, a scroll entrance that never leaves content hidden. Islands import it; the nav loads it lazily. |
+| `src/lib/island-entrance.mjs`, `src/lib/play-entrance.ts` | The build-ups of the hero island and the Range settings: the schedule (`TIMING`, `RANGE_TIMING`, and every order and move), in plain `.mjs` so `npm test` can import it, and the player that runs it through `play()`. The `pixel-art-motion` skill explains them. |
 | `src/lib/achievement-icons.mjs` | The achievement icons (ids and meanings). `src/pages/achievement-icons.json.ts` publishes them at `/achievement-icons.json` for the accomplishments skill. |
 | `scripts/fetch-accomplishments.mjs` | Reads the public `com.jlawcordova.profile.accomplishment` records from the AT Protocol repo of `jlawcordova.com` and writes the file above. Any failure writes the placeholder and exits 0, so the build never breaks on the data. |
 | `src/data/home.ts` | The Range carousel's classes. Entry *i* matches outfit variant `data-class="i"` in the sprite. |
@@ -39,6 +40,7 @@ npm run e2e -- scripts/e2e/accomplishments.e2e.mjs  # one suite only
 | `src/assets/pixel-art/source/` | The art's sources: `palette.mjs` (the named colors), `objects/*.mjs` (pixel maps) and `scenes/*.mjs` (objects placed in paint order; each scene with an `output` is one SVG). |
 | `src/pages/design-system.astro`, `src/styles/design-system.css` | The design system previews at `/design-system/`, unlisted and `noindex`: each component's `preview.html` rendered with the site's CSS. `design-system.css` (DecisionBrief and Register) loads on that page only. |
 | `src/pages/lab/pixel-art.astro`, `src/components/lab/`, `src/styles/lab.css` | The pixel-art lab at `/lab/pixel-art/`: an editor for the art's sources, unlisted and `noindex`. Its script and `lab.css` load on that page only. |
+| `src/pages/lab/island-entrance.astro`, `src/components/lab/EntranceLab.astro` | The entrance lab at `/lab/island-entrance/`: replays the hero island's build-up with any order, move and timing, and copies the changes to `TIMING`. Unlisted and `noindex`. |
 | `src/lib/pixel-art/` | The pixel-art engine: validation, `extends`, scene rendering, the isometric grid, rect-SVG output and the canonical source format, plus the starter sources (`starter.mjs`, shared by `--new` and the editor) and the editor's object edits (`edit.mjs`). No Node or DOM APIs. |
 | `scripts/optimize-pixel-art.mjs` | `npm run art`: validates the sources, renders each scene, merges each color group's rects into one `<path>` (keeping classes, variants and order), checks that no pixel changed and that the file is within its budget, and writes it. Also `--check`, `--preview`, `--sizes` and `--new`. |
 | `scripts/pixel-art-preview.mjs` | Writes PNG previews. |

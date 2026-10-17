@@ -3,7 +3,8 @@ export default {
   viewBox: [-41, 48, 54, 47],
   origin: [0, 8],
   items: [
-    { object: 'block', at: { tile: [0, 3, 0] } },
+    { object: 'block-river', at: { tile: [0, 3, 0] } },
+    { object: 'river', at: { tile: [0, 3, 0] } },
     { object: 'block-river', at: { tile: [1, 3, 0] } },
     { object: 'river', at: { tile: [1, 3, 0] } },
     { object: 'block-river', at: { tile: [2, 3, 0] } },
