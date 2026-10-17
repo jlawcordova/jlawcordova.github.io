@@ -1,5 +1,5 @@
 # Spec: The island builds in a clock sweep, and the tools to tune it stay (from intent.md 2026-10-17)
-Status: draft; built in the same PR, approved when the owner merges it. As with [#112](https://github.com/jlawcordova/jlawcordova.github.io/pull/112), the owner asked for the build to go all the way to a ready PR, so the intent, spec, plan and build are reviewed together there.
+Status: draft; built in [#122](https://github.com/jlawcordova/jlawcordova.github.io/pull/122), approved when the owner merges it. As with [#112](https://github.com/jlawcordova/jlawcordova.github.io/pull/112), the owner asked for the build to go all the way to a ready PR, so the intent, spec, plan and build are reviewed together there.
 
 The numbers come from the owner's pick in the stagger prototype on 2026-10-17:
 

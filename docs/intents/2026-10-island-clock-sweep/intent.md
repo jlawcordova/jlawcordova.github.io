@@ -1,5 +1,5 @@
 # Intent: The island builds in a clock sweep, and the tools to tune it stay
-Author: J. Law. Cordova (site owner). Status: draft; built in the same PR, accepted when the owner merges it.
+Author: J. Law. Cordova (site owner). Status: draft; built in [#122](https://github.com/jlawcordova/jlawcordova.github.io/pull/122), accepted when the owner merges it.
 
 ## Problem
 The hero island's build-up was tuned in one prototype round: rows float up left to right, then the objects follow. The owner wanted to see other staggers before settling on one. A second prototype offered many, and the owner chose a different look.
