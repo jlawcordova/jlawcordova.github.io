@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { describe, it } from 'node:test';
 
-import { GROUND_ORDERS, MOVES, OBJECT_ORDERS, RANGE_TIMING, schedule, settledBy, TIMING } from '../src/lib/island-entrance.mjs';
+import { GROUND_ORDERS, MOVES, OBJECT_MOVES, OBJECT_ORDERS, RANGE_TIMING, schedule, settledBy, TIMING } from '../src/lib/island-entrance.mjs';
 
 const read = (name) => readFile(new URL(`../src/assets/pixel-art/${name}`, import.meta.url), 'utf8');
 /** An SVG's enter groups, as pieceOf() in src/lib/play-entrance.ts reads them. */
@@ -93,15 +93,25 @@ describe('island entrance schedule', () => {
     for (const ground of GROUND_ORDERS) {
       for (const objects of OBJECT_ORDERS) {
         for (const move of MOVES) {
-          for (const along of [false, true]) {
-            const t = { ...TIMING, ground, objects, move, with: along };
+          for (const [along, objectMove] of [[false, 'same'], [true, OBJECT_MOVES[(MOVES.indexOf(move) + 2) % OBJECT_MOVES.length]]]) {
+            const t = { ...TIMING, ground, objects, move, objectMove, with: along };
             const entrances = schedule(pieces, t);
-            const label = JSON.stringify({ ground, objects, move, with: along });
+            const label = JSON.stringify({ ground, objects, move, objectMove, with: along });
             assert.ok(entrances.every((e) => e && Number.isFinite(e.delay) && e.delay >= 0), label);
             for (const e of entrances) for (const frames of Object.values(e.keyframes)) assert.equal(frames.at(-1), frames === e.keyframes.scale ? 1 : frames === e.keyframes.opacity ? 1 : 0, `${label}: ends in place`);
           }
         }
       }
+    }
+  });
+
+  it('R8: the objects can move their own way, and move as the ground does by default', () => {
+    assert.equal(TIMING.objectMove, 'same');
+    for (const objectMove of MOVES) {
+      const entrances = schedule(pieces, { ...TIMING, move: 'pop', objectMove });
+      const moves = (kind) => new Set(pieces.flatMap((p, i) => (p.enter === kind ? [entrances[i].move] : [])));
+      assert.deepEqual([...moves('ground')], ['pop'], objectMove);
+      assert.deepEqual([...moves('object')], [objectMove], objectMove);
     }
   });
 
