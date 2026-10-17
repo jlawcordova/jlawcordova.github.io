@@ -52,11 +52,13 @@
   color: var(--color-ink);
 }
 
+/* The links take the free space, so the theme button sits at the far right. */
 .site-nav__links {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 4px;
+  margin-left: auto;
 }
 
 .site-nav__links a:not(.pill) {
@@ -73,10 +75,12 @@
   color: var(--color-accent);
 }
 
-/* Where the full wordmark and the menu button can't share one row (a header
-   under 350px, so phones narrower than about 382px, and the design-system
-   preview), the wordmark steps down so the closed bar stays one row. */
-@container site-header (max-width: 349px) {
+/* Where the full wordmark can't share one row with the rest, the wordmark
+   steps down so the closed bar stays one row: beside the theme and menu
+   buttons in a header under 420px (phones narrower than about 452px, and the
+   design-system preview), and beside every link and the theme button in a
+   header of 673px to 752px (a window of 721px to 800px). */
+@container site-header (max-width: 419px) or ((min-width: 673px) and (max-width: 752px)) {
   .site-nav {
     padding-left: 12px;
     column-gap: 8px;
@@ -84,6 +88,18 @@
   .site-nav__brand {
     gap: 12px;
     font-size: 14px;
+  }
+}
+
+/* The smallest phones (a header under 330px, so about 361px wide): smaller
+   still, with the two buttons side by side. */
+@container site-header (max-width: 329px) {
+  .site-nav {
+    column-gap: 0;
+  }
+  .site-nav__brand {
+    gap: 10px;
+    font-size: 10px;
   }
 }
 
@@ -97,10 +113,12 @@
   }
 }
 
-/* The menu button: icon only, no text and no border, a 44px target. It shows
-   only at 720px and below, and only with JavaScript (the data-js flag is set
-   before first paint, so the collapsed bar paints first). */
-.site-nav__menu {
+/* The menu and theme buttons: icon only, no text and no border, a 44px
+   target. The menu button shows only at 720px and below, and only with
+   JavaScript (the data-js flag is set before first paint, so the collapsed bar
+   paints first). */
+.site-nav__menu,
+.site-nav__theme {
   display: none;
   width: 44px;
   height: 44px;
@@ -113,7 +131,8 @@
   color: var(--color-ink);
   cursor: pointer;
 }
-.site-nav__menu:hover {
+.site-nav__menu:hover,
+.site-nav__theme:hover {
   background: var(--color-card);
 }
 .site-nav__glyph-close,
@@ -121,6 +140,20 @@
   display: none;
 }
 .site-nav.is-open .site-nav__glyph-close {
+  display: block;
+}
+
+/* The theme button (dark mode spec R5): the menu button's shape, at every
+   width, and only with JavaScript, since it does nothing without it. Its
+   glyph shows the theme it switches to. */
+html[data-js] .site-nav__theme {
+  display: inline-flex;
+}
+.site-nav__glyph-sun,
+html[data-theme="dark"] .site-nav__glyph-moon {
+  display: none;
+}
+html[data-theme="dark"] .site-nav__glyph-sun {
   display: block;
 }
 
@@ -135,6 +168,14 @@
   }
   html[data-js] .site-nav__links {
     display: none;
+    order: 2;
+  }
+  html[data-js] .site-nav__menu {
+    order: 1;
+  }
+  /* The bar reads brand, theme button, menu button; the open links drop below. */
+  html[data-js] .site-nav__theme {
+    margin-left: auto;
   }
 
   /* Open: the links stack as full-width rows under an ink rule, with the
