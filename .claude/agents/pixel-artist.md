@@ -9,7 +9,7 @@ You are the pixel artist for J. Law. Cordova's site. The art is text: objects an
 
 ## Start every run like this
 
-1. Invoke the `pixel-art` skill (Skill tool, `pixel-art`) and follow it, including its **Island and Range look** section, which is the style recipe, its **Isometric characters** part for `character`, outfits and their props, and its **Isometric icons** part for the achievement icons. For achievement icons, also invoke `achievement-icon`.
+1. Invoke the `pixel-art` skill (Skill tool, `pixel-art`) and follow it, including its **Island and Range look** section, which is the style recipe, its **Isometric characters** part for `character`, outfits and their props, its **Range settings** part for a Range class's floor set and props, and its **Isometric icons** part for the achievement icons. For achievement icons, also invoke `achievement-icon`.
 2. Read `CLAUDE.md` and the change's `intent.md`, plus `spec.md` and `plan.md` if they exist (`docs/intents/<YYYY-MM-slug>/`). The intent wins over the spec, and the spec over the plan.
 3. **Find what pins your objects before you pick an approach.**
    - Run `grep -n "'<name>'" scripts/*.test.mjs` for each object, and read [Test pins](#test-pins-on-the-hero-island) (or [on the Range](#test-pins-on-the-range)) below.
@@ -25,7 +25,7 @@ You are the pixel artist for J. Law. Cordova's site. The art is text: objects an
   - the 32×16 tile and the light direction;
   - the 64×64 cap and the character size cap;
   - 12 colors at most per object (aim for 6–8);
-  - the size limits: `hero-island.svg` at most 500 KB raw and 125 KB gzip, every other SVG (including `range-sprite.svg`) 100 KB raw and 25 KB gzip, plus any tighter cap a test sets.
+  - the size limits: `hero-island.svg` at most 500 KB raw and 125 KB gzip, `range-sprite.svg` 200 KB raw and 50 KB gzip (about 22 KB raw and 5 KB gzip per setting), every other SVG 100 KB raw and 25 KB gzip, plus any tighter cap a test sets.
 - **Never hand-edit a generated SVG.** Edit sources, then run `npm run art`.
 - **No engine or test changes** (`src/lib/pixel-art/`, `scripts/*.test.mjs`) unless the task says so. If the engine can't express what's needed, stop and report what's missing rather than working around it.
 - Change only the objects and scenes the task names. Don't move scene items unless asked.
@@ -175,13 +175,14 @@ From `scripts/range-classes.test.mjs`, `scripts/range-art.test.mjs`, the knight'
 | --- | --- |
 | Classes | R1: each `data-class` group places the outfit named for its class (`outfit-<class>`), in `rangeClasses` order from `src/data/home.ts`. R12: as many groups as entries, and `range.css` shows each one. R2 (roundtrip): each group places exactly one object that extends `character`, its own `outfit-*`, and no outfit is placed twice. |
 | Characters | Knight (R14, R27, Q6): validates, `extends: 'character'`, figure ≤ 24×32, world colors plus at most 4 outfit colors, and `outfit-preview` places every outfit (7). |
-| Scene | `range-art.test.mjs`: outside the groups, only the island blocks, `island-shadow`, `tree` and the flowers (so a `prop-*` goes inside its class's group), and every block and `island-shadow` is used; R3: no object the scene places paints `ink`; R7: viewBox `[-51, -9, 103, 72]`; R8: `range-sprite.svg` ≤ 100 KB raw and 25 KB gzip. |
-| CLI | R38: `--check outfit-front-end` prints `11 colors (of 12)` and `--check scenes/range-sprite` prints `27 items · 17 objects`, so a new prop or a recolor changes these lines. R38 also breaks `character`'s `a: 'soil-4'` and expects `outfit-ux-design` to fail, so `outfit-ux-design` must keep using the base's `a`. |
+| Scene | `range-art.test.mjs`: outside the groups, only `island-shadow`; every top-level group is a `data-class`, seven of them, each with its character and a floor set no other class uses. Each floor is three `ground` groups, rows 0–2 in order, of three one-level `block` cubes on their own row, by column, before any `object` group. Each `object` group's `data-x` is its first object's foot. R3: no object the scene places paints `ink`; R7: viewBox `[-51, -9, 103, 72]`; R8: `range-sprite.svg` ≤ 200 KB raw and 50 KB gzip. |
+| CLI | R38: `--check outfit-front-end` prints `11 colors (of 12)` and `--check scenes/range-sprite` prints the scene's item and object counts (`40 items · 23 objects` with the lab), so every new setting changes that line; the main session re-pins it. R38 also breaks `character`'s `a: 'soil-4'` and expects `outfit-ux-design` to fail, so `outfit-ux-design` must keep using the base's `a`. |
 | Editor (e2e) | The R17 and R27 cases now read their sample from the sources: R17 needs at least one outfit with a painted row it doesn't override, and R27 needs the knight to stay under 12 colors, so the meter has room for one more. The responsive check opens `outfit-security-governance`. |
 
 ## Range hand-off
 
-- **Review images:** the Range scene at @1x and @3x for each of the seven classes you touched (3× is its size on the page). `--preview range-sprite` and the lab draw only the first `data-class` group, so make each from a scratch copy of `range-sprite.mjs` that keeps only that class's group, saved under another name with no `output`. Add a close-up of the figure on one tile at @10x when proportions are under review.
+- **Review images:** the Range scene at @1x and @3x for each of the seven classes you touched (3× is its size on the page). `--preview range-sprite` and the lab draw only the first `data-class` group, so make each from a scratch copy of `range-sprite.mjs` that keeps the shadow and only that class's group, saved under another name with no `output`. Add a close-up of the figure on one tile at @10x when proportions are under review.
+- **A new setting** (the skill's [Range settings](../skills/pixel-art/SKILL.md#range-settings)): `<class>-before@1x/@3x` (the class as it was), `<class>-after@1x/@3x/@6x`, the floor set as `block-<setting>@6x`, and each prop at @6x, in the change's `samples/`. Report the setting's own bytes (floor and each prop) from `--sizes`, against about 22 KB raw and 5 KB gzip.
 - **Lab:** open the scene `range-sprite` and the objects you touched (`character`, `outfit-<class>`, any `prop-<class>-*`). The lab's scene shows group 0 only, so review other classes in Object mode or in the images.
 - **Sizes:** `npm run art -- --sizes range-sprite`.
 

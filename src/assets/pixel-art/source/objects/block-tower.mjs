@@ -1,0 +1,34 @@
+// Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md
+export default {
+  kind: 'block',
+  size: [1, 1, 1],
+  faces: {
+    top: 'water-2',
+    left: 'water-3',
+    right: 'water-4',
+  },
+  surface: {
+    keys: {
+      w: 'water-1',
+      g: 'gold-2',
+    },
+    map: [
+      '...............gg...............',
+      '.............wwggww.............',
+      '...........wwwwwwwwww...........',
+      '.........wwwwwwwwwwwwww.........',
+      '.........wwwwwwwwwwwwww.........',
+      '...........wwwwwwwwww...........',
+      '.............wwwwww.............',
+      '.gg............ww............gg.',
+      '.gg............ww............gg.',
+      '.............wwwwww.............',
+      '...........wwwwwwwwww...........',
+      '.........wwwwwwwwwwwwww.........',
+      '.........wwwwwwwwwwwwww.........',
+      '...........wwwwwwwwww...........',
+      '.............wwggww.............',
+      '...............gg...............',
+    ],
+  },
+};

@@ -24,8 +24,8 @@ const ROOT = fileURLToPath(new URL('../../', import.meta.url));
 const BASE = process.env.E2E_BASE_URL ?? 'http://localhost:4321';
 /** The class names in rangeClasses, read from home.ts as text. */
 const classNames = (homeTs) => [.../export const rangeClasses = \[([\s\S]*?)\] as const;/.exec(homeTs)[1].matchAll(/name: '([^']+)'/g)].map((m) => m[1]);
-/** The carousel's interval (Range.astro), plus slack. */
-const STEP_MS = 2200;
+/** The carousel's interval (Range.astro, Range settings spec R7); the waits add their own slack. */
+const STEP_MS = 3000;
 
 /** @type {import('playwright').Browser} */
 let browser;
@@ -161,6 +161,46 @@ test('R7: the arrows wrap both ways', async () => {
   assert.equal((await state(page)).current, names.length - 1, 'Previous from the first goes to the last');
   await next(page);
   assert.equal((await state(page)).current, 0, 'Next from the last goes to the first');
+  await page.close();
+});
+
+/** Every entrance group of the setting on show: its opacity and transform. */
+const settingPieces = (page) =>
+  page.evaluate(() =>
+    [...document.querySelectorAll('.range__sprite .enter')]
+      .filter((g) => getComputedStyle(/** @type {Element} */ (g.closest('[data-class]'))).display !== 'none')
+      .map((g) => ({ opacity: getComputedStyle(g).opacity, transform: getComputedStyle(g).transform })),
+  );
+const pieceAtRest = ({ opacity, transform }) => opacity === '1' && (transform === 'none' || transform === 'matrix(1, 0, 0, 1, 0, 0)');
+
+test('Settings R4, R8: a switch builds the new setting, and a quick double press still ends with every piece in place', async () => {
+  const page = await openRange();
+  await pause(page);
+  await next(page);
+  // The build starts at once: the floor rows start below their spots and transparent.
+  await page.waitForFunction(
+    () =>
+      [...document.querySelectorAll('.range__sprite .enter')].some(
+        (g) => getComputedStyle(/** @type {Element} */ (g.closest('[data-class]'))).display !== 'none' && Number(getComputedStyle(g).opacity) < 1,
+      ),
+    undefined,
+    { timeout: 1000 },
+  );
+  await next(page);
+  await page.waitForTimeout(1600);
+  const pieces = await settingPieces(page);
+  assert.ok(pieces.length >= 4, `${pieces.length} pieces on show`);
+  assert.deepEqual(pieces.filter((p) => !pieceAtRest(p)), [], 'every piece ends in place');
+  assert.deepEqual((await state(page)).shown, ['2'], 'only the current class shows');
+  await page.close();
+});
+
+test('Settings R6, R9: under reduced motion a switch shows the new setting at once, with nothing moving', async () => {
+  const page = await openRange({ reducedMotion: 'reduce' });
+  await next(page);
+  const pieces = await settingPieces(page);
+  assert.ok(pieces.length >= 4);
+  assert.deepEqual(pieces.filter((p) => !pieceAtRest(p)), []);
   await page.close();
 });
 
