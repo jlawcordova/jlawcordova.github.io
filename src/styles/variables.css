@@ -1,4 +1,13 @@
-:root {
+/*
+ * Colors come in two themes. The light one is on :root, and also on
+ * [data-theme="light"] so an element can keep the light colors for itself and
+ * its children (the Range handheld). <html data-theme> is set before first
+ * paint by BaseLayout.astro.
+ */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
   /* Ground */
   --color-page: #F4EDE0;
   --color-hero: #EADFC8;
@@ -30,6 +39,38 @@
   --color-footer: #3F2B1E;
   --color-on-footer: #E9DCC6;
 
+  /* Code blocks: the same dark ground in both themes, under the syntax colors. */
+  --color-code: #2E2418;
+  --color-on-code: #F4EDE0;
+}
+
+/* The dark theme (dark mode spec). The colors not listed here (earth, gold,
+   forest, footer and code) are the same in both themes. */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Ground */
+  --color-page: #1C1712;
+  --color-hero: #262019;
+  --color-card: #2D251C;
+  --color-surface: rgba(45, 37, 28, 0.55);
+  --color-surface-strong: rgba(28, 23, 18, 0.78);
+  --color-surface-ghost: rgba(45, 37, 28, 0.6);
+
+  /* Ink */
+  --color-ink: #F1E8D8;
+  --color-ink-muted: #C8B9A1;
+  --color-border: rgba(241, 232, 216, 0.16);
+  --color-border-strong: rgba(241, 232, 216, 0.24);
+  --color-grid: rgba(241, 232, 216, 0.06);
+
+  /* Brand */
+  --color-accent: #8CBC86;
+  --color-accent-hover: #A8D1A1;
+  --color-on-accent: #1C1712;
+}
+
+:root {
   /* Type */
   --font-text: 'Sora', 'Segoe UI', system-ui, sans-serif;
   --font-pixel: 'Silkscreen', ui-monospace, monospace;
@@ -43,13 +84,19 @@
   --radius-button: 0;
   --radius-chip: 0;
   --border-thick-width: 3px;
-  --border-thick: 3px solid var(--color-ink);
 
   /* Layout */
   --content-max: 1160px;
   --reading-max: 720px;
   --gutter: 24px;
   --header-offset: 96px; /* scroll-margin for anchors under the sticky header */
+}
+
+/* Set again wherever a theme is, so the border takes that theme's ink: a
+   custom property resolves var() where it's declared, not where it's used. */
+:root,
+[data-theme] {
+  --border-thick: 3px solid var(--color-ink);
 }
 
 @media (max-width: 480px) {
