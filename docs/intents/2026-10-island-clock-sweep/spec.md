@@ -22,7 +22,7 @@ This change replaces R3–R6 of the [island build entrance spec](../2026-10-isla
   - With feet on every piece, the schedule can order by any position, and so can the lab (R8).
 - **R7. Row 3 is water all the way across.** The grass cube behind the office at `[0, 3]` becomes `block-river` with a `river` top, like the rest of row 3, so the river runs from the island's back-left edge to the waterfall. The close-ups that show `[0, 3]` follow. *(Outcome: the grass tile behind the office becomes water)*
 - **R8. The prototyping tools are saved as the entrance lab.** An unlisted, `noindex` page at `/lab/island-entrance/` plays the hero island's build-up with the same schedule and player as the home page, under controls for every option the prototype had:
-  - ground orders, objects after or with their cube, object orders, and moves;
+  - ground orders, objects after or with their cube, object orders, and a move for the ground and one for the objects (by default, the same);
   - the spans, the cascade, the object lead or lag, the duration, the peak, and the rise, overshoot and pop sizes.
 
   Any change replays at once. R replays and H hides the controls. The settings live in the URL, a speed control slows the playback, Site version resets to what ships, and Copy gives the changes to `TIMING`, ready to paste. No page links to it. *(Outcome: the prototyping tools are saved)*
@@ -54,7 +54,7 @@ This change replaces R3–R6 of the [island build entrance spec](../2026-10-isla
 - **`Timing`** names every number and choice:
   - `start`, `groundDelay`, `groundSpan`, `cascade`, the `ground` order and the `objects` order;
   - `with`, `objectLead`, `objectSpan` and `lag`;
-  - the `move`, `duration` and `peak`, then `rise` and `overshoot` (float and drop) and `popFrom` and `popPeak` (pop);
+  - the ground's `move` and the objects' `objectMove` (`same` by default, so they move as the ground does), the `duration` and `peak`, then `rise` and `overshoot` (float and drop) and `popFrom` and `popPeak` (pop);
   - the shadow and sky numbers, and a `seed` for the random orders.
 - **`TIMING`** is the owner's choice:
 

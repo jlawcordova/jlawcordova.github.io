@@ -4,7 +4,7 @@
 // on the hero island with the same code as the home page. Changing anything
 // replays it; R replays, H hides the controls, and the settings live in the
 // URL. Copy gives the changes to TIMING, ready to paste.
-import { GROUND_ORDERS, MOVES, OBJECT_ORDERS } from '../../lib/island-entrance.mjs';
+import { GROUND_ORDERS, MOVES, OBJECT_MOVES, OBJECT_ORDERS } from '../../lib/island-entrance.mjs';
 
 const label: Record<string, string> = {
   rows: 'Rows, left cliff first',
@@ -19,7 +19,7 @@ const label: Record<string, string> = {
   checker: 'Checkerboard, two waves',
   random: 'Random',
   together: 'All at once',
-  same: 'Same order as the ground',
+  same: 'Same as the ground',
   float: 'Float up, overshoot, settle',
   drop: 'Drop from above, dip, settle',
   pop: 'Pop up from its foot',
@@ -38,7 +38,8 @@ const selects = [
     ],
   },
   { name: 'objects', text: 'Object order', options: options(OBJECT_ORDERS), when: 'after' },
-  { name: 'move', text: 'Move', options: options(MOVES) },
+  { name: 'move', text: 'Ground move', options: options(MOVES) },
+  { name: 'objectMove', text: 'Object move', options: options(OBJECT_MOVES) },
 ];
 const ranges = [
   { name: 'groundSpan', text: 'Ground stagger span', min: 0, max: 2.5, step: 0.05, unit: 's' },
@@ -227,12 +228,14 @@ const ranges = [
         const out = label.querySelector('output')!;
         out.textContent = `${t[label.dataset.range as Key]}${out.dataset.unit}`;
       }
+      // A field shows when the ground's move or the objects' own move uses it.
+      const used = [t.move, t.objectMove === 'same' ? t.move : t.objectMove];
       const show: Record<string, boolean> = {
         after: !t.with,
         with: t.with,
-        moving: t.move !== 'fade',
-        travel: ['float', 'drop', 'stepped'].includes(t.move),
-        pop: t.move === 'pop',
+        moving: used.some((m) => m !== 'fade'),
+        travel: used.some((m) => ['float', 'drop', 'stepped'].includes(m)),
+        pop: used.includes('pop'),
       };
       for (const field of form.querySelectorAll<HTMLElement>('[data-when]')) field.hidden = !show[field.dataset.when!];
       const q = new URLSearchParams();

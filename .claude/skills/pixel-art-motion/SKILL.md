@@ -90,6 +90,8 @@ A new ground position is its own `ground` group with its place and foot. Groups 
 | `stepped` | a float that lands on whole art pixels (lab only) | `rise`, `overshoot`, `peak` |
 | `fade` | opacity only | none |
 
+The ground uses `move`. The objects use `objectMove`, which is `same` (the ground's move) unless it names a move of its own, so the cubes can pop while the objects drop, for example.
+
 `y` and `x` are in the SVG's own units, so 10 means 10 art pixels: about 30 CSS pixels at the hero's 675px, and about 17 at 390px. `scale` needs `transform-box: fill-box` and a `transform-origin` on the group, or it grows from the SVG's corner. The island's is set in `hero.css`.
 
 ## Prototyping in the lab
