@@ -124,7 +124,7 @@ describe('hero island structure', () => {
     const groups = [...svg.matchAll(/<g class="([^"]+)"/g)].map((m) => m[1]).filter((cls) => cls !== 'enter');
     // Each river tile carries its own wf loop, and the falling face one more.
     const rivers = indexesOf(['river', 'waterfall-face']).length;
-    assert.equal(rivers, 6, 'five river tiles (one a top on the front block) and the falling face');
+    assert.equal(rivers, 7, 'six river tiles, the whole of row 3 (island clock sweep spec R7), and the falling face');
     const want = [
       ...Array.from({ length: rivers }, () => [0, 1, 2, 3, 4].map((n) => `wf w${n}`)).flat(),
       ...[0, 1, 2, 3].map((n) => `ff f${n}`),
@@ -220,18 +220,18 @@ describe('hero island structure', () => {
     assert.deepEqual(scene.origin, [0, 8], 'the grid origin that puts the 6×6 top faces where the island stood');
     for (const item of ground) {
       const [col, row] = item.at.tile;
-      // The river runs along row 3 from the house; under the house, at [0, 3], it stays grass.
+      // The river runs along the whole of row 3, behind the house too (island clock sweep spec R7).
       // The road runs along column 2, on the trucks' line, and crosses the river on the bridge at [2, 3].
       // The front corner is the true cube; the left cliff (row 5) takes block-left, block-road under the road's end, and the
       // right cliff (column 5) block-right, block-river under the river's end (spec, Hidden joints; the owner's land review).
       // Inland, the flat tiles became cubes so they have depth as they float up (island build entrance spec R1): the
       // material's cube under the river and the road, and block elsewhere.
       const edge = col === 5 && row === 5 ? 'block' : row === 5 ? (col === 2 ? 'block-road' : 'block-left') : row === 3 ? 'block-river' : 'block-right';
-      const want = col === 5 || row === 5 ? edge : row === 3 && col >= 1 ? 'block-river' : col === 2 ? 'block-road' : 'block';
+      const want = col === 5 || row === 5 ? edge : row === 3 ? 'block-river' : col === 2 ? 'block-road' : 'block';
       assert.equal(item.object, want, `[${col}, ${row}]`);
     }
     // Wherever the river and the road run, the cube gets a river or path top, listed right after it.
-    const roadAndRiver = [...[0, 1, 2].map((row) => ['path', [2, row, 0]]), ...[1, 2, 3, 4, 5].map((col) => ['river', [col, 3, 0]]), ...[4, 5].map((row) => ['path', [2, row, 0]])];
+    const roadAndRiver = [...[0, 1, 2].map((row) => ['path', [2, row, 0]]), ...[0, 1, 2, 3, 4, 5].map((col) => ['river', [col, 3, 0]]), ...[4, 5].map((row) => ['path', [2, row, 0]])];
     assert.deepEqual(tops.map((item) => [item.object, item.at.tile]), roadAndRiver);
     for (const top of tops) {
       const i = items.indexOf(top);
@@ -239,7 +239,7 @@ describe('hero island structure', () => {
       assert.deepEqual(items[i - 1].at, top.at);
     }
     // Row by row, then by column: a cube only covers the cubes at [col + 1, row] and [col, row + 1], which both come later,
-    // so this is still back to front, and each row is one run that can enter as one group (island build entrance spec).
+    // so this is still back to front (island build entrance spec).
     const order = ground.map((item) => item.at.tile[1] * 6 + item.at.tile[0]);
     assert.deepEqual(order, [...order].sort((a, b) => a - b), 'ground paints row by row, then by column');
     for (const name of BLOCKS) assert.deepEqual(resolve(sources, name).block.size, [1, 1, 1], `${name} is a cube`);
@@ -568,35 +568,41 @@ describe('entrance groups (island build entrance spec, Entrance groups)', () => 
     assert.equal(ofKind('shadow').length + ofKind('sky').length, 2, 'one shadow group and one sky group');
   });
 
-  it('each grid row is one ground group, rows 0 to 5 in paint order, holding exactly that row', () => {
+  it('each cube is one ground group, in paint order, holding its cube and the top laid over it, with its grid place and foot (island clock sweep spec R6)', () => {
     const ground = ofKind('ground');
-    assert.deepEqual(ground.map((g) => attr(g, 'data-row')), ['0', '1', '2', '3', '4', '5']);
+    assert.equal(ground.length, 36, 'one group per position');
     for (const group of ground) {
+      const [col, row] = [Number(attr(group, 'data-col')), Number(attr(group, 'data-row'))];
       for (const item of group.items) {
         assert.ok(item.at.tile, `${item.object} is placed on the grid`);
-        assert.equal(String(item.at.tile[1]), attr(group, 'data-row'), `${item.object} at ${item.at.tile} is in its row's group`);
+        assert.deepEqual(item.at.tile, [col, row, 0], `${item.object} at ${item.at.tile} is in its cube's group`);
       }
+      assert.ok(BLOCKS.includes(group.items[0].object), `[${col}, ${row}] starts with its cube`);
+      const [x, y] = tileToPx([col, row, 0], scene.origin);
+      assert.deepEqual([attr(group, 'data-x'), attr(group, 'data-y')], [String(x), String(y)], `[${col}, ${row}]'s foot is its tile's center`);
     }
     const inGround = new Set(ground.flatMap((g) => g.items));
     const tiled = items.filter((item) => !inGround.has(item) && item.at.tile && !['bridge', 'bridge-rail'].includes(item.object));
     assert.deepEqual(tiled, [], 'every tile-placed item but the bridge and its rail is ground');
   });
 
-  it('each object group\'s data-x is its objects\' foot: shades take their tree\'s, and the crane\'s jib and box take the mast\'s', () => {
+  it('each object group\'s data-x and data-y are its objects\' foot: shades take their tree\'s, and the crane\'s jib and box take the mast\'s', () => {
     const foot = (item) => {
-      if (item.at.tile) return tileToPx(item.at.tile, scene.origin)[0];
-      const { anchor, width } = resolve(sources, item.object);
-      return Math.round(item.at.px[0] - anchor[0] + width / 2);
+      if (item.at.tile) return tileToPx(item.at.tile, scene.origin);
+      const { anchor, width, height } = resolve(sources, item.object);
+      return [Math.round(item.at.px[0] - anchor[0] + width / 2), item.at.px[1] - anchor[1] + height - 1];
     };
     const objects = ofKind('object').flatMap((g) => g.items);
     const mast = objects.find((item) => item.object === 'crane-mast');
-    const xOf = (item) => {
+    const footOf = (item) => {
       if (item.object === 'tree-shade') return foot(objects.find((o) => o.object !== 'tree-shade' && String(o.at.px) === String(item.at.px)));
       if (item.object === 'crane-jib' || item.object === 'crane-box') return foot(mast);
       return foot(item);
     };
     for (const group of ofKind('object')) {
-      for (const item of group.items) assert.equal(attr(group, 'data-x'), String(xOf(item)), `${item.object} at ${JSON.stringify(item.at)}`);
+      // Every item shares the group's x. Its y is the first item's, so the trucks arrive with the flag, at its foot.
+      for (const item of group.items) assert.equal(attr(group, 'data-x'), String(footOf(item)[0]), `${item.object} at ${JSON.stringify(item.at)}`);
+      assert.equal(attr(group, 'data-y'), String(footOf(group.items[0])[1]), `${group.items[0].object}'s foot y`);
     }
     assert.equal(objects.length, items.length - 11 - 3 - ofKind('ground').flatMap((g) => g.items).length, 'every other item is an object');
   });
