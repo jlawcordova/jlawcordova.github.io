@@ -41,3 +41,8 @@ One slice, run by the main session in one sitting, so it goes straight to a PR i
 - `npm test`: `# fail 0`.
 - `npm run e2e`: `# fail 0`. The new START check fails with the fix taken out.
 - Screenshots of the Range at 1440px and 390px, with no horizontal scroll.
+
+## After review
+
+The owner found, on [#125](https://github.com/jlawcordova/jlawcordova.github.io/pull/125), that hovering the screen stopped the countdown and the cycle. Hover no longer holds it, and focus only does when it's keyboard focus (spec R4, and the unpause bug in Design). The auto-advance check now proves hover and a click don't hold it and keyboard focus does.
+

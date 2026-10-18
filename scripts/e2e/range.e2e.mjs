@@ -1,7 +1,7 @@
 // Browser checks for the home page's Range carousel (Range class characters
 // spec R1, R5–R8): the nameplate, its swatch, "class N of M" text and sprite
 // label follow src/data/home.ts; exactly one outfit shows at a time; the arrows
-// wrap both ways; auto-advance, pause, hover and focus pause and reduced motion
+// wrap both ways; auto-advance, pause, keyboard focus and reduced motion
 // behave; and at 390px and 1440px every name fits on one line with no
 // horizontal scroll and 44px tap targets.
 //
@@ -210,7 +210,7 @@ test('Settings R6, R9: under reduced motion a switch shows the new setting at on
   await page.close();
 });
 
-test('R7: it auto-advances, and pause, hover and focus stop it', async () => {
+test('R7, Pop R4: it auto-advances; pause and keyboard focus stop it, and hover and a click do not', async () => {
   const page = await openRange();
   // The carousel's clock starts when the page loads, not when openRange
   // returns, so a slow load (a cold server or browser on the first run after a
@@ -238,16 +238,32 @@ test('R7: it auto-advances, and pause, hover and focus stop it', async () => {
   await page.locator('.range__toggle').click();
   await release();
 
-  await page.locator('.range__stage').hover();
-  at = (await state(page)).current;
-  await page.waitForTimeout(STEP_MS + 400);
-  assert.equal((await state(page)).current, at, 'hover pauses');
+  /** Waits for the next class within one interval. */
+  const moves = async (why) => {
+    const was = (await state(page)).current;
+    await page.waitForFunction(
+      (w) => Number(/** @type {HTMLElement} */ (document.querySelector('.range')).dataset.current) !== w,
+      was,
+      { timeout: STEP_MS + 400 },
+    );
+    assert.equal((await state(page)).current, (was + 1) % names.length, why);
+  };
 
+  await page.locator('.range__stage').hover();
+  await moves('hovering the screen does not hold it');
+
+  // A click leaves the pointer and focus on the console, and it still runs.
+  await page.locator('.range__arrow[data-dir="1"]').click();
+  await moves('a clicked key does not hold it');
+
+  // Keyboard focus does: tab onto a key.
   await page.mouse.move(0, 0);
-  await page.locator('.range__arrow[data-dir="1"]').focus();
+  await page.locator('.range__arrow[data-dir="-1"]').focus();
+  await page.keyboard.press('Tab');
+  assert.equal(await page.evaluate(() => document.activeElement?.matches('.range__console :focus-visible')), true, 'a key has keyboard focus');
   at = (await state(page)).current;
   await page.waitForTimeout(STEP_MS + 400);
-  assert.equal((await state(page)).current, at, 'focus pauses');
+  assert.equal((await state(page)).current, at, 'keyboard focus holds it');
   await page.close();
 });
 

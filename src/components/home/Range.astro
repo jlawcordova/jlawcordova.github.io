@@ -103,7 +103,7 @@ const [first] = rangeClasses;
     const panel = $('.range__console');
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
     const count = rangeClasses.length;
-    let [index, playing, hovered, focused] = [0, !motion.matches, false, false];
+    let [index, playing, focused] = [0, !motion.matches, false];
     let pulse: ReturnType<typeof setTimeout> | undefined;
 
     // Each change layer runs one change at a time: a new one clears the last.
@@ -200,10 +200,11 @@ const [first] = rangeClasses;
     };
 
     // The countdown is the clock (R4): when it fills, the next class shows.
-    // It fills smoothly behind its twelve-segment mask. Hover, focus and a
-    // hidden tab hold it where it is, START pauses it, and a press of an arrow
-    // or B starts it over. It's made the first time the rotation plays, so
-    // under reduced motion, where the rotation starts paused, nothing runs.
+    // It fills smoothly behind its twelve-segment mask. Keyboard focus in the
+    // console and a hidden tab hold it where it is, START pauses it, and a
+    // press of an arrow or B starts it over. Hovering doesn't hold it (R4). It's
+    // made the first time the rotation plays, so under reduced motion, where
+    // the rotation starts paused, nothing runs.
     let countdown: Animation | undefined;
     const clock = () => {
       if (!countdown) {
@@ -218,7 +219,7 @@ const [first] = rangeClasses;
     const schedule = () => {
       toggle.setAttribute('aria-pressed', String(!playing));
       section.classList.toggle('is-paused', !playing);
-      if (playing && !hovered && !focused && !document.hidden) clock().play();
+      if (playing && !focused && !document.hidden) clock().play();
       else countdown?.pause();
     };
     const restart = () => {
@@ -241,18 +242,23 @@ const [first] = rangeClasses;
     section.querySelectorAll<HTMLElement>('button[data-dir]').forEach((arrow) =>
       arrow.addEventListener('click', () => (show(Number(arrow.dataset.dir), true), restart())),
     );
-    // START plays at once (R5). The pointer is still over the console and
-    // focus is on START, which would otherwise hold the countdown until both
-    // leave, so pressing START to play lets go of both.
+    // START plays at once (R5). Pressed from the keyboard, focus is still on
+    // START and would hold the countdown, so pressing START to play lets go of
+    // that hold until focus moves again.
     toggle.addEventListener('click', () => {
       playing = !playing;
-      if (playing) [hovered, focused] = [false, false];
+      if (playing) focused = false;
       schedule();
     });
-    panel.addEventListener('mouseenter', () => ((hovered = true), schedule()));
-    panel.addEventListener('mouseleave', () => ((hovered = false), schedule()));
-    panel.addEventListener('focusin', () => ((focused = true), schedule()));
-    panel.addEventListener('focusout', (e) => ((focused = panel.contains((e as FocusEvent).relatedTarget as Node)), schedule()));
+    // Only keyboard focus holds it, so someone tabbing through the keys isn't
+    // moved on mid-way. A click leaves focus on a key without :focus-visible,
+    // which doesn't.
+    panel.addEventListener('focusin', (e) => ((focused = (e.target as Element).matches(':focus-visible')), schedule()));
+    panel.addEventListener('focusout', (e) => {
+      if (panel.contains((e as FocusEvent).relatedTarget as Node)) return;
+      focused = false;
+      schedule();
+    });
     motion.addEventListener('change', () => ((playing = !motion.matches), schedule()));
     document.addEventListener('visibilitychange', schedule);
 
