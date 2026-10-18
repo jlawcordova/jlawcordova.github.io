@@ -1,6 +1,6 @@
 // @ts-check
 // The build-up entrances: when each `enter` group starts and how it moves, for
-// the hero island (island clock sweep spec R1–R5) and for each Range setting
+// the hero island (island sweep drop spec R1–R5) and for each Range setting
 // (Range settings spec R4, R5). Pure data in, timings out, so node:test can
 // check the order without a browser; Hero.astro, Range.astro and the entrance
 // lab play it with playEntrance() from src/lib/play-entrance.ts.
@@ -64,48 +64,49 @@ export const OBJECT_MOVES = /** @type {const} */ (['same', ...MOVES]);
  *   entrance lab can show and copy any one.
  */
 
-/** The owner's choice from the entrance lab (island clock sweep spec R1–R5). */
+/** The owner's pick from the entrance lab (island sweep drop spec R1–R5). */
 export const TIMING = /** @type {Timing} */ ({
   /** When the shadow starts, alongside the hero copy. */
   start: 0.2,
   /** From the shadow's start to the first ground piece's. */
   groundDelay: 0.12,
   /** From the first ground piece's start to the last one's. */
-  groundSpan: 0.5,
-  /** An extra left-to-right delay inside each wave, spread over the island's width. */
-  cascade: 0,
-  /** The ground pops up cube by cube, clockwise from the left corner. */
-  ground: 'clock',
-  /** The objects follow front to back. */
-  objects: 'front-back',
-  /** Objects come after the ground, not each with the cube under it. */
-  with: false,
-  /** How long before the last ground piece lands the first object starts. */
+  groundSpan: 0.25,
+  /** An extra left-to-right delay, spread over the island's width. With the sweep, the ground spans 0.5s in all. */
+  cascade: 0.25,
+  /** The ground sweeps in from the left corner to the right. */
+  ground: 'sweep',
+  /** As copied from the lab; unused while the objects arrive `with` their cubes. */
+  objects: 'same',
+  /** Each object arrives with the cube under it. */
+  with: true,
+  /** Without `with`: how long before the last ground piece lands the first object starts. */
   objectLead: 0.08,
-  /** From the first object's start to the last one's. */
+  /** Without `with`: from the first object's start to the last one's. */
   objectSpan: 0.6,
-  /** With `with`: how long after the cube under it an object starts. */
-  lag: 0.4,
-  move: 'pop',
-  /** The objects move as the ground does, numbers and all. With a move of their own, they use the object numbers below. */
-  objectMove: 'same',
-  /** Each piece's move, from its start to settled. */
-  duration: 0.5,
+  /** How long after the cube under it an object starts. */
+  lag: 0.42,
+  /** The ground floats up and overshoots. */
+  move: 'float',
+  /** The objects drop from above. With a move of their own, they use the object numbers below; with `same`, the ground's. */
+  objectMove: 'drop',
+  /** Each ground piece's move, from its start to settled. */
+  duration: 0.25,
   /** The share of a move spent reaching its peak, before settling. */
-  peak: 0.55,
+  peak: 0.6,
   /** Float and drop: how far from its spot a piece starts, in art pixels. */
-  rise: 10,
+  rise: 16,
   /** Float and drop: how far past its spot a piece goes before settling. */
-  overshoot: 2,
+  overshoot: 6,
   /** Pop: the size a piece grows from. */
   popFrom: 0.3,
   /** Pop: the size it grows to before settling. */
   popPeak: 1.1,
-  /** The objects' own duration, peak, rise, overshoot and pop sizes, used only when `objectMove` isn't `same`. */
-  objectDuration: 0.5,
-  objectPeak: 0.55,
-  objectRise: 10,
-  objectOvershoot: 2,
+  /** The objects' own numbers: a quick drop from 24 art px with a small dip. */
+  objectDuration: 0.25,
+  objectPeak: 0.45,
+  objectRise: 24,
+  objectOvershoot: 1.5,
   objectPopFrom: 0.3,
   objectPopPeak: 1.1,
   shadowDuration: 0.4,
@@ -119,20 +120,39 @@ export const TIMING = /** @type {Timing} */ ({
 /**
  * A Range setting's build-up on each class change (Range settings spec R5).
  * Quicker than the island's, since it replays on every switch: its three floor
- * rows float up 0.08s apart, left to right, then its objects by x.
+ * rows float up 0.08s apart, left to right, then its objects by x. Every field
+ * is named here, so no island pick reaches the Range (island sweep drop spec R6).
  * @type {Timing}
  */
 export const RANGE_TIMING = {
-  ...TIMING,
   start: 0,
   groundDelay: 0.08,
   groundSpan: 0.16,
+  cascade: 0,
   ground: 'rows',
   objects: 'ltr',
+  with: false,
   objectLead: 0.1,
   objectSpan: 0.3,
+  lag: 0.4,
   move: 'float',
+  objectMove: 'same',
   duration: 0.5,
+  peak: 0.55,
+  rise: 10,
+  overshoot: 2,
+  popFrom: 0.3,
+  popPeak: 1.1,
+  objectDuration: 0.5,
+  objectPeak: 0.55,
+  objectRise: 10,
+  objectOvershoot: 2,
+  objectPopFrom: 0.3,
+  objectPopPeak: 1.1,
+  shadowDuration: 0.4,
+  skyDuration: 0.6,
+  skyDrift: 6,
+  seed: 1,
 };
 
 /** The ease back down onto the spot, after the ease-out to the peak (cubic-bezier). */
