@@ -8,6 +8,7 @@ The pixel art moves in two ways:
 
 - **Build-ups.** The hero island and each Range setting assemble themselves from their `enter` groups. Motion plays them from a pure schedule.
 - **Loops.** Water, the waterfall, the crane's box, the trucks, the clouds and the island's float are CSS animations on classes the art compiles onto its groups.
+- **Scene motion.** A scene's `motion` timeline moves, shows, hides and re-poses its items on one loop, such as the island level up's production line. The engine compiles it into CSS inside the scene's SVG, and the lab's Animation pane plays and edits it ([Scene motion](#scene-motion)).
 
 Drawing the art itself is the `pixel-art` skill. This skill is about how it moves.
 
@@ -29,7 +30,7 @@ Drawing the art itself is the `pixel-art` skill. This skill is about how it move
 
 - **Never hide the art.** The SVG ships with every piece in place. A start state (opacity 0, a scale, an offset) is set only by the call that animates it, which is what `play()` does. Never hide a piece in CSS or in markup to animate it in later. With JavaScript off, or with Motion blocked, the art shows at once.
 - **Reduced motion.** `play()` does nothing under `prefers-reduced-motion: reduce`, and `pixel-art.css` stops every loop on its frame 0. A new loop needs a frame 0 that reads as a still picture, and a line in the reduced-motion block.
-- **Smooth versus stepped.** Build-ups glide, with `easeOut` to the peak and `SETTLE_EASE` onto the spot. Only the art's own CSS loops step (`step-end`, `steps()`), in `pixel-art.css` alone (pixel-first look spec R10). The lab's `stepped` move is a pixel-art option that the site doesn't use.
+- **Smooth versus stepped.** Build-ups glide, with `easeOut` to the peak and `SETTLE_EASE` onto the spot. Only the art's own CSS loops step (`step-end`, `steps()`), in `pixel-art.css`, or in a scene's compiled motion, which the engine writes into that scene's SVG (pixel-first look spec R10, widened by the island level up spec). The lab's `stepped` move is a pixel-art option that the site doesn't use.
 - **Motion only through `src/lib/motion.ts`,** and build-ups only through `playEntrance()`. Then the hero, the Range and the lab play exactly the same code.
 - **Build-ups are a named exception** to the design system's 0.12–0.5s rhythm. When their numbers change, update the design system's Motion section in the same PR, and keep the numbers under their own names in `island-entrance.mjs`.
 - **Edit the art only in its sources** (`pixel-art` skill). The groups and their data attributes come from the scene source. Never edit the compiled SVG.
@@ -114,6 +115,17 @@ Run `npm run dev`, then open http://localhost:4321/lab/island-entrance/. The pag
 5. **The design system.** Update the Motion section's numbers for the build-up.
 6. **The e2e comment.** If the settle time changes, update its comment in `scripts/e2e/shell.e2e.mjs`.
 7. **Verify** (below), and paste the output into the PR.
+
+## Scene motion
+
+A sequence where pieces travel and hand things on (a truck drives up, tips its load, leaves) is a scene's `motion`, not hand-written CSS. The format is in the `pixel-art` skill (Scenes); the engine is `src/lib/pixel-art/motion.mjs`.
+
+- **One loop per scene.** `duration` is the whole cycle in ms, and every track runs on it, so pieces stay in step. Something that "keeps coming" is one item that leaves hidden and comes back at the start of the next cycle.
+- **Keys.** Each key at `t` ms sets, from then on, the item's `move` (pixels from where the scene places it), `show` and `pose` (another object with the same anchor, such as `truck-open-tipped`). Values carry over from the key before. The first key is at 0, the rest frame, which is what reduced motion shows, and every `t` is less than `duration`.
+- **Moves step a pixel at a time.** Between two keys an item steps toward the next key's move: one pixel per step along a straight line, or 2 across and 1 down along the 2:1 grid. Another angle takes fewer, larger steps, so keep moves on the grid's lines. After the last key it steps back to the first key's move over the rest of the loop, so hide it or hold it there.
+- **What it compiles to.** Each tracked item gets a `<g class="mv-<id>">`, one `<g class="mv-<id>-<n>">` per pose, and keyframes in a `<style>` at the top of the SVG: `steps()` transforms for moves, `step-end` opacity for show and poses, and a reduced-motion rule that turns them all off. The art is drawn at the rest frame, with hidden pieces and unused poses kept in the SVG at opacity 0.
+- **Editing it.** In the lab, open the scene, select an item and use the Animation pane: **Animate this item** gives it an id and a track, the **Time** slider scrubs, and past 0 s moving the item on the stage (drag, arrows, Shift + arrows) keys it at that time. Each key's time, X, Y, Shown and Pose can be typed. **Play** runs the loop with every frame loop, 20 steps a second. Export saves the scene with its motion.
+- **The page.** Scene motion runs inside the `enter` groups like the frame loops, so the entrance and the motion never set the same element's transform. Class and keyframe names are `mv-<id>`, unprefixed, so only one inline SVG on a page may carry motion.
 
 ## The CSS loops
 

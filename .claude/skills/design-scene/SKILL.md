@@ -39,7 +39,7 @@ Pause for the owner only at the reviews the plan names (for example, the object 
 ## 4. Review the scene
 
 - For the hero island, the owner reviews the scene twice: in the lab (`?scene=hero-island`) and on the home page at http://localhost:<port>/, where the entrance and loops run. Screenshot the home page at 1440px and 390px wide.
-- For motion (entrances, loops, a sequence), use the `pixel-art-motion` skill and its entrance lab.
+- For a sequence (pieces that travel and hand things on), build it as the scene's `motion` and give the owner the lab link: the Animation pane plays it, and they can scrub and re-key it by hand. Entrances and frame loops follow the `pixel-art-motion` skill.
 
 ## 5. Before the PR
 

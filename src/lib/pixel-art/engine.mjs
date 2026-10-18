@@ -5,6 +5,7 @@
 // run the same code.
 
 import { blockFaces, blockSize, footprint, LEVEL_H, tilePixels, TILE_H, TILE_W, tileToPx } from './iso.mjs';
+import { filledKeys, itemsById, loopFrame, motionClass, motionCss, poseClass, posesOf, validateMotion } from './motion.mjs';
 
 /**
  * @typedef {{ class?: string, map: string[] }} MapLayer
@@ -30,7 +31,7 @@ import { blockFaces, blockSize, footprint, LEVEL_H, tilePixels, TILE_H, TILE_W, 
  *   height: number,
  * }} Resolved
  * @typedef {{ pixels: Map<string, string>, colors: Set<string> }} Layer
- * @typedef {{ attrs: [string, string][], frame?: number, children: (Group | Layer)[] }} Group
+ * @typedef {{ attrs: [string, string][], frame?: number, frames?: number, hidden?: boolean, children: (Group | Layer)[] }} Group
  */
 
 export const TIERS = /** @type {const} */ (['world', 'outfit']);
@@ -455,7 +456,7 @@ function extendsChain(sources, name) {
   return { names, cycle: false };
 }
 
-const SCENE_PROPS = ['output', 'viewBox', 'origin', 'items'];
+const SCENE_PROPS = ['output', 'viewBox', 'origin', 'items', 'motion'];
 
 /**
  * @param {Sources} sources
@@ -480,7 +481,8 @@ function validateScene(sources, name, outputs, problems) {
   }
   if ('origin' in scene && !isWhole(scene.origin, 2)) add('origin must be two whole numbers');
   if (!Array.isArray(scene.items)) return add('items must be a list');
-  validateItems(sources, scene.items, 'items', add);
+  validateItems(sources, scene.items, 'items', add, new Set());
+  if ('motion' in scene) validateMotion(sources, scene, add);
 }
 
 /**
@@ -488,8 +490,9 @@ function validateScene(sources, name, outputs, problems) {
  * @param {any[]} items
  * @param {string} path
  * @param {(msg: string) => void} add
+ * @param {Set<string>} ids  the item ids seen so far in the scene
  */
-function validateItems(sources, items, path, add) {
+function validateItems(sources, items, path, add, ids) {
   items.forEach((item, i) => {
     const where = `${path}[${i}]`;
     if (!isRecord(item)) return add(`${where}: must be { object, at } or { group, items }`);
@@ -506,9 +509,14 @@ function validateItems(sources, items, path, add) {
         }
       }
       if (!Array.isArray(item.items)) return add(`${where}: items must be a list`);
-      return validateItems(sources, item.items, `${where}.items`, add);
+      return validateItems(sources, item.items, `${where}.items`, add, ids);
     }
-    for (const key of Object.keys(item)) if (!['object', 'class', 'at'].includes(key)) add(`${where}: unknown property ${q(key)}`);
+    for (const key of Object.keys(item)) if (!['object', 'id', 'class', 'at'].includes(key)) add(`${where}: unknown property ${q(key)}`);
+    if ('id' in item) {
+      if (typeof item.id !== 'string' || !NAME.test(item.id)) add(`${where}: id must be lowercase kebab-case`);
+      else if (ids.has(item.id)) add(`${where}: id ${q(item.id)} is already used in this scene`);
+      else ids.add(item.id);
+    }
     if (typeof item.object !== 'string' || !sources.objects.has(item.object)) add(`${where}: object ${q(item.object)} does not exist`);
     if ('class' in item && (typeof item.class !== 'string' || !CLASS_LIST.test(item.class))) {
       add(`${where}: class must be lowercase class names separated by single spaces`);
@@ -808,7 +816,7 @@ function drawBlock({ size, faces, surface, sides }, keys, cx, cy, group) {
     if (isFrames(surface)) {
       surface.frames.forEach((/** @type {string[]} */ map, /** @type {number} */ i) => {
         const layerOut = newLayer();
-        group.children.push({ attrs: [['class', `${surface.loop} ${surface.prefix}${i}`]], frame: i, children: [layerOut] });
+        group.children.push({ attrs: [['class', `${surface.loop} ${surface.prefix}${i}`]], frame: i, frames: surface.frames.length, children: [layerOut] });
         lay(layerOut, map);
       });
     } else lay(openLayer(group), surface.map);
@@ -834,7 +842,7 @@ function draw(obj, ox, oy, group) {
       const { loop, prefix, frames } = /** @type {FrameLayer} */ (layer);
       frames.forEach((map, i) => {
         const layerOut = newLayer();
-        group.children.push({ attrs: [['class', `${loop} ${prefix}${i}`]], frame: i, children: [layerOut] });
+        group.children.push({ attrs: [['class', `${loop} ${prefix}${i}`]], frame: i, frames: frames.length, children: [layerOut] });
         paint(layerOut, map, obj.keys, ox, oy);
       });
     } else if (/** @type {MapLayer} */ (layer).class) {
@@ -852,15 +860,19 @@ function draw(obj, ox, oy, group) {
  * frame loops. Items paint in source order.
  * @param {Sources} sources
  * @param {string} name
- * @returns {{ viewBox: number[], root: Group }}
+ * A scene with motion also returns the CSS that plays it, and each tracked
+ * item is drawn at its rest frame in its own group (motion.mjs).
+ * @returns {{ viewBox: number[], root: Group, style?: string }}
  */
 export function renderScene(sources, name) {
   const scene = sources.scenes.get(name);
   if (!scene) throw new Error(`scene ${q(name)} does not exist`);
   /** @type {Group} */
   const root = { attrs: [], children: [] };
-  placeItems(sources, scene.items, root, scene.origin ?? [0, 0]);
-  return { viewBox: scene.viewBox, root };
+  const tracks = new Map((scene.motion?.tracks ?? []).map((/** @type {any} */ track) => [track.item, track]));
+  placeItems(sources, scene.items, root, scene.origin ?? [0, 0], tracks);
+  if (!tracks.size) return { viewBox: scene.viewBox, root };
+  return { viewBox: scene.viewBox, root, style: motionCss(scene.motion, itemsById(scene.items)) };
 }
 
 /**
@@ -868,24 +880,48 @@ export function renderScene(sources, name) {
  * @param {any[]} items
  * @param {Group} group
  * @param {number[]} origin
+ * @param {Map<string, any>} tracks  motion tracks by item id
  */
-function placeItems(sources, items, group, origin) {
+function placeItems(sources, items, group, origin, tracks) {
   for (const item of items) {
     if ('group' in item) {
       /** @type {Group} */
       const child = { attrs: Object.entries(item.group), children: [] };
       group.children.push(child);
-      placeItems(sources, item.items, child, origin);
+      placeItems(sources, item.items, child, origin, tracks);
       continue;
     }
-    const obj = resolve(sources, item.object);
-    const [x, y] = item.at.tile ? tileToPx(item.at.tile, origin) : item.at.px;
+    let [x, y] = item.at.tile ? tileToPx(item.at.tile, origin) : item.at.px;
     let target = group;
-    if (item.class) {
-      target = { attrs: [['class', item.class]], children: [] };
-      group.children.push(target);
+    const track = item.id !== undefined ? tracks.get(item.id) : undefined;
+    /** @type {[string, Group][]} */
+    let poses = [[item.object, group]];
+    if (track) {
+      const rest = filledKeys(track, item.object)[0];
+      [x, y] = [x + rest.move[0], y + rest.move[1]];
+      /** @type {Group} */
+      const moving = { attrs: [['class', motionClass(item.id)]], children: [], ...(rest.show ? {} : { hidden: true }) };
+      group.children.push(moving);
+      const names = posesOf(track, item.object);
+      poses =
+        names.length === 1
+          ? [[item.object, moving]]
+          : names.map((pose, k) => {
+              /** @type {Group} */
+              const posed = { attrs: [['class', poseClass(item.id, k)]], children: [], ...(pose === rest.pose ? {} : { hidden: true }) };
+              moving.children.push(posed);
+              return [pose, posed];
+            });
     }
-    draw(obj, x - obj.anchor[0], y - obj.anchor[1], target);
+    for (const [name, parent] of poses) {
+      const obj = resolve(sources, name);
+      target = parent;
+      if (item.class) {
+        target = { attrs: [['class', item.class]], children: [] };
+        parent.children.push(target);
+      }
+      draw(obj, x - obj.anchor[0], y - obj.anchor[1], target);
+    }
   }
 }
 
@@ -910,10 +946,13 @@ export function renderObject(sources, name) {
  * first of each run of sibling data-class groups draws, as the Range shows
  * one variant at a time.
  * @param {Group} root
- * @param {{ firstVariant?: boolean, frame?: number }} [options]
+ * With `time` (ms), each loop shows the frame it shows then instead, as the
+ * editor plays a scene. Hidden groups (a moving item while it's away, a pose
+ * not in use) never draw.
+ * @param {{ firstVariant?: boolean, frame?: number, time?: number }} [options]
  * @returns {Map<string, string>} "x,y" → color name
  */
-export function composite(root, { firstVariant = false, frame = 0 } = {}) {
+export function composite(root, { firstVariant = false, frame = 0, time } = {}) {
   /** @type {Map<string, string>} */
   const out = new Map();
   const isVariant = (/** @type {Group | Layer} */ c) => 'attrs' in c && c.attrs.some(([k]) => k === 'data-class');
@@ -921,7 +960,8 @@ export function composite(root, { firstVariant = false, frame = 0 } = {}) {
   const walk = (group) => {
     group.children.forEach((child, i) => {
       if ('pixels' in child) for (const [p, color] of child.pixels) out.set(p, color);
-      else if (child.frame !== undefined && child.frame !== frame) return;
+      else if (child.hidden) return;
+      else if (child.frame !== undefined && child.frame !== (time === undefined ? frame : loopFrame(loopOf(child), child.frames ?? 1, time))) return;
       else if (firstVariant && isVariant(child) && i > 0 && isVariant(group.children[i - 1])) return;
       else walk(child);
     });
@@ -929,6 +969,9 @@ export function composite(root, { firstVariant = false, frame = 0 } = {}) {
   walk(root);
   return out;
 }
+
+/** A frame group's loop name, the first of its classes. */
+const loopOf = (/** @type {Group} */ group) => (group.attrs.find(([k]) => k === 'class')?.[1] ?? '').split(' ')[0];
 
 /**
  * The bounding box of a set of "x,y" pixels, or null if it's empty.

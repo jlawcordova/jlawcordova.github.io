@@ -5,12 +5,11 @@
 // nothing moves until you press it.
 
 import { addFrame, deleteFrame, duplicateFrame, move } from '../../lib/pixel-art/edit.mjs';
+import { LOOP_CYCLES as CYCLE } from '../../lib/pixel-art/motion.mjs';
 import type { ObjectMode } from './object-mode';
 
 const $ = (id: string) => document.getElementById(id)!;
 
-/** Each loop's full cycle in ms, from pixel-art.css; other loops step every 200ms. */
-const CYCLE: Record<string, number> = { wf: 1000, ff: 600, hf: 3000 };
 
 export class FramesPanel {
   private readonly mode: ObjectMode;

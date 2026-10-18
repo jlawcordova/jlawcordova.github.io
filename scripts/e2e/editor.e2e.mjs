@@ -32,8 +32,8 @@ const SCENE = 'library-demo';
 const SOURCE_DIR = join(ROOT, 'src/assets/pixel-art/source');
 const SCENE_FILE = join(SOURCE_DIR, `scenes/${SCENE}.mjs`);
 const sourceOf = (kind, name) => readFile(join(SOURCE_DIR, `${kind}s/${name}.mjs`), 'utf8');
-/** The editor's JS budget, engine included (spec D10). */
-const JS_BUDGET = 30 * 1024;
+/** The editor's JS budget, engine included (spec D10), raised from 30 KB for the Animation pane (island level up spec). */
+const JS_BUDGET = 36 * 1024;
 
 /** @type {import('playwright').Browser} */
 let browser;
@@ -192,7 +192,7 @@ describe('the page (R15, R24)', () => {
     }
   });
 
-  test('R24: the editor JS is within 30 KB gzip, and only the lab page loads its JS and CSS', async () => {
+  test('R24: the editor JS is within 36 KB gzip, and only the lab page loads its JS and CSS', async () => {
     const assetsOf = async (page) =>
       [...(await readFile(join(DIST, page), 'utf8')).matchAll(/(?:src|href)="\/_astro\/([^"]+\.(?:js|css))"/g)].map((m) => m[1]);
     const assets = await assetsOf('lab/pixel-art/index.html');
@@ -464,6 +464,42 @@ describe('links (island level up spec)', () => {
     await page.goto(`${LAB}?object=no-such-object`);
     await page.getByRole('group', { name: 'Scene stage' }).waitFor();
     assert.equal(await picker.inputValue(), fallback);
+    await context.close();
+  });
+});
+
+// ------------------------------------------------------------ animation
+
+describe('animation (island level up spec)', () => {
+  test('animate an item, key it past 0 s from the keyboard, scrub, play and export the motion', async () => {
+    const { context, page, errors } = await openLab();
+    await pickScene(page, SCENE);
+    await page.getByRole('treeitem').filter({ hasText: /^tree/ }).first().click();
+    await page.getByRole('button', { name: 'Animate this item' }).click();
+    const time = page.getByLabel('Time', { exact: true });
+    await time.fill('2000');
+    await page.getByRole('group', { name: 'Scene stage' }).focus();
+    for (let i = 0; i < 3; i++) await page.keyboard.press('ArrowRight');
+
+    const motion = (await load(await exportText(page))).motion;
+    assert.deepEqual(motion, { duration: 4000, tracks: [{ item: 'tree', keys: [{ t: 0 }, { t: 2000, move: [48, 24] }] }] });
+    assert.equal(await page.getByLabel('X of key 2').inputValue(), '48');
+
+    await time.fill('1000');
+    await page.locator('#lab-time-out').getByText('1.0 s').waitFor();
+    await page.getByRole('button', { name: 'Back to the rest frame' }).click();
+    assert.equal(await time.inputValue(), '0');
+
+    const play = page.getByRole('button', { name: 'Play' });
+    await play.click();
+    await page.waitForFunction(() => Number(document.getElementById('lab-time')?.value ?? 0) > 0);
+    await page.getByRole('button', { name: 'Pause' }).click();
+    assert.equal(await page.getByRole('button', { name: 'Play' }).getAttribute('aria-pressed'), 'false');
+
+    await page.getByRole('button', { name: 'Remove key 2' }).click();
+    await page.getByRole('button', { name: 'Stop animating' }).click();
+    assert.equal((await load(await exportText(page))).motion, undefined, 'the last track gone, the scene has no motion');
+    assert.deepEqual(errors, []);
     await context.close();
   });
 });

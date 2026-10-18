@@ -170,7 +170,7 @@ export default {
   origin: [0, 32],
   items: [
     { object: 'tile', at: { tile: [0, 0, 0] } },
-    { object: 'small-rock', at: { tile: [1, 2, 0] } },
+    { object: 'small-rock', id: 'rock', at: { tile: [1, 2, 0] } },
     { object: 'small-rock', class: 'pcloud pc0', at: { px: [30, 0] } },
     {
       group: { 'data-class': '0' },
@@ -179,6 +179,18 @@ export default {
       ],
     },
   ],
+  motion: {
+    duration: 2000,
+    tracks: [
+      {
+        item: 'rock',
+        keys: [
+          { t: 0 },
+          { t: 1000, move: [16, -8] },
+        ],
+      },
+    ],
+  },
 };
 ```
 
@@ -186,6 +198,8 @@ export default {
 - **`at`** is `{ tile: [col, row, level] }` (snaps to the grid) or `{ px: [x, y] }` (exact, for imported art and nudges). Both must be whole numbers.
 - **`class`** on an item wraps the object in a `<g class>` (the trucks' `itruck it1`, the clouds' `pcloud pc0`). **`group`** makes a `<g>` with `class` or `data-*` attributes around its items (the Range's `data-class` variants).
 - **`output`** names the SVG it writes in `src/assets/pixel-art/`. Leave it out for a preview-only scene; it's still compiled and checked.
+- **`id`** (optional, kebab-case, unique in the scene) names an item so a `motion` track can move it.
+- **`motion`** (optional) animates items on one loop of `duration` ms, one track per item it moves (the example walks the rock 16 px up-right and back every 2 s). Each key sets, from `t` ms on, the item's `move` (pixels from its placement), `show` and `pose` (an object drawn instead, with the same anchor). The first key is at 0, the rest frame that reduced motion and `--preview` show. Moves step a pixel at a time. The `pixel-art-motion` skill (Scene motion) has the rules, and the lab's Animation pane edits it.
 
 ## The main path: headless
 
@@ -225,6 +239,7 @@ The lab at `/lab/pixel-art/` (or `npm run dev`, then http://localhost:4321/lab/p
   - **Stage:** the group "Scene stage" or "Object stage".
   - **Library:** buttons named after their objects.
   - **Panels:** in Scene mode, the tree "Items"; in Object mode, the swatches named like "grass-2, #8FA56E".
+- **Animation pane** (Scene mode): Play, Pause and a Time slider play the scene's motion and frame loops. Select an item and choose **Animate this item**; past 0 s, moving it on the stage keys it at that time, and each key's time, X, Y, Shown and Pose can be typed.
 - **Scene mode:** choose a thumbnail, then a tile, or focus a thumbnail and press Enter to place it at the stage cursor. On the stage:
   - arrows move the selected item one tile, or the cursor;
   - Shift + arrows nudge one pixel, and the item is then placed by `px`;

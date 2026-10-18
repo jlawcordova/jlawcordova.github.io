@@ -10,12 +10,14 @@
 const escape = (/** @type {string} */ v) => v.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 
 /**
- * @param {{ viewBox: number[], root: Group }} scene
+ * A scene with motion carries its CSS in a <style> first (motion.mjs).
+ * @param {{ viewBox: number[], root: Group, style?: string }} scene
  * @param {(name: string) => string} hexOf  color name → "#RRGGBB"
  */
-export function toRectSvg({ viewBox, root }, hexOf) {
+export function toRectSvg({ viewBox, root, style }, hexOf) {
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="${viewBox.join(' ')}" shape-rendering="crispEdges">` +
+    (style ? `<style>${style}</style>` : '') +
     children(root, hexOf) +
     '</svg>'
   );

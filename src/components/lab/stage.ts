@@ -4,6 +4,7 @@
 // the pointer or cursor, and the selected item's outline.
 
 import { bounds, composite, loadSources, renderObject, renderScene, type Sources } from '../../lib/pixel-art/engine.mjs';
+import { poseItems, shownItems } from '../../lib/pixel-art/motion.mjs';
 import { pxToTile, tilePixels, tileToPx } from '../../lib/pixel-art/iso.mjs';
 import { samePath, type Lab, type Path } from './lab';
 
@@ -136,13 +137,17 @@ export class Stage {
   render() {
     const { lab } = this;
     if (!lab.doc || lab.kind !== 'scene') return;
-    const { kept, leaves } = visibleItems(lab.doc.items ?? [], lab.selected);
-    const view = { ...lab.doc, items: kept };
-    const key = `${lab.objectRevision}|${JSON.stringify(view)}`;
+    // The scene as it stands at the Animation pane's time: moving items at
+    // their keyed points, in their poses, and hidden ones left out.
+    const { motion, ...still } = lab.doc;
+    const posed = poseItems(lab.doc.items ?? [], motion, lab.time, (item: any) => placementPoint(item, this.origin));
+    const { kept, leaves } = visibleItems(posed, lab.selected);
+    const view = { ...still, items: shownItems(kept) };
+    const key = `${lab.objectRevision}|${lab.time}|${JSON.stringify(view)}`;
     if (key !== this.baseKey) {
       this.baseKey = key;
       this.paintBase(view);
-      this.placed = leaves.map(({ path, item }) => {
+      this.placed = leaves.filter(({ item }) => !item.hidden).map(({ path, item }) => {
         const [x, y] = placementPoint(item, this.origin);
         return { path, item, x, y, art: this.objectArt(lab.sources, item.object) };
       });
@@ -159,7 +164,7 @@ export class Stage {
     const image = ctx.createImageData(w, h);
     try {
       const sources = loadSources({ palette: this.lab.data.palette, objects: this.lab.objects(), scenes: { [this.lab.name]: view } });
-      for (const [p, color] of composite(renderScene(sources, this.lab.name).root)) {
+      for (const [p, color] of composite(renderScene(sources, this.lab.name).root, { time: this.lab.time })) {
         const comma = p.indexOf(',');
         const x = Number(p.slice(0, comma)) - vx;
         const y = Number(p.slice(comma + 1)) - vy;

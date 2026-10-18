@@ -888,6 +888,66 @@
   font-size: 13px;
 }
 
+/* The Animation pane (island level up spec): the time scrubber and the
+   selected item's keys, one card per key that wraps in a narrow column. */
+.lab-time input[type="range"] {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  accent-color: var(--color-accent);
+}
+.lab-time output {
+  font: 13px var(--font-pixel);
+}
+.lab-keys {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.lab-keys__key {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+}
+.lab-keys__key.is-current {
+  border-color: var(--color-ink);
+}
+.lab-keys__field {
+  display: grid;
+  gap: 2px;
+  font-size: 12px;
+}
+.lab-keys__field input,
+.lab-keys__field select {
+  min-height: 44px;
+  padding: 0 6px;
+  border-radius: var(--radius-button);
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-page);
+  color: var(--color-ink);
+  font: 500 14px var(--font-text);
+}
+.lab-keys__field input[type="number"] {
+  width: 68px;
+}
+.lab-keys__field input[type="checkbox"] {
+  width: 24px;
+  accent-color: var(--color-accent);
+}
+.lab-keys__field select {
+  max-width: 150px;
+}
+.lab-actions .btn[hidden] {
+  display: none;
+}
+
 /* -------------------------------------------- one column, below 960px */
 
 @media (max-width: 959.98px) {
