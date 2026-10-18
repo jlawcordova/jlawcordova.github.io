@@ -1,6 +1,6 @@
 # Plan: Achievements redesign (from intent.md 2026-10-18)
 
-Status: draft. Written together with the intent, spec and code at the owner's request, so it's reviewed in this change's PR.
+Status: built and merged in [#124](https://github.com/jlawcordova/jlawcordova.github.io/pull/124), 2026-10-18, with the departures under Files that change and Order of work (steps 6, 11 and 12).
 
 Plans [`spec.md`](spec.md) (R1–R23).
 

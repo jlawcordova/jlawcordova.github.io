@@ -1,5 +1,5 @@
 # Intent: Achievements redesign
-Author: J. Law. Cordova (site owner). Status: draft. The owner reviewed the design in a canvas on 2026-10-17 and 2026-10-18, then asked for the intent, spec, plan and code to be written together and taken to a PR, so all of them are reviewed in this change's PR rather than merged one by one.
+Author: J. Law. Cordova (site owner). Status: done, 2026-10-18: built and merged in [#124](https://github.com/jlawcordova/jlawcordova.github.io/pull/124). The owner reviewed the design in a canvas on 2026-10-17 and 2026-10-18, then asked for the intent, spec, plan and code to be written together and taken to one PR, so merging that PR accepted all of them.
 
 ## Problem
 The accomplishments section on the home page and the full list at `/accomplishments/` are plain: ink on warm paper, with the icons sitting loose beside each row. They could use more of a pop of color.
