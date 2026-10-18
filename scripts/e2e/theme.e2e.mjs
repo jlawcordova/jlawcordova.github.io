@@ -78,8 +78,8 @@ const state = (page) =>
       background: getComputedStyle(document.body).backgroundColor,
       pressed: button?.getAttribute('aria-pressed'),
       name: button?.getAttribute('aria-label'),
-      moon: shown(button?.querySelector('.site-nav__glyph-moon')),
-      sun: shown(button?.querySelector('.site-nav__glyph-sun')),
+      dark: shown(button?.querySelector('.site-nav__glyph-dark')),
+      light: shown(button?.querySelector('.site-nav__glyph-light')),
       themeColor: document.querySelector('meta[name="theme-color"]')?.getAttribute('content'),
       saved: localStorage.getItem('theme'),
     };
@@ -113,13 +113,13 @@ test('R2: the page follows a system change until a choice is saved', async () =>
 test('R3, R5, R9: the button switches the theme, saves it, and later pages paint in it', async () => {
   const { page, context } = await open('/', { width: WIDE });
   let now = await state(page);
-  assert.deepEqual([now.theme, now.pressed, now.name, now.moon, now.sun], ['light', 'false', 'Dark theme', true, false]);
+  assert.deepEqual([now.theme, now.pressed, now.name, now.dark, now.light], ['light', 'false', 'Dark theme', true, false]);
   assert.equal(now.themeColor?.toUpperCase(), '#F4EDE0');
 
   await page.locator('.site-nav__theme').click();
   await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
   now = await state(page);
-  assert.deepEqual([now.pressed, now.moon, now.sun, now.saved, now.background], ['true', false, true, 'dark', PAGE.dark]);
+  assert.deepEqual([now.pressed, now.dark, now.light, now.saved, now.background], ['true', false, true, 'dark', PAGE.dark]);
   assert.equal(now.themeColor?.toUpperCase(), '#1C1712');
 
   // A new page in the same browser, with a light system setting.
@@ -164,7 +164,7 @@ test('R5: without JavaScript there is no button and the page is light', async ()
   await context.close();
 });
 
-test('R7, R8: code blocks and the Range handheld look the same in both themes', async () => {
+test('R7, R8: code blocks and the Range handheld look the same in both themes, and the island shadow blends in dark', async () => {
   const look = async (theme) => {
     const { page, context } = await open(post, { theme, width: WIDE });
     const code = await page.evaluate(() => {
@@ -172,6 +172,7 @@ test('R7, R8: code blocks and the Range handheld look the same in both themes', 
       return [pre.backgroundColor, pre.color];
     });
     await page.goto(`${BASE}/`);
+    const shadow = await page.evaluate(() => getComputedStyle(document.querySelector('.hero-island [data-enter="shadow"] path')).fill);
     const handheld = await page.evaluate(() =>
       ['.range__console', '.range__bezel', '.range__stage', '.range__nameplate', '.range__arrow'].map((selector) => {
         const style = getComputedStyle(document.querySelector(selector));
@@ -179,13 +180,16 @@ test('R7, R8: code blocks and the Range handheld look the same in both themes', 
       }),
     );
     await context.close();
-    return { code, handheld };
+    return { code, handheld, shadow };
   };
   const light = await look('light');
   const dark = await look('dark');
   assert.deepEqual(dark.code, light.code, 'code blocks');
   assert.equal(light.code[0], 'rgb(46, 36, 24)');
   assert.deepEqual(dark.handheld, light.handheld, 'the handheld');
+  // The island's shadow keeps its art color in light and settles into the page in dark.
+  assert.equal(light.shadow, 'rgb(201, 183, 154)');
+  assert.equal(dark.shadow, PAGE.dark);
 });
 
 test('R10: the bar is one row and nothing scrolls sideways, in both themes', async () => {

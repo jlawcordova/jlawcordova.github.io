@@ -87,7 +87,7 @@ Every page has a light theme and a dark theme. The dark theme is the same warm, 
 - **The same in both themes:** `color-earth`, `color-gold`, the forest and footer colors, and code blocks (`color-code` with the `syntax-*` colors). They're already dark grounds or illustration colors.
 - **Inverted fills flip with the theme.** A tooltip or the current page in pagination is `color-ink` with `color-page` text, so it's cream on dark ink in dark.
 - **Drawn objects keep the light colors.** The Range handheld carries `data-theme="light"`, so its gold shell, ink keys and paper stage look the same in both themes. Use the same attribute for any other drawn object.
-- **The pixel art isn't redrawn.** It sits on the dark grounds as it is.
+- **The pixel art isn't redrawn.** It sits on the dark grounds as it is, except that the hero island's dithered shadow takes `color-page`, so it settles into the dark band instead of reading as a pale hatch.
 
 ### Type
 

@@ -149,11 +149,11 @@
 html[data-js] .site-nav__theme {
   display: inline-flex;
 }
-.site-nav__glyph-sun,
-html[data-theme="dark"] .site-nav__glyph-moon {
+.site-nav__glyph-light,
+html[data-theme="dark"] .site-nav__glyph-dark {
   display: none;
 }
-html[data-theme="dark"] .site-nav__glyph-sun {
+html[data-theme="dark"] .site-nav__glyph-light {
   display: block;
 }
 
