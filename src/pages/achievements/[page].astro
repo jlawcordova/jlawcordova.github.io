@@ -7,18 +7,15 @@ import { paginate } from '../../lib/pagination';
 import { site } from '../../site';
 
 // Pages 2+, like the blog's: /achievements/page2/, /achievements/page3/, ...
-// Locked achievements are on page 1 only; the totals are on every page.
+// Locked achievements are listed on page 1 only, and counted on every page.
 export const getStaticPaths = (() => {
   const { done, locked } = getAccomplishments();
-  const totals = { earned: done.length, locked: locked.length };
   return paginate(done, site.accomplishmentsPerPage)
     .slice(1)
-    .map((props) => ({ params: { page: `page${props.page}` }, props: { ...props, totals } }));
+    .map((props) => ({ params: { page: `page${props.page}` }, props: { ...props, locked } }));
 }) satisfies GetStaticPaths;
-
-const props = Astro.props;
 ---
 
 <BaseLayout title="Achievements">
-  <AccomplishmentsPage {...props} locked={[]} />
+  <AccomplishmentsPage {...Astro.props} />
 </BaseLayout>

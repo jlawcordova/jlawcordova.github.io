@@ -1,5 +1,5 @@
 // Finds the environment's Playwright and launches Chromium for the browser
-// checks in scripts/e2e/. Playwright is never a dependency of this repo: it's
+// checks in scripts/e2e/, and holds the page helpers the suites share. Playwright is never a dependency of this repo: it's
 // the project's own install if there is one, else the global one (npm root -g).
 // ESM ignores NODE_PATH, so the global install is imported by file URL.
 // Only Playwright's long-stable core API is used (pixel-art engine spec A10).
@@ -55,3 +55,21 @@ export async function launch(playwright) {
   const executable = dir ? join(dir, 'chromium') : '';
   return playwright.chromium.launch(executable && existsSync(executable) ? { executablePath: executable } : {});
 }
+
+/**
+ * A token's color as the browser computes it, to compare with computed styles.
+ * It resolves inside `scope`, a selector: the page by default, or an element
+ * that sets its own theme, such as one with data-theme="light".
+ */
+export const tokenColor = (page, token, scope = 'body') =>
+  page.evaluate(
+    ([name, selector]) => {
+      const probe = document.createElement('div');
+      probe.style.color = `var(${name})`;
+      /** @type {Element} */ (document.querySelector(selector)).append(probe);
+      const color = getComputedStyle(probe).color;
+      probe.remove();
+      return color;
+    },
+    [token, scope],
+  );

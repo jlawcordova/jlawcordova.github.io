@@ -33,7 +33,7 @@ import { fileURLToPath } from 'node:url';
 
 import { CELL, FALLBACK_ICON, FRAME_CELL, FRAMES, LOCK_ICON, SHEET_ORDER, frameFor } from '../../src/lib/achievement-icons.mjs';
 import { formatDateRange } from '../../src/lib/accomplishment-list.mjs';
-import { launch, loadPlaywright } from './browser.mjs';
+import { launch, loadPlaywright, tokenColor } from './browser.mjs';
 
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));
 const DATA = join(ROOT, 'src/data/accomplishments.json');
@@ -211,17 +211,6 @@ async function settle(page) {
     { timeout: 5_000 },
   );
 }
-
-/** A token's color as the browser computes it, to compare with computed styles. */
-const tokenColor = (page, token) =>
-  page.evaluate((name) => {
-    const probe = document.createElement('div');
-    probe.style.color = `var(${name})`;
-    document.body.append(probe);
-    const color = getComputedStyle(probe).color;
-    probe.remove();
-    return color;
-  }, token);
 
 /** A row's four edges, as [width, style, color], and its four corner radii. */
 const edgesOf = (row) =>
@@ -919,7 +908,7 @@ describe('achievements redesign: URLs', () => {
 describe('achievements redesign: frames, tally and Latest', () => {
   test('R8, R9: every row on every page sits in its kind\'s frame, and every locked row in the plain one', async () => {
     for (const path of ['/achievements/', '/achievements/page2/', '/achievements/page3/']) {
-      const page = await open('rich', path);
+      const page = await open('rich', path, { settle: false });
       const rows = await page.locator('li.achievement').evaluateAll((all) =>
         all.map((li) => {
           const icon = /** @type {HTMLElement} */ (li.querySelector('.achievement__icon'));
@@ -938,7 +927,7 @@ describe('achievements redesign: frames, tally and Latest', () => {
 
   test('R8: there is no key to the frame colors on the home section or the list pages', async () => {
     for (const [path, scope] of [['/', '#achievements'], ['/achievements/', 'main'], ['/achievements/page2/', 'main']]) {
-      const page = await open('rich', path);
+      const page = await open('rich', path, { settle: false });
       const found = await page.locator(scope).evaluate((root) => {
         const copy = /** @type {HTMLElement} */ (root.cloneNode(true));
         // The rows' own titles may use these words; everything around them may not.
@@ -968,7 +957,7 @@ describe('achievements redesign: frames, tally and Latest', () => {
           return { kind: li.dataset.kind, text: li.textContent?.replace(/\s+/g, ' ').trim(), fill: s.backgroundColor, edge: [s.borderTopWidth, s.borderTopStyle, s.borderTopColor], height: li.getBoundingClientRect().height };
         }),
       );
-    const page = await open('rich', '/');
+    const page = await open('rich', '/', { settle: false });
     const [gold, ink, strong] = [await tokenColor(page, '--color-gold'), await tokenColor(page, '--color-ink'), await tokenColor(page, '--color-border-strong')];
     const home = await chips(page, '#achievements');
     assert.deepEqual(home.map((c) => [c.kind, c.text]), [['earned', '30 earned'], ['locked', '3 locked']]);
@@ -979,21 +968,21 @@ describe('achievements redesign: frames, tally and Latest', () => {
     await page.close();
 
     for (const path of ['/achievements/', '/achievements/page3/']) {
-      const list = await open('rich', path);
+      const list = await open('rich', path, { settle: false });
       assert.deepEqual((await chips(list, 'header.page-head')).map((c) => c.text), ['30 earned', '3 locked'], `${path} shows the totals`);
       await list.close();
     }
-    const two = await open('two-done', '/');
+    const two = await open('two-done', '/', { settle: false });
     assert.deepEqual((await chips(two, '#achievements')).map((c) => c.text), ['2 earned'], 'a zero count isn\'t shown');
     await two.close();
-    const lockedOnly = await open('locked-only', '/achievements/');
+    const lockedOnly = await open('locked-only', '/achievements/', { settle: false });
     assert.deepEqual((await chips(lockedOnly, 'header.page-head')).map((c) => c.text), ['2 locked']);
     await lockedOnly.close();
   });
 
   test('R7: the newest earned row carries the one Latest chip, on the home section and page 1 only', async () => {
     for (const [path, expected] of [['/', 1], ['/achievements/', 1], ['/achievements/page2/', 0]]) {
-      const page = await open('rich', path);
+      const page = await open('rich', path, { settle: false });
       const chips = page.locator('.achievement__latest');
       assert.equal(await chips.count(), expected, `${path}: ${expected} Latest chip`);
       if (expected) {
@@ -1009,13 +998,37 @@ describe('achievements redesign: frames, tally and Latest', () => {
   });
 });
 
+const card = (page) => page.locator('.achievement-toast__card');
+/** Scrolls the home list into view and waits for the toast to show. */
+const reach = async (page) => {
+  await page.locator('#achievements .achievement-list').scrollIntoViewIfNeeded();
+  await card(page).waitFor({ state: 'visible', timeout: TOAST_MS });
+};
+
+const IDENTITY = ['none', 'matrix(1, 0, 0, 1, 0, 0)'];
+/**
+ * Samples every element matching `selector` each frame for `ms` and says, for
+ * each, whether it ever moved: a transform other than none, or with `opacity`,
+ * an opacity under 1.
+ */
+const movedDuring = (page, selector, ms, { opacity = false } = {}) =>
+  page.evaluate(
+    async ([sel, duration, fades, still]) => {
+      const els = [...document.querySelectorAll(sel)];
+      const moved = els.map(() => false);
+      for (const start = performance.now(); performance.now() - start < duration; ) {
+        els.forEach((el, i) => {
+          const s = getComputedStyle(el);
+          if (!still.includes(s.transform) || (fades && Number(s.opacity) < 1)) moved[i] = true;
+        });
+        await new Promise((done) => requestAnimationFrame(done));
+      }
+      return moved;
+    },
+    [selector, ms, opacity, IDENTITY],
+  );
+
 describe('achievements redesign: the toast', () => {
-  const card = (page) => page.locator('.achievement-toast__card');
-  /** Scrolls the home list into view and waits for the toast to show. */
-  const reach = async (page) => {
-    await page.locator('#achievements .achievement-list').scrollIntoViewIfNeeded();
-    await card(page).waitFor({ state: 'visible', timeout: TOAST_MS });
-  };
 
   test('R11: it renders hidden in a status region, and only on the home page with an earned record', async () => {
     const html = await (await fetch(`${sites.rich.url}/`)).text();
@@ -1034,7 +1047,14 @@ describe('achievements redesign: the toast', () => {
     test(`R12, R13: at ${width}px it names the newest earned achievement, gold under ink, in the corner`, async () => {
       const page = await open('rich', '/', { toast: true, settle: false, viewport: { width, height: 900 } });
       await reach(page);
-      await page.waitForTimeout(400);
+      await page.waitForFunction(
+        (still) => {
+          const s = getComputedStyle(/** @type {Element} */ (document.querySelector('.achievement-toast__card')));
+          return Number(s.opacity) === 1 && still.includes(s.transform);
+        },
+        IDENTITY,
+        { timeout: 1_000 },
+      );
       const newest = richDone[0];
       assert.equal(await page.locator('.achievement-toast__label').textContent(), 'Achievement unlocked!');
       assert.equal(await page.locator('.achievement-toast__name').textContent(), lead(newest));
@@ -1115,15 +1135,7 @@ describe('achievements redesign: the toast', () => {
     const watch = async (reducedMotion) => {
       const page = await open('rich', '/', { toast: true, settle: false, reducedMotion });
       await reach(page);
-      const moving = await card(page).evaluate(async (el) => {
-        let moved = false;
-        for (const start = performance.now(); performance.now() - start < 600; ) {
-          const s = getComputedStyle(el);
-          if (Number(s.opacity) < 1 || (s.transform !== 'none' && s.transform !== 'matrix(1, 0, 0, 1, 0, 0)')) moved = true;
-          await new Promise((done) => requestAnimationFrame(done));
-        }
-        return moved;
-      });
+      const [moving] = await movedDuring(page, '.achievement-toast__card', 600, { opacity: true });
       await page.close();
       return moving;
     };
@@ -1137,23 +1149,11 @@ describe('achievements redesign: the frame hop', () => {
     const watch = async (reducedMotion) => {
       const page = await open('rich', '/', { settle: false, reducedMotion });
       await page.locator('#achievements .achievement-list').evaluate((el) => el.scrollIntoView({ block: 'center', behavior: 'instant' }));
-      const hopped = await page.evaluate(async () => {
-        const icons = [...document.querySelectorAll('#achievements li.achievement')].map((li) => ({
-          state: /** @type {HTMLElement} */ (li).dataset.state,
-          icon: /** @type {HTMLElement} */ (li.querySelector('.achievement__icon')),
-          moved: false,
-        }));
-        for (const start = performance.now(); performance.now() - start < 1500; ) {
-          for (const entry of icons) {
-            const t = getComputedStyle(entry.icon).transform;
-            if (t !== 'none' && t !== 'matrix(1, 0, 0, 1, 0, 0)') entry.moved = true;
-          }
-          await new Promise((done) => requestAnimationFrame(done));
-        }
-        return icons.map(({ state, moved }) => ({ state, moved }));
-      });
+      const rows = '#achievements li.achievement';
+      const states = await page.locator(rows).evaluateAll((all) => all.map((li) => /** @type {HTMLElement} */ (li).dataset.state));
+      const moved = await movedDuring(page, `${rows} .achievement__icon`, 1500);
       await page.close();
-      return hopped;
+      return states.map((state, i) => ({ state, moved: moved[i] }));
     };
     const moving = await watch('no-preference');
     for (const { state, moved } of moving) assert.equal(moved, state === 'done', `a ${state} frame ${state === 'done' ? 'hops' : 'stays still'}`);
@@ -1164,8 +1164,9 @@ describe('achievements redesign: the frame hop', () => {
 describe('achievements redesign: the nav and the dark theme', () => {
   test('R19: with every link, Achievements included, the bar is one row at every width, in both themes', async () => {
     for (const colorScheme of /** @type {const} */ (['light', 'dark'])) {
+      const page = await open('rich', '/achievements/', { viewport: { width: 1440, height: 800 }, colorScheme, settle: false });
       for (const width of [320, 375, 390, 452, 720, 721, 740, 764, 792, 800, 820, 840, 841, 844, 848, 849, 852, 860, 900, 1024, 1440]) {
-        const page = await open('rich', '/achievements/', { viewport: { width, height: 800 }, colorScheme, settle: false });
+        await page.setViewportSize({ width, height: 800 });
         const bar = await page.locator('.site-nav').evaluate((el) => Math.round(el.getBoundingClientRect().height));
         assert.equal(bar, 62, `${colorScheme} ${width}px: the bar is one row`);
         if (width > 720) {
@@ -1174,16 +1175,15 @@ describe('achievements redesign: the nav and the dark theme', () => {
             assert.ok(w >= 44 && h >= 44, `${width}px: a nav link is ${w}×${h}`);
           }
         }
-        await page.close();
       }
+      await page.close();
     }
   });
 
   test('R6, R7, R13: in the dark theme the earned chip, Latest and the toast stay ink on gold; the locked chip follows the theme', async () => {
     const page = await open('rich', '/', { colorScheme: 'dark', toast: true, settle: false });
     assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark');
-    await page.locator('#achievements .achievement-list').scrollIntoViewIfNeeded();
-    await page.locator('.achievement-toast__card').waitFor({ state: 'visible', timeout: TOAST_MS });
+    await reach(page);
     const look = await page.evaluate(() => {
       const of = (selector) => {
         const s = getComputedStyle(/** @type {Element} */ (document.querySelector(selector)));
@@ -1198,7 +1198,8 @@ describe('achievements redesign: the nav and the dark theme', () => {
         heading: of('#achievements-title')[0],
       };
     });
-    const [ink, gold] = ['rgb(46, 36, 24)', 'rgb(216, 182, 106)'];
+    const light = '.achievement-toast__card';
+    const [ink, gold] = [await tokenColor(page, '--color-ink', light), await tokenColor(page, '--color-gold', light)];
     assert.deepEqual(look.earned, [ink, gold]);
     assert.deepEqual(look.latest, [ink, gold]);
     assert.equal(look.toast[0], ink);

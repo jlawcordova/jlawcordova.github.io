@@ -17,7 +17,7 @@ const [firstPage] = paginate(done, site.accomplishmentsPerPage);
 <BaseLayout title="Achievements">
   {
     hasData ? (
-      <AccomplishmentsPage {...firstPage} locked={locked} totals={{ earned: done.length, locked: locked.length }} />
+      <AccomplishmentsPage {...firstPage} locked={locked} />
     ) : (
       <>
         <PageHead title="Achievements" />

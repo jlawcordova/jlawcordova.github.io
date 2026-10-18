@@ -1,0 +1,39 @@
+---
+// Numbered page links for a paginated list (design system: Pagination): Prev,
+// every page, Next. Nothing renders when there's only one page.
+import { pagePath } from '../lib/pagination';
+
+interface Props {
+  /** The list's first page, ending in "/", such as "/blog/". */
+  base: string;
+  page: number;
+  totalPages: number;
+  /** The nav's accessible name, such as "Blog pages". */
+  label: string;
+}
+
+const { base, page, totalPages, label } = Astro.props;
+const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+---
+
+{
+  totalPages > 1 && (
+    <nav class="pagination" aria-label={label}>
+      {page > 1 && (
+        <a class="pagination__link" href={pagePath(base, page - 1)} rel="prev">
+          Prev
+        </a>
+      )}
+      {pages.map((n) => (
+        <a class="pagination__link" href={pagePath(base, n)} aria-current={n === page ? 'page' : undefined} aria-label={`Page ${n}`}>
+          {n}
+        </a>
+      ))}
+      {page < totalPages && (
+        <a class="pagination__link" href={pagePath(base, page + 1)} rel="next">
+          Next
+        </a>
+      )}
+    </nav>
+  )
+}

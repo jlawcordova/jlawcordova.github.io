@@ -5,10 +5,10 @@
 // leaves after 5 seconds unless the pointer or focus is on it. Its close button
 // and Escape close it sooner. Under reduced motion it appears and leaves
 // without moving.
-import { easeOut, inView, play } from './motion';
+import { easeOut, hopOnce, inView, play } from './motion';
 
 const KEY = 'achievement-toast';
-/** After the list comes into view: the rows' rise (0.4 s, staggered) has landed. */
+/** After the list comes into view: the rows' rise (0.4 s, staggered, in AccomplishmentRow.astro) has landed. */
 const SHOW_AFTER_MS = 660;
 const STAYS_MS = 5000;
 
@@ -69,7 +69,7 @@ export function achievementToast(section: HTMLElement) {
     card!.hidden = false;
     play(card!, { opacity: [0, 1], y: [16, 0] }, { duration: 0.3, ease: easeOut });
     const icon = card!.querySelector('.achievement__icon');
-    if (icon) play(icon, { y: [0, -8, 0] }, { duration: 0.3, delay: 0.24, ease: easeOut });
+    if (icon) hopOnce(icon, 0.24);
     document.addEventListener('keydown', onKey);
     wait();
   }

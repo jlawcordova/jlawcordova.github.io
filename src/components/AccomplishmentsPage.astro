@@ -3,30 +3,27 @@
 // achievements redesign spec R1–R7, R20): the subtitle and the totals under
 // the title, its earned rows, newest first, with the pagination right under
 // them, and on page 1 every locked one under "Locked achievements". The pages
-// are of earned rows only. The label says which page this is when there's more
-// than one, and is left out otherwise.
+// are of earned rows only; the totals count every record on every page (R6).
+// The label says which page this is when there's more than one, and is left
+// out otherwise.
 import PageHead from './PageHead.astro';
 import AccomplishmentRow from './AccomplishmentRow.astro';
 import AchievementIcons from './AchievementIcons.astro';
 import AchievementTally from './AchievementTally.astro';
+import Pagination from './Pagination.astro';
 import type { DoneAccomplishment, LockedAccomplishment } from '../lib/accomplishments';
-import { pagePath as pathUnder, type Page } from '../lib/pagination';
+import type { Page } from '../lib/pagination';
 
-type Props = Page<DoneAccomplishment> & {
-  locked: LockedAccomplishment[];
-  /** Every earned and locked record, not just this page's (R6). */
-  totals: { earned: number; locked: number };
-};
+/** `locked` is every locked record, on every page. */
+type Props = Page<DoneAccomplishment> & { locked: LockedAccomplishment[] };
 
-const { items: done, page, totalPages, locked, totals } = Astro.props;
-const pagePath = (n: number) => pathUnder('/achievements/', n);
-const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+const { items: done, page, totalPages, totalItems, locked } = Astro.props;
 const label = totalPages > 1 ? `Page ${page} of ${totalPages}` : undefined;
 ---
 
 <PageHead title="Achievements" label={label}>
   <p class="achievements-page__lede">I keep a log of my recent work. Locked achievements are planned, not done yet.</p>
-  <AchievementTally earned={totals.earned} locked={totals.locked} />
+  <AchievementTally earned={totalItems} locked={locked.length} />
 </PageHead>
 
 <div class="page-body">
@@ -45,36 +42,13 @@ const label = totalPages > 1 ? `Page ${page} of ${totalPages}` : undefined;
               <AccomplishmentRow item={item} latest={page === 1 && i === 0} />
             ))}
           </ol>
-          {totalPages > 1 && (
-            <nav class="pagination" aria-label="Achievements pages">
-              {page > 1 && (
-                <a class="pagination__link" href={pagePath(page - 1)} rel="prev">
-                  Prev
-                </a>
-              )}
-              {pages.map((n) => (
-                <a
-                  class="pagination__link"
-                  href={pagePath(n)}
-                  aria-current={n === page ? 'page' : undefined}
-                  aria-label={`Page ${n}`}
-                >
-                  {n}
-                </a>
-              ))}
-              {page < totalPages && (
-                <a class="pagination__link" href={pagePath(page + 1)} rel="next">
-                  Next
-                </a>
-              )}
-            </nav>
-          )}
+          <Pagination base="/achievements/" page={page} totalPages={totalPages} label="Achievements pages" />
         </section>
       )
     }
 
     {
-      locked.length > 0 && (
+      page === 1 && locked.length > 0 && (
         <section class="achievements-page__section" aria-labelledby="locked-title">
           <h2 id="locked-title" class="achievements-page__subtitle">
             Locked achievements
@@ -90,14 +64,3 @@ const label = totalPages > 1 ? `Page ${page} of ${totalPages}` : undefined;
     }
   </div>
 </div>
-
-<script>
-  // Rows still below the fold rise in as they scroll into view, and earned
-  // frames hop once as their row lands, as on the home page (achievements
-  // redesign spec R15). Rows already on screen, and every row without
-  // JavaScript or under reduced motion, are never hidden.
-  import { hop, reveal } from '../lib/motion';
-
-  reveal(document.querySelectorAll('.achievements-page .achievement'), { y: 16, stagger: 0.06, duration: 0.4 });
-  hop(document.querySelectorAll('.achievements-page .achievement[data-state="done"] .achievement__icon'), { delay: 0.4, stagger: 0.06 });
-</script>

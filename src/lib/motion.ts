@@ -61,21 +61,9 @@ export function reveal(elements: Iterable<Element>, { y = 16, stagger: gap = 0, 
     { once: true },
   );
 
-  // Elements that enter in the same frame stagger by `gap` seconds.
-  let batch = 0;
-  let resetting = false;
-  inView(
-    below,
-    (el) => {
-      const delay = batch++ * gap;
-      if (!resetting) {
-        resetting = true;
-        requestAnimationFrame(() => ((batch = 0), (resetting = false)));
-      }
-      animate(el, { opacity: [0, 1], y: [y, 0] }, { duration, delay, ease: easeOut });
-    },
-    { amount: 0.2 },
-  );
+  inViewStaggered(below, 0.2, gap, (el, delay) => {
+    animate(el, { opacity: [0, 1], y: [y, 0] }, { duration, delay, ease: easeOut });
+  });
 }
 
 interface HopOptions {
@@ -86,28 +74,39 @@ interface HopOptions {
 }
 
 /**
- * A playful hop (achievements redesign spec R15): as each element comes into
- * view, it moves up 8px and back over 0.3s, once. It only moves things that are
+ * A playful hop (achievements redesign spec R15): the element moves up 8px and
+ * back over 0.3s, once, after `delay` seconds. It only moves something that is
  * already showing, so it never hides anything, and under reduced motion it
  * does nothing.
  */
+export const hopOnce = (el: Element, delay = 0) => play(el, { y: [0, -8, 0] }, { duration: 0.3, delay, ease: easeOut });
+
+/** The hop, played on each element as it comes into view. */
 export function hop(elements: Iterable<Element>, { delay = 0, stagger: gap = 0 }: HopOptions = {}) {
   const list = [...elements];
   if (!list.length || reduced()) return;
+  inViewStaggered(list, 0.6, gap, (el, wait) => {
+    hopOnce(el, delay + wait);
+  });
+}
 
-  // Elements that enter in the same frame stagger by `gap` seconds, as in reveal().
+/**
+ * Calls `run` for each element once, as `amount` of it comes into view, with
+ * its delay: elements that enter in the same frame stagger by `gap` seconds.
+ */
+function inViewStaggered(elements: Element[], amount: number, gap: number, run: (el: Element, delay: number) => void) {
   let batch = 0;
   let resetting = false;
   inView(
-    list,
+    elements,
     (el) => {
-      const wait = delay + batch++ * gap;
+      const delay = batch++ * gap;
       if (!resetting) {
         resetting = true;
         requestAnimationFrame(() => ((batch = 0), (resetting = false)));
       }
-      animate(el, { y: [0, -8, 0] }, { duration: 0.3, delay: wait, ease: easeOut });
+      run(el, delay);
     },
-    { amount: 0.6 },
+    { amount },
   );
 }

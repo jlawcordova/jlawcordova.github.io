@@ -4,8 +4,11 @@
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
+import { resolve } from '../src/lib/pixel-art/engine.mjs';
+import { readSources } from './optimize-pixel-art.mjs';
 import { CELL, FALLBACK_ICON, FRAME_CELL, FRAMES, ICONS, LOCK_ICON, PLAIN_FRAME, SHEET_ORDER, frameFor, iconCatalog, iconFor } from '../src/lib/achievement-icons.mjs';
 
 const SOURCE = new URL('../src/assets/pixel-art/source/', import.meta.url);
@@ -122,11 +125,13 @@ test('achievements redesign R8, R10: each frame is a 20×20 sprite: an ink edge,
     people: ['water-1', 'water-2', 'cream'],
     milestone: ['roof-1', 'roof-2', 'skin-1'],
   };
+  // The kinds' frames recolor frame-plain, so each is checked as the engine resolves it.
+  const { sources } = await readSources(fileURLToPath(SOURCE));
   for (const frame of FRAMES) {
-    const object = (await import(new URL(`objects/frame-${frame}.mjs`, SOURCE).href)).default;
-    assert.equal(object.kind, 'sprite', frame);
+    assert.equal(sources.objects.get(`frame-${frame}`)?.kind, 'sprite', frame);
+    const object = resolve(sources, `frame-${frame}`);
     assert.equal(object.layers.length, 1, `${frame} has one layer`);
-    const { map } = object.layers[0];
+    const { map } = /** @type {{ map: string[] }} */ (object.layers[0]);
     assert.equal(map.length, FRAME_CELL, `${frame} is ${FRAME_CELL} rows`);
     for (const row of map) assert.equal(row.length, FRAME_CELL, `${frame} is ${FRAME_CELL} wide`);
     const at = (x, y) => object.keys[map[y][x]];
