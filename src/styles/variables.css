@@ -38,6 +38,7 @@
   --color-on-forest-border: rgba(244, 237, 224, 0.2);
   --color-footer: #3F2B1E;
   --color-on-footer: #E9DCC6;
+  --color-shell: #CFCCC6;    /* the Range console */
 
   /* Code blocks: the same dark ground in both themes, under the syntax colors. */
   --color-code: #2E2418;

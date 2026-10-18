@@ -6,10 +6,16 @@
 // horizontal scroll and 44px tap targets.
 //
 // The handheld console (pixel-first look spec, Range; R4, R10, R12): START
-// pauses and plays, B goes back, A makes the sprite hop without changing the
-// class and is hidden under reduced motion, every console button is at least
-// 44px, and at 320px, 390px and 1440px no button or key label runs past the
-// shell. The pager dots are gone (C5).
+// pauses and plays, B goes back, A is hidden under reduced motion, every
+// console button is at least 44px, and at 320px, 390px and 1440px no button or
+// key label runs past the shell. The pager dots are gone (C5).
+//
+// The class change (Range pop spec R1–R7): each class tints the section and
+// the screen with the copy still readable, battle bars sweep the screen and a
+// slash crosses the section, the countdown runs the carousel and holds while
+// paused, PAUSED shows without moving anything, START plays at once even with
+// the pointer and focus still on the console, A makes only the character hop,
+// and A and B are ink keys with no labels.
 //
 // Run with `npm run e2e` after `npm run build`.
 
@@ -298,25 +304,52 @@ test('Console: B goes back a class, like Previous, and announces it', async () =
   await page.close();
 });
 
-test('Console: A makes the sprite hop and leaves the class alone', async () => {
+test('Console, Pop R6: A makes only the character hop, and leaves its setting and the class alone', async () => {
   const page = await openRange();
   await pause(page);
   await settled(page);
+  // Let the setting finish building first, so anything that moves is the hop.
+  await page.waitForFunction(() =>
+    [...document.querySelectorAll('.range__sprite .enter')].every((g) => {
+      const s = getComputedStyle(g);
+      return s.opacity === '1' && (s.transform === 'none' || s.transform === 'matrix(1, 0, 0, 1, 0, 0)');
+    }),
+  );
   const before = await state(page);
-  // Record every transform Motion writes on the sprite while it hops.
+  // Sample the character's and the sprite's transforms every frame while A runs.
   await page.evaluate(() => {
-    const sprite = /** @type {HTMLElement} */ (document.querySelector('.range__sprite'));
-    const seen = /** @type {string[]} */ ([]);
+    const seen = /** @type {{ character: number, sprite: string, ground: string[] }[]} */ ([]);
     Object.assign(window, { hopFrames: seen });
-    new MutationObserver(() => seen.push(sprite.style.transform)).observe(sprite, { attributes: true, attributeFilter: ['style'] });
+    const shown = () => /** @type {Element} */ ([...document.querySelectorAll('.range__sprite g[data-class]')].find((g) => getComputedStyle(g).display !== 'none'));
+    const tick = () => {
+      const g = shown();
+      seen.push({
+        character: new DOMMatrix(getComputedStyle(/** @type {Element} */ (g.querySelector('.cbob'))).transform).f,
+        sprite: getComputedStyle(/** @type {Element} */ (document.querySelector('.range__sprite'))).transform,
+        ground: [...g.querySelectorAll('.enter[data-enter="ground"]')].map((e) => getComputedStyle(e).transform),
+      });
+      if (seen.length < 60) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
   });
   const a = page.getByRole('button', { name: 'A: jump' });
   assert.equal(await a.count(), 1);
   await a.click();
-  // It rises (a negative translateY), then lands back where it was.
-  await page.waitForFunction(() =>
-    /** @type {{ hopFrames: string[] }} */ (/** @type {unknown} */ (window)).hopFrames.some((t) => /translateY\(-\d/.test(t)),
+  await page.waitForFunction(() => /** @type {{ hopFrames: unknown[] }} */ (/** @type {unknown} */ (window)).hopFrames.length >= 60);
+  const frames = await page.evaluate(() => /** @type {{ hopFrames: { character: number, sprite: string, ground: string[] }[] }} */ (/** @type {unknown} */ (window)).hopFrames);
+  const lowest = Math.min(...frames.map((f) => f.character));
+  assert.ok(lowest <= -5, `the character rises (to ${lowest})`);
+  assert.ok(frames.every((f) => Number.isInteger(f.character)), 'by whole pixels');
+  assert.ok(frames.every((f) => f.sprite === 'none'), 'the sprite as a whole stays put');
+  assert.ok(
+    frames.every((f) => f.ground.every((t) => t === 'none' || t === 'matrix(1, 0, 0, 1, 0, 0)')),
+    "the setting's floor stays put",
   );
+  // It lands back where it started.
+  await page.waitForFunction(() => {
+    const g = [...document.querySelectorAll('.range__sprite g[data-class]')].find((e) => getComputedStyle(e).display !== 'none');
+    return !g?.querySelector('.cbob.is-hopping');
+  });
   await settled(page);
   const after = await state(page);
   assert.equal(after.current, before.current, 'the class does not change');
@@ -325,10 +358,9 @@ test('Console: A makes the sprite hop and leaves the class alone', async () => {
   await page.close();
 });
 
-test('Console: under reduced motion A and its JUMP label are hidden, and B stays', async () => {
+test('Console: under reduced motion A is hidden, and B stays', async () => {
   const page = await openRange({ reducedMotion: 'reduce' });
   assert.equal(await page.locator('.range__a').isVisible(), false, 'A is hidden');
-  assert.equal(await page.locator('.range__key--a .range__key-label').isVisible(), false, 'JUMP is hidden');
   assert.equal(await page.locator('.range__b').isVisible(), true, 'B is still there');
   await page.close();
 
@@ -362,3 +394,143 @@ for (const width of [320, 390, 1440]) {
     await page.close();
   });
 }
+
+/** The colors of the section, the screen and the copy, as sRGB through a canvas (Chrome reports oklch as oklch). */
+const colors = (page) =>
+  page.evaluate(() => {
+    const ctx = /** @type {CanvasRenderingContext2D} */ (document.createElement('canvas').getContext('2d', { willReadFrequently: true }));
+    const rgb = (/** @type {string} */ color) => {
+      ctx.clearRect(0, 0, 1, 1);
+      ctx.fillStyle = color;
+      ctx.fillRect(0, 0, 1, 1);
+      return [...ctx.getImageData(0, 0, 1, 1).data.slice(0, 3)];
+    };
+    const of = (/** @type {string} */ s, /** @type {'color' | 'backgroundColor'} */ p) => rgb(getComputedStyle(/** @type {Element} */ (document.querySelector(s)))[p]);
+    return {
+      ground: of('section.range', 'backgroundColor'),
+      screen: of('.range__stage', 'backgroundColor'),
+      heading: of('.range__copy h2', 'color'),
+      gold: of('.range__copy .gold', 'color'),
+      body: of('.range__copy p', 'color'),
+    };
+  });
+const luminance = (/** @type {number[]} */ c) => {
+  const [r, g, b] = c.map((v) => v / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+};
+const contrast = (a, b) => {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+};
+
+test('Pop R1: each class tints the section and the screen, and the copy stays readable on every one', async () => {
+  const page = await openRange();
+  await pause(page);
+  const grounds = new Set();
+  for (let i = 0; i < names.length; i += 1) {
+    await page.waitForTimeout(700); // the change's layers clear
+    const c = await colors(page);
+    grounds.add(c.ground.join());
+    assert.ok(contrast(c.heading, c.ground) >= 4.5, `${names[i]}: heading ${contrast(c.heading, c.ground).toFixed(1)}:1`);
+    assert.ok(contrast(c.body, c.ground) >= 4.5, `${names[i]}: body ${contrast(c.body, c.ground).toFixed(1)}:1`);
+    assert.ok(contrast(c.gold, c.ground) >= 3, `${names[i]}: the gold phrase ${contrast(c.gold, c.ground).toFixed(1)}:1, large text`);
+    assert.ok(luminance(c.screen) > luminance(c.ground), `${names[i]}: the screen is lighter than the ground`);
+    await next(page);
+  }
+  assert.equal(grounds.size, names.length, 'every class has its own ground');
+  await page.close();
+});
+
+test('Pop R2, R3: a change sweeps battle bars over the screen and slashes the section, then clears both layers', async () => {
+  const page = await openRange();
+  await pause(page);
+  await next(page);
+  const during = await page.evaluate(() => ({
+    screen: document.querySelectorAll('.range__stage > .range__change canvas').length,
+    section: document.querySelectorAll('section.range > .range__change > span').length,
+  }));
+  assert.deepEqual(during, { screen: 1, section: 2 }, 'the screen has its blocks, and the section its old color and the slash');
+  await page.waitForTimeout(900);
+  const afterwards = await page.evaluate(() => [...document.querySelectorAll('.range__change')].map((l) => l.childElementCount));
+  assert.deepEqual(afterwards, [0, 0], 'both layers are empty once the change is done');
+  await page.close();
+
+  const still = await openRange({ reducedMotion: 'reduce' });
+  await next(still);
+  assert.deepEqual(
+    await still.evaluate(() => [...document.querySelectorAll('.range__change')].map((l) => l.childElementCount)),
+    [0, 0],
+    'under reduced motion the colors change at once',
+  );
+  await still.close();
+});
+
+/** How full the countdown is, from 0 to 1. */
+const fill = (page) =>
+  page.evaluate(() => new DOMMatrix(getComputedStyle(/** @type {Element} */ (document.querySelector('.range__timer-fill'))).transform).a);
+/** Where the countdown and the screen's foot are, to catch a layout shift. */
+const hudBox = (page) =>
+  page.evaluate(() => {
+    const stage = /** @type {Element} */ (document.querySelector('.range__stage')).getBoundingClientRect();
+    const hud = /** @type {Element} */ (document.querySelector('.range__hud')).getBoundingClientRect();
+    return { stage: [stage.height, stage.width], hud: [hud.top - stage.top, hud.left - stage.left, hud.width, hud.height] };
+  });
+
+for (const width of [390, 1440]) {
+  test(`Pop R4: at ${width}px the countdown fills toward the next class on the screen, and pausing holds it and shows PAUSED without moving anything`, async () => {
+    const page = await openRange({ width });
+    // Measure from the start of an interval, so the countdown can't wrap between readings.
+    await advancesFrom(page, (await state(page)).current);
+    const stage = await page.locator('.range__stage').boundingBox();
+    const hud = await page.locator('.range__hud').boundingBox();
+    assert.ok(stage && hud && hud.y >= stage.y && hud.y + hud.height <= stage.y + stage.height, 'the countdown is on the screen');
+    const early = await fill(page);
+    await page.waitForTimeout(800);
+    const later = await fill(page);
+    assert.ok(later > early, `it fills (${early.toFixed(2)} → ${later.toFixed(2)})`);
+    assert.equal(await page.locator('.range__paused').isVisible(), false, 'no PAUSED while it plays');
+
+    const box = await hudBox(page);
+    await page.locator('.range__toggle').click();
+    await release(page);
+    assert.equal(await page.locator('.range__paused').isVisible(), true, 'PAUSED shows');
+    assert.deepEqual(await hudBox(page), box, 'and nothing moves');
+    const held = await fill(page);
+    await page.waitForTimeout(800);
+    assert.equal(await fill(page), held, 'the countdown holds');
+    const plate = await page.locator('.range__nameplate').boundingBox();
+    const badge = await page.locator('.range__paused').boundingBox();
+    assert.ok(plate && badge && (badge.x >= plate.x + plate.width || badge.y >= plate.y + plate.height), 'PAUSED clears the nameplate');
+    await page.close();
+  });
+}
+
+test('Pop R5: START plays at once, with the pointer still over the console and focus still on START', async () => {
+  const page = await openRange();
+  const start = page.locator('.range__toggle');
+  await start.click();
+  assert.equal(await start.getAttribute('aria-pressed'), 'true');
+  const at = (await state(page)).current;
+  // No release: the pointer stays on START, and so does focus.
+  await start.click();
+  assert.equal(await start.getAttribute('aria-pressed'), 'false');
+  await advancesFrom(page, at);
+  assert.equal((await state(page)).current, (at + 1) % names.length, 'the rotation moves on');
+  await page.close();
+});
+
+test('Pop R7: A and B have no labels, and every console key is ink with off-white symbols', async () => {
+  const page = await openRange();
+  const labels = await page.locator('.range__key-label').allTextContents();
+  assert.deepEqual(labels, ['START'], 'only START keeps a label');
+  const keys = await page.evaluate(() =>
+    [...document.querySelectorAll('.range__arrow, .range__button')].map((b) => {
+      const s = getComputedStyle(b);
+      return [s.backgroundColor, s.color];
+    }),
+  );
+  assert.equal(keys.length, 4, 'Previous, Next, A and B');
+  assert.equal(new Set(keys.map(([bg]) => bg)).size, 1, 'one key color');
+  assert.deepEqual(keys[0], ['rgb(46, 36, 24)', 'rgb(244, 237, 224)'], 'color-ink keys with color-page symbols');
+  await page.close();
+});

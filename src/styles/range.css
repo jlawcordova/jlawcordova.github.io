@@ -1,7 +1,14 @@
 /* section.range, not .range: Prism marks C#'s ".." operator as
    <span class="token range"> in code blocks. */
 section.range {
-  background: var(--color-forest);
+  /* Each class tints the ground and the sweep's lit edge here, and the screen
+     and the countdown on .range__stage, from its --class-shadow (Range pop
+     spec R1). Browsers without relative colors keep the forest ground and a
+     gold edge. */
+  --range-ground: var(--color-forest);
+  --range-lit: var(--color-gold);
+  position: relative;
+  background: var(--range-ground);
   color: var(--color-on-forest);
   padding: 96px var(--gutter) 0;
   /* The console runs off the bottom edge, like a handheld half out of frame.
@@ -10,16 +17,56 @@ section.range {
   overflow: hidden;
   overflow: clip;
 }
+/* One lightness per role, so contrast holds for every class: the ground is
+   dark enough for the copy, the screen light enough for the nameplate, and the
+   countdown deep enough to read on its light track. The chroma is pushed so
+   the class's hue reads. */
+@supports (color: oklch(from red l c h)) {
+  section.range {
+    --range-ground: oklch(from var(--class-shadow) 0.34 calc(c * 1.8) h);
+    --range-lit: oklch(from var(--class-shadow) 0.78 calc(c * 2.2) h);
+  }
+  /* section.range .range__stage, to win over the fallbacks on .range__stage below. */
+  section.range .range__stage {
+    --range-screen: oklch(from var(--class-shadow) 0.86 calc(c * 1.1) h);
+    --range-meter: oklch(from var(--class-shadow) 0.5 calc(c * 1.6) h);
+  }
+}
 
-/* Focus on the dark ground: light outline, forest halo. */
+/* A class change's layer sits behind the content, over the ground it changes.
+   Its color is the sweep's lit edge, for the script to read. */
+.range__change {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  color: var(--range-lit);
+  pointer-events: none;
+}
+.range__change > span {
+  position: absolute;
+  inset: 0;
+}
+.range__change > canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  image-rendering: pixelated;
+}
+.range__inner,
+.range__stage > :not(.range__change) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Focus on the dark ground: light outline, a halo in the ground's color. */
 .range :where(a, button):focus-visible {
   outline-color: var(--color-on-forest);
-  box-shadow: 0 0 0 5px var(--color-forest);
+  box-shadow: 0 0 0 5px var(--range-ground);
 }
-/* On the gold console: ink outline, gold halo. */
+/* On the console: ink outline, shell halo. */
 .range__console :where(button):focus-visible {
   outline-color: var(--color-ink);
-  box-shadow: 0 0 0 5px var(--color-gold);
+  box-shadow: 0 0 0 5px var(--color-shell);
 }
 
 /* The section supplies the gutter, so this isn't .container. */
@@ -60,13 +107,13 @@ section.range {
   color: var(--color-on-forest-muted);
 }
 
-/* The handheld: a gold shell, open at the bottom, where it leaves the section. */
+/* The handheld: a light gray shell, open at the bottom, where it leaves the section. */
 .range__console {
   width: 100%;
   max-width: 540px;
   margin-bottom: -96px;
   padding: 28px 28px 0;
-  background: var(--color-gold);
+  background: var(--color-shell);
   border: var(--border-thick);
   border-bottom: 0;
 }
@@ -76,9 +123,15 @@ section.range {
   background: var(--color-ink);
 }
 
+/* The screen's colors are set here, inside the console, so their fallbacks
+   take the console's light theme (dark mode spec R8): a card screen and an
+   ink countdown. */
 .range__stage {
+  --range-screen: var(--color-card);
+  --range-meter: var(--color-ink);
+  position: relative;
   overflow: hidden;
-  background-color: var(--color-card);
+  background-color: var(--range-screen);
   border: 1px solid var(--color-border);
   padding: 20px 18px 14px;
   display: flex;
@@ -128,6 +181,71 @@ section.range {
   height: auto;
   display: block;
   overflow: visible;
+}
+
+/* The screen's HUD along its foot: a framed countdown of twelve segments,
+   lit in a deep shade of the class's color as it fills. */
+.range__hud {
+  align-self: stretch;
+  display: flex;
+}
+.range__timer {
+  flex: 1;
+  height: 18px;
+  padding: 2px;
+  background: var(--color-page);
+  border: 2px solid var(--color-ink);
+}
+.range__timer-track {
+  display: block;
+  height: 100%;
+  background: var(--color-border-strong);
+  mask-image: linear-gradient(90deg, #000 calc(100% - 2px), transparent 0);
+  mask-size: calc(100% / 12) 100%;
+}
+.range__timer-fill {
+  display: block;
+  height: 100%;
+  background: var(--range-meter);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+section.range.is-paused .range__timer-fill {
+  opacity: 0.55;
+}
+
+/* PAUSED, blinking like a game's pause, top right across from the nameplate.
+   Out of the flow, so showing it moves nothing. */
+.range__stage > .range__paused {
+  position: absolute;
+  top: 33px;
+  right: 18px;
+  z-index: 2;
+  height: 18px;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  background: var(--color-ink);
+  color: var(--color-page);
+  font: 10px/1 var(--font-pixel);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  animation: range-blink 1.2s linear infinite;
+}
+section.range.is-paused .range__paused {
+  display: inline-flex;
+}
+/* On for half the beat, off for half: a cut, not a fade. */
+@keyframes range-blink {
+  0%,
+  49.99% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
 }
 
 /* Show only the current outfit. Without JS, data-current stays "0". */
@@ -187,7 +305,7 @@ section.range {
   width: 44px;
   height: 44px;
   background: var(--color-ink);
-  color: var(--color-gold);
+  color: var(--color-page);
 }
 /* Hover, and the auto-advance nudge on the Next arrow. */
 .range__arrow:hover,
@@ -196,7 +314,7 @@ section.range {
   color: var(--color-page);
 }
 
-/* Silkscreen at 10px, under or beside the key it names. Decoration: each
+/* START's label: Silkscreen at 10px, under its slot. Decoration: the
    button's own name says the same. */
 .range__key-label {
   font: 10px/1 var(--font-pixel);
@@ -225,29 +343,28 @@ section.range {
   transform: translate(1px, 1px);
 }
 
-/* A and B: square accent keys that press in 2px. */
+/* A and B: square ink keys that press in 2px, A set off to the right of B
+   like a handheld's face buttons. */
 .range__ab {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
 }
-.range__key {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.range__a {
+  margin-left: 20px;
 }
 .range__button {
   width: 52px;
   height: 52px;
   border: var(--border-thick);
-  background: var(--color-accent);
-  color: var(--color-on-accent);
+  background: var(--color-ink);
+  color: var(--color-page);
   font: 15px/1 var(--font-pixel);
   transition: transform 0.12s ease-out;
 }
 .range__button:hover {
-  background: var(--color-accent-hover);
+  background: var(--color-footer);
 }
 .range__button:active {
   transform: translate(2px, 2px);
@@ -257,14 +374,17 @@ section.range {
   .range__button {
     transition: none;
   }
-  /* A only makes the sprite hop, which reduced motion turns off (spec R12). */
-  .range__key--a {
+  .range__stage > .range__paused {
+    animation: none;
+  }
+  /* A only makes the character hop, which reduced motion turns off (spec R12). */
+  .range__a {
     visibility: hidden;
   }
 }
 
-/* Without JS the controls do nothing, so hide them without moving anything. */
-.range:not(.is-ready) .range__controls {
+/* Without JS the controls and the countdown do nothing, so hide them without moving anything. */
+.range:not(.is-ready) :is(.range__controls, .range__hud) {
   visibility: hidden;
 }
 
@@ -301,13 +421,25 @@ section.range {
     gap: 8px;
     padding-inline: 10px;
   }
+  /* Only the pause icon, so the longest class names keep their room. */
+  .range__stage > .range__paused {
+    top: 27px;
+    right: 10px;
+    padding: 0 6px;
+  }
+  .range__paused-label {
+    display: none;
+  }
 }
 
-/* The controls row needs about 364px of viewport with JUMP and BACK beside
-   their keys, so below 375px they go under the keys, like START's label. */
+/* Below 375px the controls row has no room for A's offset, so A sits over B. */
 @media (max-width: 374px) {
-  .range__key {
-    flex-direction: column;
-    gap: 6px;
+  .range__a {
+    margin-left: 0;
+  }
+  /* Security & Governance fills the nameplate's row here, so the pause icon
+     drops just under it. */
+  .range__stage > .range__paused {
+    top: 64px;
   }
 }
