@@ -936,6 +936,30 @@ describe('achievements redesign: frames, tally and Latest', () => {
     }
   });
 
+  test('R8: there is no key to the frame colors on the home section or the list pages', async () => {
+    for (const [path, scope] of [['/', '#achievements'], ['/achievements/', 'main'], ['/achievements/page2/', 'main']]) {
+      const page = await open('rich', path);
+      const found = await page.locator(scope).evaluate((root) => {
+        const copy = /** @type {HTMLElement} */ (root.cloneNode(true));
+        // The rows' own titles may use these words; everything around them may not.
+        for (const row of copy.querySelectorAll('li.achievement, .achievement-toast')) row.remove();
+        document.body.append(copy);
+        const text = copy.innerText;
+        copy.remove();
+        return {
+          words: text.match(/\b(make|fix|think|people|milestone|plain|key|legend)\b/gi) ?? [],
+          // The frame sheet's own <g data-frame> groups are art, not a key.
+          elements: [...root.querySelectorAll('.legend, [class*="legend"], [class*="-key"], [class*="__key"], [data-frame]:not(.achievement__icon)')].filter(
+            (el) => !el.closest('svg.achievement-icons'),
+          ).length,
+        };
+      });
+      assert.deepEqual(found.words, [], `${path}: no frame kind or key named outside the rows`);
+      assert.equal(found.elements, 0, `${path}: no key or legend element`);
+      await page.close();
+    }
+  });
+
   test('R6: the tally gives the totals on the home section and every list page: earned on gold with the thick edge, locked dashed', async () => {
     const chips = async (page, scope) =>
       page.locator(`${scope} .achievement-tally__chip`).evaluateAll((all) =>
