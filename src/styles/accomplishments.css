@@ -468,6 +468,97 @@ summary.achievement__row:focus-visible {
   }
 }
 
+/*
+ * The "Achievement unlocked!" toast (R11–R14): gold under ink with the thick
+ * edge, square, no shadow, fixed to the bottom right. The card renders hidden
+ * and the script in Accomplishments.astro shows it; the status region around
+ * it is always there, so screen readers announce it when it appears.
+ */
+.achievement-toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 30;
+  width: min(420px, calc(100vw - 48px));
+}
+
+.achievement-toast__card {
+  display: grid;
+  grid-template-columns: 60px minmax(0, 1fr) 44px;
+  align-items: center;
+  column-gap: 14px;
+  padding: 12px 6px 12px 12px;
+  background: var(--color-gold);
+  border: var(--border-thick);
+  color: var(--color-ink);
+}
+
+.achievement-toast__card[hidden] {
+  display: none;
+}
+
+/* The rows' grid area doesn't exist here: the icon takes the first column. */
+.achievement-toast__card .achievement__icon {
+  grid-area: auto;
+}
+
+.achievement-toast__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  margin: 0;
+}
+
+.achievement-toast__label {
+  font: 12px/1.4 var(--font-pixel);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.achievement-toast__name {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.achievement-toast__line {
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.achievement-toast__close {
+  align-self: start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+
+.achievement-toast__close:hover {
+  background: var(--color-card);
+}
+
+/* The site's ink ring, kept inside the card so it doesn't spill over the edge. */
+.achievement-toast__close:focus-visible {
+  outline-offset: -4px;
+  box-shadow: none;
+}
+
+@media print {
+  .achievement-toast {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .achievement__tip {
     --tip-fade: 0s;
@@ -481,6 +572,17 @@ summary.achievement__row:focus-visible {
 @media (max-width: 480px) {
   .accomplishments {
     padding: 64px var(--gutter) 72px;
+  }
+
+  .achievement-toast {
+    right: 16px;
+    bottom: 16px;
+    left: 16px;
+    width: auto;
+  }
+
+  .achievement-toast__card {
+    column-gap: 12px;
   }
 
   /* The date stacks under the title. */
