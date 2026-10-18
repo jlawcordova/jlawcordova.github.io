@@ -19,6 +19,17 @@
 export const LOOP_CYCLES = /** @type {Record<string, number>} */ ({ wf: 1000, ff: 600, hf: 3000 });
 
 /**
+ * The frame loops pixel-art.css plays, with the class prefix of their frames
+ * and how many frames it shows (w0–w4, f0–f3, h0–h5). A loop with more frames
+ * than that never shows the rest on the site.
+ */
+export const SITE_LOOPS = /** @type {Record<string, { prefix: string, frames: number }>} */ ({
+  ff: { prefix: 'f', frames: 4 },
+  wf: { prefix: 'w', frames: 5 },
+  hf: { prefix: 'h', frames: 6 },
+});
+
+/**
  * The frame a loop of `count` frames shows at `time` ms.
  * @param {string} loop
  * @param {number} count

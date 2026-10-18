@@ -1,14 +1,16 @@
-// The Frames panel (spec D9.5): shown when the selected layer is a frame
-// loop. A strip of its frames (w0, w1 …), with add, duplicate, delete and
-// reorder, and step back, play and step forward. Play runs at the loop's CSS
-// timing (pixel-art.css). It never starts by itself, so under reduced motion
-// nothing moves until you press it.
+// Object mode's Animation pane (spec D9.5, widened by the island level up
+// spec). On a frame loop: a strip of its frames (w0, w1 …), with add,
+// duplicate, delete and reorder, step back, play and step forward, and the
+// loop it plays as. On a still layer: Animate this layer turns it into a
+// loop. Below, the object's poses and variants (objects named after it). Play
+// runs at the loop's CSS timing (pixel-art.css). It never starts by itself,
+// so under reduced motion nothing moves until you press it.
 
-import { addFrame, deleteFrame, duplicateFrame, move } from '../../lib/pixel-art/edit.mjs';
-import { LOOP_CYCLES as CYCLE } from '../../lib/pixel-art/motion.mjs';
+import { addFrame, animateLayer, deleteFrame, duplicateFrame, move, setLoop, stillLayer } from '../../lib/pixel-art/edit.mjs';
+import { LOOP_CYCLES as CYCLE, SITE_LOOPS } from '../../lib/pixel-art/motion.mjs';
 import type { ObjectMode } from './object-mode';
 
-const $ = (id: string) => document.getElementById(id)!;
+const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 
 
 export class FramesPanel {
@@ -22,11 +24,49 @@ export class FramesPanel {
       const button = (e.target as Element).closest<HTMLButtonElement>('button');
       if (!button) return;
       if (button.dataset.index !== undefined) return this.mode.selectFrame(Number(button.dataset.index));
+      if (button.dataset.pose) return this.mode.lab.open('object', button.dataset.pose);
       const action = button.dataset.frame;
       if (action === 'play') return this.timer ? this.stop(true) : this.play();
       if (action === 'back' || action === 'forward') return this.mode.selectFrame(this.mode.frame + (action === 'back' ? -1 : 1));
+      if (action === 'animate' || action === 'still') return this.animate(action === 'animate');
       if (action) this.act(action);
     });
+    $('lab-loop').addEventListener('change', (e) => {
+      const loop = (e.target as HTMLSelectElement).value;
+      if (!this.loop || !this.editable) return;
+      this.stop();
+      this.mode.lab.edit((doc) => setLoop(doc, this.mode.layer, loop));
+      this.mode.lab.announce(`Plays as ${loop}, ${SITE_LOOPS[loop].frames} frames`);
+    });
+  }
+
+  /** The selected layer, if it's a still map on an object with layers of its own. */
+  private get still() {
+    const layer = this.mode.lab.doc?.layers?.[this.mode.layer];
+    return this.editable && layer && 'map' in layer ? layer : null;
+  }
+
+  /** Turns the selected still layer into a loop, or the selected loop back into a still layer. */
+  private animate(on: boolean) {
+    const { lab } = this.mode;
+    const layer = this.mode.layer;
+    if (on ? !this.still : !this.loop || !this.editable) return;
+    this.stop();
+    const frame = this.mode.frame;
+    lab.edit((doc) => (on ? animateLayer(doc, layer, 'ff') : stillLayer(doc, layer, frame)));
+    this.mode.selectFrame(0, false);
+    lab.announce(on ? 'Animated as ff, 4 frames, each a copy to paint' : `Still, keeping frame ${frame + 1}`);
+  }
+
+  /** Objects named after this one (mine-cart, mine-cart-tipped), the object itself included. */
+  private poses(): string[] {
+    const { lab } = this.mode;
+    const names = Object.keys(lab.objects());
+    const own = lab.name;
+    const cut = own.lastIndexOf('-');
+    const base = cut > 0 && names.includes(own.slice(0, cut)) ? own.slice(0, cut) : own;
+    const family = names.filter((n) => n === base || n.startsWith(`${base}-`));
+    return family.length > 1 ? family : [];
   }
 
   /** The selected layer, if it's a frame loop. */
@@ -88,9 +128,45 @@ export class FramesPanel {
 
   render() {
     const loop = this.loop;
+    const still = this.still;
     const part = $('lab-frames-part');
-    part.toggleAttribute('data-off', !loop);
-    if (!loop) return this.stop();
+    const poses = this.poses();
+    part.toggleAttribute('data-off', !loop && !still && poses.length === 0);
+    $('lab-still-note').hidden = !still;
+    $('lab-loop-field').hidden = !loop || !this.editable;
+    for (const el of part.querySelectorAll<HTMLElement>('#lab-frames, .lab-frames__play')) el.hidden = !loop;
+    const posesPart = $('lab-poses-part');
+    posesPart.hidden = poses.length === 0;
+    const list = $('lab-poses');
+    if (list.dataset.names !== poses.join(' ') || list.dataset.own !== this.mode.lab.name) {
+      list.dataset.names = poses.join(' ');
+      list.dataset.own = this.mode.lab.name;
+      list.replaceChildren(
+        ...poses.map((name) => {
+          const b = Object.assign(document.createElement('button'), { type: 'button', className: 'btn btn--ghost', textContent: name });
+          b.dataset.pose = name;
+          b.setAttribute('aria-pressed', String(name === this.mode.lab.name));
+          return b;
+        }),
+      );
+    }
+    const actions = part.querySelectorAll<HTMLButtonElement>('.lab-actions [data-frame]');
+    if (!loop) {
+      this.stop();
+      for (const b of actions) b.hidden = b.dataset.frame !== 'animate' || !still;
+      $('lab-loop-note').textContent = '';
+      return;
+    }
+    const site = SITE_LOOPS[loop.loop];
+    const select = $<HTMLSelectElement>('lab-loop');
+    if (site) select.value = loop.loop;
+    $('lab-loop-note').textContent = !site
+      ? `The site's CSS doesn't play ${loop.loop}. Choose ff, wf or hf.`
+      : loop.frames.length > site.frames
+        ? `The site plays ${site.frames} frames of ${loop.loop}; this loop has ${loop.frames.length}, so the last ${loop.frames.length - site.frames} never show.`
+        : loop.frames.length < site.frames
+          ? `The site plays ${site.frames} frames of ${loop.loop}; this loop has ${loop.frames.length}, so it blinks off for the rest.`
+          : 'Frame 0 is the rest frame, what reduced motion shows.';
     const strip = $('lab-frames');
     if (strip.childElementCount !== loop.frames.length || strip.dataset.prefix !== loop.prefix) {
       strip.dataset.prefix = loop.prefix;
@@ -107,6 +183,6 @@ export class FramesPanel {
     const play = part.querySelector<HTMLButtonElement>('[data-frame="play"]')!;
     play.textContent = this.timer ? 'Pause' : 'Play';
     play.setAttribute('aria-pressed', String(Boolean(this.timer)));
-    for (const b of part.querySelectorAll<HTMLButtonElement>('.lab-actions [data-frame]')) b.hidden = !this.editable;
+    for (const b of actions) b.hidden = !this.editable || b.dataset.frame === 'animate';
   }
 }

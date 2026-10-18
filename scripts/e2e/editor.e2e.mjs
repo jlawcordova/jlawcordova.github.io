@@ -504,6 +504,31 @@ describe('animation (island level up spec)', () => {
   });
 });
 
+describe('object animation (island level up spec)', () => {
+  test('animate a still layer, change its loop, stop it, and open a pose', async () => {
+    const { context, page, errors } = await openLab();
+    await page.getByRole('combobox', { name: 'Open' }).selectOption('object:pebble');
+    await page.getByRole('group', { name: 'Object stage' }).waitFor();
+    await page.getByRole('button', { name: 'Animate this layer' }).click();
+    let doc = await load(await exportText(page));
+    assert.deepEqual([doc.layers[0].loop, doc.layers[0].prefix, doc.layers[0].frames.length], ['ff', 'f', 4]);
+    await page.getByRole('button', { name: 'Frame f3' }).waitFor();
+
+    await page.getByLabel('Loop', { exact: true }).selectOption('hf');
+    doc = await load(await exportText(page));
+    assert.deepEqual([doc.layers[0].loop, doc.layers[0].prefix, doc.layers[0].frames.length], ['hf', 'h', 6]);
+
+    await page.getByRole('button', { name: 'Stop animating' }).click();
+    assert.equal(await exportText(page), await sourceOf('object', 'pebble'), 'a still layer again, as on the site');
+
+    await page.getByRole('combobox', { name: 'Open' }).selectOption('object:mine-cart');
+    await page.getByRole('group', { name: 'Poses' }).getByRole('button', { name: 'mine-cart-tipped', exact: true }).click();
+    assert.equal(await page.getByRole('combobox', { name: 'Open' }).inputValue(), 'object:mine-cart-tipped');
+    assert.deepEqual(errors, []);
+    await context.close();
+  });
+});
+
 // -------------------------------------------------------------- drafts
 
 describe('drafts (R20)', () => {

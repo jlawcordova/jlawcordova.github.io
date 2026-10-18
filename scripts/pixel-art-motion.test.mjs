@@ -8,6 +8,7 @@ import { describe, it } from 'node:test';
 
 import { composite, loadSources, renderScene, validate } from '../src/lib/pixel-art/engine.mjs';
 import { loopFrame, motionCss, poseItems, shownItems, stateAt, stepsFor } from '../src/lib/pixel-art/motion.mjs';
+import { animateLayer, setLoop, stillLayer } from '../src/lib/pixel-art/edit.mjs';
 import { serialize } from '../src/lib/pixel-art/serialize.mjs';
 import { compileScene } from './optimize-pixel-art.mjs';
 
@@ -142,5 +143,37 @@ describe('motion: compiled', () => {
     const text = serialize(s);
     assert.match(text, /\{ object: 'dot', id: 'mover', at: \{ px: \[2, 2\] \} \},/);
     assert.match(text, /  motion: \{\n    duration: 1000,\n    tracks: \[\n      \{\n        item: 'mover',\n        keys: \[\n          \{ t: 0 \},\n          \{ t: 500, move: \[4, -2\], show: false, pose: 'box' \},\n        \],\n      \},\n    \],\n  \},\n/);
+  });
+});
+
+describe('frame loops: animating a layer', () => {
+  const doc = () => ({ kind: 'sprite', keys: { g: 'grass-2' }, layers: [{ class: 'cbob', map: ['g.', '.g'] }] });
+
+  it('a still layer becomes one of the site\'s loops, its map copied into every frame', () => {
+    const d = doc();
+    animateLayer(d, 0, 'ff');
+    assert.deepEqual(d.layers[0], { loop: 'ff', prefix: 'f', frames: [['g.', '.g'], ['g.', '.g'], ['g.', '.g'], ['g.', '.g']] });
+    d.layers[0].frames[3] = ['gg', '..'];
+    assert.match(serialize(d), /loop: 'ff',\n      prefix: 'f',\n      frames: \[/);
+  });
+
+  it('switching loops follows the prefix and pads with the last frame, keeping extras', () => {
+    const d = doc();
+    animateLayer(d, 0, 'ff');
+    d.layers[0].frames[3] = ['gg', '..'];
+    setLoop(d, 0, 'hf');
+    assert.equal(d.layers[0].prefix, 'h');
+    assert.equal(d.layers[0].frames.length, 6);
+    assert.deepEqual(d.layers[0].frames[5], ['gg', '..']);
+    setLoop(d, 0, 'wf');
+    assert.deepEqual([d.layers[0].loop, d.layers[0].prefix, d.layers[0].frames.length], ['wf', 'w', 6]);
+  });
+
+  it('stopping keeps the chosen frame as a still map', () => {
+    const d = doc();
+    animateLayer(d, 0, 'wf');
+    d.layers[0].frames[2] = ['..', 'gg'];
+    stillLayer(d, 0, 2);
+    assert.deepEqual(d.layers[0], { map: ['..', 'gg'] });
   });
 });

@@ -39,7 +39,16 @@ const offset = [
     </div>
 
     <div class="lab-panel__part" data-for="object" role="group" aria-labelledby="lab-frames-title" id="lab-frames-part" hidden>
-      <h3 class="label lab-panel__title" id="lab-frames-title">Frames</h3>
+      <h3 class="label lab-panel__title" id="lab-frames-title">Animation</h3>
+      <p class="lab-panel__note" id="lab-still-note">This layer is still. Animate it to paint its frames one by one.</p>
+      <div class="lab-field" id="lab-loop-field">
+        <label for="lab-loop">Loop</label>
+        <select id="lab-loop">
+          <option value="ff">ff · 4 frames in 0.6 s</option>
+          <option value="wf">wf · 5 frames in 1 s</option>
+          <option value="hf">hf · 6 frames in 3 s</option>
+        </select>
+      </div>
       <div class="lab-frames" id="lab-frames" role="group" aria-label="Frames of the layer"></div>
       <div class="lab-frames__play">
         <button type="button" class="lab-step" data-frame="back" aria-label="Previous frame">‹</button>
@@ -52,6 +61,13 @@ const offset = [
         <button type="button" class="btn btn--ghost" data-frame="earlier">Move earlier</button>
         <button type="button" class="btn btn--ghost" data-frame="later">Move later</button>
         <button type="button" class="btn btn--ghost" data-frame="delete">Delete frame</button>
+        <button type="button" class="btn btn--ghost" data-frame="animate">Animate this layer</button>
+        <button type="button" class="btn btn--ghost" data-frame="still">Stop animating</button>
+      </div>
+      <p class="lab-panel__note" id="lab-loop-note"></p>
+      <div id="lab-poses-part" hidden>
+        <h4 class="label lab-panel__title" id="lab-poses-title">Poses</h4>
+        <div class="lab-actions" id="lab-poses" role="group" aria-labelledby="lab-poses-title"></div>
       </div>
     </div>
 
