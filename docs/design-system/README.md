@@ -86,7 +86,7 @@ Every page has a light theme and a dark theme. The dark theme is the same warm, 
 - **The tokens flip, not the rules.** `tokens.json` gives each color that changes a `dark` value, and `variables.css` sets them under `[data-theme="dark"]`. Everything above still holds in dark: set the page on `color-page`, text in `color-ink` and `color-ink-muted`, and actions in `color-accent`. Every text pair stays AA (`scripts/design-system.test.mjs` checks it).
 - **The same in both themes:** `color-earth`, `color-gold`, the forest and footer colors, and code blocks (`color-code` with the `syntax-*` colors). They're already dark grounds or illustration colors.
 - **Inverted fills flip with the theme.** A tooltip or the current page in pagination is `color-ink` with `color-page` text, so it's cream on dark ink in dark.
-- **Drawn objects keep the light colors.** The Range handheld carries `data-theme="light"`, so its gold shell, ink keys and paper stage look the same in both themes. Use the same attribute for any other drawn object.
+- **Drawn objects keep the light colors.** The Range handheld carries `data-theme="light"`, so its gold shell, ink keys and paper stage look the same in both themes. Use the same attribute for any other drawn object. The achievement toast, the earned tally chip and the Latest chip do the same, so they stay ink on gold.
 - **The pixel art isn't redrawn.** It sits on the dark grounds as it is, except that the hero island's dithered shadow takes `color-page`, so it settles into the dark band instead of reading as a pale hatch.
 
 ### Type

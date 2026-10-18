@@ -219,7 +219,7 @@ test('R7, R8: code blocks and the Range handheld look the same in both themes, a
 test('R10: the bar is one row and nothing scrolls sideways, in both themes', async () => {
   for (const theme of ['light', 'dark']) {
     for (const width of [NARROW, WIDE]) {
-      for (const path of ['/', '/blog/', post, '/accomplishments/', '/404.html']) {
+      for (const path of ['/', '/blog/', post, '/achievements/', '/404.html']) {
         const { page, context } = await open(path, { width, theme });
         const result = await page.evaluate(() => ({
           bar: Math.round(document.querySelector('.site-nav').getBoundingClientRect().height),

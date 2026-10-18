@@ -2,7 +2,8 @@
 // The home page's achievements (gamified accomplishments spec R5, R6, R8;
 // achievements redesign spec R1–R7, R11–R16): the three newest done, the newest
 // locked, and "View all" when the full list at /achievements/ has anything
-// else, then the "Achievement unlocked!" toast for the newest earned one.
+// else, then the "Achievement unlocked!" toast for the newest earned one, gold
+// under ink in both themes (data-theme="light", as the Range handheld).
 // Nothing renders without data. Two columns above 720px (pixel-first look
 // spec, Accomplishments): the heading, subtitle, tally and "View all" on the
 // left, the rows on the right. "View all" stays after the list in the DOM, so
@@ -48,7 +49,7 @@ const CROSS = 'M0 0h1v1h-1zM5 0h1v1h-1zM1 1h1v1h-1zM4 1h1v1h-1zM2 2h2v2h-2zM1 4h
       </div>
       {toast && (
         <div class="achievement-toast" role="status">
-          <div class="achievement-toast__card" hidden>
+          <div class="achievement-toast__card" data-theme="light" hidden>
             <AchievementIcon icon={toast.icon} frame={toast.frame} />
             <p class="achievement-toast__text">
               <span class="achievement-toast__label">Achievement unlocked!</span>

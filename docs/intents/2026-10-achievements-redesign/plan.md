@@ -11,7 +11,8 @@ Plans [`spec.md`](spec.md) (R1–R23).
 - **Data and logic:** `src/lib/achievement-icons.mjs`, `src/lib/accomplishment-list.mjs`, `src/lib/motion.ts`, `src/lib/achievement-toast.ts` (new, the toast's script).
 - **Routes:** `src/pages/achievements/index.astro` and `[page].astro` (moved from `src/pages/accomplishments/`); `src/pages/accomplishments/index.astro` and `[page].astro` (new: the redirect pages).
 - **Components and styles:** `src/components/AccomplishmentRow.astro`, `Accomplishments.astro`, `AccomplishmentsPage.astro`, `AchievementIcons.astro`, `PageHead.astro`, `Navigation.astro`; `src/components/AchievementIcon.astro` (new, the framed icon, shared by the rows and the toast) and `AchievementTally.astro` (new, the totals, shared by the home section and the list page); `src/pages/design-system.astro`; `src/styles/accomplishments.css`. *(The two new components and the toast module weren't listed before building; they keep the markup in one place.)*
-- **Tests:** `scripts/achievement-icons.test.mjs`, `scripts/accomplishments.test.mjs`, `scripts/pagination.test.mjs`, `scripts/e2e/accomplishments.e2e.mjs`, `scripts/e2e/shell.e2e.mjs`.
+- **Tests:** `scripts/achievement-icons.test.mjs`, `scripts/accomplishments.test.mjs`, `scripts/pagination.test.mjs`, `scripts/e2e/accomplishments.e2e.mjs`, `scripts/e2e/shell.e2e.mjs`; `scripts/e2e/editor.e2e.mjs` (redirect pages may be noindex) and `scripts/e2e/theme.e2e.mjs` (the list's new URL), found while running the checks.
+- **After `main` moved:** `src/styles/navigation.css` (the nav fits the longer link), and `data-theme="light"` on the gold pieces in `AchievementTally.astro`, `AccomplishmentRow.astro` and `Accomplishments.astro`, with their previews.
 
 ## Order of work
 
@@ -27,6 +28,8 @@ One slice, straight to a PR into `main`: the main session does it in one sitting
 8. **feat:** the "Achievement unlocked!" toast (R11–R14, R15, R16).
 9. **docs:** the brand book, the AchievementRow, AchievementToast and Navigation guidelines and previews, the README and CLAUDE.md (R21, R22).
 10. **test:** the browser checks for R1–R20 (R23).
+11. **merge:** `main` moved during the build (dark mode, the island's sweep), so it's merged in before the PR.
+12. **fix:** the gold pieces keep the light colors in the dark theme, the nav's one-row step-down widens for "Achievements", and the theme check uses the new URL (R19, R20a). *(Added after the merge: dark mode wasn't on `main` when this plan was written.)*
 
 ## Workflow and reviews
 

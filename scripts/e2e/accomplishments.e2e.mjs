@@ -313,8 +313,9 @@ describe('rows', () => {
       assert.equal(await done.locator('.achievement__frame use').getAttribute('href'), '#achievement-frames');
       const [frameBox, glyphBox] = [await done.locator('.achievement__frame').boundingBox(), await done.locator('.achievement__glyph').boundingBox()];
       assert.ok(frameBox && glyphBox);
-      assert.deepEqual([frameBox.width, frameBox.height], [60, 60], 'the frame is 60px');
-      assert.deepEqual([glyphBox.x - frameBox.x, glyphBox.y - frameBox.y, glyphBox.width], [6, 6, 48], 'the icon is 48px, 6px in');
+      const px = (n) => Math.round(n * 2) / 2; // to the half pixel, past sub-pixel layout
+      assert.deepEqual([px(frameBox.width), px(frameBox.height)], [60, 60], 'the frame is 60px');
+      assert.deepEqual([px(glyphBox.x - frameBox.x), px(glyphBox.y - frameBox.y), px(glyphBox.width)], [6, 6, 48], 'the icon is 48px, 6px in');
       assert.equal(await done.locator('.achievement__short').textContent(), first.shortDescription);
       const date = await done.locator('.achievement__date').textContent();
       assert.equal(date, formatDateRange(first));
@@ -988,7 +989,7 @@ describe('achievements redesign: the toast', () => {
 
   test('R11: it renders hidden in a status region, and only on the home page with an earned record', async () => {
     const html = await (await fetch(`${sites.rich.url}/`)).text();
-    assert.match(html, /<div class="achievement-toast" role="status">\s*<div class="achievement-toast__card" hidden>/, 'hidden without JavaScript');
+    assert.match(html, /<div class="achievement-toast" role="status">\s*<div class="achievement-toast__card"[^>]* hidden>/, 'hidden without JavaScript');
     const page = await open('rich', '/', { toast: true, settle: false });
     assert.equal(await card(page).isHidden(), true, 'hidden until the list comes into view');
     await page.close();
@@ -1127,5 +1128,53 @@ describe('achievements redesign: the frame hop', () => {
     const moving = await watch('no-preference');
     for (const { state, moved } of moving) assert.equal(moved, state === 'done', `a ${state} frame ${state === 'done' ? 'hops' : 'stays still'}`);
     for (const { moved } of await watch('reduce')) assert.equal(moved, false, 'nothing hops under reduced motion');
+  });
+});
+
+describe('achievements redesign: the nav and the dark theme', () => {
+  test('R19: with every link, Achievements included, the bar is one row at every width, in both themes', async () => {
+    for (const colorScheme of /** @type {const} */ (['light', 'dark'])) {
+      for (const width of [320, 375, 390, 452, 720, 721, 740, 764, 792, 800, 820, 840, 841, 844, 848, 849, 852, 860, 900, 1024, 1440]) {
+        const page = await open('rich', '/achievements/', { viewport: { width, height: 800 }, colorScheme, settle: false });
+        const bar = await page.locator('.site-nav').evaluate((el) => Math.round(el.getBoundingClientRect().height));
+        assert.equal(bar, 62, `${colorScheme} ${width}px: the bar is one row`);
+        if (width > 720) {
+          assert.equal(await page.locator('.site-nav a[href="/#achievements"]').isVisible(), true, `${width}px: Achievements shows`);
+          for (const [w, h] of await page.locator('.site-nav__links a').evaluateAll((all) => all.map((a) => [a.getBoundingClientRect().width, a.getBoundingClientRect().height]))) {
+            assert.ok(w >= 44 && h >= 44, `${width}px: a nav link is ${w}×${h}`);
+          }
+        }
+        await page.close();
+      }
+    }
+  });
+
+  test('R6, R7, R13: in the dark theme the earned chip, Latest and the toast stay ink on gold; the locked chip follows the theme', async () => {
+    const page = await open('rich', '/', { colorScheme: 'dark', toast: true, settle: false });
+    assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'dark');
+    await page.locator('#achievements .achievement-list').scrollIntoViewIfNeeded();
+    await page.locator('.achievement-toast__card').waitFor({ state: 'visible', timeout: TOAST_MS });
+    const look = await page.evaluate(() => {
+      const of = (selector) => {
+        const s = getComputedStyle(/** @type {Element} */ (document.querySelector(selector)));
+        return [s.color, s.backgroundColor];
+      };
+      return {
+        earned: of('.achievement-tally__chip[data-kind="earned"]'),
+        latest: of('.achievement__latest'),
+        toast: of('.achievement-toast__name'),
+        card: of('.achievement-toast__card'),
+        locked: of('.achievement-tally__chip[data-kind="locked"]')[0],
+        heading: of('#achievements-title')[0],
+      };
+    });
+    const [ink, gold] = ['rgb(46, 36, 24)', 'rgb(216, 182, 106)'];
+    assert.deepEqual(look.earned, [ink, gold]);
+    assert.deepEqual(look.latest, [ink, gold]);
+    assert.equal(look.toast[0], ink);
+    assert.equal(look.card[1], gold);
+    assert.equal(look.locked, look.heading, 'the locked chip takes the dark theme\'s ink');
+    assert.notEqual(look.locked, ink);
+    await page.close();
   });
 });

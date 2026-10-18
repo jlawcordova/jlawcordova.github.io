@@ -50,8 +50,12 @@ Implements [`intent.md`](intent.md). Where they disagree, the intent wins and th
 
 - **R17. New URLs.** The full list is at `/achievements/`, with later pages at `/achievements/page2/`, `/achievements/page3/` and so on, 12 earned rows a page as today.
 - **R18. Redirects.** `/accomplishments/` and every `/accomplishments/pageN/` that exists redirect to the matching `/achievements/` URL. GitHub Pages can't send HTTP redirects, so each old URL is a small page with an instant refresh, a canonical link to the new URL, `noindex`, and a plain link for anyone whose browser doesn't follow the refresh.
-- **R19. Navigation.** The nav link "Lately" becomes "Achievements". It still points at the home page's section, now `/#achievements`, and still shows only when that section renders.
+- **R19. Navigation.** The nav link "Lately" becomes "Achievements". It still points at the home page's section, now `/#achievements`, and still shows only when that section renders. The bar stays one row at every width with the longer link: where every link shares the row (a header of 673px to 800px), the wordmark steps down and the links' padding narrows.
 - **R20. Layout.** On the list page, the pagination sits right under the earned list, before the locked list.
+
+### Dark theme
+
+- **R20a. Gold stays ink on gold.** The dark theme (merged into `main` while this change was built) flips `color-ink` to cream but keeps `color-gold`. The earned chip, the Latest chip and the toast carry `data-theme="light"`, as the brand book says for drawn objects like the Range handheld, so they're ink on gold in both themes. The locked chip, the rows and the headings follow the theme. The frames and icons are pixel art and aren't redrawn.
 
 ### Design system and checks
 
@@ -102,6 +106,7 @@ Implements [`intent.md`](intent.md). Where they disagree, the intent wins and th
 - **C3. Refresh redirects.** Static hosting can't send a 301. Astro's refresh pages carry a canonical link and `noindex`, which search engines treat as a move. The old `#accomplishments` anchor isn't redirected (fragments never reach the server), so an old link to it opens the home page at the top. The nav was the only link to it on the site.
 - **C4. A toast that leaves by itself.** Timed content needs a way to stop it (WCAG 2.2.1). The toast repeats the first row, pauses while it's hovered or focused, and has a close button and Escape. It covers the lower rows for at most 5 seconds.
 - **C5. Two words for one thing.** Records are "accomplishments" and the page says "achievements". The split is fixed by this spec's Naming note, so code and docs say which one they mean.
+- **C6. Dark mode landed mid-change.** The dark theme merged into `main` while this change was being built. R19's nav fit and R20a follow from it.
 
 ## Open questions
 
