@@ -1,6 +1,6 @@
 # Island level up: new objects
 
-The objects the [intent](intent.md) needs that the pixel-art library doesn't have yet, The owner approved all 19, the optional ones included, on 2026-10-18, and the spec takes them as its object set. Sizes are rough, in pixels or tiles.
+The objects the [intent](intent.md) needs that the pixel-art library doesn't have yet. The owner approved all 19, the optional ones included, on 2026-10-18, and the spec takes them as its object set. Sizes are rough, in pixels or tiles.
 
 ## Mining section (L–B side)
 
