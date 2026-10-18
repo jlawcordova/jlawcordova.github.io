@@ -2,18 +2,17 @@
 // One page of the blog list: on page 1 the newest post as a featured card,
 // then the rest as post cards that rise in as they scroll into view.
 import PageHead from './PageHead.astro';
+import Pagination from './Pagination.astro';
 import PostListItem from './PostListItem.astro';
 import type { Post } from '../lib/posts';
-import { pagePath as pathUnder, type Page } from '../lib/pagination';
+import type { Page } from '../lib/pagination';
 
 type Props = Page<Post>;
 
 const { items: posts, page, totalPages, totalItems: totalPosts } = Astro.props;
-const pagePath = (n: number) => pathUnder('/blog/', n);
 // Page 1 leads with the newest post as a featured card.
 const featured = page === 1 ? posts[0] : undefined;
 const rest = featured ? posts.slice(1) : posts;
-const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 ---
 
 <PageHead title="Blog" label={`${totalPosts} posts · Page ${page} of ${totalPages}`} />
@@ -50,32 +49,7 @@ const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
       )
     }
 
-    {
-      totalPages > 1 && (
-        <nav class="pagination" aria-label="Blog pages">
-          {page > 1 && (
-            <a class="pagination__link" href={pagePath(page - 1)} rel="prev">
-              Prev
-            </a>
-          )}
-          {pages.map((n) => (
-            <a
-              class="pagination__link"
-              href={pagePath(n)}
-              aria-current={n === page ? 'page' : undefined}
-              aria-label={`Page ${n}`}
-            >
-              {n}
-            </a>
-          ))}
-          {page < totalPages && (
-            <a class="pagination__link" href={pagePath(page + 1)} rel="next">
-              Next
-            </a>
-          )}
-        </nav>
-      )
-    }
+    <Pagination base="/blog/" page={page} totalPages={totalPages} label="Blog pages" />
   </div>
 </div>
 

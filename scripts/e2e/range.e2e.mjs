@@ -24,14 +24,15 @@ import { readFile } from 'node:fs/promises';
 import { after, before, test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 
-import { launch, loadPlaywright } from './browser.mjs';
+import { INTERVAL } from '../../src/lib/range-change.mjs';
+import { launch, loadPlaywright, tokenColor } from './browser.mjs';
 
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));
 const BASE = process.env.E2E_BASE_URL ?? 'http://localhost:4321';
 /** The class names in rangeClasses, read from home.ts as text. */
 const classNames = (homeTs) => [.../export const rangeClasses = \[([\s\S]*?)\] as const;/.exec(homeTs)[1].matchAll(/name: '([^']+)'/g)].map((m) => m[1]);
-/** The carousel's interval (Range.astro, Range settings spec R7); the waits add their own slack. */
-const STEP_MS = 3000;
+/** The carousel's interval (Range settings spec R7); the waits add their own slack. */
+const STEP_MS = INTERVAL;
 
 /** @type {import('playwright').Browser} */
 let browser;
@@ -210,6 +211,14 @@ test('Settings R6, R9: under reduced motion a switch shows the new setting at on
   await page.close();
 });
 
+/** Waits for the carousel to move off `from`, within one interval. */
+const advancesFrom = (page, from) =>
+  page.waitForFunction(
+    (was) => Number(/** @type {HTMLElement} */ (document.querySelector('.range')).dataset.current) !== was,
+    from,
+    { timeout: STEP_MS + 400 },
+  );
+
 test('R7, Pop R4: it auto-advances; pause and keyboard focus stop it, and hover and a click do not', async () => {
   const page = await openRange();
   // The carousel's clock starts when the page loads, not when openRange
@@ -217,11 +226,7 @@ test('R7, Pop R4: it auto-advances; pause and keyboard focus stop it, and hover 
   // build) has already used part of the interval. Wait for the next step from
   // wherever it is now, within one interval, and check it is exactly one class.
   const from = (await state(page)).current;
-  await page.waitForFunction(
-    (was) => Number(/** @type {HTMLElement} */ (document.querySelector('.range')).dataset.current) !== was,
-    from,
-    { timeout: STEP_MS + 400 },
-  );
+  await advancesFrom(page, from);
   assert.equal((await state(page)).current, (from + 1) % names.length, 'auto-advance moves one class at a time');
 
   await pause(page);
@@ -241,11 +246,7 @@ test('R7, Pop R4: it auto-advances; pause and keyboard focus stop it, and hover 
   /** Waits for the next class within one interval. */
   const moves = async (why) => {
     const was = (await state(page)).current;
-    await page.waitForFunction(
-      (w) => Number(/** @type {HTMLElement} */ (document.querySelector('.range')).dataset.current) !== w,
-      was,
-      { timeout: STEP_MS + 400 },
-    );
+    await advancesFrom(page, was);
     assert.equal((await state(page)).current, (was + 1) % names.length, why);
   };
 
@@ -273,14 +274,6 @@ test('R7: with reduced motion it does not auto-advance', async () => {
   assert.equal((await state(page)).current, 0);
   await page.close();
 });
-
-/** Waits for the carousel to move off `from`, within one interval. */
-const advancesFrom = (page, from) =>
-  page.waitForFunction(
-    (was) => Number(/** @type {HTMLElement} */ (document.querySelector('.range')).dataset.current) !== was,
-    from,
-    { timeout: STEP_MS + 400 },
-  );
 
 test('Console: START pauses and plays the rotation', async () => {
   const page = await openRange();
@@ -444,7 +437,6 @@ test('Pop R1: each class tints the section and the screen, and the copy stays re
   await pause(page);
   const grounds = new Set();
   for (let i = 0; i < names.length; i += 1) {
-    await page.waitForTimeout(700); // the change's layers clear
     const c = await colors(page);
     grounds.add(c.ground.join());
     assert.ok(contrast(c.heading, c.ground) >= 4.5, `${names[i]}: heading ${contrast(c.heading, c.ground).toFixed(1)}:1`);
@@ -466,9 +458,8 @@ test('Pop R2, R3: a change sweeps battle bars over the screen and slashes the se
     section: document.querySelectorAll('section.range > .range__change > span').length,
   }));
   assert.deepEqual(during, { screen: 1, section: 2 }, 'the screen has its blocks, and the section its old color and the slash');
-  await page.waitForTimeout(900);
-  const afterwards = await page.evaluate(() => [...document.querySelectorAll('.range__change')].map((l) => l.childElementCount));
-  assert.deepEqual(afterwards, [0, 0], 'both layers are empty once the change is done');
+  // The slash takes 0.6s and the bars 0.55s; both layers empty once they're done.
+  await page.waitForFunction(() => [...document.querySelectorAll('.range__change')].every((l) => l.childElementCount === 0), undefined, { timeout: 900 });
   await page.close();
 
   const still = await openRange({ reducedMotion: 'reduce' });
@@ -547,6 +538,7 @@ test('Pop R7: A and B have no labels, and every console key is ink with off-whit
   );
   assert.equal(keys.length, 4, 'Previous, Next, A and B');
   assert.equal(new Set(keys.map(([bg]) => bg)).size, 1, 'one key color');
-  assert.deepEqual(keys[0], ['rgb(46, 36, 24)', 'rgb(244, 237, 224)'], 'color-ink keys with color-page symbols');
+  const tokens = [await tokenColor(page, '--color-ink', '.range__console'), await tokenColor(page, '--color-page', '.range__console')];
+  assert.deepEqual(keys[0], tokens, 'color-ink keys with color-page symbols');
   await page.close();
 });

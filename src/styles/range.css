@@ -19,17 +19,12 @@ section.range {
 }
 /* One lightness per role, so contrast holds for every class: the ground is
    dark enough for the copy, the screen light enough for the nameplate, and the
-   countdown deep enough to read on its light track. The chroma is pushed so
-   the class's hue reads. */
+   countdown deep enough to read on its light track (set after .range__stage's
+   fallbacks, below). The chroma is pushed so the class's hue reads. */
 @supports (color: oklch(from red l c h)) {
   section.range {
     --range-ground: oklch(from var(--class-shadow) 0.34 calc(c * 1.8) h);
     --range-lit: oklch(from var(--class-shadow) 0.78 calc(c * 2.2) h);
-  }
-  /* section.range .range__stage, to win over the fallbacks on .range__stage below. */
-  section.range .range__stage {
-    --range-screen: oklch(from var(--class-shadow) 0.86 calc(c * 1.1) h);
-    --range-meter: oklch(from var(--class-shadow) 0.5 calc(c * 1.6) h);
   }
 }
 
@@ -139,6 +134,12 @@ section.range {
   align-items: center;
   gap: 10px;
   color: var(--color-ink);
+}
+@supports (color: oklch(from red l c h)) {
+  .range__stage {
+    --range-screen: oklch(from var(--class-shadow) 0.86 calc(c * 1.1) h);
+    --range-meter: oklch(from var(--class-shadow) 0.5 calc(c * 1.6) h);
+  }
 }
 
 /* label type, on paper: the class color's swatch, then its name. */

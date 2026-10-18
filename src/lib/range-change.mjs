@@ -34,11 +34,10 @@ export function barsOrder(x, y, cols, rows) {
  * sweep's edge.
  * @param {number[]} order When each block clears, from barsOrder.
  * @param {number} progress From 0 to 1.
- * @param {number} [edge]
  * @returns {(0 | 1 | 2)[]}
  */
-export function barsFrame(order, progress, edge = BARS.edge) {
-  return order.map((o) => (o < progress ? 0 : o < progress + edge ? 2 : 1));
+export function barsFrame(order, progress) {
+  return order.map((o) => (o < progress ? 0 : o < progress + BARS.edge ? 2 : 1));
 }
 
 /**

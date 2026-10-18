@@ -52,7 +52,7 @@ const CROSS = 'M0 0h1v1h-1zM5 0h1v1h-1zM1 1h1v1h-1zM4 1h1v1h-1zM2 2h2v2h-2zM1 4h
           <div class="achievement-toast__card" data-theme="light" hidden>
             <AchievementIcon icon={toast.icon} frame={toast.frame} />
             <p class="achievement-toast__text">
-              <span class="achievement-toast__label">Achievement unlocked!</span>
+              <span class="label achievement-toast__label">Achievement unlocked!</span>
               <span class="achievement-toast__name">{toast.lead}</span>
               <span class="achievement-toast__line">{toast.short ? `${toast.short} · ${toast.date}` : toast.date}</span>
             </p>
@@ -69,18 +69,9 @@ const CROSS = 'M0 0h1v1h-1zM5 0h1v1h-1zM1 1h1v1h-1zM4 1h1v1h-1zM2 2h2v2h-2zM1 4h
 }
 
 <script>
-  // Rows still below the fold rise in as the list scrolls into view (pixel-first
-  // look spec, Accomplishments), and each earned frame hops once as its row
-  // lands (achievements redesign spec R15). Rows already on screen, and every
-  // row without JavaScript or under reduced motion, are never hidden. Then the
-  // toast, once a session (R11–R14).
+  // The toast, once a session (R11–R14). The rows' entrance is AccomplishmentRow's.
   import { achievementToast } from '../lib/achievement-toast';
-  import { hop, reveal } from '../lib/motion';
 
   const section = document.getElementById('achievements');
-  if (section) {
-    reveal(section.querySelectorAll('.achievement-list > .achievement'), { y: 16, stagger: 0.06, duration: 0.4 });
-    hop(section.querySelectorAll('.achievement[data-state="done"] .achievement__icon'), { delay: 0.4, stagger: 0.06 });
-    achievementToast(section);
-  }
+  if (section) achievementToast(section);
 </script>

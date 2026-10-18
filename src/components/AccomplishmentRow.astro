@@ -96,11 +96,21 @@ const CHEVRON = 'M0 0h2v1h-2zM5 0h2v1h-2zM1 1h2v1h-2zM4 1h2v1h-2zM2 2h3v1h-3zM3 
 }
 
 <script>
+  import { easeOut, hop, play, reveal } from '../lib/motion';
+
+  // Rows still below the fold rise in as the list scrolls into view (pixel-first
+  // look spec, Accomplishments), and each earned frame hops once as its row
+  // lands (achievements redesign spec R15), on the home section and the list
+  // pages alike. Rows already on screen, and every row without JavaScript or
+  // under reduced motion, are never hidden.
+  const RISE = 0.4;
+  const GAP = 0.06;
+  reveal(document.querySelectorAll('.achievement-list > .achievement'), { y: 16, stagger: GAP, duration: RISE });
+  hop(document.querySelectorAll('.achievement-list > .achievement[data-state="done"] .achievement__icon'), { delay: RISE, stagger: GAP });
+
   // One listener for every row on the page. `toggle` doesn't bubble, so it's
   // caught on the way down. Under reduced motion play() does nothing, and the
   // panel is simply open; without JavaScript, <details> still opens.
-  import { easeOut, play } from '../lib/motion';
-
   document.addEventListener(
     'toggle',
     (event) => {

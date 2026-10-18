@@ -242,12 +242,14 @@ summary.achievement__row:focus-visible {
  * corner. AchievementIcon.astro draws it, for the rows and the toast.
  */
 .achievement__icon {
-  grid-area: icon;
   position: relative;
   display: block;
-  flex: none;
   width: 60px;
   height: 60px;
+}
+
+.achievement__row > .achievement__icon {
+  grid-area: icon;
 }
 
 .achievement__icon svg {
@@ -476,10 +478,10 @@ summary.achievement__row:focus-visible {
  */
 .achievement-toast {
   position: fixed;
-  right: 24px;
-  bottom: 24px;
+  right: var(--gutter);
+  bottom: var(--gutter);
   z-index: 30;
-  width: min(420px, calc(100vw - 48px));
+  width: min(420px, calc(100vw - 2 * var(--gutter)));
 }
 
 .achievement-toast__card {
@@ -497,11 +499,6 @@ summary.achievement__row:focus-visible {
   display: none;
 }
 
-/* The rows' grid area doesn't exist here: the icon takes the first column. */
-.achievement-toast__card .achievement__icon {
-  grid-area: auto;
-}
-
 .achievement-toast__text {
   display: flex;
   flex-direction: column;
@@ -510,10 +507,9 @@ summary.achievement__row:focus-visible {
   margin: 0;
 }
 
+/* The label type, in the card's ink. */
 .achievement-toast__label {
-  font: 12px/1.4 var(--font-pixel);
-  letter-spacing: 1px;
-  text-transform: uppercase;
+  color: inherit;
 }
 
 .achievement-toast__name {
@@ -575,9 +571,7 @@ summary.achievement__row:focus-visible {
   }
 
   .achievement-toast {
-    right: 16px;
-    bottom: 16px;
-    left: 16px;
+    left: var(--gutter);
     width: auto;
   }
 
