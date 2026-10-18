@@ -1,6 +1,6 @@
 /*
  * Accomplishments as achievement rows (gamified accomplishments spec D4): the
- * home section, the /accomplishments/ pages, the rows and their tooltip. Rows
+ * home section, the /achievements/ pages, the rows and their tooltip. Rows
  * are square with a 3px edge (pixel-first look spec, Accomplishments), and a
  * row's panel drops in with Motion (the script in AccomplishmentRow.astro).
  */

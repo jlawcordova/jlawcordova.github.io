@@ -5,9 +5,10 @@ import { site } from '../site';
 
 // On the home page the brand scrolls back to the hero instead of reloading.
 const home = Astro.url.pathname === '/';
-// Lately points at the home page's accomplishments section, so it shows only
-// when that section renders (pixel-first look spec, Shell).
-const lately = homeSelection(getAccomplishments()).visible;
+// Achievements points at the home page's achievements section, so it shows
+// only when that section renders (pixel-first look spec, Shell; achievements
+// redesign spec R19).
+const achievements = homeSelection(getAccomplishments()).visible;
 ---
 
 <header class="site-header">
@@ -23,7 +24,7 @@ const lately = homeSelection(getAccomplishments()).visible;
     </button>
     <div class="site-nav__links" id="site-menu">
       <a href="/#range">Range</a>
-      {lately && <a href="/#accomplishments">Lately</a>}
+      {achievements && <a href="/#achievements">Achievements</a>}
       <a href="/blog/">Blog</a>
       <a class="pill" href={site.author.linkedin}>Contact</a>
     </div>

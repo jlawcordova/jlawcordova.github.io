@@ -9,7 +9,7 @@ Plans [`spec.md`](spec.md) (R1–R23).
 - **Docs:** `docs/intents/2026-10-achievements-redesign/intent.md`, `spec.md`, `plan.md` (new); `docs/design-system/README.md`; `docs/design-system/components/AchievementRow/README.md` and `preview.html`; `docs/design-system/components/AchievementToast/README.md` and `preview.html` (new); `docs/design-system/components/Navigation/README.md` and `preview.html`; `README.md`; `CLAUDE.md`; `.claude/skills/achievement-icon/SKILL.md`.
 - **Art:** `src/assets/pixel-art/source/objects/frame-plain.mjs`, `frame-make.mjs`, `frame-fix.mjs`, `frame-think.mjs`, `frame-people.mjs`, `frame-milestone.mjs` (new); `src/assets/pixel-art/source/scenes/achievement-frames.mjs` (new); `src/assets/pixel-art/achievement-frames.svg` (new, compiled).
 - **Data and logic:** `src/lib/achievement-icons.mjs`, `src/lib/accomplishment-list.mjs`, `src/lib/motion.ts`.
-- **Routes and config:** `astro.config.mjs`; `src/pages/achievements/index.astro` and `[page].astro` (moved from `src/pages/accomplishments/`, which is deleted).
+- **Routes:** `src/pages/achievements/index.astro` and `[page].astro` (moved from `src/pages/accomplishments/`); `src/pages/accomplishments/index.astro` and `[page].astro` (new: the redirect pages).
 - **Components and styles:** `src/components/AccomplishmentRow.astro`, `Accomplishments.astro`, `AccomplishmentsPage.astro`, `AchievementIcons.astro`, `PageHead.astro`, `Navigation.astro`; `src/pages/design-system.astro`; `src/styles/accomplishments.css`.
 - **Tests:** `scripts/achievement-icons.test.mjs`, `scripts/accomplishments.test.mjs`, `scripts/pagination.test.mjs`, `scripts/e2e/accomplishments.e2e.mjs`, `scripts/e2e/shell.e2e.mjs`.
 
@@ -22,7 +22,7 @@ One slice, straight to a PR into `main`: the main session does it in one sitting
 3. **docs:** this plan.
 4. **art:** the six frame objects and the frame sheet scene, compiled with `npm run art` (R8, R10). Run by the `pixel-artist` subagent.
 5. **feat:** frame kinds in the icon list, `frameFor()`, `rowFor()`'s `frame`, and their unit tests, including the frame sheet's order and budget (R8–R10, R23). The achievement-icon skill names the frame step.
-6. **feat:** the list moves to `/achievements/`, with redirects from the old URLs, and the nav link becomes "Achievements" (R17–R19).
+6. **feat:** the list moves to `/achievements/`, with redirect pages at the old URLs, and the nav link becomes "Achievements" (R17–R19). *(Changed while building: Astro's dynamic `redirects` entry wrote `/achievements/page2` without the trailing slash, a second hop and a canonical link to the wrong URL, so the fallback below is used for both old URLs.)*
 7. **feat:** the redesigned rows, home section and list page: copy, tally, Latest chip, framed icons, pagination above the locked list, and the frame hop (R1–R9, R15, R16, R20).
 8. **feat:** the "Achievement unlocked!" toast (R11–R14, R15, R16).
 9. **docs:** the brand book, the AchievementRow, AchievementToast and Navigation guidelines and previews, the README and CLAUDE.md (R21, R22).
@@ -43,7 +43,7 @@ One slice, straight to a PR into `main`: the main session does it in one sitting
 
 ## Risks
 
-- **Dynamic redirects in a static build.** If Astro won't write refresh pages for `/accomplishments/[page]`, step 6 instead keeps two small pages under `src/pages/accomplishments/` that render the same refresh markup for each page path, and this plan is updated in that commit.
+- **Dynamic redirects in a static build.** If Astro won't write correct refresh pages for `/accomplishments/[page]`, step 6 instead keeps two small pages under `src/pages/accomplishments/` that return `Astro.redirect()` with a 301 for each page path, which a static build writes as the same refresh markup, and this plan is updated in that commit. *(It happened: see step 6.)*
 - **The browser checks are the riskiest step.** The suite checks many exact strings, classes and sizes that this change alters. Each changed assertion follows a requirement here, and no check is dropped without a replacement.
 - **Playwright may be missing.** `npm run e2e` then prints "NOT RUN" and exits 2. That's reported as not verified, never as passing.
 - **The dark-mode branch also edits the nav.** `Navigation.astro` and its preview change on `feat/dark-mode` too. Whichever lands second resolves a small conflict in the nav link line.

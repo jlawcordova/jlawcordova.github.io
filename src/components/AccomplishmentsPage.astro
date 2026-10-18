@@ -13,7 +13,7 @@ import { pagePath as pathUnder, type Page } from '../lib/pagination';
 type Props = Page<DoneAccomplishment> & { locked: LockedAccomplishment[] };
 
 const { items: done, page, totalPages, totalItems, locked } = Astro.props;
-const pagePath = (n: number) => pathUnder('/accomplishments/', n);
+const pagePath = (n: number) => pathUnder('/achievements/', n);
 const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 const noun = totalItems === 1 ? 'accomplishment' : 'accomplishments';
 const label = totalItems > 0 ? `${totalItems} ${noun} · Page ${page} of ${totalPages}` : undefined;

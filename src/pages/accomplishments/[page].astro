@@ -1,22 +1,18 @@
 ---
 import type { GetStaticPaths } from 'astro';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import AccomplishmentsPage from '../../components/AccomplishmentsPage.astro';
 import { getAccomplishments } from '../../lib/accomplishments';
 import { paginate } from '../../lib/pagination';
 import { site } from '../../site';
 
-// Pages 2+, like the blog's: /accomplishments/page2/, /accomplishments/page3/, ...
-// Locked accomplishments are on page 1 only.
+// /accomplishments/page2/, ... moved to /achievements/page2/, ... (achievements
+// redesign spec R18), written as refresh pages like index.astro here. Its own
+// page, not a `redirects` entry in astro.config.mjs, because a dynamic config
+// redirect drops the trailing slash and so needs a second hop.
 export const getStaticPaths = (() => {
   return paginate(getAccomplishments().done, site.accomplishmentsPerPage)
     .slice(1)
-    .map((props) => ({ params: { page: `page${props.page}` }, props }));
+    .map(({ page }) => ({ params: { page: `page${page}` } }));
 }) satisfies GetStaticPaths;
 
-const props = Astro.props;
+return Astro.redirect(`/achievements/${Astro.params.page}/`, 301);
 ---
-
-<BaseLayout title="Accomplishments">
-  <AccomplishmentsPage {...props} locked={[]} />
-</BaseLayout>

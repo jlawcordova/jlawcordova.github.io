@@ -1,6 +1,6 @@
 // @ts-check
 // Splits a list into numbered pages, shared by the blog (/blog/, /blog/page2/,
-// ...) and the accomplishments pages (/accomplishments/, /accomplishments/page2/,
+// ...) and the achievements pages (/achievements/, /achievements/page2/,
 // ...). Plain .mjs so the Node tests can import it; src/lib/pagination.ts
 // re-exports it for the pages.
 

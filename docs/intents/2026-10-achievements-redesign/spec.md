@@ -85,7 +85,7 @@ Implements [`intent.md`](intent.md). Where they disagree, the intent wins and th
 
 ### List page (`AccomplishmentsPage.astro`, `PageHead.astro`, routes)
 
-- `src/pages/accomplishments/` moves to `src/pages/achievements/`. `astro.config.mjs` gains `redirects` from `/accomplishments` to `/achievements` and from `/accomplishments/[page]` to `/achievements/[page]`. Astro writes those as refresh pages in a static build.
+- `src/pages/accomplishments/` moves to `src/pages/achievements/`. Two small pages stay at the old paths, `index.astro` and `[page].astro` (with the same `getStaticPaths` as the list), and each returns `Astro.redirect()` to the new URL with a 301. A static build writes them as refresh pages. A `redirects` entry in `astro.config.mjs` would drop the trailing slash on the dynamic one.
 - `PageHead` gains an optional default slot after the title, for the subtitle and the tally. Pages that don't pass one are unchanged.
 - The page gets the totals as props, so pages 2 and later show the same tally as page 1.
 
