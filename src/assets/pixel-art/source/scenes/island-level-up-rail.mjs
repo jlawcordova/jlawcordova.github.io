@@ -112,7 +112,8 @@ export default {
     { object: 'block-yard-left', at: { tile: [9, 8, 0] } },
     { object: 'block-yard-left', at: { tile: [10, 8, 0] } },
     { object: 'block-yard', at: { tile: [11, 8, 0] } },
-    { object: 'flatcar', at: { tile: [9, 2, 0] } },
-    { object: 'container', at: { px: [112, 79] } },
+    { object: 'flatcar', at: { tile: [8, 2, 0] } },
+    { object: 'container', at: { px: [96, 71] } },
+    { object: 'locomotive', at: { tile: [10, 2, 0] } },
   ],
 };
