@@ -1,6 +1,6 @@
 // @ts-check
 // The build-up entrances: when each `enter` group starts and how it moves, for
-// the hero island (island clock sweep spec R1–R5) and for each Range setting
+// the hero island (island sweep drop spec R1–R5) and for each Range setting
 // (Range settings spec R4, R5). Pure data in, timings out, so node:test can
 // check the order without a browser; Hero.astro, Range.astro and the entrance
 // lab play it with playEntrance() from src/lib/play-entrance.ts.
@@ -26,6 +26,9 @@ export const OBJECT_ORDERS = /** @type {const} */ (['ltr', 'same', 'back-front',
 /** How each ground or object piece moves in. */
 export const MOVES = /** @type {const} */ (['float', 'drop', 'pop', 'stepped', 'fade']);
 
+/** How the objects move in: `same` as the ground, or a move of their own. */
+export const OBJECT_MOVES = /** @type {const} */ (['same', ...MOVES]);
+
 /**
  * @typedef {{
  *   start: number,
@@ -39,12 +42,19 @@ export const MOVES = /** @type {const} */ (['float', 'drop', 'pop', 'stepped', '
  *   objectSpan: number,
  *   lag: number,
  *   move: typeof MOVES[number],
+ *   objectMove: typeof OBJECT_MOVES[number],
  *   duration: number,
  *   peak: number,
  *   rise: number,
  *   overshoot: number,
  *   popFrom: number,
  *   popPeak: number,
+ *   objectDuration: number,
+ *   objectPeak: number,
+ *   objectRise: number,
+ *   objectOvershoot: number,
+ *   objectPopFrom: number,
+ *   objectPopPeak: number,
  *   shadowDuration: number,
  *   skyDuration: number,
  *   skyDrift: number,
@@ -54,41 +64,51 @@ export const MOVES = /** @type {const} */ (['float', 'drop', 'pop', 'stepped', '
  *   entrance lab can show and copy any one.
  */
 
-/** The owner's choice from the entrance lab (island clock sweep spec R1–R5). */
+/** The owner's pick from the entrance lab (island sweep drop spec R1–R5). */
 export const TIMING = /** @type {Timing} */ ({
   /** When the shadow starts, alongside the hero copy. */
   start: 0.2,
   /** From the shadow's start to the first ground piece's. */
   groundDelay: 0.12,
   /** From the first ground piece's start to the last one's. */
-  groundSpan: 0.5,
-  /** An extra left-to-right delay inside each wave, spread over the island's width. */
-  cascade: 0,
-  /** The ground pops up cube by cube, clockwise from the left corner. */
-  ground: 'clock',
-  /** The objects follow front to back. */
-  objects: 'front-back',
-  /** Objects come after the ground, not each with the cube under it. */
-  with: false,
-  /** How long before the last ground piece lands the first object starts. */
+  groundSpan: 0.25,
+  /** An extra left-to-right delay, spread over the island's width. With the sweep, the ground spans 0.5s in all. */
+  cascade: 0.25,
+  /** The ground sweeps in from the left corner to the right. */
+  ground: 'sweep',
+  /** As copied from the lab; unused while the objects arrive `with` their cubes. */
+  objects: 'same',
+  /** Each object arrives with the cube under it. */
+  with: true,
+  /** Without `with`: how long before the last ground piece lands the first object starts. */
   objectLead: 0.08,
-  /** From the first object's start to the last one's. */
+  /** Without `with`: from the first object's start to the last one's. */
   objectSpan: 0.6,
-  /** With `with`: how long after the cube under it an object starts. */
-  lag: 0.4,
-  move: 'pop',
-  /** Each piece's move, from its start to settled. */
-  duration: 0.5,
+  /** How long after the cube under it an object starts. */
+  lag: 0.42,
+  /** The ground floats up and overshoots. */
+  move: 'float',
+  /** The objects drop from above. With a move of their own, they use the object numbers below; with `same`, the ground's. */
+  objectMove: 'drop',
+  /** Each ground piece's move, from its start to settled. */
+  duration: 0.25,
   /** The share of a move spent reaching its peak, before settling. */
-  peak: 0.55,
+  peak: 0.6,
   /** Float and drop: how far from its spot a piece starts, in art pixels. */
-  rise: 10,
+  rise: 16,
   /** Float and drop: how far past its spot a piece goes before settling. */
-  overshoot: 2,
+  overshoot: 6,
   /** Pop: the size a piece grows from. */
   popFrom: 0.3,
   /** Pop: the size it grows to before settling. */
   popPeak: 1.1,
+  /** The objects' own numbers: a quick drop from 24 art px with a small dip. */
+  objectDuration: 0.25,
+  objectPeak: 0.45,
+  objectRise: 24,
+  objectOvershoot: 1.5,
+  objectPopFrom: 0.3,
+  objectPopPeak: 1.1,
   shadowDuration: 0.4,
   skyDuration: 0.6,
   /** How far left of their spot the clouds start. */
@@ -100,20 +120,39 @@ export const TIMING = /** @type {Timing} */ ({
 /**
  * A Range setting's build-up on each class change (Range settings spec R5).
  * Quicker than the island's, since it replays on every switch: its three floor
- * rows float up 0.08s apart, left to right, then its objects by x.
+ * rows float up 0.08s apart, left to right, then its objects by x. Every field
+ * is named here, so no island pick reaches the Range (island sweep drop spec R6).
  * @type {Timing}
  */
 export const RANGE_TIMING = {
-  ...TIMING,
   start: 0,
   groundDelay: 0.08,
   groundSpan: 0.16,
+  cascade: 0,
   ground: 'rows',
   objects: 'ltr',
+  with: false,
   objectLead: 0.1,
   objectSpan: 0.3,
+  lag: 0.4,
   move: 'float',
+  objectMove: 'same',
   duration: 0.5,
+  peak: 0.55,
+  rise: 10,
+  overshoot: 2,
+  popFrom: 0.3,
+  popPeak: 1.1,
+  objectDuration: 0.5,
+  objectPeak: 0.55,
+  objectRise: 10,
+  objectOvershoot: 2,
+  objectPopFrom: 0.3,
+  objectPopPeak: 1.1,
+  shadowDuration: 0.4,
+  skyDuration: 0.6,
+  skyDrift: 6,
+  seed: 1,
 };
 
 /** The ease back down onto the spot, after the ease-out to the peak (cubic-bezier). */
@@ -218,21 +257,47 @@ function score(order, c, i, t, center) {
 }
 
 /**
- * The keyframes and times of a ground or object piece's move.
+ * @typedef {{ move: typeof MOVES[number], duration: number, peak: number, rise: number, overshoot: number, popFrom: number, popPeak: number }} Motion
+ *   How one kind of piece moves: the ground's, or the objects'.
+ */
+
+/**
+ * How the ground or the objects move. Objects move as the ground does unless
+ * `objectMove` names a move of their own, which then takes the object numbers.
  * @param {Timing} t
+ * @param {'ground' | 'object'} kind
+ * @returns {Motion}
+ */
+export function motionOf(t, kind) {
+  const { move, duration, peak, rise, overshoot, popFrom, popPeak } = t;
+  if (kind === 'ground' || t.objectMove === 'same') return { move, duration, peak, rise, overshoot, popFrom, popPeak };
+  return {
+    move: t.objectMove,
+    duration: t.objectDuration,
+    peak: t.objectPeak,
+    rise: t.objectRise,
+    overshoot: t.objectOvershoot,
+    popFrom: t.objectPopFrom,
+    popPeak: t.objectPopPeak,
+  };
+}
+
+/**
+ * The keyframes and times of a move.
+ * @param {Motion} m
  * @returns {Pick<Entrance, 'keyframes' | 'times'>}
  */
-function moveOf(t) {
-  const times = [0, t.peak, 1];
-  switch (t.move) {
+function moveOf(m) {
+  const times = [0, m.peak, 1];
+  switch (m.move) {
     case 'drop':
-      return { keyframes: { opacity: [0, 1, 1], y: [-t.rise, t.overshoot, 0] }, times };
+      return { keyframes: { opacity: [0, 1, 1], y: [-m.rise, m.overshoot, 0] }, times };
     case 'pop':
-      return { keyframes: { opacity: [0, 1, 1], scale: [t.popFrom, t.popPeak, 1] }, times };
+      return { keyframes: { opacity: [0, 1, 1], scale: [m.popFrom, m.popPeak, 1] }, times };
     case 'fade':
       return { keyframes: { opacity: [0, 1] } };
     default:
-      return { keyframes: { opacity: [0, 1, 1], y: [t.rise, -t.overshoot, 0] }, times };
+      return { keyframes: { opacity: [0, 1, 1], y: [m.rise, -m.overshoot, 0] }, times };
   }
 }
 
@@ -281,14 +346,21 @@ export function schedule(pieces, t = TIMING) {
     objects.forEach((i, k) => delays.set(i, objectStart + objectT[k] * t.objectSpan));
   }
 
-  const { keyframes, times } = moveOf(t);
+  const moves = Object.fromEntries(
+    /** @type {const} */ (['ground', 'object']).map((kind) => {
+      const m = motionOf(t, kind);
+      return [kind, { move: m.move, duration: m.duration, ...moveOf(m) }];
+    }),
+  );
   return pieces.map((p, i) => {
     switch (p.enter) {
       case 'shadow':
         return { move: 'fade', delay: t.start, duration: t.shadowDuration, keyframes: { opacity: [0, 1] } };
       case 'ground':
-      case 'object':
-        return { move: t.move, delay: /** @type {number} */ (delays.get(i)), duration: t.duration, keyframes, ...(times && { times }) };
+      case 'object': {
+        const { move, duration, keyframes, times } = moves[p.enter];
+        return { move, delay: /** @type {number} */ (delays.get(i)), duration, keyframes, ...(times && { times }) };
+      }
       case 'sky':
         return { move: 'drift', delay: objectStart, duration: t.skyDuration, keyframes: { opacity: [0, 1], x: [-t.skyDrift, 0] } };
       default:

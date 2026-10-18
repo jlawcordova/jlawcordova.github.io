@@ -15,8 +15,8 @@ code {
 
 /* Long lines scroll inside the block instead of wrapping. */
 pre {
-  background: var(--color-ink);
-  color: var(--color-page);
+  background: var(--color-code);
+  color: var(--color-on-code);
   border-radius: var(--radius-button);
   padding: 16px 20px;
   overflow-x: auto;

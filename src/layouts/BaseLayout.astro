@@ -28,8 +28,22 @@ const description = article ? article.description : site.description;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Before first paint, so the small-screen nav paints collapsed with no shift (pixel-first look spec R7). -->
-    <script is:inline>document.documentElement.dataset.js = '';</script>
+    <!-- Before first paint, so the small-screen nav paints collapsed with no shift (pixel-first look spec R7),
+         and the page paints in its theme: the saved choice, else Auto, which follows the system setting
+         (dark mode spec R2, R4). -->
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        root.dataset.js = '';
+        let choice = null;
+        try {
+          choice = localStorage.getItem('theme');
+        } catch {}
+        if (choice !== 'light' && choice !== 'dark') choice = 'auto';
+        root.dataset.themeChoice = choice;
+        root.dataset.theme = choice === 'auto' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : choice;
+      })();
+    </script>
     {
       article ? (
         <>

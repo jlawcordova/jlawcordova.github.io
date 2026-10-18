@@ -23,7 +23,7 @@ Drawing the art itself is the `pixel-art` skill. This skill is about how it move
 | The pop's origin | `.hero-island .enter` in `src/styles/hero.css` |
 | The CSS loops and their reduced-motion frames | `src/styles/pixel-art.css` |
 | Tests | `scripts/island-entrance.test.mjs` (schedule), `scripts/pixel-art-island.test.mjs` (groups and loops), `scripts/range-art.test.mjs`, and the e2e checks in `shell.e2e.mjs`, `motion.e2e.mjs` and `range.e2e.mjs` |
-| The current choice, and why | [island clock sweep spec](../../../docs/intents/2026-10-island-clock-sweep/spec.md), [Range settings spec](../../../docs/intents/2026-10-range-settings/spec.md) R4–R6, and the design system's Motion section |
+| The current choice, and why | [island sweep drop spec](../../../docs/intents/2026-10-island-sweep-drop/spec.md) (and the [clock sweep](../../../docs/intents/2026-10-island-clock-sweep/spec.md) before it, which added the groups' feet and the lab), [Range settings spec](../../../docs/intents/2026-10-range-settings/spec.md) R4–R6, and the design system's Motion section |
 
 ## Hard rules
 
@@ -90,13 +90,15 @@ A new ground position is its own `ground` group with its place and foot. Groups 
 | `stepped` | a float that lands on whole art pixels (lab only) | `rise`, `overshoot`, `peak` |
 | `fade` | opacity only | none |
 
+The ground uses `move`, `duration`, `peak`, `rise`, `overshoot`, `popFrom` and `popPeak`. The objects use `objectMove`. With `same` (the default), they move exactly as the ground does, numbers and all. With a move of their own, they take `objectDuration`, `objectPeak`, `objectRise`, `objectOvershoot`, `objectPopFrom` and `objectPopPeak`, so the cubes can float with an overshoot while the objects drop with no dip, for example. `motionOf(t, 'ground' | 'object')` resolves either.
+
 `y` and `x` are in the SVG's own units, so 10 means 10 art pixels: about 30 CSS pixels at the hero's 675px, and about 17 at 390px. `scale` needs `transform-box: fill-box` and a `transform-origin` on the group, or it grows from the SVG's corner. The island's is set in `hero.css`.
 
 ## Prototyping in the lab
 
 Run `npm run dev`, then open http://localhost:4321/lab/island-entrance/. The page is unlisted and `noindex`. It plays the hero island with the real schedule and player, so what you see is what ships.
 
-- **Controls.** Every `Timing` field the current choices use, the orders and the moves. Fields that don't apply hide.
+- **Controls.** Two tabs, **Ground** and **Objects**, each with its own order, timing and move. Every `Timing` field the current choices use is there, and fields that don't apply hide. Giving the objects a move of their own starts their numbers from the ground's, so only the move changes at first. Arrow keys move between the tabs.
 - **Keys and buttons.** Any change replays at once. R replays and H hides the controls. **Playback speed** slows it to ½× or ¼× to study one wave. **New shuffle** re-seeds the random orders. **Site version** goes back to `TIMING`.
 - **Sharing.** The settings live in the URL, so a link reproduces a look. **Copy** gives the changes to `TIMING`, ready to paste.
 - **Running it for the owner.** Start the dev server with the browser preview (`preview_start` with the project's dev configuration) and give them the URL. Owners tune by eye, and the numbers they hand back are what the spec records.

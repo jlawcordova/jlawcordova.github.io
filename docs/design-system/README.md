@@ -75,8 +75,19 @@ Two places can play: **achievements** (the home section and the full list of acc
 - Use `color-gold` for one emphasized phrase on `color-forest`, or as a fill under ink. It never appears as text on light grounds.
 - Use at most one dark section per page: `color-forest` with `color-on-forest` headings and `color-on-forest-muted` body copy. The footer is `color-footer` with `color-on-footer`.
 - Draw lines with `color-border`, and with `color-border-strong` on hover and on controls. Both are faint. `color-border-strong` is 1.4:1, so a control must also read by its fill and its label.
-- Set code on `color-ink` with the `syntax-*` tokens. Every syntax color is at least 4.5:1 on ink.
+- Set code on `color-code` with `color-on-code` and the `syntax-*` tokens. Every syntax color is at least 4.5:1 on it.
 - Don't use gradients, glows or extra hues. The pixel-art palette is for illustration only, never for UI. The achievement frames count as illustration: their colors are drawn in their pixel-art sheet, like the icons', and no CSS uses them.
+
+### Dark theme
+
+Every page has a light theme and a dark theme. The dark theme is the same warm, flat system at night: dark warm paper, cream ink and a lighter green accent.
+
+- **Which one shows.** The theme button in the nav cycles Auto, Light and Dark. Auto, the default, follows the reader's system setting; Light and Dark are saved in the browser. It's set before first paint, so a page never flashes. Without JavaScript the page is light.
+- **The tokens flip, not the rules.** `tokens.json` gives each color that changes a `dark` value, and `variables.css` sets them under `[data-theme="dark"]`. Everything above still holds in dark: set the page on `color-page`, text in `color-ink` and `color-ink-muted`, and actions in `color-accent`. Every text pair stays AA (`scripts/design-system.test.mjs` checks it).
+- **The same in both themes:** `color-earth`, `color-gold`, the forest and footer colors, and code blocks (`color-code` with the `syntax-*` colors). They're already dark grounds or illustration colors.
+- **Inverted fills flip with the theme.** A tooltip or the current page in pagination is `color-ink` with `color-page` text, so it's cream on dark ink in dark.
+- **Drawn objects keep the light colors.** The Range handheld carries `data-theme="light"`, so its gold shell, ink keys and paper stage look the same in both themes. Use the same attribute for any other drawn object.
+- **The pixel art isn't redrawn.** It sits on the dark grounds as it is, except that the hero island's dithered shadow takes `color-page`, so it settles into the dark band instead of reading as a pale hatch.
 
 ### Type
 
@@ -118,7 +129,7 @@ Use [Motion](https://motion.dev) (the `motion` package, formerly Framer Motion) 
 - **Where:** state changes (a Range class switching, a nameplate updating, a row's panel opening), entrances as a section scrolls into view (a short stagger of cards or rows, and each earned achievement frame's one 8px hop as its row lands), the achievement toast rising into the corner, and playful feedback a person asks for (a sprite's hop when they press A).
 - **How it moves:** smoothly. Use the shared ease-out (`easeOut` in `src/lib/motion.ts`, `cubic-bezier(0.22, 1, 0.36, 1)`) for entrances, slides and panels, and `ease-out` for CSS presses and turns. Stepped easing (`steps()`) is for the pixel art's own CSS loops only, such as the island's water and trucks, because stepped UI motion reads as lag. Keep durations between 0.12s and 0.5s, and stagger by 0.04–0.08s. Keep moves short: 8–24px slides and hops, never long sweeps.
 - **Two build-ups are longer entrances.** The owner tuned them by eye, so they sit outside the rhythm above. Their numbers live in `src/lib/island-entrance.mjs`, each under its own name; don't reuse them for other entrances.
-  - **The hero island** ([island clock sweep spec](../intents/2026-10-island-clock-sweep/spec.md), C1): the ground pops up cube by cube in a clock sweep from the left corner, over 0.5s, and then the objects pop in from front to back, over 0.6s. Each piece grows from its foot to 110% and settles, in 0.5s, and the island settles in about 2.35s. Try other build-ups in the unlisted entrance lab (`/lab/island-entrance/`).
+  - **The hero island** ([island sweep drop spec](../intents/2026-10-island-sweep-drop/spec.md), C1): the ground sweeps in from left to right over 0.5s, each cube floating up 16 art pixels and overshooting by 6, in 0.25s. Each object drops 24 art pixels onto its spot 0.42s after the cube under it, with a 1.5 pixel dip, also in 0.25s. The island settles in about 1.45s. Try other build-ups in the unlisted entrance lab (`/lab/island-entrance/`).
   - **A Range setting,** on every class change ([Range settings spec](../intents/2026-10-range-settings/spec.md), C1): its rows float up and settle, quicker. Rows are 0.08s apart, each piece takes 0.5s, the props and the character sweep in over 0.3s, and a setting settles in about 1.45s. The carousel advances every 3s, so each setting rests after it builds.
 - **What to avoid:** motion that loops on its own beyond the Range rotation, parallax, scroll-jacking, layout shift, and animating text people are reading.
 - **Never hide content.** Pages render complete without JavaScript. A script sets an element's start state just before animating it, so nothing stays hidden if the script fails.

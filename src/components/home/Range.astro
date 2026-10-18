@@ -16,7 +16,8 @@ const [first] = rangeClasses;
         build and check each change before it ships.
       </p>
     </div>
-    <div class="range__console">
+    <!-- A drawn object: it keeps its light colors in the dark theme (dark mode spec R8). -->
+    <div class="range__console" data-theme="light">
       <div class="range__bezel">
         <div class="range__stage isogrid">
           <p class="range__nameplate" aria-live="off" style={`--class-shadow: ${first.shadow}`}>
@@ -105,7 +106,7 @@ const [first] = rangeClasses;
     const build = () => {
       building.forEach((a) => a?.complete());
       const groups = [...art.querySelectorAll<SVGGElement>(`g[data-class="${index}"] .enter`)];
-      building = playEntrance(groups, buildSchedule(groups.map(pieceOf), RANGE_TIMING), RANGE_TIMING);
+      building = playEntrance(groups, buildSchedule(groups.map(pieceOf), RANGE_TIMING));
     };
 
     // User-triggered changes are announced; auto-advance isn't.

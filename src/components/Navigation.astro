@@ -28,10 +28,76 @@ const achievements = homeSelection(getAccomplishments()).visible;
       <a href="/blog/">Blog</a>
       <a class="pill" href={site.author.linkedin}>Contact</a>
     </div>
+    <!-- The theme button (dark mode spec R5): Auto, Light and Dark in turn, its glyph showing the current
+         one: a half-filled pixel square for Auto, a pixel sun for Light and an empty pixel square for Dark. -->
+    <button class="site-nav__theme" type="button" aria-label="Theme: Auto" title="Theme: Auto">
+      <svg class="site-nav__glyph-auto" width="21" height="21" viewBox="0 0 7 7" aria-hidden="true" shape-rendering="crispEdges">
+        <path fill="currentColor" d="M0 0h7v1h-7zM0 6h7v1h-7zM6 1h1v5h-1zM0 1h4v5h-4z"></path>
+      </svg>
+      <svg class="site-nav__glyph-light" width="21" height="21" viewBox="0 0 7 7" aria-hidden="true" shape-rendering="crispEdges">
+        <path fill="currentColor" d="M0 0h1v1h-1zM3 0h1v1h-1zM6 0h1v1h-1zM2 2h3v3h-3zM0 3h1v1h-1zM6 3h1v1h-1zM0 6h1v1h-1zM3 6h1v1h-1zM6 6h1v1h-1z"></path>
+      </svg>
+      <svg class="site-nav__glyph-dark" width="21" height="21" viewBox="0 0 7 7" aria-hidden="true" shape-rendering="crispEdges">
+        <path fill="currentColor" d="M0 0h7v1h-7zM0 6h7v1h-7zM0 1h1v5h-1zM6 1h1v5h-1z"></path>
+      </svg>
+    </button>
   </nav>
 </header>
 
 <script>
+  // The theme button (dark mode spec R2–R5, R9). BaseLayout's pre-paint script
+  // has already set <html data-theme-choice> (auto, light or dark) and the
+  // theme it shows, <html data-theme>; this keeps the buttons, theme-color and
+  // later changes in step. Auto is no saved choice, and follows the system.
+  type Choice = 'auto' | 'light' | 'dark';
+  const NEXT: Record<Choice, Choice> = { auto: 'light', light: 'dark', dark: 'auto' };
+  const LABEL: Record<Choice, string> = { auto: 'Theme: Auto', light: 'Theme: Light', dark: 'Theme: Dark' };
+
+  const root = document.documentElement;
+  const system = matchMedia('(prefers-color-scheme: dark)');
+  const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+
+  const saved = (): Choice => {
+    try {
+      const theme = localStorage.getItem('theme');
+      return theme === 'light' || theme === 'dark' ? theme : 'auto';
+    } catch {
+      return 'auto'; // Storage blocked: follow the system.
+    }
+  };
+  let current: Choice = root.dataset.themeChoice === 'light' || root.dataset.themeChoice === 'dark' ? root.dataset.themeChoice : 'auto';
+  const apply = (choice: Choice) => {
+    current = choice;
+    root.dataset.themeChoice = choice;
+    root.dataset.theme = choice === 'auto' ? (system.matches ? 'dark' : 'light') : choice;
+    for (const button of document.querySelectorAll('.site-nav__theme')) {
+      button.setAttribute('aria-label', LABEL[choice]);
+      button.setAttribute('title', LABEL[choice]);
+    }
+    themeColor?.setAttribute('content', getComputedStyle(root).getPropertyValue('--color-page').trim());
+  };
+
+  apply(current);
+  for (const button of document.querySelectorAll('.site-nav__theme')) {
+    button.addEventListener('click', () => {
+      const next = NEXT[current];
+      try {
+        if (next === 'auto') localStorage.removeItem('theme');
+        else localStorage.setItem('theme', next);
+      } catch {
+        // Not saved; it still applies to this page.
+      }
+      apply(next);
+    });
+  }
+  system.addEventListener('change', () => {
+    if (current === 'auto') apply('auto');
+  });
+  // A choice made in another tab.
+  addEventListener('storage', (event) => {
+    if (event.key === 'theme' || event.key === null) apply(saved());
+  });
+
   // The small-screen menu (pixel-first look spec R7). Motion loads only once
   // someone reaches for the button, so pages without an island don't fetch it
   // unless the menu is used. Until it's loaded, the links show at once.
