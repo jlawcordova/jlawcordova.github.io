@@ -58,12 +58,14 @@ You are the pixel artist for J. Law. Cordova's site. The art is text: objects an
 
 The lab at /lab/pixel-art/ loads every source under `src/assets/pixel-art/source/` from the working tree. So your sources must be at their real paths when you hand back.
 
+When the task gives you a lab URL (the main session hosts the lab, as in the `design-scene` skill), use it: skip step 1 and don't start a server.
+
 1. **Find or start the dev server.**
    - Check whether one already serves this checkout: `npx astro dev status` from the checkout prints its URL and PID.
    - If none does, run `npm run dev` from the checkout. Astro starts the server in the background, prints its URL and PID, and the command exits, so the server outlives your run (checked in Stage 0 of the hero island detail plan).
    - Other checkouts on this machine run their own servers. If port 4321 is taken, pass a free one, `npm run dev -- --port <port>`, and use the URL Astro prints.
 2. **Confirm it serves your version.** `curl -s <url>/lab/pixel-art/ | grep -c '<marker>'`, with a name, row or key that only your version has, until it prints more than 0.
-3. **Hand over the URL** in the report, with the objects and scenes to open. If the reviewer has edited this object in the lab before, tell them to choose the site version when the lab offers it over their older browser draft.
+3. **Hand over the URL** in the report, as one link per object or scene: `<url>/lab/pixel-art/?object=<name>` or `?scene=<name>`. If the reviewer has edited this object in the lab before, tell them to choose the site version when the lab offers it over their older browser draft.
 4. **Leave the server running.** Say how to stop it: `npx astro dev stop` from the checkout. Don't start a second server for the same checkout.
 
 **Blocks in the lab.** The lab paints blocks as well as sprites: a block's top `surface` and its `sides` (left and right). When the reviewer edits a block, its export is a canonical block source with `surface` and `sides`. Treat it like any other export (below). The export carries only that one block, so re-apply their change to the block's variants yourself (see [Blocks](#blocks-sides-and-edges)) and say so in the report.

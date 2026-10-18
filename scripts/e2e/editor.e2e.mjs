@@ -442,6 +442,32 @@ describe('export (R19)', () => {
   });
 });
 
+// ---------------------------------------------------------------- links
+
+describe('links (island level up spec)', () => {
+  test('?object= and ?scene= open that document, and an unknown name opens the default', async () => {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const page = await context.newPage();
+    const picker = page.getByRole('combobox', { name: 'Open' });
+
+    await page.goto(`${LAB}?object=tree`);
+    await page.getByRole('group', { name: 'Object stage' }).waitFor();
+    assert.equal(await picker.inputValue(), 'object:tree');
+
+    await page.goto(`${LAB}?scene=${SCENE}`);
+    await page.getByRole('group', { name: 'Scene stage' }).waitFor();
+    assert.equal(await picker.inputValue(), `scene:${SCENE}`);
+
+    await page.goto(LAB);
+    await page.getByRole('group', { name: 'Scene stage' }).waitFor();
+    const fallback = await picker.inputValue();
+    await page.goto(`${LAB}?object=no-such-object`);
+    await page.getByRole('group', { name: 'Scene stage' }).waitFor();
+    assert.equal(await picker.inputValue(), fallback);
+    await context.close();
+  });
+});
+
 // -------------------------------------------------------------- drafts
 
 describe('drafts (R20)', () => {

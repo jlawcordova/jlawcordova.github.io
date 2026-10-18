@@ -561,4 +561,11 @@ export function start() {
 
   const [kind, name] = $<HTMLSelectElement>('lab-doc').value.split(':') as [Kind, string];
   lab.open(kind, name);
+  // A link can open one document, ?scene=<name> or ?object=<name> (island
+  // level up spec). An unknown name leaves the default open.
+  const query = new URLSearchParams(location.search);
+  for (const linked of ['scene', 'object'] as const) {
+    const wanted = query.get(linked);
+    if (wanted) lab.open(linked, wanted);
+  }
 }

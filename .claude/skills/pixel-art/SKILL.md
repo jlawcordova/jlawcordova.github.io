@@ -217,7 +217,7 @@ They place the island's objects at the island's positions, in its paint order, a
 
 ## The editor (optional)
 
-The lab at `/lab/pixel-art/` (or `npm run dev`, then http://localhost:4321/lab/pixel-art/) edits scenes and paints objects in a browser, drawn by the same engine as `npm run art`. Use it when a person wants to work visually, or to check that the editor shows what the compiler builds. Everything it does also has a text-and-command path, the one above, so an agent never needs it.
+The lab at `/lab/pixel-art/` (or `npm run dev`, then http://localhost:4321/lab/pixel-art/) edits scenes and paints objects in a browser, drawn by the same engine as `npm run art`. Use it when a person wants to work visually, or to check that the editor shows what the compiler builds. A link opens one document: `/lab/pixel-art/?object=<name>` or `?scene=<name>`. To run the site and hand the owner those links while designing a scene, use the `design-scene` skill. Everything it does also has a text-and-command path, the one above, so an agent never needs it.
 
 - **Drive it by accessible names and keys,** not pixel positions:
   - **Lab bar:** the picker is the combobox "Open". It lists scenes, objects, new drafts, "New scene…" and "New object…".
