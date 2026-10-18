@@ -106,7 +106,7 @@ const [first] = rangeClasses;
     const build = () => {
       building.forEach((a) => a?.complete());
       const groups = [...art.querySelectorAll<SVGGElement>(`g[data-class="${index}"] .enter`)];
-      building = playEntrance(groups, buildSchedule(groups.map(pieceOf), RANGE_TIMING), RANGE_TIMING);
+      building = playEntrance(groups, buildSchedule(groups.map(pieceOf), RANGE_TIMING));
     };
 
     // User-triggered changes are announced; auto-advance isn't.
