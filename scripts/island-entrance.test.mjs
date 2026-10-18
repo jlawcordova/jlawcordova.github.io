@@ -115,6 +115,18 @@ describe('island entrance schedule', () => {
     }
   });
 
+  it('R8: objects with a move of their own take their own numbers, and with the ground\'s move, the ground\'s', () => {
+    const own = { objectDuration: 0.3, objectPeak: 0.7, objectRise: 12, objectOvershoot: 0, objectPopFrom: 0.5, objectPopPeak: 1 };
+    const of = (t, kind) => pieces.flatMap((p, i) => (p.enter === kind ? [schedule(pieces, t)[i]] : []));
+    const [drop] = of({ ...TIMING, ...own, move: 'float', objectMove: 'drop' }, 'object');
+    assert.deepEqual([drop.duration, drop.times, drop.keyframes], [0.3, [0, 0.7, 1], { opacity: [0, 1, 1], y: [-12, 0, 0] }], 'a drop with no dip');
+    const [ground] = of({ ...TIMING, ...own, move: 'float', objectMove: 'drop' }, 'ground');
+    assert.deepEqual([ground.duration, ground.keyframes.y], [TIMING.duration, [TIMING.rise, -TIMING.overshoot, 0]], 'the ground keeps its own');
+    const [same] = of({ ...TIMING, ...own, objectMove: 'same' }, 'object');
+    const [cube] = of({ ...TIMING, ...own, objectMove: 'same' }, 'ground');
+    assert.deepEqual([same.move, same.duration, same.keyframes], [cube.move, cube.duration, cube.keyframes], 'same ignores the object numbers');
+  });
+
   it('a single object, or an unknown kind, still schedules safely', () => {
     const [object, unknown] = schedule([{ enter: 'object', x: 3 }, { enter: 'weather' }]);
     assert.ok(Number.isFinite(object.delay));

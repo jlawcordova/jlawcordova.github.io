@@ -39,6 +39,6 @@ import { site } from '../../site';
     const copy = [...hero.querySelectorAll('.hero__title, .hero__lede, .hero__actions')];
     play(copy, { opacity: [0, 1], y: [16, 0] }, { duration: 0.4, delay: stagger(0.08), ease: easeOut });
     const groups = [...hero.querySelectorAll<SVGGElement>('.hero-island .enter')];
-    playEntrance(groups, schedule(groups.map(pieceOf)), TIMING);
+    playEntrance(groups, schedule(groups.map(pieceOf), TIMING));
   }
 </script>

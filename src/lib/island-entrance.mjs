@@ -49,6 +49,12 @@ export const OBJECT_MOVES = /** @type {const} */ (['same', ...MOVES]);
  *   overshoot: number,
  *   popFrom: number,
  *   popPeak: number,
+ *   objectDuration: number,
+ *   objectPeak: number,
+ *   objectRise: number,
+ *   objectOvershoot: number,
+ *   objectPopFrom: number,
+ *   objectPopPeak: number,
  *   shadowDuration: number,
  *   skyDuration: number,
  *   skyDrift: number,
@@ -81,7 +87,7 @@ export const TIMING = /** @type {Timing} */ ({
   /** With `with`: how long after the cube under it an object starts. */
   lag: 0.4,
   move: 'pop',
-  /** The objects move as the ground does. */
+  /** The objects move as the ground does, numbers and all. With a move of their own, they use the object numbers below. */
   objectMove: 'same',
   /** Each piece's move, from its start to settled. */
   duration: 0.5,
@@ -95,6 +101,13 @@ export const TIMING = /** @type {Timing} */ ({
   popFrom: 0.3,
   /** Pop: the size it grows to before settling. */
   popPeak: 1.1,
+  /** The objects' own duration, peak, rise, overshoot and pop sizes, used only when `objectMove` isn't `same`. */
+  objectDuration: 0.5,
+  objectPeak: 0.55,
+  objectRise: 10,
+  objectOvershoot: 2,
+  objectPopFrom: 0.3,
+  objectPopPeak: 1.1,
   shadowDuration: 0.4,
   skyDuration: 0.6,
   /** How far left of their spot the clouds start. */
@@ -224,22 +237,47 @@ function score(order, c, i, t, center) {
 }
 
 /**
- * The keyframes and times of a ground or object piece's move.
+ * @typedef {{ move: typeof MOVES[number], duration: number, peak: number, rise: number, overshoot: number, popFrom: number, popPeak: number }} Motion
+ *   How one kind of piece moves: the ground's, or the objects'.
+ */
+
+/**
+ * How the ground or the objects move. Objects move as the ground does unless
+ * `objectMove` names a move of their own, which then takes the object numbers.
  * @param {Timing} t
- * @param {typeof MOVES[number]} move
+ * @param {'ground' | 'object'} kind
+ * @returns {Motion}
+ */
+export function motionOf(t, kind) {
+  const { move, duration, peak, rise, overshoot, popFrom, popPeak } = t;
+  if (kind === 'ground' || t.objectMove === 'same') return { move, duration, peak, rise, overshoot, popFrom, popPeak };
+  return {
+    move: t.objectMove,
+    duration: t.objectDuration,
+    peak: t.objectPeak,
+    rise: t.objectRise,
+    overshoot: t.objectOvershoot,
+    popFrom: t.objectPopFrom,
+    popPeak: t.objectPopPeak,
+  };
+}
+
+/**
+ * The keyframes and times of a move.
+ * @param {Motion} m
  * @returns {Pick<Entrance, 'keyframes' | 'times'>}
  */
-function moveOf(t, move) {
-  const times = [0, t.peak, 1];
-  switch (move) {
+function moveOf(m) {
+  const times = [0, m.peak, 1];
+  switch (m.move) {
     case 'drop':
-      return { keyframes: { opacity: [0, 1, 1], y: [-t.rise, t.overshoot, 0] }, times };
+      return { keyframes: { opacity: [0, 1, 1], y: [-m.rise, m.overshoot, 0] }, times };
     case 'pop':
-      return { keyframes: { opacity: [0, 1, 1], scale: [t.popFrom, t.popPeak, 1] }, times };
+      return { keyframes: { opacity: [0, 1, 1], scale: [m.popFrom, m.popPeak, 1] }, times };
     case 'fade':
       return { keyframes: { opacity: [0, 1] } };
     default:
-      return { keyframes: { opacity: [0, 1, 1], y: [t.rise, -t.overshoot, 0] }, times };
+      return { keyframes: { opacity: [0, 1, 1], y: [m.rise, -m.overshoot, 0] }, times };
   }
 }
 
@@ -288,18 +326,20 @@ export function schedule(pieces, t = TIMING) {
     objects.forEach((i, k) => delays.set(i, objectStart + objectT[k] * t.objectSpan));
   }
 
-  const moves = {
-    ground: { move: t.move, ...moveOf(t, t.move) },
-    object: t.objectMove === 'same' ? { move: t.move, ...moveOf(t, t.move) } : { move: t.objectMove, ...moveOf(t, t.objectMove) },
-  };
+  const moves = Object.fromEntries(
+    /** @type {const} */ (['ground', 'object']).map((kind) => {
+      const m = motionOf(t, kind);
+      return [kind, { move: m.move, duration: m.duration, ...moveOf(m) }];
+    }),
+  );
   return pieces.map((p, i) => {
     switch (p.enter) {
       case 'shadow':
         return { move: 'fade', delay: t.start, duration: t.shadowDuration, keyframes: { opacity: [0, 1] } };
       case 'ground':
       case 'object': {
-        const { move, keyframes, times } = moves[p.enter];
-        return { move, delay: /** @type {number} */ (delays.get(i)), duration: t.duration, keyframes, ...(times && { times }) };
+        const { move, duration, keyframes, times } = moves[p.enter];
+        return { move, delay: /** @type {number} */ (delays.get(i)), duration, keyframes, ...(times && { times }) };
       }
       case 'sky':
         return { move: 'drift', delay: objectStart, duration: t.skyDuration, keyframes: { opacity: [0, 1], x: [-t.skyDrift, 0] } };
