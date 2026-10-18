@@ -6,7 +6,7 @@ import { getAccomplishments } from '../../lib/accomplishments';
 import { paginate } from '../../lib/pagination';
 import { site } from '../../site';
 
-// Page 1: the newest done accomplishments, then every locked one. Without data
+// Page 1: the newest earned achievements, then every locked one. Without data
 // (the committed "unavailable" placeholder, or none yet) it still builds, with
 // a short note instead of the list.
 const { status, done, locked } = getAccomplishments();
@@ -14,13 +14,13 @@ const hasData = status === 'ok' && done.length + locked.length > 0;
 const [firstPage] = paginate(done, site.accomplishmentsPerPage);
 ---
 
-<BaseLayout title="Accomplishments">
+<BaseLayout title="Achievements">
   {
     hasData ? (
-      <AccomplishmentsPage {...firstPage} locked={locked} />
+      <AccomplishmentsPage {...firstPage} locked={locked} totals={{ earned: done.length, locked: locked.length }} />
     ) : (
       <>
-        <PageHead title="Accomplishments" />
+        <PageHead title="Achievements" />
         <div class="page-body">
           <div class="page-body__inner achievements-page">
             <p class="achievements-page__empty">

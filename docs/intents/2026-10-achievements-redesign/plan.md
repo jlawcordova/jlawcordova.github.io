@@ -8,9 +8,9 @@ Plans [`spec.md`](spec.md) (R1–R23).
 
 - **Docs:** `docs/intents/2026-10-achievements-redesign/intent.md`, `spec.md`, `plan.md` (new); `docs/design-system/README.md`; `docs/design-system/components/AchievementRow/README.md` and `preview.html`; `docs/design-system/components/AchievementToast/README.md` and `preview.html` (new); `docs/design-system/components/Navigation/README.md` and `preview.html`; `README.md`; `CLAUDE.md`; `.claude/skills/achievement-icon/SKILL.md`.
 - **Art:** `src/assets/pixel-art/source/objects/frame-plain.mjs`, `frame-make.mjs`, `frame-fix.mjs`, `frame-think.mjs`, `frame-people.mjs`, `frame-milestone.mjs` (new); `src/assets/pixel-art/source/scenes/achievement-frames.mjs` (new); `src/assets/pixel-art/achievement-frames.svg` (new, compiled).
-- **Data and logic:** `src/lib/achievement-icons.mjs`, `src/lib/accomplishment-list.mjs`, `src/lib/motion.ts`.
+- **Data and logic:** `src/lib/achievement-icons.mjs`, `src/lib/accomplishment-list.mjs`, `src/lib/motion.ts`, `src/lib/achievement-toast.ts` (new, the toast's script).
 - **Routes:** `src/pages/achievements/index.astro` and `[page].astro` (moved from `src/pages/accomplishments/`); `src/pages/accomplishments/index.astro` and `[page].astro` (new: the redirect pages).
-- **Components and styles:** `src/components/AccomplishmentRow.astro`, `Accomplishments.astro`, `AccomplishmentsPage.astro`, `AchievementIcons.astro`, `PageHead.astro`, `Navigation.astro`; `src/pages/design-system.astro`; `src/styles/accomplishments.css`.
+- **Components and styles:** `src/components/AccomplishmentRow.astro`, `Accomplishments.astro`, `AccomplishmentsPage.astro`, `AchievementIcons.astro`, `PageHead.astro`, `Navigation.astro`; `src/components/AchievementIcon.astro` (new, the framed icon, shared by the rows and the toast) and `AchievementTally.astro` (new, the totals, shared by the home section and the list page); `src/pages/design-system.astro`; `src/styles/accomplishments.css`. *(The two new components and the toast module weren't listed before building; they keep the markup in one place.)*
 - **Tests:** `scripts/achievement-icons.test.mjs`, `scripts/accomplishments.test.mjs`, `scripts/pagination.test.mjs`, `scripts/e2e/accomplishments.e2e.mjs`, `scripts/e2e/shell.e2e.mjs`.
 
 ## Order of work

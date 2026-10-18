@@ -81,7 +81,8 @@ Implements [`intent.md`](intent.md). Where they disagree, the intent wins and th
 ### Home section (`Accomplishments.astro`)
 
 - The section's id becomes `achievements`, its heading's `achievements-title`. The left column holds the heading, the subtitle, the tally and "View all"; the rows stay on the right, and stack under the tally at 720px and below with "View all" after them, as today.
-- The toast's markup renders inside the section, after the rows, only when there's an earned record: a `role="status"` region that is always present, holding the card with the `hidden` attribute. A script in the component shows it (R11–R14) with `inView` from Motion, remembers it in `sessionStorage` (inside `try`, so a blocked store just means it can show again), and animates it with `play()`.
+- The toast's markup renders inside the section, after the rows, only when there's an earned record: a `role="status"` region that is always present, holding the card with the `hidden` attribute. `src/lib/achievement-toast.ts`, called from the component's script, shows it (R11–R14) with `inView` from Motion, remembers it in `sessionStorage` (inside `try`, so a blocked store just means it can show again), and animates it with `play()`.
+- `AchievementIcon.astro` draws the framed icon for the rows and the toast, and `AchievementTally.astro` the tally for the home section and the list page.
 
 ### List page (`AccomplishmentsPage.astro`, `PageHead.astro`, routes)
 

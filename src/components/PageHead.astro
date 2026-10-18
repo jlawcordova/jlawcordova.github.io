@@ -7,6 +7,8 @@ interface Props {
   reading?: boolean;
 }
 
+// Anything passed as children (a subtitle, the achievement totals) goes under the title.
+
 const { title, label, reading = false } = Astro.props;
 const hasLabel = label !== undefined || Astro.slots.has('label');
 ---
@@ -21,5 +23,6 @@ const hasLabel = label !== undefined || Astro.slots.has('label');
       )
     }
     <h1>{title}</h1>
+    <slot />
   </div>
 </header>

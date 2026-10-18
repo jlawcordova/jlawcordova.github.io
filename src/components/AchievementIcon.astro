@@ -1,0 +1,33 @@
+---
+// One achievement's icon in its frame (achievements redesign spec R8, R9): the
+// 20px frame cell from achievement-frames.svg, the 16px icon over it, and for a
+// locked row the padlock over the frame's top-right corner, all at 3×. Used by
+// the rows and the toast. Needs <AchievementIcons /> once on the page.
+import { CELL, FRAME_CELL, FRAMES, LOCK_ICON, SHEET_ORDER, type Frame } from '../lib/achievement-icons.mjs';
+
+interface Props {
+  icon: string;
+  frame: Frame;
+  locked?: boolean;
+}
+
+const { icon, frame, locked = false } = Astro.props;
+const iconCell = (id: string) => `${SHEET_ORDER.indexOf(id) * CELL} 0 ${CELL} ${CELL}`;
+const frameCell = `${FRAMES.indexOf(frame) * FRAME_CELL} 0 ${FRAME_CELL} ${FRAME_CELL}`;
+---
+
+<span class="achievement__icon" data-icon={icon} data-frame={frame}>
+  <svg class="achievement__frame pixel-art" viewBox={frameCell} width="60" height="60" aria-hidden="true" focusable="false">
+    <use href="#achievement-frames" />
+  </svg>
+  <svg class="achievement__glyph pixel-art" viewBox={iconCell(icon)} width="48" height="48" aria-hidden="true" focusable="false">
+    <use href="#achievement-icons" />
+  </svg>
+  {
+    locked && (
+      <svg class="achievement__lock pixel-art" viewBox={iconCell(LOCK_ICON)} width="48" height="48" aria-hidden="true" focusable="false">
+        <use href="#achievement-icons" />
+      </svg>
+    )
+  }
+</span>
