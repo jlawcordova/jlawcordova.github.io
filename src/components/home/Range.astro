@@ -7,7 +7,10 @@ const sprite = rangeSprite.replace('<svg ', '<svg class="range__sprite-art pixel
 const [first] = rangeClasses;
 ---
 
-<section id="range" class="range" data-current="0" aria-labelledby="range-title">
+<!-- --class-shadow tints the section, the screen, the swatch and the countdown (Range pop spec R1). -->
+<section id="range" class="range" data-current="0" aria-labelledby="range-title" style={`--class-shadow: ${first.shadow}`}>
+  <!-- The class change's layer: the old color, cut away by a slash. -->
+  <div class="range__change" aria-hidden="true"></div>
   <div class="range__inner">
     <div class="range__copy">
       <h2 id="range-title">Many hats. <span class="gold">One craftsman.</span></h2>
@@ -20,7 +23,9 @@ const [first] = rangeClasses;
     <div class="range__console" data-theme="light">
       <div class="range__bezel">
         <div class="range__stage isogrid">
-          <p class="range__nameplate" aria-live="off" style={`--class-shadow: ${first.shadow}`}>
+          <!-- The class change's layer on the screen: the old color, broken into battle bars. -->
+          <div class="range__change" aria-hidden="true"></div>
+          <p class="range__nameplate" aria-live="off">
             <span class="range__swatch" aria-hidden="true"></span><span class="range__name">{first.name}</span><span
               class="visually-hidden range__position">, class 1 of {rangeClasses.length}</span
             >
@@ -28,6 +33,17 @@ const [first] = rangeClasses;
           <figure class="range__sprite" role="img" aria-label={`Pixel-art character dressed for ${first.name}`}>
             <Fragment set:html={sprite} />
           </figure>
+          <!-- PAUSED, top right, while START has the rotation paused. START's aria-pressed says the same. -->
+          <span class="range__paused" aria-hidden="true">
+            <svg class="pixel-art" width="6" height="8" viewBox="0 0 3 4">
+              <path fill="currentColor" d="M0 0h1v4h-1zM2 0h1v4h-1z"></path>
+            </svg>
+            <span class="range__paused-label">Paused</span>
+          </span>
+          <!-- The screen's HUD: the countdown to the next class, in segments, with no numbers. -->
+          <div class="range__hud" aria-hidden="true">
+            <div class="range__timer"><span class="range__timer-track"><span class="range__timer-fill"></span></span></div>
+          </div>
         </div>
       </div>
       <div class="range__controls">
@@ -55,15 +71,10 @@ const [first] = rangeClasses;
           <span class="range__slot" aria-hidden="true"></span>
           <span class="range__key-label" aria-hidden="true">START</span>
         </button>
+        <!-- A over B, set off like a handheld's face buttons. Their names say what they do. -->
         <div class="range__ab">
-          <div class="range__key range__key--a">
-            <button type="button" class="range__button range__a" aria-label="A: jump">A</button>
-            <span class="range__key-label" aria-hidden="true">JUMP</span>
-          </div>
-          <div class="range__key">
-            <button type="button" class="range__button range__b" data-dir="-1" aria-label="B: previous class">B</button>
-            <span class="range__key-label" aria-hidden="true">BACK</span>
-          </div>
+          <button type="button" class="range__button range__a" aria-label="A: jump">A</button>
+          <button type="button" class="range__button range__b" data-dir="-1" aria-label="B: previous class">B</button>
         </div>
       </div>
       <div class="range__speaker" aria-hidden="true">
@@ -76,27 +87,85 @@ const [first] = rangeClasses;
 <script>
   import { rangeClasses } from '../../data/home';
   import { RANGE_TIMING, schedule as buildSchedule } from '../../lib/island-entrance.mjs';
-  import { play, reveal } from '../../lib/motion';
+  import { play, reduced, reveal } from '../../lib/motion';
   import { pieceOf, playEntrance } from '../../lib/play-entrance';
-
-  /** How often the carousel advances, in ms: long enough for a setting to rest after it builds (Range settings spec R7). */
-  const INTERVAL = 3000;
+  import { BARS, barsFrame, barsOrder, INTERVAL, SLASH } from '../../lib/range-change.mjs';
 
   const section = document.querySelector<HTMLElement>('.range');
   if (section) {
     const $ = <T extends Element>(selector: string) => section.querySelector<T>(selector)!;
     const plate = $<HTMLElement>('.range__nameplate');
     const sprite = $('.range__sprite');
+    const stage = $<HTMLElement>('.range__stage');
+    const art = $('.range__sprite-art');
     const next = $<HTMLElement>('[data-dir="1"]');
     const toggle = $<HTMLButtonElement>('.range__toggle');
     const panel = $('.range__console');
     const motion = matchMedia('(prefers-reduced-motion: reduce)');
     const count = rangeClasses.length;
-    let [index, playing, hovered, focused] = [0, !motion.matches, false, false];
-    let timer: ReturnType<typeof setInterval> | undefined;
+    let [index, playing, focused] = [0, !motion.matches, false];
     let pulse: ReturnType<typeof setTimeout> | undefined;
 
-    const art = $('.range__sprite-art');
+    // Each change layer runs one change at a time: a new one clears the last.
+    const layers = new Map<HTMLElement, ReturnType<typeof setInterval>>();
+    const layerOf = (host: HTMLElement) => {
+      const layer = host.querySelector<HTMLElement>(':scope > .range__change')!;
+      clearInterval(layers.get(layer));
+      layer.replaceChildren();
+      return layer;
+    };
+
+    // Battle bars on the screen (Range pop spec R2): the old color holds in
+    // blocks, two rows to a band, and alternate bands sweep away from opposite
+    // sides. The blocks just ahead of the sweep light up in the class's bright
+    // color. A canvas draws them, one canvas pixel to a block.
+    const bars = (from: string) => {
+      const layer = layerOf(stage);
+      const lit = getComputedStyle(layer).color;
+      const cols = Math.ceil(stage.clientWidth / BARS.cell);
+      const rows = Math.ceil(stage.clientHeight / BARS.cell);
+      const canvas = document.createElement('canvas');
+      Object.assign(canvas, { width: cols, height: rows });
+      canvas.style.width = `${cols * BARS.cell}px`;
+      canvas.style.height = `${rows * BARS.cell}px`;
+      layer.append(canvas);
+      const ctx = canvas.getContext('2d')!;
+      const order = Array.from({ length: cols * rows }, (_, n) => barsOrder(n % cols, Math.floor(n / cols), cols, rows));
+      let frame = 0;
+      const draw = () => {
+        if (frame > BARS.frames) {
+          clearInterval(layers.get(layer));
+          canvas.remove();
+          return;
+        }
+        ctx.clearRect(0, 0, cols, rows);
+        barsFrame(order, frame / BARS.frames).forEach((block, n) => {
+          if (!block) return;
+          ctx.fillStyle = block === 2 ? lit : from;
+          ctx.fillRect(n % cols, Math.floor(n / cols), 1, 1);
+        });
+        frame += 1;
+      };
+      draw();
+      layers.set(layer, setInterval(draw, BARS.frameMs));
+    };
+
+    // A slash across the section (R3): the new color cuts in on a diagonal over
+    // the old one and widens until it covers the section.
+    const slash = (from: string, to: string) => {
+      const layer = layerOf(section);
+      const [old, cut] = [from, to].map((color) => {
+        const veil = document.createElement('span');
+        veil.style.backgroundColor = color;
+        return veil;
+      });
+      layer.append(old, cut);
+      cut
+        .animate({ clipPath: [SLASH.from, SLASH.to] }, { duration: SLASH.duration, easing: SLASH.easing, fill: 'forwards' })
+        .finished.then(() => (old.remove(), cut.remove()))
+        .catch(() => {});
+    };
+
     let building: ReturnType<typeof play>[] = [];
 
     // The current class's setting builds itself, as the hero island does (Range
@@ -113,46 +182,96 @@ const [first] = rangeClasses;
     const show = (step: number, announce: boolean) => {
       index = (index + step + count) % count;
       const { name, shadow } = rangeClasses[index];
+      const was = { screen: getComputedStyle(stage).backgroundColor, ground: getComputedStyle(section).backgroundColor };
       plate.setAttribute('aria-live', announce ? 'polite' : 'off');
       section.dataset.current = String(index);
       $('.range__name').textContent = name;
       $('.range__position').textContent = `, class ${index + 1} of ${count}`;
-      plate.style.setProperty('--class-shadow', shadow);
+      section.style.setProperty('--class-shadow', shadow);
       sprite.setAttribute('aria-label', `Pixel-art character dressed for ${name}`);
+      // The new colors are already in place underneath; the changes take the old ones away.
+      if (!reduced()) {
+        bars(was.screen);
+        slash(was.ground, getComputedStyle(section).backgroundColor);
+      }
       // The new class's setting builds itself, and the plate pops.
       build();
       play(plate, { scale: [0.88, 1.06, 1] }, { duration: 0.2, ease: 'easeOut' });
     };
 
+    // The countdown is the clock (R4): when it fills, the next class shows.
+    // It fills smoothly behind its twelve-segment mask. Keyboard focus in the
+    // console and a hidden tab hold it where it is, START pauses it, and a
+    // press of an arrow or B starts it over. Hovering doesn't hold it (R4). It's
+    // made the first time the rotation plays, so under reduced motion, where
+    // the rotation starts paused, nothing runs.
+    let countdown: Animation | undefined;
+    const clock = () => {
+      if (!countdown) {
+        countdown = $<HTMLElement>('.range__timer-fill').animate(
+          { transform: ['scaleX(0)', 'scaleX(1)'] },
+          { duration: INTERVAL, easing: 'linear', fill: 'both' },
+        );
+        advance(countdown);
+      }
+      return countdown;
+    };
     const schedule = () => {
-      clearInterval(timer);
       toggle.setAttribute('aria-pressed', String(!playing));
-      if (!playing || hovered || focused || document.hidden) return;
-      timer = setInterval(() => {
+      section.classList.toggle('is-paused', !playing);
+      if (playing && !focused && !document.hidden) clock().play();
+      else countdown?.pause();
+    };
+    const restart = () => {
+      if (countdown) countdown.currentTime = 0;
+      schedule();
+    };
+    // Starting over makes a new finished promise, so wait on it again each time.
+    const advance = (run: Animation): Promise<void> =>
+      run.finished.then(() => {
         show(1, false);
+        restart();
+        advance(run);
         if (motion.matches) return;
         next.classList.add('is-pulsing');
         clearTimeout(pulse);
         pulse = setTimeout(() => next.classList.remove('is-pulsing'), 200);
-      }, INTERVAL);
-    };
+      });
 
     // The D-pad's arrows, and B, which goes back like Previous.
     section.querySelectorAll<HTMLElement>('button[data-dir]').forEach((arrow) =>
-      arrow.addEventListener('click', () => (show(Number(arrow.dataset.dir), true), schedule())),
+      arrow.addEventListener('click', () => (show(Number(arrow.dataset.dir), true), restart())),
     );
-    toggle.addEventListener('click', () => ((playing = !playing), schedule()));
-    panel.addEventListener('mouseenter', () => ((hovered = true), schedule()));
-    panel.addEventListener('mouseleave', () => ((hovered = false), schedule()));
-    panel.addEventListener('focusin', () => ((focused = true), schedule()));
-    panel.addEventListener('focusout', (e) => ((focused = panel.contains((e as FocusEvent).relatedTarget as Node)), schedule()));
+    // START plays at once (R5). Pressed from the keyboard, focus is still on
+    // START and would hold the countdown, so pressing START to play lets go of
+    // that hold until focus moves again.
+    toggle.addEventListener('click', () => {
+      playing = !playing;
+      if (playing) focused = false;
+      schedule();
+    });
+    // Only keyboard focus holds it, so someone tabbing through the keys isn't
+    // moved on mid-way. A click leaves focus on a key without :focus-visible,
+    // which doesn't.
+    panel.addEventListener('focusin', (e) => ((focused = (e.target as Element).matches(':focus-visible')), schedule()));
+    panel.addEventListener('focusout', (e) => {
+      if (panel.contains((e as FocusEvent).relatedTarget as Node)) return;
+      focused = false;
+      schedule();
+    });
     motion.addEventListener('change', () => ((playing = !motion.matches), schedule()));
     document.addEventListener('visibilitychange', schedule);
 
-    // A: a hop with a little shake on landing. The class stays.
-    $('.range__a').addEventListener('click', () =>
-      play(sprite, { y: [0, -16, 0, -6, 0, 0, 0, 0], x: [0, 0, 0, 0, -3, 3, -2, 0] }, { duration: 0.5, ease: 'easeInOut' }),
-    );
+    // A: only the character hops (R6), with chop in pixel-art.css. Its
+    // setting stays put, and the class stays. A press mid-hop starts it over.
+    $('.range__a').addEventListener('click', () => {
+      const character = art.querySelector(`g[data-class="${index}"] .cbob`);
+      if (!character || reduced()) return;
+      character.classList.remove('is-hopping');
+      character.getBoundingClientRect();
+      character.classList.add('is-hopping');
+      character.addEventListener('animationend', () => character.classList.remove('is-hopping'), { once: true });
+    });
 
     section.classList.add('is-ready');
     schedule();
