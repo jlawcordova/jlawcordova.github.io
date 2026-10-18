@@ -77,3 +77,10 @@ A pose is its own object named `<name>-<pose>`, with the same anchor: `extends` 
 - Lab links, one per object: `http://localhost:4321/lab/pixel-art/?object=<name>`, plus `?scene=island-level-up-objects`. The main session hosts the dev server: don't start one.
 - `npm run art` with every file `lossless` and none `OVER BUDGET`, `npm test` with `# fail 0`, and the object's bytes from `--sizes island-level-up-objects`.
 - No commits, no edits to `hero-island`, other objects, tests or the engine.
+
+## Decisions from the runs so far
+
+- `ore` is 4×4 px, anchor [2, 3]; four in a tight pile cover about 12×8 px, so a cart or truck bed needs an opening of about 12×6.
+- `ore-screen`'s rim top is at z = 16 px and it stands only behind the track, so carts roll under it. The scene lists it before the carts and the falling ore.
+- Both conveyors have their belt top at z = 16 px, one trestle per segment, and an `ff` cleat loop that steps 2 px across and 1 down. `conveyor-row` is shifted 2 units forward along its axis, so a run ending on the tile behind `ore-screen` meets its rim. A run paints back to front by col + row.
+- Open for the scene review: ore reads faintly on the dark belt (a lighter `ore` base would fix it), and the boxes' ground run may want a low conveyor (belt at about z = 6) if the `processor`'s outlet and the `container` sit low. The `processor` and `container` runs say which.
