@@ -1,5 +1,5 @@
 # Intent: The Range pops
-Author: J. Law. Cordova (site owner). Status: accepted, 2026-10-18. The owner shaped this change on a running prototype (2026-10-17 to 2026-10-18), picked the result and asked for it as a build-ready PR. This intent records what they asked for, after the fact, and merging the PR accepts it.
+Author: J. Law. Cordova (site owner). Status: done, 2026-10-18: built and merged in [#125](https://github.com/jlawcordova/jlawcordova.github.io/pull/125). The owner shaped this change on a running prototype (2026-10-17 to 2026-10-18), picked the result and asked for it as a build-ready PR. This intent records what they asked for, after the fact, and merging the PR accepts it.
 
 ## Problem
 
