@@ -1,6 +1,6 @@
 # Pagination
 
-Numbered page links for the blog and the accomplishments lists.
+Numbered page links for the blog and the achievements list.
 
 ## Use
 

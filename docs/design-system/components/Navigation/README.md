@@ -8,6 +8,7 @@ The sticky, see-through bar at the top of every page: the mark and wordmark on t
 - The brand is the JL mark at 23px tall, then a 24px gap and "J. LAW. Cordova" in `wordmark`. Links are uppercase Silkscreen at 13px with 1px tracking, in `color-ink`, and turn `color-accent` on hover.
 - At 720px and below, the links and the Contact pill hide behind a menu button beside the brand. The button is icon only, with no text and no border: a 44px tap target holding a pixel three-bar glyph, which becomes a pixel × while the menu is open. It carries `aria-expanded`, `aria-controls` and an `aria-label` ("Open menu" or "Close menu").
 - The open menu drops below a `border-thick` rule inside the bar. The links stack as full-width 44px rows, with the Contact pill full width at the bottom. Choosing a link closes the menu. The links stagger in with Motion, and appear at once under reduced motion.
+- The links are Range, Achievements and Blog. Range and Achievements point at their home page sections, and Achievements shows only when that section renders.
 - The bar stays square at every width.
 
 ## What you provide

@@ -43,7 +43,7 @@ Write in this order. Use the **Decision Brief** component when the five answers 
 - Choose clarity over persuasion. Cut any adjective that isn't evidence.
 - Use the first person for the owner ("I recommend"), "we" for shared work, and "you" for the reader. Write numbers as numerals, give dates as `YYYY-MM-DD`, and write times in 24-hour form.
 - Use sentence case for headings. Buttons, nav links and pixel `label` text are uppercase, in Silkscreen.
-- No emoji, no exclamation marks, and no "excited to announce".
+- No emoji, no exclamation marks, and no "excited to announce". The one "!" on the site is the achievement toast's label (see Gamified copy).
 
 ### Examples
 
@@ -57,13 +57,13 @@ Write in this order. Use the **Decision Brief** component when the five answers 
 
 ### Gamified copy
 
-Two places can play: **accomplishments** and **buttons**. Everything else uses the plain voice above.
+Two places can play: **achievements** (the home section and the full list of accomplishments) and **buttons**. Everything else uses the plain voice above.
 
 - **Voice:** Stardew Valley's achievements ("Greenhorn", "Cowpoke"). One to three words, warm, a little folksy, light wordplay. Never a joke that needs explaining.
-- **Plain meaning sits next to it.** An accomplishment's fun title has a short description beside it and a plain title in its opened panel. A gamified button sits beside text that says where it leads.
-- **Never misleading.** A fun title doesn't overstate what was done. A locked accomplishment reads as not done yet, not as a claim.
-- **Not a real game.** No points, levels, rarity or progress figures unless they're true and defined.
-- **One kept exception:** the home page's Range heading, "Many hats. One craftsman.", with a plain paragraph beside it.
+- **Plain meaning sits next to it.** An achievement's fun title has a short description beside it and a plain title in its opened panel. The headings "Achievements", "Earned achievements" and "Locked achievements" each have a plain subtitle or line beside them, which says what the list is without explaining the game framing. A gamified button sits beside text that says where it leads.
+- **Never misleading.** A fun title doesn't overstate what was done. A locked achievement reads as not done yet, not as a claim.
+- **Not a real game.** No points, levels, rarity or progress figures unless they're true and defined. The achievement tally counts what's earned and what's locked, and never reads as progress (no "30 of 33").
+- **Two kept exceptions:** the home page's Range heading, "Many hats. One craftsman.", with a plain paragraph beside it; and the achievement toast's label, "Achievement unlocked!", the one exclamation mark on the site, with the achievement's name and plain line under it ([achievements redesign spec](../intents/2026-10-achievements-redesign/spec.md), C1).
 
 ## Visual foundations
 
@@ -76,7 +76,7 @@ Two places can play: **accomplishments** and **buttons**. Everything else uses t
 - Use at most one dark section per page: `color-forest` with `color-on-forest` headings and `color-on-forest-muted` body copy. The footer is `color-footer` with `color-on-footer`.
 - Draw lines with `color-border`, and with `color-border-strong` on hover and on controls. Both are faint. `color-border-strong` is 1.4:1, so a control must also read by its fill and its label.
 - Set code on `color-ink` with the `syntax-*` tokens. Every syntax color is at least 4.5:1 on ink.
-- Don't use gradients, glows or extra hues. The pixel-art palette is for illustration only, never for UI.
+- Don't use gradients, glows or extra hues. The pixel-art palette is for illustration only, never for UI. The achievement frames count as illustration: their colors are drawn in their pixel-art sheet, like the icons', and no CSS uses them.
 
 ### Type
 
@@ -97,7 +97,7 @@ Two places can play: **accomplishments** and **buttons**. Everything else uses t
 
 - **Corners are square.** Nothing in the UI is rounded: buttons, pills, the nav bar, cards, rows, chips, code blocks, stages, panels and images all have 90° corners. The pixel art is the only place for curves, and only as pixels.
 - **No shadows.** Don't use hard or soft shadows, glows or bevels. Where the system used `shadow-pixel` or `shadow-pixel-accent`, use `border-thick` instead: a 3px `color-ink` border.
-- `border-thick` goes on buttons, the Contact pill, the nav bar, the current page in pagination, tooltips and the Range console. Accomplishment rows take a 3px `color-border` edge, dashed `color-border-strong` when locked. Cards and stages keep the 1px `color-border` hairline. Ink fills such as code blocks need no extra edge.
+- `border-thick` goes on buttons, the Contact pill, the nav bar, the current page in pagination, tooltips, the Range console, the achievement toast and the earned tally chip. Achievement rows take a 3px `color-border` edge, dashed `color-border-strong` when locked, like the locked tally chip. Cards and stages keep the 1px `color-border` hairline. Ink fills such as code blocks need no extra edge.
 - **Pressed:** a button moves 2px down and right. Nothing else changes.
 - The sticky nav has no shadow. It sits on the see-through `color-surface-strong` with a 16px backdrop blur, the one blur in the system, and falls back to solid `color-page` where `backdrop-filter` isn't supported.
 
@@ -115,7 +115,7 @@ Tokens: `radius-*` all become 0. `shadow-pixel`, `shadow-pixel-pressed`, `shadow
 
 Use [Motion](https://motion.dev) (the `motion` package, formerly Framer Motion) wherever a transition makes the site more delightful. The site isn't React, so use Motion's plain-JavaScript API (`animate`, `stagger`, `inView`) in small client scripts, not its React components.
 
-- **Where:** state changes (a Range class switching, a nameplate updating, a row's panel opening), entrances as a section scrolls into view (a short stagger of cards or rows), and playful feedback a person asks for (a sprite's hop when they press A).
+- **Where:** state changes (a Range class switching, a nameplate updating, a row's panel opening), entrances as a section scrolls into view (a short stagger of cards or rows, and each earned achievement frame's one 8px hop as its row lands), the achievement toast rising into the corner, and playful feedback a person asks for (a sprite's hop when they press A).
 - **How it moves:** smoothly. Use the shared ease-out (`easeOut` in `src/lib/motion.ts`, `cubic-bezier(0.22, 1, 0.36, 1)`) for entrances, slides and panels, and `ease-out` for CSS presses and turns. Stepped easing (`steps()`) is for the pixel art's own CSS loops only, such as the island's water and trucks, because stepped UI motion reads as lag. Keep durations between 0.12s and 0.5s, and stagger by 0.04–0.08s. Keep moves short: 8–24px slides and hops, never long sweeps.
 - **Two build-ups are longer entrances.** The owner tuned them by eye, so they sit outside the rhythm above. Their numbers live in `src/lib/island-entrance.mjs`, each under its own name; don't reuse them for other entrances.
   - **The hero island** ([island clock sweep spec](../intents/2026-10-island-clock-sweep/spec.md), C1): the ground pops up cube by cube in a clock sweep from the left corner, over 0.5s, and then the objects pop in from front to back, over 0.6s. Each piece grows from its foot to 110% and settles, in 0.5s, and the island settles in about 2.35s. Try other build-ups in the unlisted entrance lab (`/lab/island-entrance/`).
@@ -128,7 +128,8 @@ Use [Motion](https://motion.dev) (the `motion` package, formerly Framer Motion) 
 ## Iconography
 
 - **The mark:** the flat block J and L on a square grid (`static/public/logo.svg`, 68 × 45), with the J in `color-accent` (#3f6b45) and the L in `color-ink` (#2e2418). Don't make it 3D, outline it, recolor it or change its shape. Set it beside "J. LAW. Cordova" in `wordmark` in the nav. It's two-ink, so as an `<img>` it reads on light grounds only (`color-page`, `color-hero`, `color-card`). `static/public/favicon.svg` is the same mark padded to a square, and `static/public/logo@2x.png` is a raster fallback.
-- **Icons:** 16 × 16 pixel icons from one sheet (`src/assets/pixel-art/achievement-icons.svg`), drawn at 48px (3×) with crisp edges. The sheet is one row of 16px cells: 0 star (the fallback), 1 lock, 2 sprout, 3 hammer, 4 rocket, 5 bug, 6 shield, 7 key, 8 wrench, 9 book, 10 magnifier, 11 flask, 12 apple, 13 heart, 14 signpost, 15 chest, 16 trophy, 17 speech. Their colors are fixed from the pixel-art world palette and outlined in `color-ink`, for light grounds. Small glyphs (chevron, external arrow, play/pause) are hand-pixelled paths in `currentColor`.
+- **Icons:** 16 × 16 pixel icons from one sheet (`src/assets/pixel-art/achievement-icons.svg`), drawn at 48px (3×) with crisp edges. The sheet is one row of 16px cells: 0 star (the fallback), 1 lock, 2 sprout, 3 hammer, 4 rocket, 5 bug, 6 shield, 7 key, 8 wrench, 9 book, 10 magnifier, 11 flask, 12 apple, 13 heart, 14 signpost, 15 chest, 16 trophy, 17 speech. Their colors are fixed from the pixel-art world palette and outlined in `color-ink`, for light grounds. Small glyphs (chevron, external arrow, play/pause, close) are hand-pixelled paths in `currentColor`.
+- **Frames:** on the site, each achievement icon sits in a 20 × 20 pixel frame from a second sheet (`src/assets/pixel-art/achievement-frames.svg`), drawn at 60px: a 1px `ink` edge, a 1px bevel lit from the top left, and a fill that says the kind of work. The cells are 0 plain (`path-1`, for the fallback star and every locked row), 1 make (`gold-1`), 2 fix (`grass-1`), 3 think (`skin-1`), 4 people (`water-1`) and 5 milestone (`roof-1`). Each icon names its frame in `src/lib/achievement-icons.mjs`. There's no key on the page: the icon says the kind, and the color only backs it up.
 - Don't use emoji, an icon font, or outlined line icons.
 - For diagrams, prefer systems diagrams that use the UI tokens: boxes in `color-surface` with `color-border`, flows in `color-ink`, and one path highlighted in `color-accent`. Pixel-art scenes are for the personal site's hero and Range only.
 
@@ -142,7 +143,8 @@ Built from the site:
 - **PageHead**: the title band with a label.
 - **Card** and **PostCard**: the frosted list surface.
 - **Pagination**.
-- **AchievementRow**: an icon, a fun title, a short line, a date, and an opened panel with the plain title, tags and links.
+- **AchievementRow**: a framed icon, a fun title, a short line, a date, and an opened panel with the plain title, tags and links. With it, the tally of earned and locked achievements, and the Latest chip.
+- **AchievementToast**: "Achievement unlocked!" for the newest earned achievement, once a visit, on the home page.
 - **CodeBlock** and **Prose**: the reading column.
 
 Intentional additions, for the content model above:
