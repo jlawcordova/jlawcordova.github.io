@@ -4,7 +4,7 @@
 // import what they use, so a page without one loads no Motion code.
 import { animate, inView, stagger, type AnimationOptions, type DOMKeyframesDefinition } from 'motion';
 
-export { stagger };
+export { inView, stagger };
 
 type Targets = Element | Element[];
 
@@ -75,5 +75,39 @@ export function reveal(elements: Iterable<Element>, { y = 16, stagger: gap = 0, 
       animate(el, { opacity: [0, 1], y: [y, 0] }, { duration, delay, ease: easeOut });
     },
     { amount: 0.2 },
+  );
+}
+
+interface HopOptions {
+  /** Seconds to wait after an element comes into view, so a rising row can land first. */
+  delay?: number;
+  /** Seconds between elements that enter together. */
+  stagger?: number;
+}
+
+/**
+ * A playful hop (achievements redesign spec R15): as each element comes into
+ * view, it moves up 8px and back over 0.3s, once. It only moves things that are
+ * already showing, so it never hides anything, and under reduced motion it
+ * does nothing.
+ */
+export function hop(elements: Iterable<Element>, { delay = 0, stagger: gap = 0 }: HopOptions = {}) {
+  const list = [...elements];
+  if (!list.length || reduced()) return;
+
+  // Elements that enter in the same frame stagger by `gap` seconds, as in reveal().
+  let batch = 0;
+  let resetting = false;
+  inView(
+    list,
+    (el) => {
+      const wait = delay + batch++ * gap;
+      if (!resetting) {
+        resetting = true;
+        requestAnimationFrame(() => ((batch = 0), (resetting = false)));
+      }
+      animate(el, { y: [0, -8, 0] }, { duration: 0.3, delay: wait, ease: easeOut });
+    },
+    { amount: 0.6 },
   );
 }

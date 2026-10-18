@@ -1,16 +1,21 @@
 ---
-// The achievement icon sheet, inlined once on a page that shows accomplishment
-// rows (gamified accomplishments spec D5). Each row crops its icon out of it
-// with <svg viewBox="<16 × index> 0 16 16"><use href="#achievement-icons"/></svg>.
-// Hidden with a zero size, not display:none, because some browsers don't draw
-// <use> from a display:none SVG (plan, Risks).
-import sheet from '../assets/pixel-art/achievement-icons.svg?raw';
+// The achievement icon and frame sheets, inlined once on a page that shows
+// achievement rows (gamified accomplishments spec D5; achievements redesign
+// spec R10). Each row crops its icon out of the first with
+// <svg viewBox="<16 × index> 0 16 16"><use href="#achievement-icons"/></svg>,
+// and its frame out of the second with viewBox="<20 × index> 0 20 20" and
+// #achievement-frames (AchievementIcon.astro does both). Hidden with a zero
+// size, not display:none, because some browsers don't draw <use> from a
+// display:none SVG (plan, Risks).
+import icons from '../assets/pixel-art/achievement-icons.svg?raw';
+import frames from '../assets/pixel-art/achievement-frames.svg?raw';
 
-const art = sheet.replace(/^\s*<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+const inner = (svg: string) => svg.replace(/^\s*<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
 ---
 
 <svg class="achievement-icons" width="0" height="0" aria-hidden="true" focusable="false">
-  <g id="achievement-icons" set:html={art} />
+  <g id="achievement-icons" set:html={inner(icons)} />
+  <g id="achievement-frames" set:html={inner(frames)} />
 </svg>
 
 {

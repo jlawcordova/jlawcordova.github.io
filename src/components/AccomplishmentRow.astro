@@ -1,21 +1,23 @@
 ---
-// One accomplishment as a row (gamified accomplishments spec D4): icon, fun
-// title, short description and month. A done row is a <details> that opens to
-// the plain title, the full description, the tags and the links, with a
-// tooltip of the full description on hover-capable devices. A locked row has
-// the same layout, can't be opened, and says "Not done yet" where the date goes.
+// One accomplishment as an achievement row (gamified accomplishments spec D4;
+// achievements redesign spec R7–R9): its icon in a frame, fun title, short
+// description and month. A done row is a <details> that opens to the plain
+// title, the full description, the tags and the links, with a tooltip of the
+// full description on hover-capable devices. A locked row has the same layout,
+// can't be opened, and says "Not done yet" where the date goes. `latest` adds
+// the Latest chip to the newest earned row.
 // Needs <AchievementIcons /> once on the page. The panel fades and drops in as
 // it opens (pixel-first look spec, Accomplishments), and closes at once.
-import { CELL, LOCK_ICON, SHEET_ORDER } from '../lib/achievement-icons.mjs';
+import AchievementIcon from './AchievementIcon.astro';
 import { formatDateRange, linkLabel, rowFor, type Accomplishment } from '../lib/accomplishments';
 
 interface Props {
   item: Accomplishment;
+  latest?: boolean;
 }
 
-const { item } = Astro.props;
+const { item, latest = false } = Astro.props;
 const row = rowFor(item);
-const cell = (id: string) => `${SHEET_ORDER.indexOf(id) * CELL} 0 ${CELL} ${CELL}`;
 const tipId = `achievement-tip-${item.rkey}`;
 
 // A 7×7 pixel "↗".
@@ -29,13 +31,18 @@ const CHEVRON = 'M0 0h2v1h-2zM5 0h2v1h-2zM1 1h2v1h-2zM4 1h2v1h-2zM2 2h3v1h-3zM3 
     <li class="achievement" data-state="done">
       <details class="achievement__details">
         <summary class="achievement__row" aria-describedby={tipId}>
-          <span class="achievement__icon" data-icon={row.icon}>
-            <svg class="pixel-art" viewBox={cell(row.icon)} width="48" height="48" aria-hidden="true" focusable="false">
-              <use href="#achievement-icons" />
-            </svg>
-          </span>
+          <AchievementIcon icon={row.icon} frame={row.frame} />
           <span class="achievement__text">
-            <span class="achievement__lead">{row.lead}</span>
+            {
+              latest ? (
+                <span class="achievement__heading">
+                  <span class="achievement__lead">{row.lead}</span>
+                  <span class="achievement__latest" data-theme="light">Latest</span>
+                </span>
+              ) : (
+                <span class="achievement__lead">{row.lead}</span>
+              )
+            }
             {row.short && <span class="achievement__short">{row.short}</span>}
           </span>
           <span class="achievement__date">{formatDateRange(item)}</span>
@@ -77,21 +84,7 @@ const CHEVRON = 'M0 0h2v1h-2zM5 0h2v1h-2zM1 1h2v1h-2zM4 1h2v1h-2zM2 2h3v1h-3zM3 
   ) : (
     <li class="achievement" data-state="locked">
       <div class="achievement__row">
-        <span class="achievement__icon" data-icon={row.icon}>
-          <svg class="pixel-art" viewBox={cell(row.icon)} width="48" height="48" aria-hidden="true" focusable="false">
-            <use href="#achievement-icons" />
-          </svg>
-          <svg
-            class="achievement__lock pixel-art"
-            viewBox={cell(LOCK_ICON)}
-            width="48"
-            height="48"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <use href="#achievement-icons" />
-          </svg>
-        </span>
+        <AchievementIcon icon={row.icon} frame={row.frame} locked />
         <span class="achievement__text">
           <span class="achievement__lead">{row.lead}</span>
           {row.short && <span class="achievement__short">{row.short}</span>}

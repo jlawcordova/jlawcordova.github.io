@@ -1,0 +1,30 @@
+---
+// The totals beside the Achievements heading (achievements redesign spec R6):
+// how many are earned and how many are locked, across every page. A count of
+// zero isn't shown, and nothing renders when both are zero. The earned chip is
+// gold under ink, so it keeps the light colors in the dark theme (dark mode
+// spec: drawn objects carry data-theme="light"); the locked one follows the theme.
+interface Props {
+  earned: number;
+  locked: number;
+}
+
+const { earned, locked } = Astro.props;
+---
+
+{
+  earned + locked > 0 && (
+    <ul class="achievement-tally" role="list" aria-label="Totals">
+      {earned > 0 && (
+        <li class="achievement-tally__chip" data-kind="earned" data-theme="light">
+          <b>{earned}</b> earned
+        </li>
+      )}
+      {locked > 0 && (
+        <li class="achievement-tally__chip" data-kind="locked">
+          <b>{locked}</b> locked
+        </li>
+      )}
+    </ul>
+  )
+}

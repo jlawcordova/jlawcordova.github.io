@@ -1,10 +1,14 @@
-<!-- Rows with a 3px color-border edge, 12px apart; the locked row's edge is dashed color-border-strong. On the site the panel drops in with Motion as a row opens, and rows rise in as the list scrolls into view; this static preview shows their end state. -->
+<!-- The tally, then rows with a 3px color-border edge, 12px apart; the locked row's edge is dashed color-border-strong. Each icon sits in its frame. On the site the panel drops in with Motion as a row opens, rows rise in as the list scrolls into view and earned frames hop once; this static preview shows their end state. -->
+<ul class="achievement-tally" role="list" aria-label="Totals" style="margin-bottom:16px">
+  <li class="achievement-tally__chip" data-kind="earned" data-theme="light"><b>2</b> earned</li>
+  <li class="achievement-tally__chip" data-kind="locked"><b>1</b> locked</li>
+</ul>
 <ul class="achievement-list" role="list">
   <li class="achievement" data-state="done">
     <details class="achievement__details">
       <summary class="achievement__row" aria-describedby="example-tip-1">
-        <span class="achievement__icon"><svg class="pixel-art" viewBox="64 0 16 16" width="48" height="48" aria-hidden="true" focusable="false"><use href="#achievement-icons"/></svg></span>
-        <span class="achievement__text"><span class="achievement__lead">Night Owl</span><span class="achievement__short">Nightly loads finish before 06:00.</span></span>
+        <span class="achievement__icon" data-icon="rocket" data-frame="make"><svg class="achievement__frame pixel-art" viewBox="20 0 20 20" width="60" height="60" aria-hidden="true" focusable="false"><use href="#achievement-frames"/></svg><svg class="achievement__glyph pixel-art" viewBox="64 0 16 16" width="48" height="48" aria-hidden="true" focusable="false"><use href="#achievement-icons"/></svg></span>
+        <span class="achievement__text"><span class="achievement__heading"><span class="achievement__lead">Night Owl</span><span class="achievement__latest" data-theme="light">Latest</span></span><span class="achievement__short">Nightly loads finish before 06:00.</span></span>
         <span class="achievement__date">Sep 2026</span>
         <svg class="achievement__chevron pixel-art" viewBox="0 0 7 4" width="14" height="8" aria-hidden="true" focusable="false"><path fill="currentColor" d="M0 0h2v1h-2zM5 0h2v1h-2zM1 1h2v1h-2zM4 1h2v1h-2zM2 2h3v1h-3zM3 3h1v1h-1z"/></svg>
       </summary>
@@ -19,7 +23,7 @@
   <li class="achievement" data-state="done">
     <details class="achievement__details" open>
       <summary class="achievement__row" aria-describedby="example-tip-2">
-        <span class="achievement__icon"><svg class="pixel-art" viewBox="144 0 16 16" width="48" height="48" aria-hidden="true" focusable="false"><use href="#achievement-icons"/></svg></span>
+        <span class="achievement__icon" data-icon="book" data-frame="think"><svg class="achievement__frame pixel-art" viewBox="60 0 20 20" width="60" height="60" aria-hidden="true" focusable="false"><use href="#achievement-frames"/></svg><svg class="achievement__glyph pixel-art" viewBox="144 0 16 16" width="48" height="48" aria-hidden="true" focusable="false"><use href="#achievement-icons"/></svg></span>
         <span class="achievement__text"><span class="achievement__lead">Lore Keeper</span><span class="achievement__short">On-call steps for every pipeline.</span></span>
         <span class="achievement__date">Aug 2026</span>
         <svg class="achievement__chevron pixel-art" viewBox="0 0 7 4" width="14" height="8" aria-hidden="true" focusable="false"><path fill="currentColor" d="M0 0h2v1h-2zM5 0h2v1h-2zM1 1h2v1h-2zM4 1h2v1h-2zM2 2h3v1h-3zM3 3h1v1h-1z"/></svg>
@@ -35,8 +39,9 @@
   </li>
   <li class="achievement" data-state="locked">
     <div class="achievement__row">
-      <span class="achievement__icon">
-        <svg class="pixel-art" viewBox="48 0 16 16" width="48" height="48" aria-hidden="true" focusable="false"><use href="#achievement-icons"/></svg>
+      <span class="achievement__icon" data-icon="hammer" data-frame="plain">
+        <svg class="achievement__frame pixel-art" viewBox="0 0 20 20" width="60" height="60" aria-hidden="true" focusable="false"><use href="#achievement-frames"/></svg>
+        <svg class="achievement__glyph pixel-art" viewBox="48 0 16 16" width="48" height="48" aria-hidden="true" focusable="false"><use href="#achievement-icons"/></svg>
         <svg class="achievement__lock pixel-art" viewBox="16 0 16 16" width="48" height="48" aria-hidden="true" focusable="false"><use href="#achievement-icons"/></svg>
       </span>
       <span class="achievement__text"><span class="achievement__lead">Spring Cleaning</span><span class="achievement__short">Retire the old nightly ETL jobs.</span></span>

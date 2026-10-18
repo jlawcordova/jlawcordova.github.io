@@ -79,8 +79,9 @@
    steps down so the closed bar stays one row: beside the theme and menu
    buttons in a header under 420px (phones narrower than about 452px, and the
    design-system preview), and beside every link and the theme button in a
-   header of 673px to 752px (a window of 721px to 800px). */
-@container site-header (max-width: 419px) or ((min-width: 673px) and (max-width: 752px)) {
+   header of 673px to 800px (a window of 721px to 848px; "Achievements" is the
+   longest link, achievements redesign spec R19). */
+@container site-header (max-width: 419px) or ((min-width: 673px) and (max-width: 800px)) {
   .site-nav {
     padding-left: 12px;
     column-gap: 8px;
@@ -88,6 +89,22 @@
   .site-nav__brand {
     gap: 12px;
     font-size: 14px;
+  }
+}
+
+/* Beside every link, the links draw in too, so the bar fits a 673px header. */
+@container site-header (min-width: 673px) and (max-width: 800px) {
+  .site-nav {
+    column-gap: 4px;
+  }
+  .site-nav__links {
+    gap: 2px;
+  }
+  .site-nav__links a:not(.pill) {
+    padding: 0 8px;
+  }
+  .site-nav__links .pill {
+    padding: 0 12px;
   }
 }
 

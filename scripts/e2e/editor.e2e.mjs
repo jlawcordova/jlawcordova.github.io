@@ -185,7 +185,10 @@ describe('the page (R15, R24)', () => {
       const text = await readFile(join(DIST, file), 'utf8');
       assert.ok(!text.includes('/lab/'), `${file} mentions /lab/`);
       assert.ok(!text.includes('/design-system/'), `${file} mentions /design-system/`);
-      assert.ok(!/robots/.test(text) || !text.includes('noindex'), `${file} is noindex`);
+      // A redirect page (the old /accomplishments/ URLs, achievements redesign
+      // spec R18) is a refresh to its new URL and is noindex on purpose.
+      const redirect = /<meta http-equiv="refresh" content="0;url=\/[^"]*">/.test(text) && text.includes('<link rel="canonical"');
+      assert.ok(redirect || !/robots/.test(text) || !text.includes('noindex'), `${file} is noindex`);
     }
   });
 

@@ -35,5 +35,5 @@ test('perPage must be a positive integer', () => {
 test('pagePath keeps the blog URLs: /blog/, then /blog/pageN/', () => {
   assert.equal(pagePath('/blog/', 1), '/blog/');
   assert.equal(pagePath('/blog/', 2), '/blog/page2/');
-  assert.equal(pagePath('/accomplishments/', 3), '/accomplishments/page3/');
+  assert.equal(pagePath('/achievements/', 3), '/achievements/page3/');
 });

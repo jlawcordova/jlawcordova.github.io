@@ -14,7 +14,7 @@ J. Law. Cordova's personal site and blog: Astro 7, TypeScript and plain CSS, dep
 - Entrance lab: `npm run dev`, then http://localhost:4321/lab/island-entrance/ (unlisted). It replays the hero island's build-up with any order, move and timing (R replays), and copies the changes to `TIMING`. To animate pixel art (build-ups, loops), use the `pixel-art-motion` skill.
 - Design system previews: `npm run dev`, then http://localhost:4321/design-system/ (unlisted).
 - Accomplishments: `npm run fetch-accomplishments` (overwrites `src/data/accomplishments.json`; never commit the result)
-- Fixture accomplishments: `cp scripts/fixtures/accomplishments.json src/data/accomplishments.json` (or `-two-done`, `-unavailable`, `-locked-only`), build, then `git checkout src/data/accomplishments.json`. The rich fixture fills the home section and `/accomplishments/` (three pages and the locked list).
+- Fixture accomplishments: `cp scripts/fixtures/accomplishments.json src/data/accomplishments.json` (or `-two-done`, `-unavailable`, `-locked-only`), build, then `git checkout src/data/accomplishments.json`. The rich fixture fills the home section and `/achievements/` (three pages and the locked list).
 
 ## Verifying your work
 
@@ -40,7 +40,7 @@ Run these before reporting any task complete, and paste the output. If a test fa
 
 ## Architecture
 
-The README's project layout table maps every folder. In short: routes in `src/pages/` (including `/accomplishments/`, paginated like `/blog/`), components in `src/components/` (home sections in `home/`; the accomplishment rows, home section, list page and icon sheet in `Accomplishment*.astro` and `AchievementIcons.astro`), one CSS file per area in `src/styles/`, the pixel-art engine in `src/lib/pixel-art/` (plain `.mjs` with `// @ts-check`, shared by `npm run art` and the editor at `src/pages/lab/pixel-art.astro`, whose client code is in `src/components/lab/`), scripts with `node:test` tests in `scripts/`, browser checks in `scripts/e2e/`, `static/public/*` served at `/public/*`, and the design system (brand book, tokens, component guidelines and previews) in `docs/design-system/`, rendered at `/design-system/` by `src/pages/design-system.astro`.
+The README's project layout table maps every folder. In short: routes in `src/pages/` (including `/achievements/`, paginated like `/blog/`, with redirect pages at the old `/accomplishments/` URLs), components in `src/components/` (home sections in `home/`; the achievement rows, home section, list page, framed icon, tally and icon sheets in `Accomplishment*.astro` and `Achievement*.astro`), one CSS file per area in `src/styles/`, the pixel-art engine in `src/lib/pixel-art/` (plain `.mjs` with `// @ts-check`, shared by `npm run art` and the editor at `src/pages/lab/pixel-art.astro`, whose client code is in `src/components/lab/`), scripts with `node:test` tests in `scripts/`, browser checks in `scripts/e2e/`, `static/public/*` served at `/public/*`, and the design system (brand book, tokens, component guidelines and previews) in `docs/design-system/`, rendered at `/design-system/` by `src/pages/design-system.astro`.
 
 ## How changes flow
 

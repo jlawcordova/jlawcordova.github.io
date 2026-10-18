@@ -2,7 +2,7 @@
 // R11, R12, Shell and Hero): the small-screen menu opens, closes and resets,
 // and stays out of the way without JavaScript and on wide screens; Motion loads
 // only when the menu is reached for; the nav is square with a 16px blur and no
-// shadow; Lately shows only with the accomplishments section; the footer's
+// shadow; Achievements shows only with the achievements section; the footer's
 // links are 44px targets and "↑ TOP" goes to the top; the hero's greeting is
 // gone, its island keeps the floaty loop, and its entrance (the copy and each
 // of the island's enter groups) ends visible or doesn't run under reduced
@@ -227,13 +227,13 @@ test('R6: the nav is square, with a 16px blur, a thick ink edge and no shadow', 
   await close(page);
 });
 
-test('Lately shows only when the home page has its accomplishments section (so never with the committed placeholder)', async () => {
+test('Achievements shows only when the home page has its achievements section (so never with the committed placeholder)', async () => {
   const home = await open('/', { width: WIDE });
-  const section = await home.locator('#accomplishments').count();
-  assert.equal(await home.locator('.site-nav a[href="/#accomplishments"]').count(), section, 'home');
+  const section = await home.locator('#achievements').count();
+  assert.equal(await home.locator('.site-nav a[href="/#achievements"]').count(), section, 'home');
   await close(home);
   const page = await open(post, { width: WIDE });
-  assert.equal(await page.locator('.site-nav a[href="/#accomplishments"]').count(), section, 'a post');
+  assert.equal(await page.locator('.site-nav a[href="/#achievements"]').count(), section, 'a post');
   await close(page);
 });
 

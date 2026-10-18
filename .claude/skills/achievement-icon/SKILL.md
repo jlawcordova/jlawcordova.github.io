@@ -4,7 +4,7 @@ description: Add or change an achievement icon, the 16×16 pixel-art picture tha
 ---
 # Achievement icon
 
-Each accomplishment on the home page and the full-list page has an icon, chosen from a fixed set by the kind of thing that was done (shipped, fixed, mentored). The set is the list in `src/lib/achievement-icons.mjs`. An accomplishment names an icon by its id in its `icon` field. Design: `docs/intents/2026-10-gamified-accomplishments/spec.md` (D5, D6).
+Each accomplishment on the home page and the full achievements list has an icon, chosen from a fixed set by the kind of thing that was done (shipped, fixed, mentored). The set is the list in `src/lib/achievement-icons.mjs`. An accomplishment names an icon by its id in its `icon` field. On the page, each icon sits in a frame colored by its kind of work. Design: `docs/intents/2026-10-gamified-accomplishments/spec.md` (D5, D6) and, for the frames, `docs/intents/2026-10-achievements-redesign/spec.md` (R8–R10).
 
 This skill covers what's specific to icons. Everything about drawing (the palette, light, previews, canonical files, never editing an output SVG by hand) is in the `pixel-art` skill, and its rules apply in full.
 
@@ -20,28 +20,30 @@ This skill covers what's specific to icons. Everything about drawing (the palett
 
 The `meaning` is what Claude reads, through `/achievement-icons.json`, to pick an icon for an accomplishment. Keep it to a few words that start with a verb in the past tense.
 
+The `frame` is the frame the icon sits in on the page, from `FRAMES` in `achievement-icons.mjs`: `make` (started, built, shipped, tried), `fix` (fixed, secured, opened, tuned), `think` (wrote, investigated, planned, organised), `people` (taught, helped, shared) or `milestone`. `plain` is kept for the fallback star and locked rows. The frames are drawn in `src/assets/pixel-art/achievement-frames.svg`; a new icon picks an existing frame, and doesn't need new frame art.
+
 <!-- icons:start -->
-| Id | Meaning |
-| --- | --- |
-| `sprout` | started something, or a first |
-| `hammer` | built something |
-| `rocket` | shipped or launched |
-| `bug` | fixed a bug or a problem |
-| `shield` | secured or protected |
-| `key` | opened access or a way in |
-| `wrench` | tuned, sped up or automated something |
-| `book` | wrote or documented |
-| `magnifier` | investigated or analysed |
-| `flask` | experimented or prototyped |
-| `apple` | mentored or taught others |
-| `heart` | helped, or went the extra mile |
-| `signpost` | planned, led or set direction |
-| `chest` | organised or stored (data, assets) |
-| `trophy` | reached a milestone |
-| `speech` | shared or presented |
+| Id | Meaning | Frame |
+| --- | --- | --- |
+| `sprout` | started something, or a first | `make` |
+| `hammer` | built something | `make` |
+| `rocket` | shipped or launched | `make` |
+| `bug` | fixed a bug or a problem | `fix` |
+| `shield` | secured or protected | `fix` |
+| `key` | opened access or a way in | `fix` |
+| `wrench` | tuned, sped up or automated something | `fix` |
+| `book` | wrote or documented | `think` |
+| `magnifier` | investigated or analysed | `think` |
+| `flask` | experimented or prototyped | `make` |
+| `apple` | mentored or taught others | `people` |
+| `heart` | helped, or went the extra mile | `people` |
+| `signpost` | planned, led or set direction | `think` |
+| `chest` | organised or stored (data, assets) | `think` |
+| `trophy` | reached a milestone | `milestone` |
+| `speech` | shared or presented | `people` |
 <!-- icons:end -->
 
-The set is the 16 icons above, and a test fails if this table disagrees with `achievement-icons.mjs`.
+The set is the 16 icons above, and a test fails if this table disagrees with `achievement-icons.mjs`, frames included.
 
 ## Steps
 
@@ -50,7 +52,7 @@ The set is the 16 icons above, and a test fails if this table disagrees with `ac
 3. **Draw it,** whole rows of 16 characters, 16 rows, using `keys` from the world palette. `.` is transparent.
 4. **Check it:** `npm run art -- --check icon-<id>` must pass.
 5. **Look at it:** `npm run art -- --preview icon-<id> --scale 3` and open the PNGs. Judge it at 3× (its 48px size on the site) and at 1×, and also dimmed as a locked row shows it (grayscale at 40% opacity on the row's `--color-surface`), since the lock is drawn over that. It must read at a glance. The picture, not the text, decides.
-6. **List it:** add `{ id, meaning }` to `ICONS` in `src/lib/achievement-icons.mjs`, and a row to the table above.
+6. **List it:** add `{ id, meaning, frame }` to `ICONS` in `src/lib/achievement-icons.mjs`, and a row to the table above. Check it reads on its frame's fill: `npm run art -- --preview achievement-frames --scale 3` shows the fills.
 7. **Place it in the sheet:** add an item to `src/assets/pixel-art/source/scenes/achievement-icons.mjs`, in the same position as in `SHEET_ORDER` (`star`, `lock`, then `ICONS` in order). Group `{ 'data-icon': '<id>' }`, at `px: [index × 16 + 8, 15]`, and widen the `viewBox` to `[0, 0, 16 × count, 16]`. Re-save the scene in canonical form if `npm test` says it isn't.
 8. **Compile and test:** `npm run art`, then `npm test` (it checks the list, the objects, the sheet order, the caps and the 6 KB gzip budget for the sheet).
 9. **Open a PR** with the 1× and 4× previews attached. Merging deploys `/achievement-icons.json`, which the `accomplishments` skill reads. Tell the owner if the lexicon's `icon` `knownValues` in `jlawcordova-atproto` needs the new id.
