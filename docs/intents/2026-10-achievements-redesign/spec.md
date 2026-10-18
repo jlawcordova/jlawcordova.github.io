@@ -1,5 +1,5 @@
 # Spec: Achievements redesign (from intent.md 2026-10-18)
-Status: draft. Written together with the intent, plan and code at the owner's request, so it's reviewed in this change's PR.
+Status: built and approved by the owner in [#124](https://github.com/jlawcordova/jlawcordova.github.io/pull/124), 2026-10-18. R19's one-row nav and R20a were added when dark mode reached `main` mid-change, and R9 now spells out the full-color padlock, as the owner asked during review. Written together with the intent, plan and code at the owner's request, so they were approved together when it merged.
 
 Implements [`intent.md`](intent.md). Where they disagree, the intent wins and this spec gets fixed. The look comes from the canvas the owner reviewed on 2026-10-17 and 2026-10-18: framed icons, tally chips, a gold "Achievement unlocked!" toast and a staggered entrance. The owner's decisions after the review are in the intent: no color key, the toast keeps its "!", an achievements URL with redirects, and a nav link named "Achievements".
 
