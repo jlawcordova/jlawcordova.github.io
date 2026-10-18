@@ -28,7 +28,7 @@ To show several new objects side by side, add a preview-only scene with no `outp
 
 Run the work as a dynamic workflow of `pixel-artist` subagents (`.claude/agents/pixel-artist.md`):
 
-- **One subagent per approved object,** started only after the previous one has reported. Never two at once.
+- **One subagent per approved object,** started only after the previous one has reported. Never two at once. Small objects (a tile, a prop of a few pixels, a simple part) may share a run, at most 3 per run, so each still gets full attention. Large ones always get their own.
 - **The scene gets its own subagent,** after every object it needs is in.
 - **Brief each one fully:** the change's folder (`docs/intents/<YYYY-MM-slug>/`), the one object or scene it owns and what it's for, its size, frames and placement from the spec or the approved object list, the objects already made that it must match, the lab URL from step 1, and these rules: don't start a server, don't commit, and change only what it owns.
 - **When one reports,** check its work yourself: `npm run art -- --check <name>`, a look at its preview PNGs, and the lab link serving it. Then send the owner the link and the preview, and start the next one.

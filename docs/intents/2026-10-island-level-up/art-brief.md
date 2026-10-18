@@ -1,6 +1,22 @@
 # Island level up: art brief
 
-The shared brief for the `pixel-artist` runs that draw the [approved objects](objects.md), one object per run, one run at a time ([design-scene skill](../../../.claude/skills/design-scene/SKILL.md)). The spec takes its decisions over once the scene is approved.
+The shared brief for the `pixel-artist` runs that draw the [approved objects](objects.md), one run at a time ([design-scene skill](../../../.claude/skills/design-scene/SKILL.md)). A large object gets a run of its own, and small ones share a run, at most 3 per run (the owner's rule). The spec takes its decisions over once the scene is approved.
+
+| Run | Objects |
+| --- | --- |
+| 1 | `ore` |
+| 2 | `mine-cart`, `track-mine`, `ore-screen` |
+| 3 | `conveyor` (both directions) |
+| 4 | `tunnel-road` |
+| 5 | `truck-open` (with its pose and recolor) |
+| 6 | `hopper`, `parcel`, `crane-hook` |
+| 7 | `processor` |
+| 8 | `container` |
+| 9 | `track`, `block-rail`, `flatcar` |
+| 10 | `locomotive` |
+| 11 | `boxcar` |
+| 12 | `tunnel-rail` |
+| 13 | `bridge-road` |
 
 ## The line, in scene terms
 
