@@ -6,7 +6,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
 import { gzipSync } from 'node:zlib';
 
-import { CELL, FALLBACK_ICON, ICONS, LOCK_ICON, SHEET_ORDER, iconCatalog, iconFor } from '../src/lib/achievement-icons.mjs';
+import { CELL, FALLBACK_ICON, FRAME_CELL, FRAMES, ICONS, LOCK_ICON, PLAIN_FRAME, SHEET_ORDER, frameFor, iconCatalog, iconFor } from '../src/lib/achievement-icons.mjs';
 
 const SOURCE = new URL('../src/assets/pixel-art/source/', import.meta.url);
 const KEBAB = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
@@ -93,11 +93,73 @@ test('R15: the published catalog lists the choices and the fallback', () => {
   const catalog = iconCatalog();
   assert.deepEqual(catalog.icons.map((icon) => icon.id), ICONS.map((icon) => icon.id));
   assert.equal(catalog.fallback, FALLBACK_ICON);
+  // The frames are for the page only (achievements redesign spec, Data).
+  assert.deepEqual(catalog.icons, ICONS.map(({ id, meaning }) => ({ id, meaning })));
 });
 
-test('R14: the achievement-icon skill lists exactly the icons in the set', async () => {
+// Achievements redesign spec R8–R10: every icon sits in a frame of its kind,
+// drawn as pixel art in one sheet.
+test('achievements redesign R10: every icon names a frame, and every frame but plain has an icon', () => {
+  assert.deepEqual([...FRAMES], ['plain', 'make', 'fix', 'think', 'people', 'milestone']);
+  for (const { id, frame } of ICONS) assert.ok(FRAMES.includes(frame) && frame !== PLAIN_FRAME, `${id} has a kind's frame`);
+  for (const frame of FRAMES.filter((f) => f !== PLAIN_FRAME)) {
+    assert.ok(ICONS.some((icon) => icon.frame === frame), `${frame} frames at least one icon`);
+  }
+});
+
+test('achievements redesign R8: the fallback, an unknown icon and the lock take the plain frame', () => {
+  assert.equal(frameFor('rocket'), 'make');
+  assert.equal(frameFor('trophy'), 'milestone');
+  for (const value of [FALLBACK_ICON, LOCK_ICON, 'dragon', '', undefined, null]) assert.equal(frameFor(value), PLAIN_FRAME);
+});
+
+test('achievements redesign R8, R10: each frame is a 20×20 sprite: an ink edge, a bevel and a fill, in its own colors', async () => {
+  const COLORS = {
+    plain: ['path-1', 'path-2', 'cream'],
+    make: ['gold-1', 'gold-3', 'cream'],
+    fix: ['grass-1', 'grass-2', 'cream'],
+    think: ['skin-1', 'wood-1', 'cream'],
+    people: ['water-1', 'water-2', 'cream'],
+    milestone: ['roof-1', 'roof-2', 'skin-1'],
+  };
+  for (const frame of FRAMES) {
+    const object = (await import(new URL(`objects/frame-${frame}.mjs`, SOURCE).href)).default;
+    assert.equal(object.kind, 'sprite', frame);
+    assert.equal(object.layers.length, 1, `${frame} has one layer`);
+    const { map } = object.layers[0];
+    assert.equal(map.length, FRAME_CELL, `${frame} is ${FRAME_CELL} rows`);
+    for (const row of map) assert.equal(row.length, FRAME_CELL, `${frame} is ${FRAME_CELL} wide`);
+    const at = (x, y) => object.keys[map[y][x]];
+    const [fill, shadow, light] = COLORS[frame];
+    for (let i = 0; i < FRAME_CELL; i++) {
+      for (const [x, y] of [[i, 0], [i, FRAME_CELL - 1], [0, i], [FRAME_CELL - 1, i]]) assert.equal(at(x, y), 'ink', `${frame} edge at ${x},${y}`);
+    }
+    for (let i = 2; i < FRAME_CELL - 2; i++) {
+      assert.equal(at(i, 1), light, `${frame} top bevel`);
+      assert.equal(at(1, i), light, `${frame} left bevel`);
+      assert.equal(at(i, FRAME_CELL - 2), shadow, `${frame} bottom bevel`);
+      assert.equal(at(FRAME_CELL - 2, i), shadow, `${frame} right bevel`);
+      for (let j = 2; j < FRAME_CELL - 2; j++) assert.equal(at(i, j), fill, `${frame} fill at ${i},${j}`);
+    }
+  }
+});
+
+test('achievements redesign R10: the frame sheet places the frames in FRAMES order, one cell each', async () => {
+  const scene = (await import(new URL('scenes/achievement-frames.mjs', SOURCE).href)).default;
+  assert.equal(scene.output, 'achievement-frames.svg');
+  assert.deepEqual(scene.viewBox, [0, 0, FRAME_CELL * FRAMES.length, FRAME_CELL]);
+  assert.deepEqual(
+    scene.items.map((item) => ({ frame: item.group['data-frame'], object: item.items[0].object })),
+    FRAMES.map((frame) => ({ frame, object: `frame-${frame}` })),
+  );
+  const svg = await readFile(new URL('../src/assets/pixel-art/achievement-frames.svg', import.meta.url), 'utf8');
+  for (const frame of FRAMES) assert.match(svg, new RegExp(`data-frame="${frame}"`));
+  assert.ok(gzipSync(svg).length <= 2 * 1024, `frame sheet is ${gzipSync(svg).length} bytes gzip`);
+});
+
+test('R14: the achievement-icon skill lists exactly the icons in the set, with their frames', async () => {
   const skill = await readFile(new URL('../.claude/skills/achievement-icon/SKILL.md', import.meta.url), 'utf8');
   const table = skill.split('<!-- icons:start -->')[1]?.split('<!-- icons:end -->')[0] ?? '';
-  const rows = [...table.matchAll(/^\| `([^`]+)` \| (.+) \|$/gm)].map((m) => ({ id: m[1], meaning: m[2] }));
-  assert.deepEqual(rows, ICONS.map(({ id, meaning }) => ({ id, meaning })));
+  const rows = [...table.matchAll(/^\| `([^`]+)` \| (.+) \| `([^`]+)` \|$/gm)].map((m) => ({ id: m[1], meaning: m[2], frame: m[3] }));
+  assert.deepEqual(rows, ICONS.map(({ id, meaning, frame }) => ({ id, meaning, frame })));
 });

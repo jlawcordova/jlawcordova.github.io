@@ -5,7 +5,7 @@
 // src/lib/accomplishments.ts feeds it src/data/accomplishments.json and
 // re-exports it for the pages.
 
-import { iconFor } from './achievement-icons.mjs';
+import { PLAIN_FRAME, frameFor, iconFor } from './achievement-icons.mjs';
 
 /**
  * What every accomplishment has.
@@ -47,6 +47,7 @@ import { iconFor } from './achievement-icons.mjs';
  * @property {string} lead The fun title, or the plain title for an old record.
  * @property {string} [short] The short description, when there is one.
  * @property {string} icon The icon id to draw: the record's when known, else the fallback.
+ * @property {import('./achievement-icons.mjs').Frame} frame The frame it sits in: the icon's when done, plain when locked (achievements redesign spec R8, R9).
  */
 
 /**
@@ -132,13 +133,14 @@ export function readAccomplishments(data) {
 
 /**
  * What a row shows: the fun title leads, or the plain title when there is
- * none; the short description, if any; and the icon to draw.
+ * none; the short description, if any; the icon to draw; and its frame.
  * @param {Accomplishment} item
  * @returns {Row}
  */
 export function rowFor(item) {
+  const icon = iconFor(item.icon);
   /** @type {Row} */
-  const row = { lead: item.funTitle ?? item.title, icon: iconFor(item.icon) };
+  const row = { lead: item.funTitle ?? item.title, icon, frame: item.done ? frameFor(icon) : PLAIN_FRAME };
   if (item.shortDescription !== undefined) row.short = item.shortDescription;
   return row;
 }

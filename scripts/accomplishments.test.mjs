@@ -89,21 +89,30 @@ describe('readAccomplishments', () => {
 describe('rowFor', () => {
   it('R1, R4: the fun title leads, with the short description and the icon', () => {
     const row = rowFor(ok([doneItem({ funTitle: 'Lift Off', shortDescription: 'Shipped the new app', icon: 'rocket' })]).done[0]);
-    assert.deepEqual(row, { lead: 'Lift Off', short: 'Shipped the new app', icon: 'rocket' });
+    assert.deepEqual(row, { lead: 'Lift Off', short: 'Shipped the new app', icon: 'rocket', frame: 'make' });
   });
 
   it('R17: an old record leads with the plain title, has no short line, and shows the star', () => {
     const row = rowFor(ok([doneItem({ title: 'Plain title' })]).done[0]);
-    assert.deepEqual(row, { lead: 'Plain title', icon: FALLBACK_ICON });
+    assert.deepEqual(row, { lead: 'Plain title', icon: FALLBACK_ICON, frame: 'plain' });
     assert.ok(!('short' in row));
   });
 
-  it('R13: an unknown icon falls back to the star', () => {
-    assert.equal(rowFor(ok([doneItem({ icon: 'dragon' })]).done[0]).icon, FALLBACK_ICON);
+  it('R13: an unknown icon falls back to the star, in the plain frame', () => {
+    const row = rowFor(ok([doneItem({ icon: 'dragon' })]).done[0]);
+    assert.equal(row.icon, FALLBACK_ICON);
+    assert.equal(row.frame, 'plain');
   });
 
   it('R9: a locked row uses its own icon (the lock is drawn over it by the row)', () => {
     assert.equal(rowFor(ok([lockedItem({ icon: 'trophy' })]).locked[0]).icon, 'trophy');
+  });
+
+  it('achievements redesign R8, R9: a done row takes its icon\'s frame, a locked row the plain one', () => {
+    for (const { id, frame } of ICONS) {
+      assert.equal(rowFor(ok([doneItem({ icon: id })]).done[0]).frame, frame, id);
+      assert.equal(rowFor(ok([lockedItem({ icon: id })]).locked[0]).frame, 'plain', id);
+    }
   });
 });
 
