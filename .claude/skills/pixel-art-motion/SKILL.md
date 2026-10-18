@@ -23,7 +23,7 @@ Drawing the art itself is the `pixel-art` skill. This skill is about how it move
 | The pop's origin | `.hero-island .enter` in `src/styles/hero.css` |
 | The CSS loops and their reduced-motion frames | `src/styles/pixel-art.css` |
 | Tests | `scripts/island-entrance.test.mjs` (schedule), `scripts/pixel-art-island.test.mjs` (groups and loops), `scripts/range-art.test.mjs`, and the e2e checks in `shell.e2e.mjs`, `motion.e2e.mjs` and `range.e2e.mjs` |
-| The current choice, and why | [island clock sweep spec](../../../docs/intents/2026-10-island-clock-sweep/spec.md), [Range settings spec](../../../docs/intents/2026-10-range-settings/spec.md) R4–R6, and the design system's Motion section |
+| The current choice, and why | [island sweep drop spec](../../../docs/intents/2026-10-island-sweep-drop/spec.md) (and the [clock sweep](../../../docs/intents/2026-10-island-clock-sweep/spec.md) before it, which added the groups' feet and the lab), [Range settings spec](../../../docs/intents/2026-10-range-settings/spec.md) R4–R6, and the design system's Motion section |
 
 ## Hard rules
 

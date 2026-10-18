@@ -80,7 +80,7 @@ main > .hero:first-child {
   overflow: visible;
 }
 
-/* Each piece of the island pops up from its own foot (island clock sweep spec R3). */
+/* A pop (one of the entrance lab's moves) grows each piece of the island from its own foot (island clock sweep spec R3). */
 .hero-island .enter {
   transform-box: fill-box;
   transform-origin: 50% 100%;
