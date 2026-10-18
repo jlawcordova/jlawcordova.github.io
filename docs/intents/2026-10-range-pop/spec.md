@@ -1,5 +1,5 @@
 # Spec: The Range pops (from intent.md 2026-10-18)
-Status: for approval in this change's PR. The owner shaped the design on a running prototype and asked for it as a PR, so the intent, spec and plan were written after it and are approved together by merging.
+Status: built and approved by the owner in [#125](https://github.com/jlawcordova/jlawcordova.github.io/pull/125), 2026-10-18, with R4 changed at review so hover no longer holds the countdown. The owner shaped the design on a running prototype and asked for it as a PR, so the intent, spec and plan were written after it and are approved together by merging.
 
 ## Requirements
 

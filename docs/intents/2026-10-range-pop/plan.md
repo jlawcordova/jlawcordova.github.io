@@ -1,5 +1,5 @@
 # Plan: The Range pops (from intent.md 2026-10-18)
-Status: for approval in this change's PR, with the intent and spec.
+Status: built and merged in [#125](https://github.com/jlawcordova/jlawcordova.github.io/pull/125), 2026-10-18, with the departures under Order of work and After review.
 
 Plans [`spec.md`](spec.md) (R1–R8).
 
