@@ -131,6 +131,7 @@ export default {
     { object: 'conveyor', at: { tile: [2, 8, 0] } },
     { object: 'ore', at: { px: [-96, 64] } },
     { object: 'parcel', at: { px: [-104, 62] } },
+    { object: 'container', at: { tile: [7, 4, 0] } },
     { object: 'conveyor-row', at: { tile: [4, 7, 0] } },
     { object: 'ore', at: { px: [-52, 74] } },
     { object: 'ore-screen', at: { tile: [4, 8, 0] } },

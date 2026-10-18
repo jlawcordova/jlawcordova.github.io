@@ -65,7 +65,7 @@ A pose is its own object named `<name>-<pose>`, with the same anchor: `extends` 
 
 ## The review board
 
-`scenes/island-level-up-objects.mjs` is a preview-only 12×9 board of grass tiles. Place your object (and its poses and variants) on it, at or near your home tile below, after the floor tiles, keeping the placed items in paint order (by `col + row`). Move to a nearby free tile if something's in the way. The board is the only scene a run may edit.
+`scenes/island-level-up-objects.mjs` is a preview-only 12×9 board of grass tiles. It reached its 100 KB preview budget at run 8, so the rail section's runs (15, 9, 10, 11, 12, 13) use a second board, `scenes/island-level-up-rail.mjs`, the same size, with their home tiles as listed below. Place your object (and its poses and variants) on it, at or near your home tile below, after the floor tiles, keeping the placed items in paint order (by `col + row`). Move to a nearby free tile if something's in the way. The board is the only scene a run may edit.
 
 | Row | Home tiles |
 | --- | --- |
@@ -96,3 +96,5 @@ A pose is its own object named `<name>-<pose>`, with the same anchor: `extends` 
 - `block-mine` (with `-left` and `-right`) has a rocky `soil-1` top and the grass cubes' soil body, so a cliff stays one cliff with a different top band. It costs about 2 KB per cube. Don't lay it under `track-mine` (a grass-topped flat block). The wooden `mine-cart` has less contrast on it than on grass: watch that in the scene.
 - `processor` is 47×30, anchor [20, 17] at a tile centre one column down-right of the hopper's tile; its low hood takes the hopper's spout at ground level, and it paints after the hopper. Its outlet is low: belt top at z = 6, on its down-right end at u +22…+24, so a `conveyor-low` (the conveyor family with its belt at z = 6) on the tile two columns down-right starts at the lip's end, and a `parcel` leaving it sits at the tile centre + (23, 7). One working height (z = 6) runs from the tipped truck's lip through the hopper and processor to the container.
 - `conveyor-low` (24×16, anchor [12, 13], tile-centred, col axis) has its belt top at z = 6 on short legs, from the same generator as `conveyor`; it starts at the `processor`'s lip on the tile two columns down-right. The `container`'s opening must be at z = 6 too.
+- `container` is 38×32, anchor [19, 22] at its footprint's ground centre: 28 units long (col axis), 12 wide, 12 tall, in the `roof` red ramp, sitting on the ground with its doorway (z 1–11) on the hidden up-left end. Under the hook it sits at the hook's px + (9, 35), so at px [33, 52] on today's island. The `flatcar` is drawn to carry this footprint.
+- The rail section's objects go on `scenes/island-level-up-rail.mjs`.
