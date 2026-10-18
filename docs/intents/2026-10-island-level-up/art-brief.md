@@ -100,3 +100,5 @@ A pose is its own object named `<name>-<pose>`, with the same anchor: `extends` 
 - The rail section's objects go on `scenes/island-level-up-rail.mjs`.
 - `block-yard` (with `-left` and `-right`): `path-2` pinwheel flagstones and an 8-row stone band (rows 0–7) over the grass cube's soil body (rows 8–15), about 1 KB per cube in a patch. `block-rail` swaps rows 0–7 of `block-yard-right` for its ballast band and re-copies left column 14 from right column 0.
 - The rail board has about 26 KB of its 100 KB preview budget left after run 15, so the rail runs keep their board placements lean.
+- `track` is a flat `path-3` ballast block (col axis): rails 8 units apart at v ±4, rail head at z = 1, about 1.3 KB per tile, laid over a ground cube like `path`. `block-rail` keeps the yard's 8-row band depth with a ballast band and a `soil-4` last row at row 7.
+- `flatcar` is 42×27, anchor [21, 19] at its footprint's ground centre: deck 30 units long and 12 wide, top at z = 9, wheel discs at u ±7.5 and ±12.5 on the near rail, `soil-4` couplers 2 units long at both ends. The `container` goes at the flatcar's point + (0, −9).
