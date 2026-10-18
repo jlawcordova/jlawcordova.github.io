@@ -31,7 +31,7 @@ Implements [`intent.md`](intent.md). Where they disagree, the intent wins and th
   | `plain` | star (the fallback), and every locked row | `path-1`, `path-2`, `cream` |
 
   There's no key to the colors on the page: the icon already says the kind, and the color only backs it up.
-- **R9. Locked rows.** A locked row uses the `plain` frame, dims its icon to 40% grey as today, and draws the padlock over the frame's top-right corner. Its dashed edge doesn't change.
+- **R9. Locked rows.** A locked row uses the `plain` frame, dims its icon to 40% grey as today, and draws the padlock over the frame's top-right corner. Only the achievement's own icon dims: the padlock and the frame keep their full colors. Its dashed edge doesn't change.
 - **R10. Frames are pixel art.** The frames are drawn in the pixel-art engine as one sheet, like the icon sheet, so the UI's CSS adds no colors. Each icon's frame kind is listed beside its meaning in the icon list, and a test fails if an icon has no frame.
 
 ### Toast

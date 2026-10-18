@@ -118,7 +118,7 @@ Tokens: `radius-*` all become 0. `shadow-pixel`, `shadow-pixel-pressed`, `shadow
 
 - **Focus:** a 2px `color-ink` outline, offset 2px, over `shadow-focus-halo`. On `color-forest` or `color-footer`, use the `on-` color for the outline and that ground for the halo. Never remove the focus ring.
 - **Hover:** links go to `color-accent-hover`. Cards strengthen to `color-border-strong` over `color-surface-ghost`.
-- **Locked or pending:** dashed `color-border-strong`, with the icon dimmed and the text left at full strength.
+- **Locked or pending:** dashed `color-border-strong`, with the icon dimmed and the text left at full strength. A locked achievement's padlock stays in full color over its dimmed icon.
 - **Motion:** see Motion below. Respect `prefers-reduced-motion`, and show a single static frame under it.
 - Every interactive element is at least `tap-target` (44px) in both directions.
 

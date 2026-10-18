@@ -365,7 +365,7 @@ describe('rows', () => {
     });
   }
 
-  test('R9: a locked row dims its icon but not its text, so text contrast is unchanged', async () => {
+  test('R9: a locked row dims its icon but not its padlock, frame or text, so text contrast is unchanged', async () => {
     const page = await open('rich', '/');
     const locked = rowNamed(page, richLocked[0].funTitle);
     const done = rowNamed(page, richDone[0].funTitle);
@@ -397,6 +397,12 @@ describe('rows', () => {
     const date = await look(locked, '.achievement__date');
     assert.equal(date.opacity, 1, '"Not done yet" isn\'t faded');
     assert.deepEqual(date.filters, []);
+    // Achievements redesign R9: only the icon dims; the padlock and the frame keep their colors.
+    for (const selector of ['.achievement__lock', '.achievement__frame']) {
+      const art = await look(locked, selector);
+      assert.equal(art.opacity, 1, `${selector} isn't faded`);
+      assert.deepEqual(art.filters, [], `${selector} isn't greyed`);
+    }
     await page.close();
   });
 
