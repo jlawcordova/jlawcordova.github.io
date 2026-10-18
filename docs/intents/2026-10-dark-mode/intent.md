@@ -7,6 +7,8 @@ The site only has a light theme. Readers who browse with a dark system theme, or
 ## Proposed outcome
 "Add a dark mode and its button on the site." The whole site has a dark theme, and a button on every page switches between light and dark.
 
+Added in review (2026-10-18): "Can we include an auto, and have that be the default?" The button also offers Auto, and Auto is the default.
+
 ## Affected users and systems
 Every reader, on every page: the home page, the blog and its posts, `/accomplishments/`, the 404, and the unlisted lab and design-system pages. The design system's colors and its brand book.
 

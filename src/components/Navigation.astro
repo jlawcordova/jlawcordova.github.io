@@ -27,58 +27,74 @@ const lately = homeSelection(getAccomplishments()).visible;
       <a href="/blog/">Blog</a>
       <a class="pill" href={site.author.linkedin}>Contact</a>
     </div>
-    <!-- The theme toggle (dark mode spec R5): a half-filled pixel square in light, a pixel sun in dark. -->
-    <button class="site-nav__theme" type="button" aria-pressed="false" aria-label="Dark theme">
-      <svg class="site-nav__glyph-dark" width="21" height="21" viewBox="0 0 7 7" aria-hidden="true" shape-rendering="crispEdges">
+    <!-- The theme button (dark mode spec R5): Auto, Light and Dark in turn, its glyph showing the current
+         one: a half-filled pixel square for Auto, a pixel sun for Light and an empty pixel square for Dark. -->
+    <button class="site-nav__theme" type="button" aria-label="Theme: Auto" title="Theme: Auto">
+      <svg class="site-nav__glyph-auto" width="21" height="21" viewBox="0 0 7 7" aria-hidden="true" shape-rendering="crispEdges">
         <path fill="currentColor" d="M0 0h7v1h-7zM0 6h7v1h-7zM6 1h1v5h-1zM0 1h4v5h-4z"></path>
       </svg>
       <svg class="site-nav__glyph-light" width="21" height="21" viewBox="0 0 7 7" aria-hidden="true" shape-rendering="crispEdges">
         <path fill="currentColor" d="M0 0h1v1h-1zM3 0h1v1h-1zM6 0h1v1h-1zM2 2h3v3h-3zM0 3h1v1h-1zM6 3h1v1h-1zM0 6h1v1h-1zM3 6h1v1h-1zM6 6h1v1h-1z"></path>
+      </svg>
+      <svg class="site-nav__glyph-dark" width="21" height="21" viewBox="0 0 7 7" aria-hidden="true" shape-rendering="crispEdges">
+        <path fill="currentColor" d="M0 0h7v1h-7zM0 6h7v1h-7zM0 1h1v5h-1zM6 1h1v5h-1z"></path>
       </svg>
     </button>
   </nav>
 </header>
 
 <script>
-  // The theme toggle (dark mode spec R2–R5, R9). BaseLayout's pre-paint script
-  // has already set <html data-theme> from the saved choice or the system
-  // setting; this keeps the buttons, theme-color and later changes in step.
+  // The theme button (dark mode spec R2–R5, R9). BaseLayout's pre-paint script
+  // has already set <html data-theme-choice> (auto, light or dark) and the
+  // theme it shows, <html data-theme>; this keeps the buttons, theme-color and
+  // later changes in step. Auto is no saved choice, and follows the system.
+  type Choice = 'auto' | 'light' | 'dark';
+  const NEXT: Record<Choice, Choice> = { auto: 'light', light: 'dark', dark: 'auto' };
+  const LABEL: Record<Choice, string> = { auto: 'Theme: Auto', light: 'Theme: Light', dark: 'Theme: Dark' };
+
   const root = document.documentElement;
   const system = matchMedia('(prefers-color-scheme: dark)');
   const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
 
-  const saved = () => {
+  const saved = (): Choice => {
     try {
       const theme = localStorage.getItem('theme');
-      return theme === 'light' || theme === 'dark' ? theme : null;
+      return theme === 'light' || theme === 'dark' ? theme : 'auto';
     } catch {
-      return null; // Storage blocked: follow the system.
+      return 'auto'; // Storage blocked: follow the system.
     }
   };
-  const apply = (theme: 'light' | 'dark') => {
-    root.dataset.theme = theme;
-    for (const button of document.querySelectorAll('.site-nav__theme')) button.setAttribute('aria-pressed', String(theme === 'dark'));
+  let current: Choice = root.dataset.themeChoice === 'light' || root.dataset.themeChoice === 'dark' ? root.dataset.themeChoice : 'auto';
+  const apply = (choice: Choice) => {
+    current = choice;
+    root.dataset.themeChoice = choice;
+    root.dataset.theme = choice === 'auto' ? (system.matches ? 'dark' : 'light') : choice;
+    for (const button of document.querySelectorAll('.site-nav__theme')) {
+      button.setAttribute('aria-label', LABEL[choice]);
+      button.setAttribute('title', LABEL[choice]);
+    }
     themeColor?.setAttribute('content', getComputedStyle(root).getPropertyValue('--color-page').trim());
   };
 
-  apply(root.dataset.theme === 'dark' ? 'dark' : 'light');
+  apply(current);
   for (const button of document.querySelectorAll('.site-nav__theme')) {
     button.addEventListener('click', () => {
-      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      const next = NEXT[current];
       try {
-        localStorage.setItem('theme', next);
+        if (next === 'auto') localStorage.removeItem('theme');
+        else localStorage.setItem('theme', next);
       } catch {
         // Not saved; it still applies to this page.
       }
       apply(next);
     });
   }
-  system.addEventListener('change', (event) => {
-    if (!saved()) apply(event.matches ? 'dark' : 'light');
+  system.addEventListener('change', () => {
+    if (current === 'auto') apply('auto');
   });
   // A choice made in another tab.
   addEventListener('storage', (event) => {
-    if (event.key === 'theme') apply(saved() ?? (system.matches ? 'dark' : 'light'));
+    if (event.key === 'theme' || event.key === null) apply(saved());
   });
 
   // The small-screen menu (pixel-first look spec R7). Motion loads only once

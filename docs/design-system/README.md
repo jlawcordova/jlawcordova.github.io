@@ -82,7 +82,7 @@ Two places can play: **accomplishments** and **buttons**. Everything else uses t
 
 Every page has a light theme and a dark theme. The dark theme is the same warm, flat system at night: dark warm paper, cream ink and a lighter green accent.
 
-- **Which one shows.** The reader's choice, saved by the theme button in the nav, or else their system setting. It's set before first paint, so a page never flashes. Without JavaScript the page is light.
+- **Which one shows.** The theme button in the nav cycles Auto, Light and Dark. Auto, the default, follows the reader's system setting; Light and Dark are saved in the browser. It's set before first paint, so a page never flashes. Without JavaScript the page is light.
 - **The tokens flip, not the rules.** `tokens.json` gives each color that changes a `dark` value, and `variables.css` sets them under `[data-theme="dark"]`. Everything above still holds in dark: set the page on `color-page`, text in `color-ink` and `color-ink-muted`, and actions in `color-accent`. Every text pair stays AA (`scripts/design-system.test.mjs` checks it).
 - **The same in both themes:** `color-earth`, `color-gold`, the forest and footer colors, and code blocks (`color-code` with the `syntax-*` colors). They're already dark grounds or illustration colors.
 - **Inverted fills flip with the theme.** A tooltip or the current page in pagination is `color-ink` with `color-page` text, so it's cream on dark ink in dark.

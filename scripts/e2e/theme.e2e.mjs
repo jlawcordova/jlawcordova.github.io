@@ -1,9 +1,10 @@
-// Browser checks for dark mode (dark mode spec R1–R10): a page follows the
-// system setting until the theme button saves a choice, the choice applies
-// before first paint on later pages, the button is a 44px toggle with a focus
-// ring, theme-color follows, code blocks and the Range handheld keep their
-// colors, there's no button without JavaScript, and the bar stays one row with
-// nothing scrolling sideways in either theme.
+// Browser checks for dark mode (dark mode spec R1–R10): Auto, the default,
+// follows the system setting; the theme button cycles Auto, Light and Dark and
+// saves the choice, which applies before first paint on later pages; the
+// button is a 44px target with a focus ring; theme-color follows; code blocks
+// and the Range handheld keep their colors; there's no button without
+// JavaScript; and the bar stays one row with nothing scrolling sideways in
+// either theme.
 //
 // Run with `npm run e2e` after `npm run build`. Tests poll for end states and
 // never sleep for a fixed time.
@@ -71,66 +72,89 @@ async function open(path, { width = NARROW, colorScheme = 'light', theme, javaSc
 const state = (page) =>
   page.evaluate(() => {
     const button = document.querySelector('.site-nav__theme');
-    const shown = (el) => !!el && getComputedStyle(el).display !== 'none';
+    const glyphs = ['auto', 'light', 'dark'].filter((name) => {
+      const glyph = button?.querySelector(`.site-nav__glyph-${name}`);
+      return !!glyph && getComputedStyle(glyph).display !== 'none';
+    });
     return {
+      choice: document.documentElement.dataset.themeChoice ?? null,
       theme: document.documentElement.dataset.theme ?? null,
       atBody: window.__themeAtBody,
       background: getComputedStyle(document.body).backgroundColor,
-      pressed: button?.getAttribute('aria-pressed'),
       name: button?.getAttribute('aria-label'),
-      dark: shown(button?.querySelector('.site-nav__glyph-dark')),
-      light: shown(button?.querySelector('.site-nav__glyph-light')),
-      themeColor: document.querySelector('meta[name="theme-color"]')?.getAttribute('content'),
+      title: button?.getAttribute('title'),
+      glyphs,
+      themeColor: document.querySelector('meta[name="theme-color"]')?.getAttribute('content')?.toUpperCase(),
       saved: localStorage.getItem('theme'),
     };
   });
 
-test('R2, R4: with no saved choice, a page follows the system setting from first paint', async () => {
+/** Presses the theme button and waits for the next choice. */
+const press = async (page, choice) => {
+  await page.locator('.site-nav__theme').click();
+  await page.waitForFunction((want) => document.documentElement.dataset.themeChoice === want, choice);
+  return state(page);
+};
+
+test('R2, R4: Auto is the default and follows the system setting from first paint', async () => {
   for (const colorScheme of /** @type {const} */ (['light', 'dark'])) {
     const { page, context } = await open('/', { colorScheme });
     const now = await state(page);
     assert.equal(now.atBody, colorScheme, `${colorScheme}: set before <body>`);
-    assert.equal(now.theme, colorScheme);
-    assert.equal(now.background, PAGE[colorScheme]);
-    assert.equal(now.pressed, String(colorScheme === 'dark'));
-    assert.equal(now.saved, null, 'nothing saved until the button is pressed');
+    assert.deepEqual(
+      [now.choice, now.theme, now.background, now.name, now.title, now.glyphs, now.saved],
+      ['auto', colorScheme, PAGE[colorScheme], 'Theme: Auto', 'Theme: Auto', ['auto'], null],
+    );
     await context.close();
   }
 });
 
-test('R2: the page follows a system change until a choice is saved', async () => {
+test('R2: Auto follows a system change, and a saved choice does not', async () => {
   const { page, context } = await open('/blog/');
   await page.emulateMedia({ colorScheme: 'dark' });
   await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
-  await page.locator('.site-nav__theme').click();
+  await page.emulateMedia({ colorScheme: 'light' });
   await page.waitForFunction(() => document.documentElement.dataset.theme === 'light');
+
+  await press(page, 'light');
+  await page.emulateMedia({ colorScheme: 'dark' });
   await page.emulateMedia({ colorScheme: 'light' });
   await page.emulateMedia({ colorScheme: 'dark' });
   assert.equal((await state(page)).theme, 'light', 'a saved choice wins over the system');
   await context.close();
 });
 
-test('R3, R5, R9: the button switches the theme, saves it, and later pages paint in it', async () => {
+test('R3, R5, R9: the button cycles Auto, Light and Dark, saves the choice, and later pages paint in it', async () => {
   const { page, context } = await open('/', { width: WIDE });
   let now = await state(page);
-  assert.deepEqual([now.theme, now.pressed, now.name, now.dark, now.light], ['light', 'false', 'Dark theme', true, false]);
-  assert.equal(now.themeColor?.toUpperCase(), '#F4EDE0');
+  assert.deepEqual([now.choice, now.theme, now.themeColor], ['auto', 'light', '#F4EDE0']);
 
-  await page.locator('.site-nav__theme').click();
-  await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
-  now = await state(page);
-  assert.deepEqual([now.pressed, now.dark, now.light, now.saved, now.background], ['true', false, true, 'dark', PAGE.dark]);
-  assert.equal(now.themeColor?.toUpperCase(), '#1C1712');
+  now = await press(page, 'light');
+  assert.deepEqual(
+    [now.theme, now.name, now.glyphs, now.saved, now.background, now.themeColor],
+    ['light', 'Theme: Light', ['light'], 'light', PAGE.light, '#F4EDE0'],
+  );
+
+  now = await press(page, 'dark');
+  assert.deepEqual(
+    [now.theme, now.name, now.glyphs, now.saved, now.background, now.themeColor],
+    ['dark', 'Theme: Dark', ['dark'], 'dark', PAGE.dark, '#1C1712'],
+  );
 
   // A new page in the same browser, with a light system setting.
   await page.goto(`${BASE}/blog/`);
   now = await state(page);
   assert.equal(now.atBody, 'dark', 'the saved choice is set before <body>');
-  assert.equal(now.background, PAGE.dark);
+  assert.deepEqual([now.choice, now.background, now.glyphs], ['dark', PAGE.dark, ['dark']]);
 
-  await page.locator('.site-nav__theme').click();
-  await page.waitForFunction(() => document.documentElement.dataset.theme === 'light');
-  assert.equal((await state(page)).saved, 'light');
+  // Back to Auto: the saved choice is cleared and the system setting shows.
+  now = await press(page, 'auto');
+  assert.deepEqual(
+    [now.theme, now.name, now.glyphs, now.saved, now.background],
+    ['light', 'Theme: Auto', ['auto'], null, PAGE.light],
+  );
+  await page.goto(`${BASE}/`);
+  assert.equal((await state(page)).choice, 'auto');
   await context.close();
 });
 
@@ -149,7 +173,7 @@ test('R5: the button is a 44px target with the focus ring, and works from the ke
     });
     assert.deepEqual(ring, { focused: true, outline: 'solid 2px' }, `${width}px: visible focus ring`);
     await page.keyboard.press('Enter');
-    await page.waitForFunction(() => document.documentElement.dataset.theme === 'dark');
+    await page.waitForFunction(() => document.documentElement.dataset.themeChoice === 'light');
     await context.close();
   }
 });

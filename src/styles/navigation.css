@@ -145,15 +145,16 @@
 
 /* The theme button (dark mode spec R5): the menu button's shape, at every
    width, and only with JavaScript, since it does nothing without it. Its
-   glyph shows the theme it switches to. */
+   glyph shows the current choice: Auto, Light or Dark. */
 html[data-js] .site-nav__theme {
   display: inline-flex;
 }
-.site-nav__glyph-light,
-html[data-theme="dark"] .site-nav__glyph-dark {
+.site-nav__theme svg {
   display: none;
 }
-html[data-theme="dark"] .site-nav__glyph-light {
+html[data-theme-choice="auto"] .site-nav__glyph-auto,
+html[data-theme-choice="light"] .site-nav__glyph-light,
+html[data-theme-choice="dark"] .site-nav__glyph-dark {
   display: block;
 }
 
