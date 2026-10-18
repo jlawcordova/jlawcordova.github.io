@@ -2,7 +2,9 @@
 // system copy spec R3, R4a): every component has guidelines and a preview,
 // token names are unique, every token with a custom property of the same
 // name in src/styles/variables.css has the same value, and every syntax-*
-// color is one that src/styles/syntax.css uses. Node built-ins only.
+// color is one that src/styles/syntax.css uses. Each dark value matches the
+// dark theme block, and text pairs stay AA in both themes (dark mode spec R6,
+// R11). Node built-ins only.
 
 import assert from 'node:assert/strict';
 import { readdir, readFile, stat } from 'node:fs/promises';
@@ -23,6 +25,25 @@ export const cssProperties = (css) => {
     if (!(name in props)) props[name] = value.trim();
   }
   return props;
+};
+
+/** The custom properties set in the rule whose selector is exactly `selector`. */
+export const blockProperties = (css, selector) => {
+  const clean = css.replace(/\/\*[\s\S]*?\*\//g, '');
+  const start = clean.indexOf(`${selector} {`);
+  if (start === -1) return {};
+  const body = clean.slice(start, clean.indexOf('}', start));
+  return Object.fromEntries([...body.matchAll(/--([a-z0-9-]+)\s*:\s*([^;]+);/g)].map(([, name, value]) => [name, value.trim()]));
+};
+
+/** The WCAG contrast ratio of two opaque #RRGGBB colors. */
+export const contrast = (a, b) => {
+  const luminance = (hex) => {
+    const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
 };
 
 /** A value compared without case or whitespace. */
@@ -73,6 +94,40 @@ describe('design system', () => {
     for (const { name, value } of tokens) {
       assert.ok(css.includes(normalize(value)), `${name}: ${value} isn't in syntax.css`);
     }
+  });
+
+  it('dark mode R11: every dark value matches the [data-theme="dark"] block, and only those change', async () => {
+    const tokens = tokenList(JSON.parse(await read('docs/design-system/tokens.json')));
+    const dark = blockProperties(await read('src/styles/variables.css'), '[data-theme="dark"]');
+    const withDark = tokens.filter((t) => t.dark !== undefined);
+    assert.ok(withDark.length >= 10, `found ${withDark.length} tokens with a dark value`);
+    for (const { name, dark: value } of withDark) {
+      assert.equal(normalize(value), normalize(dark[name] ?? 'missing'), `${name}: tokens.json has ${value}, the dark block has ${dark[name]}`);
+    }
+    assert.deepEqual(Object.keys(dark).sort(), withDark.map((t) => t.name).sort(), 'the dark block sets exactly the tokens with a dark value');
+  });
+
+  it('dark mode R6: text pairs stay AA in both themes', async () => {
+    const css = await read('src/styles/variables.css');
+    const themes = { light: cssProperties(css), dark: { ...cssProperties(css), ...blockProperties(css, '[data-theme="dark"]') } };
+    const pairs = [
+      ['color-ink', 'color-page'], ['color-ink', 'color-hero'], ['color-ink', 'color-card'],
+      ['color-ink-muted', 'color-page'], ['color-ink-muted', 'color-hero'], ['color-ink-muted', 'color-card'],
+      ['color-accent', 'color-page'], ['color-accent', 'color-hero'], ['color-accent', 'color-card'],
+      ['color-accent-hover', 'color-page'], ['color-on-accent', 'color-accent'], ['color-on-accent', 'color-accent-hover'],
+      ['color-on-code', 'color-code'],
+    ];
+    for (const [theme, props] of Object.entries(themes)) {
+      for (const [text, ground] of pairs) {
+        const ratio = contrast(props[text], props[ground]);
+        assert.ok(ratio >= 4.5, `${theme}: ${text} on ${ground} is ${ratio.toFixed(2)}:1`);
+      }
+    }
+  });
+
+  it('contrast measures WCAG ratios', () => {
+    assert.equal(contrast('#000000', '#FFFFFF').toFixed(1), '21.0');
+    assert.equal(contrast('#777777', '#777777').toFixed(1), '1.0');
   });
 
   it('cssProperties skips values set inside @media', () => {

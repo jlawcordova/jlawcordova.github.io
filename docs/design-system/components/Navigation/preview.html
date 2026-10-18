@@ -1,4 +1,4 @@
-<!-- The menu button shows at 720px and below, where it opens the links under an ink rule. -->
+<!-- The menu button shows at 720px and below, where it opens the links under an ink rule. The theme button shows at every width, with JavaScript; this one is a still preview. -->
 <header class="site-header" style="position:static;padding:0;height:auto">
   <nav class="site-nav" aria-label="Example navigation">
     <a class="site-nav__brand" href="#"><svg viewBox="0 0 68 45" width="35" height="23" shape-rendering="crispEdges" aria-hidden="true" class="jl-mark"><path fill="var(--color-accent)" d="M15 0h15v45H0V30h15z"></path><path fill="var(--color-ink)" d="M38 0h14v30h16v15H38z"></path></svg> J. LAW. Cordova</a>
@@ -12,5 +12,16 @@
       <a href="#">Blog</a>
       <a class="pill" href="#">Contact</a>
     </div>
+    <button class="site-nav__theme" type="button" aria-label="Theme: Auto" title="Theme: Auto">
+      <svg class="site-nav__glyph-auto" width="21" height="21" viewBox="0 0 7 7" aria-hidden="true" shape-rendering="crispEdges">
+        <path fill="currentColor" d="M0 0h7v1h-7zM0 6h7v1h-7zM6 1h1v5h-1zM0 1h4v5h-4z"></path>
+      </svg>
+      <svg class="site-nav__glyph-light" width="21" height="21" viewBox="0 0 7 7" aria-hidden="true" shape-rendering="crispEdges">
+        <path fill="currentColor" d="M0 0h1v1h-1zM3 0h1v1h-1zM6 0h1v1h-1zM2 2h3v3h-3zM0 3h1v1h-1zM6 3h1v1h-1zM0 6h1v1h-1zM3 6h1v1h-1zM6 6h1v1h-1z"></path>
+      </svg>
+      <svg class="site-nav__glyph-dark" width="21" height="21" viewBox="0 0 7 7" aria-hidden="true" shape-rendering="crispEdges">
+        <path fill="currentColor" d="M0 0h7v1h-7zM0 6h7v1h-7zM0 1h1v5h-1zM6 1h1v5h-1z"></path>
+      </svg>
+    </button>
   </nav>
 </header>
