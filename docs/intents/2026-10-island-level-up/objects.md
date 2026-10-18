@@ -36,6 +36,13 @@ The objects the [intent](intent.md) needs that the pixel-art library doesn't hav
 | 18 | `flatcar` | A flat wagon the container is set down on. | Drives |
 | 19 | `boxcar` | A closed wagon behind the flatcar, as the canvas draws (a brown wagon). Optional. | Drives |
 
+## Ground (added by the owner on 2026-10-19)
+
+| # | Object | What it is | Moves |
+| --- | --- | --- | --- |
+| 20 | `block-mine`, `block-mine-left`, `block-mine-right` | A patch of rocky dirt ground for the mining section: a one-level cube with its left and right cliff pieces, like the Range settings' floor sets. | No |
+| 21 | `block-yard`, `block-yard-left`, `block-yard-right` | Stone or brick paving for the rail section's ground, with its cliff pieces. `block-rail` (14) is built from it. | No |
+
 ## Reused as they are
 
 The ground blocks and their edge pieces (`block`, `block-left`, `block-right`, `block-road`, `block-river`), `path`, `river`, `waterfall-face`, `bridge`, `bridge-rail`, `house`, `crane-mast`, `crane-jib`, `boxes`, the trees (`tree`, `tree-small`, `pine`, `tree-shade`), `flower*`, `pebble`, `fence`, `flag`, the clouds and the island's shadow pieces.

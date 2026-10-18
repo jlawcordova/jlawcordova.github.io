@@ -12,11 +12,15 @@ The shared brief for the `pixel-artist` runs that draw the [approved objects](ob
 | 6 | `hopper`, `parcel`, `crane-hook` |
 | 7 | `processor` |
 | 8 | `container` |
+| 15 | `block-yard`, `block-yard-left`, `block-yard-right` (runs before 9, so `block-rail` can match it) |
 | 9 | `track`, `block-rail`, `flatcar` |
 | 10 | `locomotive` |
 | 11 | `boxcar` |
 | 12 | `tunnel-rail` |
 | 13 | `bridge-road` |
+| 14 | `block-mine`, `block-mine-left`, `block-mine-right` (next after run 6) |
+
+Runs 14 and 15 were added by the owner on 2026-10-19: a patch of different ground for the mining section and stone paving for the rail section. Each is a floor set (inland cube and both cliff pieces), as in the `pixel-art` skill's Range settings.
 
 ## The line, in scene terms
 
