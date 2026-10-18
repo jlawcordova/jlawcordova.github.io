@@ -111,5 +111,10 @@ export default {
     { object: 'tile', at: { tile: [9, 8, 0] } },
     { object: 'tile', at: { tile: [10, 8, 0] } },
     { object: 'tile', at: { tile: [11, 8, 0] } },
+    { object: 'ore', at: { px: [16, 134] } },
+    { object: 'ore', at: { px: [12, 136] } },
+    { object: 'ore', at: { px: [20, 136] } },
+    { object: 'ore', at: { px: [7, 137] } },
+    { object: 'ore', at: { px: [16, 138] } },
   ],
 };
