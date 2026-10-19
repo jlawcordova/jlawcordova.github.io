@@ -1,21 +1,21 @@
 // Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md
 export default {
   kind: 'sprite',
-  anchor: [2, 3],
+  anchor: [2, 4],
   keys: {
-    t: 'path-3',
-    T: 'path-4',
-    g: 'gold-1',
-    s: 'soil-3',
-    S: 'soil-4',
+    t: 'gold-1',
+    l: 'gold-2',
+    L: 'gold-3',
+    r: 'gold-4',
   },
   layers: [
     {
       map: [
-        '.tT.',
-        'tTgS',
-        'ssSS',
-        '.sS.',
+        '.tt.',
+        'lttr',
+        'llrr',
+        'llrr',
+        '.Lr.',
       ],
     },
   ],
