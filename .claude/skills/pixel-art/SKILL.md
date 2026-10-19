@@ -358,7 +358,7 @@ The style of the hero island's objects, of the Range (its platform and its chara
   - Clouds are short-sided stacked cubes: `cream` tops, `path-2` left, `path-3` right, tip pixels clipped, no texture. A cube's top width is a multiple of 4 (8–24), and a stacked cube narrower than 12 reads as a chimney.
   - The road is `path-2` dirt with a `cream` dashed center line: one dash per tile, 4 rows on the road's 2:1 line through the tile's center, so the dashes and gaps are even along the road.
   - Pines are three stacked tiers with shallow-V skirts, split at the center (lit left, dark right), with a sawtooth of needle tips.
-  - Cardboard is `wood-1` top, `wood-2` left, `wood-3` right, with `path-1` tape. A box W px wide has a top W/2 rows tall. Judge tape on the island or a close-up, since `path-1` nearly matches the preview's background.
+  - Cardboard is `wood-1` top, `wood-2` left, `wood-3` right, with `path-1` tape. A box W px wide has a top W/2 rows tall. Judge tape on the island or a close-up, since `path-1` nearly matches the preview's background. The same goes for any `path-1` top (a concrete step, a steel rim): on an object's own `--preview` it washes out, so judge it in a close-up or a render on the grass.
   - Planks and plank gaps on a 2:1 deck sit at least 4 rows apart; every 3 rows the steps line up into a checkerboard.
   - Buildings: a flat roof reads with a 1-px parapet line in the face shades, and `water-1` glass on a `path-1` wall needs a `path-3` frame. Place wall features by offsets from each column's wall-top row.
   - Water texture follows the side rule too: a falling sheet is `water-3` with darker `water-4` stripes and few light streaks, or it reads as rain.

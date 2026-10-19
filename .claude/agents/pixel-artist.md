@@ -241,13 +241,15 @@ From `scripts/range-classes.test.mjs`, `scripts/range-art.test.mjs`, the knight'
 
 - **Look with renders, not files.** `scene_render` and `object_render` hand you the image directly, with each item's bounds, at any scale, frame or time, and include unsaved MCP edits. Use them for every look while you iterate, and `--preview` only for the images you save.
 - **See an edit before you write it.** CLI edits take `--dry-run` and print the diff. In the MCP session, edit, render and `check`, and `doc_undo` what doesn't work.
-- **Find items by path.** `scene_items` lists every item with its path, id and placement point, which beats reading a long scene source.
+- **Find items by path, and re-list them.** `scene_items` lists every item with its path, id and placement point, which beats reading a long scene source. Paths shift when anything is added before them (another run's new group, say), so treat a path in a brief as a hint and find the item by its id or object and placement.
+- **Try timed variants in a scratch site.** For motion or placement variants, make a scratch folder that symlinks the checkout's `package.json`, `scripts`, `node_modules` and `src/lib` and copies `src/assets/pixel-art/source`, then `scene render --site <scratch> --time <ms>` renders each variant at any moment. Crop renders with `sips -c <h> <w> --cropOffset <y> <x>`, which doesn't smooth.
+- **Don't overwrite another run's images.** Review-image folders can be shared between runs: check before writing, and suffix your names (`after-hero-island-<object>.png`) when one's already there.
 - **Try variants in a scratch workspace,** so the repo stays clean:
   - copy the sources with `cp -R src/assets/pixel-art/source <scratch>/ws/`;
   - then run `node <repo>/scripts/optimize-pixel-art.mjs --source <scratch>/ws/source --out <scratch>/ws/out --preview <name> --scale 6`;
   - compare the variants side by side, and copy only the winner into the repo.
 - **Generate repetitive maps with a script** in the scratch folder: masks from the tile formula, band depth, drips, speckle lists, block variants. Write them with `serialize()`, which is always canonical.
-- **Where previews land.** `--preview` writes to `.art-preview/` in the folder you run it from, whatever `--source` and `--out` say. Copy each PNG out before the next preview of the same name overwrites it.
+- **Where previews land.** `--preview` writes to `.art-preview/` in the folder you run it from, whatever `--source` and `--out` say. Copy each PNG out before the next preview of the same name overwrites it. Run `optimize-pixel-art.mjs` by its real path: through a symlinked `scripts/` folder it silently does nothing.
 - **In a worktree,** `npm run art` rewrites `hero-island.svg` (a test needs it to match the sources). Don't list it to gather; the coordinator recompiles it.
 - **Compare variants side by side** on a tile and on the hero background, in one scratch scene. It's the fastest way to choose.
 - **Shell gotchas.** There's no PIL, so don't count on Python imaging. `sips -z` smooths when it upscales, so use `--scale` for review images. If a preview PNG comes out empty, re-run it without a pipe.
