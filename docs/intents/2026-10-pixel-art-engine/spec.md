@@ -1,6 +1,8 @@
 # Spec: Isometric pixel-art engine (from intent.md 2026-10-01, amended 2026-10-02)
 Status: approved.
 
+> **Where things went (2026-10-19):** the engine (`src/lib/pixel-art/`), the compiler (`scripts/optimize-pixel-art.mjs`, `npm run art -- --check | --preview | --sizes | --new`) and the previews now live in Pixel Lab (`jlawcordova-lab`, the `pixellab` package this site installs), the sources are the document `src/assets/pixel-art/jlawcordova.pixellab/`, and the editor page (D9, R15–R22) was retired for the Mac app. See [`../2026-10-art-to-pixel-lab/spec.md`](../2026-10-art-to-pixel-lab/spec.md). This record is not rewritten.
+
 | | |
 | --- | --- |
 | **Intent** | [`intent.md`](intent.md) |

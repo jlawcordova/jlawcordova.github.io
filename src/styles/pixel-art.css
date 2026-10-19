@@ -1,7 +1,7 @@
 /*
  * Pixel art: crisp rendering, sprite-style animation and reduced motion.
  * The keyframes are ported verbatim from the Prototype B mock. The classes
- * they target are kept on the art's groups by scripts/optimize-pixel-art.mjs.
+ * they target are kept on the art's groups by Pixel Lab's compiler (the pixellab package).
  */
 .pixel-art,
 .pixel-art * {

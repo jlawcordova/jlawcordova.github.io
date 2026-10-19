@@ -55,7 +55,7 @@ Every item in an animated scene sits in exactly one top-level group with class `
 2. Run `npm run art`.
 3. The schedule places it in the order by its foot, so no motion code changes.
 
-A new ground position is its own `ground` group with its place and foot. Groups break up color merges, so each one costs bytes (`npm run art -- --sizes hero-island`).
+A new ground position is its own `ground` group with its place and foot. Groups break up color merges, so each one costs bytes (`npm run pixellab -- art sizes hero-island`).
 
 ## The schedule
 
@@ -118,14 +118,13 @@ Run `npm run dev`, then open http://localhost:4321/lab/island-entrance/. The pag
 
 ## Scene motion
 
-A sequence where pieces travel and hand things on (a truck drives up, tips its load, leaves) is a scene's `motion`, not hand-written CSS. The format is in the `pixel-art` skill (Scenes); the engine is `src/lib/pixel-art/motion.mjs`.
+A sequence where pieces travel and hand things on (a truck drives up, tips its load, leaves) is a scene's `motion`, not hand-written CSS. The format is in the `pixel-art` skill (Scenes); the engine is Pixel Lab's `pixellab/motion` (`node_modules/pixellab/cli/lib/engine/motion.mjs`).
 
 - **One loop per scene.** `duration` is the whole cycle in ms, and every track runs on it, so pieces stay in step. Something that "keeps coming" is one item that leaves hidden and comes back at the start of the next cycle.
 - **Keys.** Each key at `t` ms sets, from then on, the item's `move` (pixels from where the scene places it), `show` and `pose` (another object with the same anchor, such as `truck-open-tipped`). Values carry over from the key before. The first key is at 0, the rest frame, which is what reduced motion shows, and every `t` is less than `duration`.
 - **Moves step a pixel at a time.** Between two keys an item steps toward the next key's move: one pixel per step along a straight line, 1 across and 1 up or down along a 1:1 diagonal (what a ramp along the belt's axis uses), or 2 across and 1 down along the 2:1 grid. Another angle takes fewer, larger steps, so keep moves on the grid's lines. After the last key it steps back to the first key's move over the rest of the loop, so hide it or hold it there.
 - **What it compiles to.** Each tracked item gets a `<g class="mv-<id>">`, one `<g class="mv-<id>-<n>">` per pose, and keyframes in a `<style>` at the top of the SVG: `steps()` transforms for moves, `step-end` opacity for show and poses, and a reduced-motion rule that turns them all off. The art is drawn at the rest frame, with hidden pieces and unused poses kept in the SVG at opacity 0.
-- **Editing it.** In the web lab, open the scene, select an item and use the Animation pane: **Animate this item** gives it an id and a track, the **Time** slider scrubs, and past 0 s moving the item on the stage (drag, arrows, Shift + arrows) keys it at that time. Each key's time, X, Y, Shown and Pose can be typed. **Play** runs the loop with every frame loop, 20 steps a second. Export saves the scene with its motion.
-- **With Pixel Lab** (the `pixel-art` skill's Pixel Lab section), headless: `scene_set <scene> <item> --id <id>` names an item. Once it has a track in the source's `motion` (tracks, `show` and `pose` keys are written there), `scene_move <scene> <id> --by col,row --time <ms>` (or `--nudge x,y`) keys its move at that time, making the key if needed, and `scene_render <scene> --time <ms>` shows that moment, with every frame loop. Pixel Lab's timeline plays and scrubs the result (⌥⌘P) for the owner.
+- **Editing it.** Write the `motion` block in the scene's source (tracks, keys, `show` and `pose`), by hand or with a script, or through Pixel Lab's commands, headless (the web lab's Animation pane is gone with the web lab): `scene_set <scene> <item> --id <id>` names an item. Once it has a track in the source's `motion` (tracks, `show` and `pose` keys are written there), `scene_move <scene> <id> --by col,row --time <ms>` (or `--nudge x,y`) keys its move at that time, making the key if needed, and `scene_render <scene> --time <ms>` shows that moment, with every frame loop. Pixel Lab's timeline plays and scrubs the result (⌥⌘P) for the owner.
 - **The page.** Scene motion runs inside the `enter` groups like the frame loops, so the entrance and the motion never set the same element's transform. Class and keyframe names are `mv-<id>`, unprefixed, so only one inline SVG on a page may carry motion.
 
 ## The CSS loops

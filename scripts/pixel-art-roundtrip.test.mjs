@@ -9,13 +9,13 @@ import { join } from 'node:path';
 import { describe, it } from 'node:test';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-import { loadSources, resolve, validate } from '../src/lib/pixel-art/engine.mjs';
-import { serialize } from '../src/lib/pixel-art/serialize.mjs';
-import { compileScene, readSources } from './optimize-pixel-art.mjs';
+import { loadSources, resolve, validate } from 'pixellab/engine';
+import { serialize } from 'pixellab/serialize';
+import { compileScene, readSources } from 'pixellab/compile';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const ART_DIR = join(ROOT, 'src/assets/pixel-art');
-const SOURCE_DIR = join(ART_DIR, 'source');
+const SOURCE_DIR = join(ART_DIR, 'jlawcordova.pixellab');
 
 const { sources, loadErrors } = await readSources(SOURCE_DIR);
 
@@ -49,9 +49,12 @@ describe('committed sources', () => {
     assert.equal(new Set(groups.map((g) => flatten(g.items).find((i) => i.object.startsWith('outfit-')).object)).size, groups.length, 'no outfit is placed twice');
   });
 
-  it('R12: npm run art reads no .src.svg', async () => {
+  it('R12: the document holds sources only, no .src.svg, and a manifest that publishes next to itself', async () => {
     assert.deepEqual((await readdir(SOURCE_DIR)).filter((f) => f.endsWith('.svg')), []);
-    assert.doesNotMatch(await readFile(join(ROOT, 'scripts/optimize-pixel-art.mjs'), 'utf8'), /\.src\.svg/);
+    const manifest = JSON.parse(await readFile(join(SOURCE_DIR, 'manifest.json'), 'utf8'));
+    assert.equal(manifest.format, 1);
+    assert.equal(manifest.publish.dir, '..', 'the SVGs land in src/assets/pixel-art/');
+    assert.deepEqual(Object.keys(manifest.publish.budgets).sort(), ['hero-island.svg', 'range-sprite.svg']);
   });
 });
 

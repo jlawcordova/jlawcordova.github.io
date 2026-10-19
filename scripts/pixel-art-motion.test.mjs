@@ -6,11 +6,11 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { composite, loadSources, renderScene, validate } from '../src/lib/pixel-art/engine.mjs';
-import { loopFrame, motionCss, poseItems, shownItems, stateAt, stepsFor } from '../src/lib/pixel-art/motion.mjs';
-import { animateLayer, setLoop, stillLayer } from '../src/lib/pixel-art/edit.mjs';
-import { serialize } from '../src/lib/pixel-art/serialize.mjs';
-import { compileScene } from './optimize-pixel-art.mjs';
+import { composite, loadSources, renderScene, validate } from 'pixellab/engine';
+import { loopFrame, motionCss, poseItems, shownItems, stateAt, stepsFor } from 'pixellab/motion';
+import { animateLayer, setLoop, stillLayer } from 'pixellab/edit';
+import { serialize } from 'pixellab/serialize';
+import { compileScene } from 'pixellab/compile';
 
 const PALETTE = { world: { 'grass-2': '#8FA56E', 'wood-3': '#7A4E2D' }, outfit: {} };
 const OBJECTS = {
