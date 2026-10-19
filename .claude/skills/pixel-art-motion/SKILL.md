@@ -43,7 +43,7 @@ Every item in an animated scene sits in exactly one top-level group with class `
 | `data-enter` | Data | Hero island | Range setting |
 | --- | --- | --- | --- |
 | `shadow` | none | the 11 shadow pieces, one group | none: the shadow sits outside the classes |
-| `ground` | `data-col`, `data-row`, and the foot `data-x`, `data-y` (its tile's center) | one group per cube (129), row by row in paint order | one group per floor row, with `data-row` only |
+| `ground` | `data-col`, `data-row`, and the foot `data-x`, `data-y` (its tile's center) | one group per cube (132), row by row in paint order | one group per floor row, with `data-row` only |
 | `object` | the foot `data-x`, `data-y` | one group per run of objects that arrive together | one per prop, and one for the outfit, with `data-x` |
 | `sky` | none | the three clouds | none |
 

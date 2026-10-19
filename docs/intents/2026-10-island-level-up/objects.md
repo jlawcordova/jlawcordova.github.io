@@ -51,3 +51,16 @@ The ground blocks and their edge pieces (`block`, `block-left`, `block-right`, `
 
 - `truck` and `truck-green` give way to `truck-open` and its recolor (7).
 - `crane-box` gives way to `crane-hook` carrying the `container` (11, 12).
+
+## Added in the owner's PR review (2026-10-19)
+
+| Object | What it is | Moves |
+| --- | --- | --- |
+| `stone` | A gray cube, the twin of `ore`, sorted out by the screen onto a reject pile. | Rides the belt |
+| `conveyor-feed` | A low open belt from the hopper's spout to the processor. | Cleats loop |
+| `level-crossing` | The road over the track at ground level, replacing `bridge-road`. | No |
+| `crossing-signal` | A crossing signal: crossbuck and two lamps, with `-left` and `-right` lit poses. | Lamps flash |
+| `crossing-gate` | A barrier arm, with `-down` and `-down-far` lowered poses. | Lowers |
+
+`bridge-road` (16) and its ramps, and the pitched truck poses, were retired.
+

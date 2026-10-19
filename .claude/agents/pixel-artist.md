@@ -159,15 +159,15 @@ From `scripts/pixel-art-island.test.mjs`, plus the engine's R13 and R28. **(E)**
 | Group | Pins |
 | --- | --- |
 | All | Every placed object ≤ 64×64, ≤ 12 colors, world colors. No `ink` (R2). R6: the island within 750 KB raw and 150 KB gzip. |
-| Land | The 129 ground positions in three sections; the edge piece at each position by its neighbours (left cliff, right cliff, corner, inland), the library edge pieces each pinned to `block` with only its corner column changed; the joint test on `closeup-land`; `path` faces `{ top: 'path-2' }` with surface keys `path-1`, `path-3`, `cream` in that order; each top (`path`, `river`, `track`, `track-mine`) laid on its cube in the cube's group; no block has an `edge`; R28 (top > left > right) on every block; R13 library sizes and the library-demo object list; `island-shadow` stays outside the ground. |
+| Land | The 132 ground positions in three sections; the edge piece at each position by its neighbours (left cliff, right cliff, corner, inland), the library edge pieces each pinned to `block` with only its corner column changed; the joint test on `closeup-land`; `path` faces `{ top: 'path-2' }` with surface keys `path-1`, `path-3`, `cream` in that order; each top (`path`, `river`, `track`, `track-mine`, `level-crossing`) laid on its cube in the cube's group; no block has an `edge`; R28 (top > left > right) on every block; R13 library sizes and the library-demo object list; `island-shadow` stays outside the ground. |
 | Water | `river` is a flat `water-2` tile with five `wf` frames, in world colors. `block-river` is `block-right` with a water band, pinned like the other edge pieces. `waterfall-face` keeps exactly 2 layers (a static map, then `wf` ×5), sits at tile `[5, 3, 0]` right after a river tile, and every `flag` pixel lands on it. |
-| Entrance | Every item sits in one top-level `enter` group: one `shadow` (24 pieces), 129 `ground` groups, `object` groups whose `data-x` is each item's foot (shades take their tree's, the crane's jib and hook the mast's), one `sky`. R2: the settled island paints what flat inland tiles would, in every loop frame. The ground paints row by row. |
+| Entrance | Every item sits in one top-level `enter` group: one `shadow` (24 pieces), 132 `ground` groups, `object` groups whose `data-x` is each item's foot (shades take their tree's, the crane's jib and hook the mast's), one `sky`. R2: the settled island paints what flat inland tiles would, in every loop frame. The ground paints row by row. |
 | Clouds | R7: `cream`, `path-2` and `path-3` only, never `path-1` (spec C4). The `pcloud` groups stay on the items. |
 | Trees | R3: pinned positions; each trunk foot on grass, not river, road or track. R7: wherever a shown truck crosses a tree in the loop, the one further forward (larger col + row) paints later. |
 | Office | `house` anchor `[21, 41]` at `[-59, 59]`; it covers tile `[0, 3]` except `-34,31` and `-34,32` (checked before the next pin, so a worktree can confirm the mask while it fails); a world color at x −35, y 30–32. |
 | Crane | The same world colors at both ends of the mast's top row and of the jib's anchor row. The jib's anchor sits one pixel above the mast's top-left pixel; the jib paints the pixel above the hook's rope (`crane-hook` column 9, row 0); mast + jib > 64 px; the jib's motion poses are `crane-jib-side` and `crane-jib-back`, the hook's `crane-hook-low` and `crane-hook-drop`. Each column of `boxes` stands on grass. R7: `flag` and `crane-box` keep their loops and frame counts, in world colors. |
 | Bridge | The river bridge at [2, 3] paints over the ground. `library-demo` places `bridge`. |
-| Trucks | Four `truck-open` items (in its poses) share the line. At every 50 ms of the loop a shown truck's road point keeps x + 2y between 80 (road level) and 34 (the overpass deck), pitched poses only on the ramps; the far-ramp truck paints before `bridge-road-ramp-far`, the others after `bridge-road-ramp`. `truck-green` still `extends: 'truck'` with no map of its own. |
+| Trucks | Four `truck-open` items (flat, or tipped) share the line. At every 50 ms of the loop a shown truck's road point keeps x + 2y at 80 (road level). Back to front: `gate-far`, `signal-far`, `truck-far`, the train cars, `signal-near`, `gate-near`, with the other trucks before `signal-near`. No truck is on the crossing with the train, and while a car is on it both gates are down and both signals lit; at rest they're up and dark. `truck-green` still `extends: 'truck'` with no map of its own. |
 
 ## Test pins on the Range
 
@@ -201,12 +201,12 @@ From `scripts/range-classes.test.mjs`, `scripts/range-art.test.mjs`, the knight'
 - **An isolated texture pixel on a base costs about 30 B raw and 6 B gzip.** That's its own rect plus the base run it splits.
 - **Loop frames are full copies.** Their texture doesn't split the base, but it's paid once per frame per placement.
 - **Multiply by placements:**
-  - cubes: 129 (81 `block`, 20 `block-road`, 12 `block-right`, 6 `block-river`, 5 `block-left`, and the mining and rail cubes), hidden faces included;
-  - `path`: 11, `track`: 10, `track-mine`: 3;
+  - cubes: 132 (80 `block`, 24 `block-road`, 12 `block-right`, 6 `block-river`, 5 `block-left`, and the mining and rail cubes), hidden faces included;
+  - `path`: 15, `track`: 9, `track-mine`: 3, `level-crossing`: 1;
   - `river`: 6 tiles × 5 frames;
   - `pine` and `tree-small`: 8 each;
   - `island-shadow`: 24;
-  - `truck-open`: 3 placements plus its poses, and `ore`: 18;
+  - `truck-open`: 4 placements plus its poses, `ore`: 22 and `stone`: 11;
   - each `enter` group compiles on its own, so runs don't merge across groups;
   - every pose of a moving item is drawn once, in its own group.
 - **New detail gzips at about 4.2:1.** The land sample measured +15.3 KB raw and +3.7 KB gzip.

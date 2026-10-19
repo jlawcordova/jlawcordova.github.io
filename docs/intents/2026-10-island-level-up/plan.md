@@ -29,12 +29,13 @@ One slice on `feat/island-level-up`, run by the main session with one `pixel-art
 11. Re-frame the close-up scenes on the new island (scene subagent).
 12. Re-pin the island, entrance and `--sizes` tests to the spec; drop `idrive` from `pixel-art.css`; update the skills and docs.
 13. Run every check, take the screenshots, and open the PR.
+14. The owner's PR review (art-brief.md): six fixes, one `pixel-artist` subagent each, at most two at a time and only one editing the scene: gold-cube ore ∥ the crane's cab; the crossing's objects ∥ the ore belt moved; the stones and the screen's sorting ∥ the feed belt's object; then the crossing in the scene, then the island's extra column and the feed belt in the scene. Then rebuild, re-pin the tests, update the docs and re-run every check.
 
 ## Workflow and reviews
 
 - **Main session:** the engine, the lab, the hero CSS, the tests, the docs, every commit and the PR.
-- **Subagents:** the `pixel-artist` agent drew each object, resumed with the owner's feedback so it kept its context, and one ran the scene from layout to motion and the close-ups. Only one ran at a time, except the owner-approved tunnel roof fix alongside run 6.
-- **Owner reviews (done):** the object list; each object's samples and lab link as it landed; the composed island; the re-laid island; the animation; the re-worked animation. The owner approved the animation and asked for this PR.
+- **Subagents:** the `pixel-artist` agent drew each object, resumed with the owner's feedback so it kept its context, and one ran the scene from layout to motion and the close-ups. Only one ran at a time, except the owner-approved tunnel roof fix alongside run 6, and the PR review's fixes, which the owner asked to run two at a time.
+- **Owner reviews (done):** the object list; each object's samples and lab link as it landed; the composed island; the re-laid island; the animation; the re-worked animation. The owner approved the animation and asked for this PR, then reviewed the PR's home-page screenshot (step 14).
 - **Independent review:** none planned. The owner reviewed every visible step, and the checks below are pasted into the PR. The owner can ask for `verify-change` on the PR.
 
 ## Risks
