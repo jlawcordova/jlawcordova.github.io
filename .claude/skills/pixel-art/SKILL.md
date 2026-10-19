@@ -1,10 +1,10 @@
 ---
 name: pixel-art
-description: Make, change or review this site's pixel art (the hero island, the Range sprite and its outfits, library objects and scenes) as text sources compiled by `npm run art`. Use whenever someone asks to draw, edit, recolor or check pixel art, an outfit or character, a library object, or a scene, or to add art to the site. Works headless, with no editor and no browser.
+description: Make, change or review this site's pixel art (the hero island, the Range sprite and its outfits, library objects and scenes) as text sources in the site's `.pixellab` document, checked and compiled with Pixel Lab's `pixellab` CLI (`npm run art`). Use whenever someone asks to draw, edit, recolor or check pixel art, an outfit or character, a library object, or a scene, or to add art to the site. Works headless, with no editor and no browser.
 ---
 # Pixel art
 
-The site's pixel art is text. **Objects** (pixel maps) and **scenes** (objects placed in paint order) live in `src/assets/pixel-art/source/`, and `npm run art` compiles each scene with an `output` to an optimized SVG in `src/assets/pixel-art/`. The design is in `docs/intents/2026-10-pixel-art-engine/spec.md` (D2–D6, R26–R30).
+The site's pixel art is text. **Objects** (pixel maps) and **scenes** (objects placed in paint order) live in the site's Pixel Lab document, `src/assets/pixel-art/jlawcordova.pixellab/` (a folder: `manifest.json`, `palette.mjs`, `objects/`, `scenes/`), and `npm run art` (Pixel Lab's `pixellab art build`) compiles each scene with an `output` to an optimized SVG in `src/assets/pixel-art/`. The engine, the compiler and the CLI are the `pixellab` dev dependency, installed from the lab repo (`jlawcordova-lab`); `npm run pixellab -- <group> <verb> …` runs any of its commands on this checkout (the `--site .` is in the script, so it works in a worktree too). The design is in `docs/intents/2026-10-pixel-art-engine/spec.md` (D2–D6, R26–R30), and the move to the document in `docs/intents/2026-10-art-to-pixel-lab/spec.md`.
 
 **Never write or edit an output SVG by hand.** Output SVGs only ever come from the compiler. Change a source, then run `npm run art`.
 
@@ -13,8 +13,8 @@ The site's pixel art is text. **Objects** (pixel maps) and **scenes** (objects p
 New art must fit the existing world. The engine enforces every rule here except the 6–8 color target.
 
 - **Grid.** A tile is 32×16 pixels, 2:1 dimetric: every edge steps 2 pixels across for 1 down. One level is 16 pixels high, so a one-level block is 32×32 and reads as a cube. A tile at `[col, row, level]` has its top-face center at `x = (col − row) × 16 + ox`, `y = (col + row) × 8 − level × 16 + oy`, where `[ox, oy]` is the scene's `origin`.
-- **Palette tiers** (`source/palette.mjs`):
-  - **world**: exactly 32 colors, as seven material ramps of 4 shades (`grass-1` highlight … `grass-4` shadow, and the same for soil, wood, path, water, roof and gold), plus `ink`, `cream`, `skin-1` and `skin-2`. They were picked from the island's own shades. `npm run art -- --preview palette` writes the swatch sheet: a row per material, shade 1 to 4 across. The tier is full, so a new color means dropping one.
+- **Palette tiers** (`jlawcordova.pixellab/palette.mjs`):
+  - **world**: exactly 32 colors, as seven material ramps of 4 shades (`grass-1` highlight … `grass-4` shadow, and the same for soil, wood, path, water, roof and gold), plus `ink`, `cream`, `skin-1` and `skin-2`. They were picked from the island's own shades. `npm run pixellab -- art preview palette --out .art-preview/palette.png` writes the swatch sheet: a row per material, shade 1 to 4 across. The tier is full, so a new color means dropping one.
   - **outfit**: at most 16 clothing colors (full: the `silver`, `violet`, `slate`, `orange`, `sky` and `navy` ramps, light to dark; a new color means dropping one), only for objects that extend `character`.
   - Colors are added to the palette by hand, in a reviewed commit. Brand entries keep their `src/styles/variables.css` values.
 - **Light** comes from the same side as on the island: tops are the light shade, left faces the mid shade, right faces the shadow shade.
@@ -22,11 +22,11 @@ New art must fit the existing world. The engine enforces every rule here except 
 
 ## Formats
 
-Every source is a `.mjs` file whose default export is plain data, in the **canonical format**: the header comment, two-space indentation, single quotes, one map row per line and trailing commas. A test fails if a file isn't canonical, so start from `--new` or copy an existing file's layout exactly.
+Every source is a `.mjs` file whose default export is plain data, in the **canonical format**: the header comment, two-space indentation, single quotes, one map row per line and trailing commas. A test fails if a file isn't canonical, so start from `object new` / `scene new` or copy an existing file's layout exactly.
 
 The examples below compile together against today's sources, as `objects/small-rock.mjs`, `objects/stone-block.mjs`, `objects/outfit-example.mjs` and `scenes/example.mjs` (a test checks this).
 
-### Objects (`source/objects/<name>.mjs`)
+### Objects (`jlawcordova.pixellab/objects/<name>.mjs`)
 
 Names are lowercase kebab-case. There are two kinds: `sprite` (pixel maps) and `block` (boxes on the isometric grid, drawn from numbers).
 
@@ -60,7 +60,7 @@ export default {
 
 ### Blocks (`kind: 'block'`)
 
-A block is described by numbers, not drawn. Use one for ground, walls and water. `block`, `tile`, `water` and `path` (a flat road tile) in `source/objects/` are the library, and `scenes/library-demo.mjs` places them with `tree`, `pebble` and `bridge`. This example is `objects/stone-block.mjs` in the skill's test.
+A block is described by numbers, not drawn. Use one for ground, walls and water. `block`, `tile`, `water` and `path` (a flat road tile) in `jlawcordova.pixellab/objects/` are the library, and `scenes/library-demo.mjs` places them with `tree`, `pebble` and `bridge`. This example is `objects/stone-block.mjs` in the skill's test.
 
 **Adding to the library demo.** A test (`library (R13, R31)` in `scripts/pixel-art-engine.test.mjs`) lists the objects `library-demo` places, and checks that every item sits within its 3×3 grid (columns and rows 0 to 2). When you place a new object there, add its name to that list in the same change, and keep it on the grid. A small object can stand on a block's top: give it the block's tile and list it right after that block, so it paints on top.
 
@@ -129,7 +129,7 @@ export default {
 - **A tile is 30 pixels wide at its widest row,** not 32: pixel centers never land on an edge, so neighbouring tiles share no pixel and leave no gap. Don't nudge blocks by a pixel to hide a seam; there isn't one.
 - **`surface`** (optional) paints a one-tile (32×16) sprite over each tile of the top face, clipped to each tile's own diamond. It's `{ keys, map }`, or `{ keys, loop, prefix, frames }` for a loop. `water` uses five frames of `wf w0`…`w4`, which is what the site's CSS animates. Frame 0 is the reduced-motion frame. Surface colors count toward the 12-color cap.
 - **`sides`** (optional, blocks with levels only) textures the left and right faces: `{ keys, left, right }`, each map 16 columns by 16 rows. A map is face-local: row 0 is the first pixel below the top's edge in each column, so a band that follows the top edge is just the map's first rows (the grass band above). Column *c* of a face reads map column *c* mod 16, and the map repeats up every level. A 1×1 face is 15 pixels wide, so it shows columns 0–14, and column 15 shows only where a longer face repeats the map. The engine draws the faces, then the sides, then the surface, then `edge`. Side colors count toward the 12-color cap.
-- `npm run art -- --new object <name> --kind block` writes a starter block.
+- `npm run pixellab -- object new <name> --kind block` writes a starter block.
 
 ### Outfits (`extends`)
 
@@ -157,10 +157,10 @@ export default {
 - `rows` is `{ <layer index>: { <row index>: '<whole row>' } }`. A row override must be the full width of the base's map.
 - `keys` adds keys, or overrides the base's: the base's order comes first, then new keys.
 - The example recolors the base's shirt keys (`g`, `h`, `i`) red and adds a gold buckle `t` on one row of the chest.
-- `character` uses world colors only, with no `ink` and no outline; its keys are in [Isometric characters](#isometric-characters). An outfit may recolor those keys or add its own. `--new object <name> --extends character` writes a starter outfit with no keys or rows of its own yet.
+- `character` uses world colors only, with no `ink` and no outline; its keys are in [Isometric characters](#isometric-characters). An outfit may recolor those keys or add its own. `object new <name> --extends character` writes a starter outfit with no keys or rows of its own yet.
 - `character` is a 32×35 canvas, with anchor `[20, 29]` on the ground under the figure, so a scene places it by `tile`. The figure is in its `cbob` layer (layer 1; layer 0 is empty): head rows 7–20, body rows 18–27, legs rows 25–30, columns 13–26. Draw held props in the `cbob` layer too, so they bob with the character. A prop goes left of the body (columns 8–12) or right of it (columns 27–31). A new outfit keeps its figure, with any prop it holds, within 24×32. A larger prop is a separate `prop-<class>-<name>` object (see [Isometric characters](#isometric-characters)).
 
-### Scenes (`source/scenes/<name>.mjs`)
+### Scenes (`jlawcordova.pixellab/scenes/<name>.mjs`)
 
 ```js
 // Pixel-art scene. How to edit it: .claude/skills/pixel-art/SKILL.md
@@ -199,21 +199,21 @@ export default {
 - **`class`** on an item wraps the object in a `<g class>` (the clouds' `pcloud pc0`). **`group`** makes a `<g>` with `class` or `data-*` attributes around its items (the Range's `data-class` variants).
 - **`output`** names the SVG it writes in `src/assets/pixel-art/`. Leave it out for a preview-only scene; it's still compiled and checked.
 - **`id`** (optional, kebab-case, unique in the scene) names an item so a `motion` track can move it.
-- **`motion`** (optional) animates items on one loop of `duration` ms, one track per item it moves (the example walks the rock 16 px up-right and back every 2 s). Each key sets, from `t` ms on, the item's `move` (pixels from its placement), `show` and `pose` (an object drawn instead, with the same anchor). The first key is at 0, the rest frame that reduced motion and `--preview` show. Moves step a pixel at a time. The `pixel-art-motion` skill (Scene motion) has the rules, and the lab's Animation pane edits it.
+- **`motion`** (optional) animates items on one loop of `duration` ms, one track per item it moves (the example walks the rock 16 px up-right and back every 2 s). Each key sets, from `t` ms on, the item's `move` (pixels from its placement), `show` and `pose` (an object drawn instead, with the same anchor). The first key is at 0, the rest frame that reduced motion and `art preview` show. Moves step a pixel at a time. The `pixel-art-motion` skill (Scene motion) has the rules, and Pixel Lab's timeline plays and scrubs it.
 
 ## The main path: headless
 
-You don't need the editor or a browser.
+You don't need the editor or a browser. Every command below is Pixel Lab's CLI on this checkout, `npm run pixellab -- …` (`npx pixellab … --site .` is the same thing).
 
-1. **Start from a valid file.** `npm run art -- --new object <name> --size 16x16` (a sprite with an empty map), `--new object <name> --kind block` (a block), `--new object <name> --extends character` (an outfit) or `--new scene <name>`, or open an existing source. Choose the smallest object that does the job, and prefer placing objects in a scene over drawing large maps. `--new` refuses to overwrite a file.
-2. **Edit whole rows**, and keep every row the same width. For a block, change `size` and `faces` instead. Add each color you use to `keys`, from the world palette.
-3. **Check it:** `npm run art -- --check <name>`. It prints every problem with its file, layer, frame, row and column, and the rule broken, or a one-line summary (size, colors against the cap, layers, frames). Fix each problem where it points.
-4. **Look at it:** `npm run art -- --preview <name>` (or `--preview palette` for the world palette's swatch sheet) writes `.art-preview/<name>@1x.png` to `@4x.png` (git-ignored). Add `--scale N` for a bigger one too, `<name>@Nx.png`, up to 16×. **Open the PNG and look at it.** An object stands on one tile outline; a scene shows its viewBox at frame 0. The picture, not the text, decides whether the art is right.
+1. **Start from a valid file.** `npm run pixellab -- object new <name> --width 16 --height 16` (a sprite with an empty map), `object new <name> --kind block` (a block), `object new <name> --extends character` (an outfit) or `scene new <name>`, or open an existing source. Choose the smallest object that does the job, and prefer placing objects in a scene over drawing large maps. `new` refuses to overwrite a file.
+2. **Edit whole rows**, and keep every row the same width. For a block, change `size` and `faces` instead. Add each color you use to `keys`, from the world palette. (The CLI can also edit for you: `object paint`, `object fill`, `scene place`, `scene move` and the rest; `npm run pixellab -- help` lists them.)
+3. **Check it:** `npm run pixellab -- check <name>`. It prints every problem with its file, layer, frame, row and column, and the rule broken, or a one-line summary (size, colors against the cap, layers, frames). Fix each problem where it points.
+4. **Look at it:** `npm run pixellab -- art preview <name> --scale 3 --out .art-preview/<name>@3x.png` (or `art preview palette` for the world palette's swatch sheet) writes a PNG at that scale, up to 16× (`.art-preview/` is git-ignored). **Open the PNG and look at it.** An object stands on one tile outline; a scene shows its viewBox at frame 0, on the document's card color. The picture, not the text, decides whether the art is right. `scene render` and `object render` give transparent PNGs with item bounds instead.
 5. **Generate the output:** `npm run art` writes the SVGs for scenes with an `output`, then run `npm test`. A test fails if a committed SVG is stale against its sources.
 
 A name can be written `objects/<name>` or `scenes/<name>` when an object and a scene share it.
 
-**Sizes.** Each SVG must stay within its budget, or `npm run art` reports it `OVER BUDGET` and exits 1: `hero-island.svg` 750 KB raw and 150 KB gzip, `range-sprite.svg` 200 KB and 50 KB, every other SVG 100 KB and 25 KB. `npm run art -- --sizes <scene>` shows where the bytes go: the scene's total, then what each object adds (the scene compiled without it) and what each color's path takes, raw and gzip, each against the sources at `HEAD`.
+**Sizes.** Each SVG must stay within its budget, or `npm run art` reports it `OVER BUDGET` and exits 1: `hero-island.svg` 750 KB raw and 150 KB gzip, `range-sprite.svg` 200 KB and 50 KB (both in the document's `manifest.json`), every other SVG 100 KB and 25 KB. `npm run pixellab -- art sizes <scene>` shows where the bytes go: the scene's total, then what each object adds (the scene compiled without it) and what each color's path takes, raw and gzip, each against the sources at `HEAD`.
 
 **Close-ups.** Preview-only scenes frame each part of the hero island tightly, so every review round renders the same view. Preview them with `--scale 6`:
 
@@ -229,37 +229,14 @@ A name can be written `objects/<name>` or `scenes/<name>` when an object and a s
 
 They place the island's objects at the island's positions, in its paint order, and a test keeps them that way: when the island's scene renames or moves an object, change the close-ups in the same commit. They show the island's rest frame: no `id`s, no `motion`, and none of the items hidden at t 0. They don't use the entrance groups. Where a close-up cuts the island off, the cubes at its edge show their sides. The preview's card color is one shade off the hero's background, so the sky reads as it does on the site.
 
-## The editor (optional)
+## Pixel Lab (the editor)
 
-The lab at `/lab/pixel-art/` (or `npm run dev`, then http://localhost:4321/lab/pixel-art/) edits scenes and paints objects in a browser, drawn by the same engine as `npm run art`. Use it when a person wants to work visually, or to check that the editor shows what the compiler builds. A link opens one document: `/lab/pixel-art/?object=<name>` or `?scene=<name>`. To run the site and hand the owner those links while designing a scene, use the `design-scene` skill. Everything it does also has a text-and-command path, the one above, so an agent never needs it.
+The owner edits the art in **Pixel Lab**, the Mac app from `jlawcordova-lab`, which opens this document (`src/assets/pixel-art/jlawcordova.pixellab`) and draws it with the same engine as `npm run art`. There is no browser editor any more (the web lab at `/lab/pixel-art/` was retired when the engine moved to the lab). Everything the app does has a text-and-command path, the one above, so an agent never needs it.
 
-- **Drive it by accessible names and keys,** not pixel positions:
-  - **Lab bar:** the picker is the combobox "Open". It lists scenes, objects, new drafts, "New scene…" and "New object…".
-  - **Toolbar:** one tab stop; arrow to "Scene" or "Object" inside it.
-  - **Stage:** the group "Scene stage" or "Object stage".
-  - **Library:** buttons named after their objects.
-  - **Panels:** in Scene mode, the tree "Items"; in Object mode, the swatches named like "grass-2, #8FA56E".
-- **Animation pane** (Scene mode): Play, Pause and a Time slider play the scene's motion and frame loops. Select an item and choose **Animate this item**; past 0 s, moving it on the stage keys it at that time, and each key's time, X, Y, Shown and Pose can be typed.
-- **Scene mode:** choose a thumbnail, then a tile, or focus a thumbnail and press Enter to place it at the stage cursor. On the stage:
-  - arrows move the selected item one tile, or the cursor;
-  - Shift + arrows nudge one pixel, and the item is then placed by `px`;
-  - Page Up and Page Down change the level, `[` and `]` the paint order;
-  - Delete removes, Escape deselects;
-  - V, A and H pick Select, Place and Pan, and 0–4 zoom. Fit picks the largest whole zoom that fits the stage, up to 8×, so it can go past the 4× button.
-- **Object mode:** opening an object, or choosing one in the Library while in Object mode, shows its map over a checkerboard, with its bounds dashed and its anchor marked. On the stage:
-  - B, E, G and I pick Pencil, Eraser, Fill (4-connected) and Picker;
-  - arrows move the pixel cursor (Shift: 8 pixels), and Space or Enter applies the tool there;
-  - Delete erases at the cursor, and Escape cancels a stroke in progress;
-  - Page Up and Page Down step frames, and `[` and `]` step layers;
-  - 0 is Fit, and 1–4 zoom to 4×, 8×, 12× and 16×. A pointer stroke is one undo step.
-  - **Colors:** a color the object doesn't use yet gets a new key, named after the color where it can be. The usage meter warns from 9 colors and stops new ones at 12.
-  - **Outfits:** painting an outfit writes whole-row overrides, and a row painted back to match `character` drops its override. The gutter beside the stage marks the overridden rows.
-  - **Blocks:** a block shows as the engine draws it. Painting its top writes its `surface` (each pixel is its tile's map cell, clipped to the diamond), and painting a face writes its `sides`, so a 16-pixel band painted along a face's top edge lands on the map's first rows. Fill covers one color on one face, Picker reads the block as drawn, and a looped surface paints the frame shown. Size and face colors are in the Object panel, and going flat drops the sides. A block's export carries only that block: apply the same change to its variants (such as the island's edge pieces) yourself.
-  - **Layers and frames:** the Layers panel and the Animation pane add, duplicate, reorder and delete them. Play never starts by itself.
-  - **Animation pane** (Object mode): **Animate this layer** turns a still layer into a frame loop (`ff` by default), its map copied into every frame to paint one by one; **Loop** switches it to `wf` or `hf` (the site plays 5, 4 and 6 frames of `wf`, `ff` and `hf`, and the pane warns when the count differs); **Stop animating** keeps the frame shown as a still map. **Poses** lists the objects named after this one (`mine-cart`, `mine-cart-tipped`) to open them.
-- **New documents** start from the same starters as `--new`, as drafts named "(new)". A scene can place a new object right away. Export then reminds you to export the object too.
-- **Export** shows the canonical source and its path. Save it there exactly, then run `npm run art` and `npm test`. With problems, Export lists them instead, and the status bar's count opens the same list, where choosing one goes to its row and column.
-- **Drafts** stay in that browser's `localStorage`. They're not in the repo until someone exports and commits them.
+- **Over MCP** (`mcp__pixellab__*`, when the server is registered): `scene_render` and `object_render` return the PNG, `scene_place`, `scene_move`, `object_paint`, `object_fill` and the rest edit, and `doc_save` writes a **proposal** the owner approves or rejects in the app's Agent window. Never apply, reject or force one yourself. The MCP server runs on whatever document the owner registered it with, usually the real checkout, not a worktree: for a worktree, use the CLI (`npm run pixellab -- …`, which writes the working tree directly).
+- **Hand edits from the owner** arrive as commits to the document (Save in Pixel Lab writes the source files; approved proposals do too). Treat a saved source as the new baseline, re-check it and re-run `npm run art`.
+- **Publishing.** Pixel Lab's Publish (⌘B) is `npm run art`: it writes the SVGs next to the document. Either way, commit the sources and the SVGs together; a test fails if they disagree.
+- **Blocks:** a block shows as the engine draws it. The app paints its top (`surface`) and its faces (`sides`); a saved block carries only that block, so apply the same change to its variants (such as the island's edge pieces) yourself.
 
 ## Achievement icons
 
@@ -288,7 +265,7 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
   - Seven `data-class` groups follow, one per class, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). Each holds its whole setting in entrance groups, as on the hero island: three `ground` rows (`data-row` 0 to 2) of one-level cubes from the setting's own floor set, then one `object` group per prop and one for the outfit, each with its foot `data-x`. `Range.astro` floats them up on every class change with `RANGE_TIMING` from `src/lib/island-entrance.mjs`.
   - Each outfit extends `character` and stands on the center tile, placed by `{ tile: [1, 1, 0] }` in an `object` group with `data-x="0"`. The characters are isometric figures in the [island and Range look](#island-and-range-look), with no `ink` outline ([Isometric Range](../../../docs/intents/2026-10-range-isometric/spec.md)).
   - A test requires seven class groups, each with a floor set no other class uses.
-  - `--preview range-sprite` and the lab draw only the first `data-class` group. To see another class, preview a scratch copy of the scene that keeps the shadow and only that class's group.
+  - `art preview range-sprite` and Pixel Lab draw only the first `data-class` group. To see another class, preview a scratch copy of the scene that keeps the shadow and only that class's group.
 - **Recolors.** `truck-green` is `truck` with other colors: it `extends: 'truck'` and lists only the keys that differ. Use the same pattern for a variant that changes colors but not shape.
 - **Keep the CSS hooks.** `pixel-art.css` animates the classes on these groups (`wf w0`…, `pcloud pc0`, `cbob`); the scene's motion styles its own `mv-` groups. Don't rename a loop, prefix or placement class unless you change the CSS in the same PR.
 
@@ -332,7 +309,7 @@ The style of the hero island's objects, of the Range (its platform and its chara
   - Each horizontal run costs about 15 B, and rows of the same width merge, so vertical strokes are cheap.
   - An isolated texture pixel costs about 30 B raw and 6 B gzip, times the number of placements and loop frames.
   - Prefer a few deliberate clusters and horizontal adjacency.
-  - Check with `npm run art -- --sizes hero-island` (or `range-sprite`).
+  - Check with `npm run pixellab -- art sizes hero-island` (or `range-sprite`).
 
 ### Isometric characters
 
@@ -393,7 +370,7 @@ Each Range class stands in a setting that fits it, built from its own blocks. Th
   - A prop may reuse a library object (one of the island's clouds, a tree) and may loop with `wf`, `ff` or `hf`, with frame 0 as its rest pose.
   - Screens, boards and books show shapes and color, never text.
 - **Order inside the class group:** the three `ground` rows (0, 1, 2, each by column), then the `object` groups back to front by `col + row`, with props behind the character before it and props in front after it. `data-x` is each group's first object's foot: a tile-placed object's tile center, `(col − row) × 16`, or a `px`-placed sprite's `at.px[0] − anchor[0] + width / 2`, rounded.
-- **Budget:** about 22 KB raw and 5 KB gzip per setting, from `npm run art -- --sizes range-sprite`. The lab is 21 KB and 4.6 KB, of which the brick floor is 16 KB. Plain hidden faces and joints on the row seams are the cheapest trims.
+- **Budget:** about 22 KB raw and 5 KB gzip per setting, from `npm run pixellab -- art sizes range-sprite`. The lab is 21 KB and 4.6 KB, of which the brick floor is 16 KB. Plain hidden faces and joints on the row seams are the cheapest trims.
 - **Check** each setting at 1× and 3× on the stage's background, and watch it build on the dev server: every piece must look right arriving on its own.
 
 ### Isometric icons
@@ -419,7 +396,7 @@ The achievement icons are solid objects built like the clouds and the bridge, on
 
 ## Before opening a PR
 
-- [ ] `npm run art -- --check <name>` passes for everything you touched, and `npm run art` reports every file `lossless` and none `OVER BUDGET`. For the hero island, paste `npm run art -- --sizes hero-island` into the PR.
+- [ ] `npm run pixellab -- check <name>` passes for everything you touched, and `npm run art` reports every file `lossless` and none `OVER BUDGET`. For the hero island, paste `npm run pixellab -- art sizes hero-island` into the PR.
 - [ ] World colors only (outfit colors only in an outfit); within the caps; light from the island's side.
 - [ ] The preview PNGs (1× and 4× at least) are attached to the PR. For the Range, each class you touched at 1× and 3×, from a scratch copy of `range-sprite` that keeps the shadow and only that class's group, and a new floor set at 6×.
 - [ ] `npm test` shows `# fail 0`.

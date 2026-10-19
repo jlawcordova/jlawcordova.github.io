@@ -13,6 +13,7 @@
     "astro": "astro",
     "fetch-accomplishments": "node scripts/fetch-accomplishments.mjs",
     "art": "pixellab art build --site .",
+    "pixellab": "pixellab --site .",
     "e2e": "node scripts/e2e/run.mjs",
     "test": "node --test \"scripts/*.test.mjs\""
   },

@@ -10,7 +10,7 @@ This skill covers what's specific to icons. Everything about drawing (the palett
 
 ## What an icon is
 
-- **A 16×16 isometric sprite** in the [island and Range look](../pixel-art/SKILL.md#island-and-range-look): one solid object on the same 2:1 grid as the island, seen from the same angle, with no outline and no platform under it. It's one object, `src/assets/pixel-art/source/objects/icon-<id>.mjs`, with a single layer and the anchor at `[8, 15]`. The `pixel-art` skill's [Isometric icons](../pixel-art/SKILL.md#isometric-icons) part is the recipe; the chest, star and lock are the references.
+- **A 16×16 isometric sprite** in the [island and Range look](../pixel-art/SKILL.md#island-and-range-look): one solid object on the same 2:1 grid as the island, seen from the same angle, with no outline and no platform under it. It's one object, `src/assets/pixel-art/jlawcordova.pixellab/objects/icon-<id>.mjs`, with a single layer and the anchor at `[8, 15]`. The `pixel-art` skill's [Isometric icons](../pixel-art/SKILL.md#isometric-icons) part is the recipe; the chest, star and lock are the references.
 - **World colors only,** at most 12 (aim for 6–8), and **no `ink`**, not even as a dot. Faces are set apart by shade: top lightest, left face mid, right face darkest, as on the island. The main material shows at least three shades of its ramp. Where today's outline pixel would go, use the darker shade of the face it borders.
 - **Generic and public-safe.** No names, logos, brands or likenesses. A picture of a kind of work, such as a rocket for "shipped", never of a person or a client.
 - **Named for the kind of work,** not the discipline and not a specific accomplishment. The set stays small and reusable: add a new icon only when the kind of work isn't covered by any existing meaning. Check the table below first.
@@ -48,12 +48,12 @@ The set is the 16 icons above, and a test fails if this table disagrees with `ac
 ## Steps
 
 1. **Pick the id and meaning.** Lowercase kebab-case, at most 64 characters. Check it isn't already covered.
-2. **Start a file:** `npm run art -- --new object icon-<id> --size 16x16`, then set the anchor to `[8, 15]`.
+2. **Start a file:** `npm run pixellab -- object new icon-<id> --size 16x16`, then set the anchor to `[8, 15]`.
 3. **Draw it,** whole rows of 16 characters, 16 rows, using `keys` from the world palette. `.` is transparent.
-4. **Check it:** `npm run art -- --check icon-<id>` must pass.
-5. **Look at it:** `npm run art -- --preview icon-<id> --scale 3` and open the PNGs. Judge it at 3× (its 48px size on the site) and at 1×, and also dimmed as a locked row shows it (grayscale at 40% opacity on the row's `--color-surface`), since the lock is drawn over that. It must read at a glance. The picture, not the text, decides.
-6. **List it:** add `{ id, meaning, frame }` to `ICONS` in `src/lib/achievement-icons.mjs`, and a row to the table above. Check it reads on its frame's fill: `npm run art -- --preview achievement-frames --scale 3` shows the fills.
-7. **Place it in the sheet:** add an item to `src/assets/pixel-art/source/scenes/achievement-icons.mjs`, in the same position as in `SHEET_ORDER` (`star`, `lock`, then `ICONS` in order). Group `{ 'data-icon': '<id>' }`, at `px: [index × 16 + 8, 15]`, and widen the `viewBox` to `[0, 0, 16 × count, 16]`. Re-save the scene in canonical form if `npm test` says it isn't.
+4. **Check it:** `npm run pixellab -- check icon-<id>` must pass.
+5. **Look at it:** `npm run pixellab -- art preview icon-<id> --scale 3 --out .art-preview/icon-<id>@3x.png` (and again at `--scale 1`) and open the PNGs. Judge it at 3× (its 48px size on the site) and at 1×, and also dimmed as a locked row shows it (grayscale at 40% opacity on the row's `--color-surface`), since the lock is drawn over that. It must read at a glance. The picture, not the text, decides.
+6. **List it:** add `{ id, meaning, frame }` to `ICONS` in `src/lib/achievement-icons.mjs`, and a row to the table above. Check it reads on its frame's fill: `npm run pixellab -- art preview achievement-frames --scale 3 --out .art-preview/achievement-frames@3x.png` shows the fills.
+7. **Place it in the sheet:** add an item to `src/assets/pixel-art/jlawcordova.pixellab/scenes/achievement-icons.mjs`, in the same position as in `SHEET_ORDER` (`star`, `lock`, then `ICONS` in order). Group `{ 'data-icon': '<id>' }`, at `px: [index × 16 + 8, 15]`, and widen the `viewBox` to `[0, 0, 16 × count, 16]`. Re-save the scene in canonical form if `npm test` says it isn't.
 8. **Compile and test:** `npm run art`, then `npm test` (it checks the list, the objects, the sheet order, the caps and the 6 KB gzip budget for the sheet).
 9. **Open a PR** with the 1× and 4× previews attached. Merging deploys `/achievement-icons.json`, which the `accomplishments` skill reads. Tell the owner if the lexicon's `icon` `knownValues` in `jlawcordova-atproto` needs the new id.
 

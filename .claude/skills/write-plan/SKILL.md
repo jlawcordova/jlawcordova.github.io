@@ -92,7 +92,7 @@ When implementing, follow it as written:
 # Plan: pixel-art outfit for security work (from intent.md 2026-10-01)
 
 ## Files that change
-src/assets/pixel-art/source/scenes/range-sprite.mjs, src/assets/pixel-art/range-sprite.svg,
+src/assets/pixel-art/jlawcordova.pixellab/scenes/range-sprite.mjs, src/assets/pixel-art/range-sprite.svg,
 src/data/home.ts, src/styles/range.css
 
 ## Order of work

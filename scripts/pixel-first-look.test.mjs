@@ -119,7 +119,7 @@ describe('pixel-first look', () => {
 
   it('R4, R10: UI motion is smooth; only the pixel art steps', async () => {
     // Stepped easing read as lag on the deployed site (spec amendment, 2026-10-05).
-    const stepped = ['src/styles/pixel-art.css', 'src/styles/lab.css'];
+    const stepped = ['src/styles/pixel-art.css'];
     const bad = [];
     for (const file of [...(await styledFiles()), ...(await filesIn('src', ['.ts']))]) {
       if (stepped.includes(file) || file.startsWith('src/components/lab/')) continue;
