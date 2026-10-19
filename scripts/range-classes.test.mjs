@@ -41,7 +41,7 @@ describe('Range classes (R12)', () => {
 
   it('R12: the scene has the same groups as the data', async () => {
     const names = classNames(await read('src/data/home.ts'));
-    const scene = (await import('../src/assets/pixel-art/source/scenes/range-sprite.mjs')).default;
+    const scene = (await import('../src/assets/pixel-art/jlawcordova.pixellab/scenes/range-sprite.mjs')).default;
     const groups = classGroups(scene).map((i) => i.group['data-class']);
     assert.deepEqual(groups, names.map((_, i) => String(i)));
   });
@@ -66,7 +66,7 @@ describe('Range classes (R12)', () => {
 describe('Range class order (R1)', () => {
   it('R1: each data-class places the outfit named for its class, in rangeClasses order', async () => {
     const names = classNames(await read('src/data/home.ts'));
-    const scene = (await import('../src/assets/pixel-art/source/scenes/range-sprite.mjs')).default;
+    const scene = (await import('../src/assets/pixel-art/jlawcordova.pixellab/scenes/range-sprite.mjs')).default;
     const placed = classGroups(scene).map((g) => flatten(g.items).find((i) => i.object.startsWith('outfit-')).object);
     assert.deepEqual(placed, names.map(outfitFor));
   });

@@ -151,11 +151,12 @@ describe('pixel-first look', () => {
     assert.equal(match[1].trim(), thick.value);
   });
 
-  it('R9: motion is the only new dependency, pinned exactly', async () => {
+  it('R9: motion is the only new dependency, pinned exactly (pixellab is a dev dependency pinned to a commit: art-to-Pixel-Lab spec R2)', async () => {
     const pkg = JSON.parse(await read('package.json'));
     assert.deepEqual(Object.keys(pkg.dependencies).sort(), ['@astrojs/prism', 'astro', 'motion']);
-    assert.deepEqual(Object.keys(pkg.devDependencies).sort(), ['@astrojs/check', 'typescript']);
+    assert.deepEqual(Object.keys(pkg.devDependencies).sort(), ['@astrojs/check', 'pixellab', 'typescript']);
     assert.match(pkg.dependencies.motion, /^\d+\.\d+\.\d+$/, 'motion has an exact version');
+    assert.match(pkg.devDependencies.pixellab, /^github:jlawcordova\/jlawcordova-lab#([0-9a-f]{40}|v\d+\.\d+\.\d+)$/, 'pixellab is pinned to a commit or a release tag');
 
     const lock = JSON.parse(await read('package-lock.json'));
     const installed = Object.keys(lock.packages);

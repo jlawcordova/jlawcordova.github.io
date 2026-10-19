@@ -12,15 +12,15 @@ import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
-import { CAPS, composite, renderScene, resolve, usedColors } from '../src/lib/pixel-art/engine.mjs';
-import { pxToTile, tileToPx } from '../src/lib/pixel-art/iso.mjs';
-import { stateAt } from '../src/lib/pixel-art/motion.mjs';
-import { compileScene, readSources } from './optimize-pixel-art.mjs';
+import { CAPS, composite, renderScene, resolve, usedColors } from 'pixellab/engine';
+import { pxToTile, tileToPx } from 'pixellab/iso';
+import { stateAt } from 'pixellab/motion';
+import { compileScene, readSources } from 'pixellab/compile';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const ART_DIR = join(ROOT, 'src/assets/pixel-art');
 
-const { sources } = await readSources(join(ART_DIR, 'source'));
+const { sources } = await readSources(join(ART_DIR, 'jlawcordova.pixellab'));
 const scene = sources.scenes.get('hero-island');
 /** The scene's items in paint order, flattened out of their entrance groups (island build entrance spec). */
 const flatten = (items) => items.flatMap((item) => (item.group ? flatten(item.items) : [item]));

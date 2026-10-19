@@ -7,11 +7,11 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
-import { resolve } from '../src/lib/pixel-art/engine.mjs';
-import { readSources } from './optimize-pixel-art.mjs';
+import { resolve } from 'pixellab/engine';
+import { readSources } from 'pixellab/compile';
 import { CELL, FALLBACK_ICON, FRAME_CELL, FRAMES, ICONS, LOCK_ICON, PLAIN_FRAME, SHEET_ORDER, frameFor, iconCatalog, iconFor } from '../src/lib/achievement-icons.mjs';
 
-const SOURCE = new URL('../src/assets/pixel-art/source/', import.meta.url);
+const SOURCE = new URL('../src/assets/pixel-art/jlawcordova.pixellab/', import.meta.url);
 const KEBAB = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
 
 test('R12: every icon id is kebab-case, unique and has a meaning', () => {

@@ -11,11 +11,13 @@ import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
-import { resolve } from '../src/lib/pixel-art/engine.mjs';
-import { OUTPUT_BUDGETS, readSources } from './optimize-pixel-art.mjs';
+import { resolve } from 'pixellab/engine';
+import { readSources } from 'pixellab/compile';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
-const SOURCE = join(ROOT, 'src/assets/pixel-art/source');
+const SOURCE = join(ROOT, 'src/assets/pixel-art/jlawcordova.pixellab');
+/** The document's per-output budgets (manifest.json), which Pixel Lab's `art build` enforces. */
+const OUTPUT_BUDGETS = JSON.parse(await readFile(join(SOURCE, 'manifest.json'), 'utf8')).publish.budgets;
 
 const { sources } = await readSources(SOURCE);
 const scene = sources.scenes.get('range-sprite');

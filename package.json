@@ -12,7 +12,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "fetch-accomplishments": "node scripts/fetch-accomplishments.mjs",
-    "art": "node scripts/optimize-pixel-art.mjs",
+    "art": "pixellab art build --site .",
     "e2e": "node scripts/e2e/run.mjs",
     "test": "node --test \"scripts/*.test.mjs\""
   },
@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
+    "pixellab": "github:jlawcordova/jlawcordova-lab#44b96dbb70261d92656cb45e22a406246904c661",
     "typescript": "6.0.3"
   }
 }
