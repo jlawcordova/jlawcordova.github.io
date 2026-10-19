@@ -43,7 +43,7 @@ Every item in an animated scene sits in exactly one top-level group with class `
 | `data-enter` | Data | Hero island | Range setting |
 | --- | --- | --- | --- |
 | `shadow` | none | the 11 shadow pieces, one group | none: the shadow sits outside the classes |
-| `ground` | `data-col`, `data-row`, and the foot `data-x`, `data-y` (its tile's center) | one group per cube (36), row by row in paint order | one group per floor row, with `data-row` only |
+| `ground` | `data-col`, `data-row`, and the foot `data-x`, `data-y` (its tile's center) | one group per cube (129), row by row in paint order | one group per floor row, with `data-row` only |
 | `object` | the foot `data-x`, `data-y` | one group per run of objects that arrive together | one per prop, and one for the outfit, with `data-x` |
 | `sky` | none | the three clouds | none |
 
@@ -131,10 +131,10 @@ A sequence where pieces travel and hand things on (a truck drives up, tips its l
 
 A loop is frames in the art and keyframes in the CSS:
 
-- **In the art,** a layer `{ loop: 'wf', prefix: 'w', frames: [...] }` (or a block `surface` with `loop`) compiles to groups `class="wf w0"`, `class="wf w1"` and so on (the `pixel-art` skill, Formats). A placement class (`class: 'itruck it1'`) moves a whole object.
-- **In the CSS** (`pixel-art.css`), each frame loop is an opacity keyframe that shows frame *n* for 1/*N* of the cycle, with `step-end` timing and one negative `animation-delay` per frame. The loops are `wf` (1.0s, 5 frames), `ff` (0.6s, 4) and `hf` (3.0s, 6). Placement loops move with stepped transforms: `idrive` for the trucks, `pcloud`, `floaty` and `cbob`.
-- **Reduced motion** sets `animation: none`, shows frame 0 (`.w0, .f0, .h0`) and hides the second truck.
-- **The tests.** The island test "R4: the groups the CSS animates" pins the loop classes in paint order, including how many river tiles carry `wf`. Update that count when a loop's piece is added or removed, and check the CSS names any new class.
+- **In the art,** a layer `{ loop: 'wf', prefix: 'w', frames: [...] }` (or a block `surface` with `loop`) compiles to groups `class="wf w0"`, `class="wf w1"` and so on (the `pixel-art` skill, Formats). A placement class (`class: 'pcloud pc0'`) moves a whole object; a piece that travels and hands things on is the scene's motion instead (above).
+- **In the CSS** (`pixel-art.css`), each frame loop is an opacity keyframe that shows frame *n* for 1/*N* of the cycle, with `step-end` timing and one negative `animation-delay` per frame. The loops are `wf` (1.0s, 5 frames), `ff` (0.6s, 4) and `hf` (3.0s, 6). Placement loops move with stepped transforms: `pcloud`, `floaty` and `cbob`. (The trucks' old `idrive` went with the island level up: the scene's motion drives them.)
+- **Reduced motion** sets `animation: none` and shows frame 0 (`.w0, .f0, .h0`); a scene's motion turns itself off with its own rule.
+- **The tests.** The island test "R4: the groups the CSS animates" counts the loop classes (`wf` per river tile and the falling face, `ff` for the flag and the belt segments, `hf` for the processor, `pcloud` for the clouds). Update that count when a loop's piece is added or removed, and check the CSS names any new class.
 - **Loops and build-ups don't fight.** The loops' classes sit on groups inside the `enter` groups, and the island's float is on its own wrapper (`.hero__float`), so the CSS and Motion never set the same element's transform.
 
 ## Verifying

@@ -1,5 +1,5 @@
 # Intent: Island level up
-Author: J. Law. Cordova (site owner). Status: draft.
+Author: J. Law. Cordova (site owner). Status: accepted, 2026-10-19: reviewed with the owner through the object list, the composed island and the animation, and built in this PR.
 
 ## Problem
 

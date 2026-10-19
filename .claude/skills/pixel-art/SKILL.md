@@ -196,7 +196,7 @@ export default {
 
 - **Items paint in order**: later items cover earlier ones. To bring something forward, move its entry down the list.
 - **`at`** is `{ tile: [col, row, level] }` (snaps to the grid) or `{ px: [x, y] }` (exact, for imported art and nudges). Both must be whole numbers.
-- **`class`** on an item wraps the object in a `<g class>` (the trucks' `itruck it1`, the clouds' `pcloud pc0`). **`group`** makes a `<g>` with `class` or `data-*` attributes around its items (the Range's `data-class` variants).
+- **`class`** on an item wraps the object in a `<g class>` (the clouds' `pcloud pc0`). **`group`** makes a `<g>` with `class` or `data-*` attributes around its items (the Range's `data-class` variants).
 - **`output`** names the SVG it writes in `src/assets/pixel-art/`. Leave it out for a preview-only scene; it's still compiled and checked.
 - **`id`** (optional, kebab-case, unique in the scene) names an item so a `motion` track can move it.
 - **`motion`** (optional) animates items on one loop of `duration` ms, one track per item it moves (the example walks the rock 16 px up-right and back every 2 s). Each key sets, from `t` ms on, the item's `move` (pixels from its placement), `show` and `pose` (an object drawn instead, with the same anchor). The first key is at 0, the rest frame that reduced motion and `--preview` show. Moves step a pixel at a time. The `pixel-art-motion` skill (Scene motion) has the rules, and the lab's Animation pane edits it.
@@ -219,15 +219,15 @@ A name can be written `objects/<name>` or `scenes/<name>` when an object and a s
 
 | Scene | Shows |
 | --- | --- |
-| `closeup-land` | The front corner and both cliffs (columns and rows 3–5) |
-| `closeup-road-end` | Where the road meets the left cliff (columns 1–3, rows 4–5) |
-| `closeup-water` | The river, the waterfall and its streaks (`flag`) |
-| `closeup-crane` | The crane, the hanging load, the stack at its foot and the pine behind it |
-| `closeup-office` | The house, the road, the bridge and its rail, and both trucks at two points of their drive |
-| `closeup-front-trees` | The front trees |
+| `closeup-land` | The island's front corner at [5, 10] in the mining section, with four joints on each cliff |
+| `closeup-road-end` | The road going into `tunnel-road` at the L–B cliff |
+| `closeup-water` | The river, the bridge and the long waterfall with its streaks (`flag`), down to its spray |
+| `closeup-crane` | The crane with its hook, the container at the loading spot and the train waiting under it |
+| `closeup-office` | The house, the road, the river bridge and its rail |
+| `closeup-front-trees` | The front trees of the middle and mining sections |
 | `closeup-sky` | The three clouds and the crane jib's head |
 
-They place the island's objects at the island's positions, in its paint order, and a test keeps them that way: when the island's scene renames or moves an object, change the close-ups in the same commit. They don't use the entrance groups. Where a close-up cuts the island off, the cubes at its edge show their sides. The preview's card color is one shade off the hero's background, so the sky reads as it does on the site.
+They place the island's objects at the island's positions, in its paint order, and a test keeps them that way: when the island's scene renames or moves an object, change the close-ups in the same commit. They show the island's rest frame: no `id`s, no `motion`, and none of the items hidden at t 0. They don't use the entrance groups. Where a close-up cuts the island off, the cubes at its edge show their sides. The preview's card color is one shade off the hero's background, so the sky reads as it does on the site.
 
 ## The editor (optional)
 
@@ -267,18 +267,19 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
 
 ## The art that's already on the site
 
-- **The hero island** (`scenes/hero-island.mjs`, written to `hero-island.svg`) is built from library and island objects, all in world colors and within the caps. Its pieces are:
-  - the ground: 36 one-level cubes on a 6×6 grid, listed row by row (row 0 to 5, then by column), which still paints back to front. Inland and at the corner it's `block`, the cliffs take the edge pieces, and the road and the river run on `block-road` and `block-river` with `path` and `river` laid over them. The river runs the whole of row 3, from the back-left edge behind the house to the waterfall ([island clock sweep](../../../docs/intents/2026-10-island-clock-sweep/spec.md) R7). Inland cubes were flat tiles until the [island build entrance](../../../docs/intents/2026-10-island-build-entrance/spec.md) gave them depth for the entrance; their sides are hidden at rest, and a test checks the settled island paints what the flat tiles did;
-  - the road, bridge, `house`, back trees (`tree-small` and `pine`, three of them on a `tree-shade`) as world-color objects;
-  - the river's `river` tiles and `waterfall-face`, `flag` and `crane-box` (the crane's hanging cardboard box): frame loops `wf` (5 frames, one set per piece), `ff` (4) and `hf` (6);
-  - `truck`, placed with class `itruck it1`, and `truck-green`, placed with `itruck it2`;
-  - the pieces listed after the trucks, so they paint over them: `bridge-rail`, `boxes` (a stack of cardboard boxes), the crane as `crane-mast` with `crane-jib` stacked on it, and the front trees. `fence` is in the library but off the island (the owner's Stage 2 review);
-  - `cloud-a`, `cloud-b` and `cloud-c`, placed with `pcloud pc0` to `pc2`.
+- **The hero island** (`scenes/hero-island.mjs`, written to `hero-island.svg`) is three joined sections with a production line running through them ([island level up spec](../../../docs/intents/2026-10-island-level-up/spec.md), and [art-brief.md](../../../docs/intents/2026-10-island-level-up/art-brief.md) for every object's sizes, anchors and paint-order rules):
+  - the ground: 129 one-level cubes, listed row by row (row −6 to 10, then by column), which still paints back to front. The middle island is cols 0–5 on rows 0–5, plus col 6 on rows 0–2; the mining section is rows 6–10 and the rail section rows −6 to −1 (cols 0–10). Inland and at the front corner it's `block` (or `block-mine` on the ore ground), the cliffs take the edge pieces (`block-left`, `block-right`, `block-mine-left`, and `block-rail` where the railway meets the B–R cliff), and the road and the river run on `block-road` and `block-river` with `path` and `river` laid over them; `track` and `track-mine` lie on their cubes the same way. The road runs the whole of col 2, and the river the whole of row 3 to the waterfall at [5, 3]. Inland cubes' sides are hidden at rest, and a test checks the settled island paints what flat tiles would (except one corner column at each concave step in the outline, which shows by design);
+  - the middle island's house, river bridge and rail, back trees on their `tree-shade`s, and the waterfall (`waterfall-face` and `flag`, falling below the island);
+  - the mining section: `tunnel-road`, the ore heap, `conveyor-row` into the `ore-screen`, `track-mine` and the `mine-cart`;
+  - the processing line: `hopper`, `processor` (its LED is an `hf` loop), the `container`'s loading spot and `boxes`;
+  - the rail section: the two-piece `tunnel-rail`, `track`, the timber overpass, the crane (`crane-mast`, `crane-jib` and `crane-hook`, with their poses) and the train;
+  - the trucks (`truck-open` and its poses), the ore, the parcel, the containers, the cart, the hook, the jib and the train cars carry `id`s, and the scene's 28 s `motion` moves them (the `pixel-art-motion` skill, Scene motion);
+  - `cloud-a`, `cloud-b` and `cloud-c`, placed with `pcloud pc0` to `pc2`. `fence`, `truck`, `truck-green` and `crane-box` are in the library but off the island.
 
   **Entrance groups.** Every item sits in one top-level group with class `enter`, which `Hero.astro` animates with the schedule in `src/lib/island-entrance.mjs`. How they move, and how to try another build-up, is the `pixel-art-motion` skill:
-  - `'data-enter': 'shadow'`: the 11 shadow pieces;
+  - `'data-enter': 'shadow'`: the 24 shadow pieces;
   - `'data-enter': 'ground'` with `'data-col'`, `'data-row'`, `'data-x'` and `'data-y'`: one group per cube, holding the cube and any top laid over it, with its tile's center as its foot;
-  - `'data-enter': 'object'` with `'data-x'` and `'data-y'`: one group per run of consecutive objects that arrive together, in paint order. The foot is the center of the sprite's bottom row (`[round(at.px[0] − anchor[0] + width / 2), at.px[1] − anchor[1] + height − 1]`), or a tile-placed object's tile center. Every item shares the group's x, and its y is the first item's. A `tree-shade` takes its tree's foot, and the crane's jib and box take the mast's;
+  - `'data-enter': 'object'` with `'data-x'` and `'data-y'`: one group per run of consecutive objects that arrive together, in paint order. The foot is the center of the sprite's bottom row (`[round(at.px[0] − anchor[0] + width / 2), at.px[1] − anchor[1] + height − 1]`), or a tile-placed object's tile center. Every item shares the group's x, and its y is the first item's. A `tree-shade` takes its tree's foot, and the crane's jib and hook take the mast's;
   - `'data-enter': 'sky'`: the clouds.
 
   A new object goes in its own `object` group with its foot, in paint order; a test checks every x and y. Groups don't merge colors across each other, so they cost bytes.
@@ -289,7 +290,7 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
   - A test requires seven class groups, each with a floor set no other class uses.
   - `--preview range-sprite` and the lab draw only the first `data-class` group. To see another class, preview a scratch copy of the scene that keeps the shadow and only that class's group.
 - **Recolors.** `truck-green` is `truck` with other colors: it `extends: 'truck'` and lists only the keys that differ. Use the same pattern for a variant that changes colors but not shape.
-- **Keep the CSS hooks.** `pixel-art.css` animates the classes on these groups (`wf w0`…, `itruck it1`, `pcloud pc0`, `cbob`). Don't rename a loop, prefix or placement class unless you change the CSS in the same PR.
+- **Keep the CSS hooks.** `pixel-art.css` animates the classes on these groups (`wf w0`…, `pcloud pc0`, `cbob`); the scene's motion styles its own `mv-` groups. Don't rename a loop, prefix or placement class unless you change the CSS in the same PR.
 
 ## Island and Range look
 

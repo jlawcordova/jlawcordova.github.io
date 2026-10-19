@@ -1,5 +1,5 @@
 # Spec: Island level up (from intent.md 2026-10-18)
-Status: draft.
+Status: approved, 2026-10-19: the owner approved the animation and asked for this PR.
 
 Written after the owner reviewed the work in stages (the object list, each object, the composed island twice and the animation twice), so it records what was decided rather than proposing it. The shared art decisions, object by object, are in [art-brief.md](art-brief.md); the approved object list is [objects.md](objects.md).
 
