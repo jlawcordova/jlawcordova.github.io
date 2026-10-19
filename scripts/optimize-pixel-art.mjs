@@ -9,7 +9,8 @@
 // work. verifyLossless() then checks that every fill group covers exactly the
 // same pixels as before and that nothing else changed, and the budget is
 // checked: 100 KB raw and 25 KB gzip per file (redesign spec §8), except the
-// hero island's 500 KB and 125 KB (hero island detail spec R10). Node
+// hero island's 750 KB and 150 KB (hero island detail spec R10, raised by the
+// island level up spec). Node
 // built-ins only.
 //
 // Usage:
@@ -46,6 +47,7 @@ import {
   sceneFile,
   validate,
 } from '../src/lib/pixel-art/engine.mjs';
+import { itemsById } from '../src/lib/pixel-art/motion.mjs';
 import { serializeObject, serializeScene } from '../src/lib/pixel-art/serialize.mjs';
 import { MAX_NAME, starterBlock, starterExtends, starterScene, starterSprite } from '../src/lib/pixel-art/starter.mjs';
 import { toRectSvg } from '../src/lib/pixel-art/svg.mjs';
@@ -58,7 +60,7 @@ const MAX_SCALE = 16;
 /** Each output's budget in bytes: the engine's, or its own (hero island detail spec R10, Range settings spec R11). */
 export const BUDGET = { raw: 100 * 1024, gzip: 25 * 1024 };
 export const OUTPUT_BUDGETS = {
-  'hero-island.svg': { raw: 500 * 1024, gzip: 125 * 1024 },
+  'hero-island.svg': { raw: 750 * 1024, gzip: 150 * 1024 },
   'range-sprite.svg': { raw: 200 * 1024, gzip: 50 * 1024 },
 };
 
@@ -423,7 +425,12 @@ function sceneSizes(sources, name) {
   const total = measure(sources, name);
   const objects = new Map();
   for (const [object, placed] of placements(scene.items)) {
-    sources.scenes.set('sizes-probe', { ...scene, output: undefined, items: withoutObject(scene.items, object) });
+    const items = withoutObject(scene.items, object);
+    // A motion track moves an item by id, so the tracks of the items just
+    // taken out go with them (island level up spec).
+    const left = itemsById(items);
+    const motion = scene.motion && { ...scene.motion, tracks: scene.motion.tracks.filter((/** @type {any} */ t) => left.has(t.item)) };
+    sources.scenes.set('sizes-probe', { ...scene, output: undefined, items, ...(motion ? { motion } : {}) });
     const less = measure(sources, 'sizes-probe');
     objects.set(object, { placed, raw: total.raw - less.raw, gzip: total.gzip - less.gzip });
   }

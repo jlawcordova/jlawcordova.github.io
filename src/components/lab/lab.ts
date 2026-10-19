@@ -7,6 +7,7 @@
 import { loadSources, validate, type Sources } from '../../lib/pixel-art/engine.mjs';
 import { pxToTile } from '../../lib/pixel-art/iso.mjs';
 import { serialize } from '../../lib/pixel-art/serialize.mjs';
+import { AnimationPanel } from './animation-panel';
 import { setUpDialogs, setUpProblems } from './dialogs';
 import { ago, draftKeys, readDraft, removeDraft, storageWorks, writeDraft } from './drafts';
 import { setUpExport } from './export';
@@ -71,6 +72,7 @@ function usableItem(item: unknown): boolean {
   if ('group' in item) return strings(item.group) && Array.isArray(item.items) && item.items.every(usableItem);
   const at = item.at;
   if (item.class !== undefined && typeof item.class !== 'string') return false;
+  if (item.id !== undefined && typeof item.id !== 'string') return false;
   return typeof item.object === 'string' && isRecord(at) && (wholes(at.tile, 3) || wholes(at.px, 2));
 }
 
@@ -87,7 +89,16 @@ export function usableScene(doc: unknown): boolean {
   if (w <= 0 || h <= 0 || w > MAX_VIEW || h > MAX_VIEW) return false;
   if ('origin' in doc && !wholes(doc.origin, 2)) return false;
   if ('output' in doc && typeof doc.output !== 'string') return false;
+  if ('motion' in doc && !usableMotion(doc.motion)) return false;
   return Array.isArray(doc.items) && doc.items.every(usableItem);
+}
+
+/** A scene's motion the lab can play and edit: problems such as a missing item show in the list. */
+function usableMotion(motion: unknown): boolean {
+  if (!isRecord(motion) || !Number.isInteger(motion.duration) || motion.duration <= 0 || !Array.isArray(motion.tracks)) return false;
+  return motion.tracks.every(
+    (track: unknown) => isRecord(track) && typeof track.item === 'string' && Array.isArray(track.keys) && track.keys.length > 0 && track.keys.every((key: unknown) => isRecord(key) && Number.isInteger(key.t)),
+  );
 }
 
 /** Whether a stored draft has the shape of an object, so it can be serialized, drawn and painted. */
@@ -140,6 +151,9 @@ export class Lab {
   grid = false;
   /** The Library's current object, which Place and Enter put down. */
   current: string | null = null;
+  /** The Animation pane's time in ms; 0 is the rest frame. */
+  time = 0;
+  playing = false;
 
   /** Set when the open draft started from an older site version (A6). */
   stale = false;
@@ -255,6 +269,8 @@ export class Lab {
     this.doc = copy(entry ? entry.doc : site);
     this.stale = Boolean(entry && entry.version !== NEW && entry.version !== this.data.siteVersion[this.key]);
     this.selected = null;
+    this.time = 0;
+    this.playing = false;
     this.undoStack = [];
     this.redoStack = [];
     this.lastGroup = null;
@@ -399,7 +415,7 @@ export class Lab {
     this.announce(`Discarded ${name}`);
   }
 
-  set(changes: Partial<Pick<Lab, 'tool' | 'zoom' | 'grid' | 'current' | 'selected' | 'cursor'>>) {
+  set(changes: Partial<Pick<Lab, 'tool' | 'zoom' | 'grid' | 'current' | 'selected' | 'cursor' | 'time' | 'playing'>>) {
     Object.assign(this, changes);
     this.notify('view');
   }
@@ -558,7 +574,15 @@ export function start() {
   setUpProblems(lab, scene, object);
   setUpKeyboard(lab, stage, scene, object);
   setUpExport(lab);
+  new AnimationPanel(lab);
 
   const [kind, name] = $<HTMLSelectElement>('lab-doc').value.split(':') as [Kind, string];
   lab.open(kind, name);
+  // A link can open one document, ?scene=<name> or ?object=<name> (island
+  // level up spec). An unknown name leaves the default open.
+  const query = new URLSearchParams(location.search);
+  for (const linked of ['scene', 'object'] as const) {
+    const wanted = query.get(linked);
+    if (wanted) lab.open(linked, wanted);
+  }
 }

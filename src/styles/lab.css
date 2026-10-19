@@ -22,8 +22,14 @@
   outline-offset: -2px;
 }
 
+/* The lab has no nav or footer, and fills the screen: the bar on top and
+   the workspace below it, each panel scrolling on its own, so the page
+   itself never scrolls on a wide screen. */
 .lab {
-  padding: 16px var(--gutter) 24px;
+  box-sizing: border-box;
+  height: 100dvh;
+  min-height: 560px;
+  padding: 12px var(--gutter);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -40,6 +46,8 @@
 }
 
 .lab__app {
+  flex: 1 1 auto;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -64,6 +72,16 @@
 
 .lab-bar__kicker {
   margin: 0;
+}
+.lab-bar__home {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+.lab-bar__home:hover {
+  text-decoration: underline;
 }
 
 .lab-bar__title {
@@ -156,8 +174,8 @@
   grid-template-columns: 264px minmax(0, 1fr) 304px;
   grid-template-areas: "library center side";
   gap: 12px;
-  height: calc(100dvh - var(--header-offset));
-  min-height: 640px;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .lab__center {
@@ -888,9 +906,74 @@
   font-size: 13px;
 }
 
+/* The Animation pane (island level up spec): the time scrubber and the
+   selected item's keys, one card per key that wraps in a narrow column. */
+.lab-time input[type="range"] {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  accent-color: var(--color-accent);
+}
+.lab-time output {
+  font: 13px var(--font-pixel);
+}
+.lab-keys {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.lab-keys__key {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-button);
+}
+.lab-keys__key.is-current {
+  border-color: var(--color-ink);
+}
+.lab-keys__field {
+  display: grid;
+  gap: 2px;
+  font-size: 12px;
+}
+.lab-keys__field input,
+.lab-keys__field select {
+  min-height: 44px;
+  padding: 0 6px;
+  border-radius: var(--radius-button);
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-page);
+  color: var(--color-ink);
+  font: 500 14px var(--font-text);
+}
+.lab-keys__field input[type="number"] {
+  width: 68px;
+}
+.lab-keys__field input[type="checkbox"] {
+  width: 24px;
+  accent-color: var(--color-accent);
+}
+.lab-keys__field select {
+  max-width: 150px;
+}
+.lab-actions .btn[hidden] {
+  display: none;
+}
+
 /* -------------------------------------------- one column, below 960px */
 
 @media (max-width: 959.98px) {
+  .lab {
+    height: auto;
+    min-height: 100dvh;
+  }
+
   .lab__workspace {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "center" "tabs" "library" "side";

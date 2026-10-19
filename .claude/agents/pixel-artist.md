@@ -25,7 +25,7 @@ You are the pixel artist for J. Law. Cordova's site. The art is text: objects an
   - the 32×16 tile and the light direction;
   - the 64×64 cap and the character size cap;
   - 12 colors at most per object (aim for 6–8);
-  - the size limits: `hero-island.svg` at most 500 KB raw and 125 KB gzip, `range-sprite.svg` 200 KB raw and 50 KB gzip (about 22 KB raw and 5 KB gzip per setting), every other SVG 100 KB raw and 25 KB gzip, plus any tighter cap a test sets.
+  - the size limits: `hero-island.svg` at most 750 KB raw and 150 KB gzip, `range-sprite.svg` 200 KB raw and 50 KB gzip (about 22 KB raw and 5 KB gzip per setting), every other SVG 100 KB raw and 25 KB gzip, plus any tighter cap a test sets.
 - **Never hand-edit a generated SVG.** Edit sources, then run `npm run art`.
 - **No engine or test changes** (`src/lib/pixel-art/`, `scripts/*.test.mjs`) unless the task says so. If the engine can't express what's needed, stop and report what's missing rather than working around it.
 - Change only the objects and scenes the task names. Don't move scene items unless asked.
@@ -58,12 +58,14 @@ You are the pixel artist for J. Law. Cordova's site. The art is text: objects an
 
 The lab at /lab/pixel-art/ loads every source under `src/assets/pixel-art/source/` from the working tree. So your sources must be at their real paths when you hand back.
 
+When the task gives you a lab URL (the main session hosts the lab, as in the `design-scene` skill), use it: skip step 1 and don't start a server.
+
 1. **Find or start the dev server.**
    - Check whether one already serves this checkout: `npx astro dev status` from the checkout prints its URL and PID.
    - If none does, run `npm run dev` from the checkout. Astro starts the server in the background, prints its URL and PID, and the command exits, so the server outlives your run (checked in Stage 0 of the hero island detail plan).
    - Other checkouts on this machine run their own servers. If port 4321 is taken, pass a free one, `npm run dev -- --port <port>`, and use the URL Astro prints.
 2. **Confirm it serves your version.** `curl -s <url>/lab/pixel-art/ | grep -c '<marker>'`, with a name, row or key that only your version has, until it prints more than 0.
-3. **Hand over the URL** in the report, with the objects and scenes to open. If the reviewer has edited this object in the lab before, tell them to choose the site version when the lab offers it over their older browser draft.
+3. **Hand over the URL** in the report, as one link per object or scene: `<url>/lab/pixel-art/?object=<name>` or `?scene=<name>`. If the reviewer has edited this object in the lab before, tell them to choose the site version when the lab offers it over their older browser draft.
 4. **Leave the server running.** Say how to stop it: `npx astro dev stop` from the checkout. Don't start a second server for the same checkout.
 
 **Blocks in the lab.** The lab paints blocks as well as sprites: a block's top `surface` and its `sides` (left and right). When the reviewer edits a block, its export is a canonical block source with `surface` and `sides`. Treat it like any other export (below). The export carries only that one block, so re-apply their change to the block's variants yourself (see [Blocks](#blocks-sides-and-edges)) and say so in the report.
@@ -146,7 +148,7 @@ Inland cubes' sides only show while the island's entrance floats them up; at res
 - **Grow objects upward or away from water and road.** Keep the anchor on the foot. Keeping or shrinking a map is fine when it reads better (the crane's box kept its size by raising its travel). The `boxes` stack stands only 2–3 px clear of the river, so no column of it may reach lower than its lowest pixel in that column today.
 - **Loops.** Keep each loop's name, prefix and frame count: `wf` ×5, `ff` ×4, `hf` ×6.
   - Frame 0 is the reduced-motion frame, so make it the rest pose.
-  - Don't add `class` layers, or a static layer to a looped prop that paints between the trucks and the crane-box's frames. Tests count those groups and that paint. For example, keep the crane's cable inside its `hf` frames.
+  - Don't add `class` layers to an island object: the island test counts the groups the CSS animates.
   - `--preview` renders frame 0 only. Check loops in the lab with Play, or headless: write scratch copies with the frames rotated (`<name>-f<k>`) and place them side by side in a scratch strip scene.
   - A surface repeats every tile, so a 5-frame drift can't slide seamlessly: fade crests in and out instead, or move a whole period. A streak moving 2 px a frame loops seamlessly on a period of 2 × the frame count (10 rows for `wf`, 8 for `ff`).
 
@@ -156,16 +158,16 @@ From `scripts/pixel-art-island.test.mjs`, plus the engine's R13 and R28. **(E)**
 
 | Group | Pins |
 | --- | --- |
-| All | Every placed object ≤ 64×64, ≤ 12 colors, world colors. No `ink` (R2). R6: the island within 500 KB raw and 125 KB gzip. |
-| Land | The edge piece at each ground position (`BLOCKS`), each pinned to `block` with only its corner column changed; the joint test on `closeup-land`; `path` faces `{ top: 'path-2' }` with surface keys `path-1`, `path-3`, `cream` in that order; a top laid right after its block; no block has an `edge`; R28 (top > left > right) on every block; R13 library sizes and the library-demo object list; `island-shadow` stays outside the ground. |
+| All | Every placed object ≤ 64×64, ≤ 12 colors, world colors. No `ink` (R2). R6: the island within 750 KB raw and 150 KB gzip. |
+| Land | The 132 ground positions in three sections; the edge piece at each position by its neighbours (left cliff, right cliff, corner, inland), the library edge pieces each pinned to `block` with only its corner column changed; the joint test on `closeup-land`; `path` faces `{ top: 'path-2' }` with surface keys `path-1`, `path-3`, `cream` in that order; each top (`path`, `river`, `track`, `track-mine`, `level-crossing`) laid on its cube in the cube's group; no block has an `edge`; R28 (top > left > right) on every block; R13 library sizes and the library-demo object list; `island-shadow` stays outside the ground. |
 | Water | `river` is a flat `water-2` tile with five `wf` frames, in world colors. `block-river` is `block-right` with a water band, pinned like the other edge pieces. `waterfall-face` keeps exactly 2 layers (a static map, then `wf` ×5), sits at tile `[5, 3, 0]` right after a river tile, and every `flag` pixel lands on it. |
-| Entrance | Every item sits in one top-level `enter` group: one `shadow`, six `ground` rows (`data-row` matches each item's row), `object` groups whose `data-x` is each object's foot (shades take their tree's, the crane's jib and box the mast's), one `sky`. R2: the settled island paints exactly what the old flat inland tiles painted, in every loop frame. The ground paints row by row. |
+| Entrance | Every item sits in one top-level `enter` group: one `shadow` (24 pieces), 132 `ground` groups, `object` groups whose `data-x` is each item's foot (shades take their tree's, the crane's jib and hook the mast's), one `sky`. R2: the settled island paints what flat inland tiles would, in every loop frame. The ground paints row by row. |
 | Clouds | R7: `cream`, `path-2` and `path-3` only, never `path-1` (spec C4). The `pcloud` groups stay on the items. |
-| Trees | R3: pinned positions; each trunk foot on grass, not river or road. R5: crossing order with the trucks; 4 trees before the trucks and 4 after. |
+| Trees | R3: pinned positions; each trunk foot on grass, not river, road or track. R7: wherever a shown truck crosses a tree in the loop, the one further forward (larger col + row) paints later. |
 | Office | `house` anchor `[21, 41]` at `[-59, 59]`; it covers tile `[0, 3]` except `-34,31` and `-34,32` (checked before the next pin, so a worktree can confirm the mask while it fails); a world color at x −35, y 30–32. |
-| Crane | The same world colors at both ends of the mast's top row and of the jib's anchor row. The jib's anchor sits one pixel above the mast's top-left pixel; the jib paints the pixel above the cable (`crane-box` column 9, row 0); mast + jib > 64 px. R5: nothing paints between `it2` and `h0` except the front pieces. Each column of `boxes` stands on grass. R7: `flag` and `crane-box` keep their loops and frame counts, in world colors. |
-| Bridge | The truck road test (keep the deck mask). The rail paints after the trucks and shows. `library-demo` places `bridge`. |
-| Trucks | Road test: at every visible step, each column's lowest pixel is on `path` or `bridge`, ≥ 15 of 21 at rest. It reads only each column's lowest pixel, so any recolor inside the silhouette is safe. R7: world colors, no `ink`. `truck-green` still `extends: 'truck'` with no map of its own; override every material key you add. |
+| Crane | The same world colors at both ends of the mast's top row and of the jib's anchor row. The jib's anchor sits one pixel above the mast's top-left pixel; the jib paints the pixel above the hook's rope (`crane-hook` column 9, row 0); mast + jib > 64 px; the jib's motion poses are `crane-jib-side` and `crane-jib-back`, the hook's `crane-hook-low` and `crane-hook-drop`. Each column of `boxes` stands on grass. R7: `flag` and `crane-box` keep their loops and frame counts, in world colors. |
+| Bridge | The river bridge at [2, 3] paints over the ground. `library-demo` places `bridge`. |
+| Trucks | Four `truck-open` items (flat, or tipped) share the line. At every 50 ms of the loop a shown truck's road point keeps x + 2y at 80 (road level). Back to front: `gate-far`, `signal-far`, `truck-far`, the train cars, `signal-near`, `gate-near`, with the other trucks before `signal-near`. No truck is on the crossing with the train, and while a car is on it both gates are down and both signals lit; at rest they're up and dark. `truck-green` still `extends: 'truck'` with no map of its own. |
 
 ## Test pins on the Range
 
@@ -199,14 +201,14 @@ From `scripts/range-classes.test.mjs`, `scripts/range-art.test.mjs`, the knight'
 - **An isolated texture pixel on a base costs about 30 B raw and 6 B gzip.** That's its own rect plus the base run it splits.
 - **Loop frames are full copies.** Their texture doesn't split the base, but it's paid once per frame per placement.
 - **Multiply by placements:**
-  - cubes: 36 (18 `block`, 4 `block-left`, 4 `block-right`, 5 `block-road`, 5 `block-river`), hidden faces included;
-  - `path`: 5;
-  - `river`: 5 tiles × 5 frames;
-  - `pine` and `tree-small`: 4 each;
-  - `island-shadow`: 11;
-  - the truck's map is compiled twice, once per truck;
+  - cubes: 132 (80 `block`, 24 `block-road`, 12 `block-right`, 6 `block-river`, 5 `block-left`, and the mining and rail cubes), hidden faces included;
+  - `path`: 15, `track`: 9, `track-mine`: 3, `level-crossing`: 1;
+  - `river`: 6 tiles × 5 frames;
+  - `pine` and `tree-small`: 8 each;
+  - `island-shadow`: 24;
+  - `truck-open`: 4 placements plus its poses, `ore`: 22 and `stone`: 11;
   - each `enter` group compiles on its own, so runs don't merge across groups;
-  - `crane-box`: 6 frames.
+  - every pose of a moving item is drawn once, in its own group.
 - **New detail gzips at about 4.2:1.** The land sample measured +15.3 KB raw and +3.7 KB gzip.
 - **Measure in the first iteration,** with `npm run art -- --sizes hero-island`. It prints raw and gzip bytes per object and per color, against `HEAD`. If your group runs far over the plan's estimate, trim: fewer, deliberate clusters; horizontal adjacency; texture kept out of loop frames.
 
@@ -224,8 +226,8 @@ From `scripts/range-classes.test.mjs`, `scripts/range-art.test.mjs`, the knight'
 | Trees | `closeup-front-trees` (and `closeup-crane` for the pine behind the mast) |
 | Office | `closeup-office` |
 | Crane | `closeup-crane` |
-| Bridge | `closeup-office` (bridge, rail and trucks) |
-| Trucks | `closeup-office` |
+| Bridge | `closeup-office` (bridge and rail) |
+| Mining, processing, rail | `closeup-road-end`, `closeup-crane` |
 
 ## Working efficiently
 

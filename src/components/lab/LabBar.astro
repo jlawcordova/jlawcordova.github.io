@@ -12,7 +12,8 @@ const { scenes, objects, defaultScene } = Astro.props;
 ---
 
 <div class="lab-bar">
-  <p class="label lab-bar__kicker">Lab</p>
+  <!-- The lab has no nav (it fills the screen), so the kicker leads back to the site. -->
+  <a class="label lab-bar__kicker lab-bar__home" href="/">← Site</a>
   <h1 class="lab-bar__title">Pixel-art lab</h1>
   <label class="lab-bar__picker">
     <span class="visually-hidden">Open</span>

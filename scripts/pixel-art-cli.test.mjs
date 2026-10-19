@@ -118,7 +118,7 @@ describe('per-output budget (hero island detail spec R10)', () => {
     ],
   });
 
-  it('R10: hero-island.svg may pass 100 KB raw, up to 500 KB raw and 125 KB gzip', async () => {
+  it('R10: hero-island.svg may pass 100 KB raw, up to 750 KB raw and 150 KB gzip', async () => {
     const dir = await workspace();
     await writeFile(join(dir, 'source/objects/checkerboard.mjs'), serialize(checkerboard));
     await writeFile(join(dir, 'source/scenes/hero-island.mjs'), serialize(heavy('hero-island.svg')));
@@ -230,10 +230,10 @@ describe('--new (R38)', () => {
 
   it('R38: --new object --kind block writes a canonical starter block that validates', async () => {
     const dir = await workspace();
-    const { code, out } = art(dir, '--new', 'object', 'stone', '--kind', 'block');
+    const { code, out } = art(dir, '--new', 'object', 'slab', '--kind', 'block');
     assert.equal(code, 0, out);
-    assert.match(out, /objects\/stone\.mjs: ok · block 1×1×1 · 30×32 · 3 colors \(of 12\) · 1 frame/);
-    const path = join(dir, 'source/objects/stone.mjs');
+    assert.match(out, /objects\/slab\.mjs: ok · block 1×1×1 · 30×32 · 3 colors \(of 12\) · 1 frame/);
+    const path = join(dir, 'source/objects/slab.mjs');
     assert.equal(serialize(await load(path)), await readFile(path, 'utf8'));
     assert.deepEqual(await load(path), { kind: 'block', size: [1, 1, 1], faces: { top: 'grass-2', left: 'soil-2', right: 'soil-3' } });
   });
@@ -381,7 +381,7 @@ describe('--sizes (hero island detail spec, Tooling)', () => {
     assert.ok(Number(gzip.replaceAll(',', '')) > 0);
     assert.match(out, /^HEAD: not available \(not in a git repository with a HEAD commit\)$/m);
     const [name, placed, objectRaw, deltaRaw] = row(out, 'block');
-    assert.deepEqual([name, placed, deltaRaw], ['block', '17', '—'], 'the 17 grass cubes (island clock sweep spec R7)');
+    assert.deepEqual([name, placed, deltaRaw], ['block', '80', '—'], 'the 80 grass cubes (island level up spec R1, with the road on col 2 across the track)');
     assert.ok(Number(objectRaw.replaceAll(',', '')) > 0);
     assert.ok(row(out, 'grass-2 #8FA56E'), 'colors are listed by their world name');
   });
@@ -400,7 +400,7 @@ describe('--sizes (hero island detail spec, Tooling)', () => {
     assert.equal(code, 0, err);
     assert.match(out, /^HEAD: [\d,]+ B raw, [\d,]+ B gzip \(-[\d,]+ raw, -[\d,]+ gzip\)$/m);
     const [, placed, , deltaRaw] = row(out, 'block');
-    assert.equal(placed, '16');
+    assert.equal(placed, '79');
     assert.match(deltaRaw, /^-[\d,]+$/);
     assert.equal(row(out, 'cloud-a')[3], '+0', 'an object far from the change costs the same raw bytes');
   });

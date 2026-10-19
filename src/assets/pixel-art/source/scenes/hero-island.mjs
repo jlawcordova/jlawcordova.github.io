@@ -1,23 +1,411 @@
 // Pixel-art scene. How to edit it: .claude/skills/pixel-art/SKILL.md
 export default {
   output: 'hero-island.svg',
-  viewBox: [-100, -84, 225, 212],
+  viewBox: [-182, -92, 446, 264],
   origin: [0, 8],
   items: [
     {
       group: { class: 'enter', 'data-enter': 'shadow' },
       items: [
-        { object: 'island-shadow', at: { px: [80, 80] } },
-        { object: 'island-shadow', at: { px: [-80, 80] } },
-        { object: 'island-shadow', at: { px: [64, 88] } },
-        { object: 'island-shadow', at: { px: [-64, 88] } },
-        { object: 'island-shadow', at: { px: [48, 96] } },
-        { object: 'island-shadow', at: { px: [-48, 96] } },
+        { object: 'island-shadow', at: { px: [240, 80] } },
+        { object: 'island-shadow', at: { px: [224, 88] } },
+        { object: 'island-shadow', at: { px: [208, 96] } },
+        { object: 'island-shadow', at: { px: [192, 104] } },
+        { object: 'island-shadow', at: { px: [144, 96] } },
+        { object: 'island-shadow', at: { px: [160, 104] } },
+        { object: 'island-shadow', at: { px: [176, 112] } },
+        { object: 'island-shadow', at: { px: [112, 96] } },
+        { object: 'island-shadow', at: { px: [96, 104] } },
+        { object: 'island-shadow', at: { px: [80, 112] } },
+        { object: 'island-shadow', at: { px: [64, 104] } },
         { object: 'island-shadow', at: { px: [32, 104] } },
-        { object: 'island-shadow', at: { px: [-32, 104] } },
         { object: 'island-shadow', at: { px: [16, 112] } },
-        { object: 'island-shadow', at: { px: [-16, 112] } },
         { object: 'island-shadow', at: { px: [0, 120] } },
+        { object: 'island-shadow', at: { px: [-16, 128] } },
+        { object: 'island-shadow', at: { px: [-32, 136] } },
+        { object: 'island-shadow', at: { px: [-48, 144] } },
+        { object: 'island-shadow', at: { px: [-64, 152] } },
+        { object: 'island-shadow', at: { px: [-160, 120] } },
+        { object: 'island-shadow', at: { px: [-144, 128] } },
+        { object: 'island-shadow', at: { px: [-128, 136] } },
+        { object: 'island-shadow', at: { px: [-112, 144] } },
+        { object: 'island-shadow', at: { px: [-96, 152] } },
+        { object: 'island-shadow', at: { px: [-80, 160] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '0', 'data-row': '-6', 'data-x': '96', 'data-y': '-40' },
+      items: [
+        { object: 'block', at: { tile: [0, -6, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '1', 'data-row': '-6', 'data-x': '112', 'data-y': '-32' },
+      items: [
+        { object: 'block', at: { tile: [1, -6, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '2', 'data-row': '-6', 'data-x': '128', 'data-y': '-24' },
+      items: [
+        { object: 'block-road', at: { tile: [2, -6, 0] } },
+        { object: 'path', at: { tile: [2, -6, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '3', 'data-row': '-6', 'data-x': '144', 'data-y': '-16' },
+      items: [
+        { object: 'block', at: { tile: [3, -6, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '4', 'data-row': '-6', 'data-x': '160', 'data-y': '-8' },
+      items: [
+        { object: 'block-right', at: { tile: [4, -6, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '0', 'data-row': '-5', 'data-x': '80', 'data-y': '-32' },
+      items: [
+        { object: 'block', at: { tile: [0, -5, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '1', 'data-row': '-5', 'data-x': '96', 'data-y': '-24' },
+      items: [
+        { object: 'block', at: { tile: [1, -5, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '2', 'data-row': '-5', 'data-x': '112', 'data-y': '-16' },
+      items: [
+        { object: 'block-road', at: { tile: [2, -5, 0] } },
+        { object: 'path', at: { tile: [2, -5, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '3', 'data-row': '-5', 'data-x': '128', 'data-y': '-8' },
+      items: [
+        { object: 'block', at: { tile: [3, -5, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '4', 'data-row': '-5', 'data-x': '144', 'data-y': '0' },
+      items: [
+        { object: 'block', at: { tile: [4, -5, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '5', 'data-row': '-5', 'data-x': '160', 'data-y': '8' },
+      items: [
+        { object: 'block', at: { tile: [5, -5, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '6', 'data-row': '-5', 'data-x': '176', 'data-y': '16' },
+      items: [
+        { object: 'block', at: { tile: [6, -5, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '7', 'data-row': '-5', 'data-x': '192', 'data-y': '24' },
+      items: [
+        { object: 'block', at: { tile: [7, -5, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '8', 'data-row': '-5', 'data-x': '208', 'data-y': '32' },
+      items: [
+        { object: 'block', at: { tile: [8, -5, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '9', 'data-row': '-5', 'data-x': '224', 'data-y': '40' },
+      items: [
+        { object: 'block', at: { tile: [9, -5, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '10', 'data-row': '-5', 'data-x': '240', 'data-y': '48' },
+      items: [
+        { object: 'block-right', at: { tile: [10, -5, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '0', 'data-row': '-4', 'data-x': '64', 'data-y': '-24' },
+      items: [
+        { object: 'block', at: { tile: [0, -4, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '1', 'data-row': '-4', 'data-x': '80', 'data-y': '-16' },
+      items: [
+        { object: 'block', at: { tile: [1, -4, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '2', 'data-row': '-4', 'data-x': '96', 'data-y': '-8' },
+      items: [
+        { object: 'block-road', at: { tile: [2, -4, 0] } },
+        { object: 'path', at: { tile: [2, -4, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '3', 'data-row': '-4', 'data-x': '112', 'data-y': '0' },
+      items: [
+        { object: 'block', at: { tile: [3, -4, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '4', 'data-row': '-4', 'data-x': '128', 'data-y': '8' },
+      items: [
+        { object: 'block', at: { tile: [4, -4, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '5', 'data-row': '-4', 'data-x': '144', 'data-y': '16' },
+      items: [
+        { object: 'block', at: { tile: [5, -4, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '6', 'data-row': '-4', 'data-x': '160', 'data-y': '24' },
+      items: [
+        { object: 'block', at: { tile: [6, -4, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '7', 'data-row': '-4', 'data-x': '176', 'data-y': '32' },
+      items: [
+        { object: 'block', at: { tile: [7, -4, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '8', 'data-row': '-4', 'data-x': '192', 'data-y': '40' },
+      items: [
+        { object: 'block', at: { tile: [8, -4, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '9', 'data-row': '-4', 'data-x': '208', 'data-y': '48' },
+      items: [
+        { object: 'block', at: { tile: [9, -4, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '10', 'data-row': '-4', 'data-x': '224', 'data-y': '56' },
+      items: [
+        { object: 'block-right', at: { tile: [10, -4, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '0', 'data-row': '-3', 'data-x': '48', 'data-y': '-16' },
+      items: [
+        { object: 'block', at: { tile: [0, -3, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '1', 'data-row': '-3', 'data-x': '64', 'data-y': '-8' },
+      items: [
+        { object: 'block-road', at: { tile: [1, -3, 0] } },
+        { object: 'track', at: { tile: [1, -3, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '2', 'data-row': '-3', 'data-x': '80', 'data-y': '0' },
+      items: [
+        { object: 'block-road', at: { tile: [2, -3, 0] } },
+        { object: 'level-crossing', at: { tile: [2, -3, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '3', 'data-row': '-3', 'data-x': '96', 'data-y': '8' },
+      items: [
+        { object: 'block-road', at: { tile: [3, -3, 0] } },
+        { object: 'track', at: { tile: [3, -3, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '4', 'data-row': '-3', 'data-x': '112', 'data-y': '16' },
+      items: [
+        { object: 'block-road', at: { tile: [4, -3, 0] } },
+        { object: 'track', at: { tile: [4, -3, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '5', 'data-row': '-3', 'data-x': '128', 'data-y': '24' },
+      items: [
+        { object: 'block-road', at: { tile: [5, -3, 0] } },
+        { object: 'track', at: { tile: [5, -3, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '6', 'data-row': '-3', 'data-x': '144', 'data-y': '32' },
+      items: [
+        { object: 'block-road', at: { tile: [6, -3, 0] } },
+        { object: 'track', at: { tile: [6, -3, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '7', 'data-row': '-3', 'data-x': '160', 'data-y': '40' },
+      items: [
+        { object: 'block-road', at: { tile: [7, -3, 0] } },
+        { object: 'track', at: { tile: [7, -3, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '8', 'data-row': '-3', 'data-x': '176', 'data-y': '48' },
+      items: [
+        { object: 'block-road', at: { tile: [8, -3, 0] } },
+        { object: 'track', at: { tile: [8, -3, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '9', 'data-row': '-3', 'data-x': '192', 'data-y': '56' },
+      items: [
+        { object: 'block-road', at: { tile: [9, -3, 0] } },
+        { object: 'track', at: { tile: [9, -3, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '10', 'data-row': '-3', 'data-x': '208', 'data-y': '64' },
+      items: [
+        { object: 'block-rail', at: { tile: [10, -3, 0] } },
+        { object: 'track', at: { tile: [10, -3, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '0', 'data-row': '-2', 'data-x': '32', 'data-y': '-8' },
+      items: [
+        { object: 'block', at: { tile: [0, -2, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '1', 'data-row': '-2', 'data-x': '48', 'data-y': '0' },
+      items: [
+        { object: 'block', at: { tile: [1, -2, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '2', 'data-row': '-2', 'data-x': '64', 'data-y': '8' },
+      items: [
+        { object: 'block-road', at: { tile: [2, -2, 0] } },
+        { object: 'path', at: { tile: [2, -2, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '3', 'data-row': '-2', 'data-x': '80', 'data-y': '16' },
+      items: [
+        { object: 'block', at: { tile: [3, -2, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '4', 'data-row': '-2', 'data-x': '96', 'data-y': '24' },
+      items: [
+        { object: 'block', at: { tile: [4, -2, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '5', 'data-row': '-2', 'data-x': '112', 'data-y': '32' },
+      items: [
+        { object: 'block', at: { tile: [5, -2, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '6', 'data-row': '-2', 'data-x': '128', 'data-y': '40' },
+      items: [
+        { object: 'block', at: { tile: [6, -2, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '7', 'data-row': '-2', 'data-x': '144', 'data-y': '48' },
+      items: [
+        { object: 'block', at: { tile: [7, -2, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '8', 'data-row': '-2', 'data-x': '160', 'data-y': '56' },
+      items: [
+        { object: 'block', at: { tile: [8, -2, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '9', 'data-row': '-2', 'data-x': '176', 'data-y': '64' },
+      items: [
+        { object: 'block', at: { tile: [9, -2, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '10', 'data-row': '-2', 'data-x': '192', 'data-y': '72' },
+      items: [
+        { object: 'block-right', at: { tile: [10, -2, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '0', 'data-row': '-1', 'data-x': '16', 'data-y': '0' },
+      items: [
+        { object: 'block', at: { tile: [0, -1, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '1', 'data-row': '-1', 'data-x': '32', 'data-y': '8' },
+      items: [
+        { object: 'block', at: { tile: [1, -1, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '2', 'data-row': '-1', 'data-x': '48', 'data-y': '16' },
+      items: [
+        { object: 'block-road', at: { tile: [2, -1, 0] } },
+        { object: 'path', at: { tile: [2, -1, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '3', 'data-row': '-1', 'data-x': '64', 'data-y': '24' },
+      items: [
+        { object: 'block', at: { tile: [3, -1, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '4', 'data-row': '-1', 'data-x': '80', 'data-y': '32' },
+      items: [
+        { object: 'block', at: { tile: [4, -1, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '5', 'data-row': '-1', 'data-x': '96', 'data-y': '40' },
+      items: [
+        { object: 'block', at: { tile: [5, -1, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '6', 'data-row': '-1', 'data-x': '112', 'data-y': '48' },
+      items: [
+        { object: 'block', at: { tile: [6, -1, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '7', 'data-row': '-1', 'data-x': '128', 'data-y': '56' },
+      items: [
+        { object: 'block', at: { tile: [7, -1, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '8', 'data-row': '-1', 'data-x': '144', 'data-y': '64' },
+      items: [
+        { object: 'block-left', at: { tile: [8, -1, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '9', 'data-row': '-1', 'data-x': '160', 'data-y': '72' },
+      items: [
+        { object: 'block-left', at: { tile: [9, -1, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '10', 'data-row': '-1', 'data-x': '176', 'data-y': '80' },
+      items: [
+        { object: 'block', at: { tile: [10, -1, 0] } },
       ],
     },
     {
@@ -54,7 +442,19 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'ground', 'data-col': '5', 'data-row': '0', 'data-x': '80', 'data-y': '48' },
       items: [
-        { object: 'block-right', at: { tile: [5, 0, 0] } },
+        { object: 'block', at: { tile: [5, 0, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '6', 'data-row': '0', 'data-x': '96', 'data-y': '56' },
+      items: [
+        { object: 'block', at: { tile: [6, 0, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '7', 'data-row': '0', 'data-x': '112', 'data-y': '64' },
+      items: [
+        { object: 'block-right', at: { tile: [7, 0, 0] } },
       ],
     },
     {
@@ -91,7 +491,19 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'ground', 'data-col': '5', 'data-row': '1', 'data-x': '64', 'data-y': '56' },
       items: [
-        { object: 'block-right', at: { tile: [5, 1, 0] } },
+        { object: 'block', at: { tile: [5, 1, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '6', 'data-row': '1', 'data-x': '80', 'data-y': '64' },
+      items: [
+        { object: 'block', at: { tile: [6, 1, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '7', 'data-row': '1', 'data-x': '96', 'data-y': '72' },
+      items: [
+        { object: 'block-right', at: { tile: [7, 1, 0] } },
       ],
     },
     {
@@ -128,7 +540,19 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'ground', 'data-col': '5', 'data-row': '2', 'data-x': '48', 'data-y': '64' },
       items: [
-        { object: 'block-right', at: { tile: [5, 2, 0] } },
+        { object: 'block', at: { tile: [5, 2, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '6', 'data-row': '2', 'data-x': '64', 'data-y': '72' },
+      items: [
+        { object: 'block-left', at: { tile: [6, 2, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '7', 'data-row': '2', 'data-x': '80', 'data-y': '80' },
+      items: [
+        { object: 'block', at: { tile: [7, 2, 0] } },
       ],
     },
     {
@@ -214,13 +638,13 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'ground', 'data-col': '0', 'data-row': '5', 'data-x': '-80', 'data-y': '48' },
       items: [
-        { object: 'block-left', at: { tile: [0, 5, 0] } },
+        { object: 'block', at: { tile: [0, 5, 0] } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'ground', 'data-col': '1', 'data-row': '5', 'data-x': '-64', 'data-y': '56' },
       items: [
-        { object: 'block-left', at: { tile: [1, 5, 0] } },
+        { object: 'block', at: { tile: [1, 5, 0] } },
       ],
     },
     {
@@ -233,19 +657,286 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'ground', 'data-col': '3', 'data-row': '5', 'data-x': '-32', 'data-y': '72' },
       items: [
-        { object: 'block-left', at: { tile: [3, 5, 0] } },
+        { object: 'block', at: { tile: [3, 5, 0] } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'ground', 'data-col': '4', 'data-row': '5', 'data-x': '-16', 'data-y': '80' },
       items: [
-        { object: 'block-left', at: { tile: [4, 5, 0] } },
+        { object: 'block', at: { tile: [4, 5, 0] } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'ground', 'data-col': '5', 'data-row': '5', 'data-x': '0', 'data-y': '88' },
       items: [
-        { object: 'block', at: { tile: [5, 5, 0] } },
+        { object: 'block-right', at: { tile: [5, 5, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '0', 'data-row': '6', 'data-x': '-96', 'data-y': '56' },
+      items: [
+        { object: 'block', at: { tile: [0, 6, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '1', 'data-row': '6', 'data-x': '-80', 'data-y': '64' },
+      items: [
+        { object: 'block', at: { tile: [1, 6, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '2', 'data-row': '6', 'data-x': '-64', 'data-y': '72' },
+      items: [
+        { object: 'block-road', at: { tile: [2, 6, 0] } },
+        { object: 'path', at: { tile: [2, 6, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '3', 'data-row': '6', 'data-x': '-48', 'data-y': '80' },
+      items: [
+        { object: 'block', at: { tile: [3, 6, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '4', 'data-row': '6', 'data-x': '-32', 'data-y': '88' },
+      items: [
+        { object: 'block', at: { tile: [4, 6, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '5', 'data-row': '6', 'data-x': '-16', 'data-y': '96' },
+      items: [
+        { object: 'block-right', at: { tile: [5, 6, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '0', 'data-row': '7', 'data-x': '-112', 'data-y': '64' },
+      items: [
+        { object: 'block', at: { tile: [0, 7, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '1', 'data-row': '7', 'data-x': '-96', 'data-y': '72' },
+      items: [
+        { object: 'block', at: { tile: [1, 7, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '2', 'data-row': '7', 'data-x': '-80', 'data-y': '80' },
+      items: [
+        { object: 'block-road', at: { tile: [2, 7, 0] } },
+        { object: 'path', at: { tile: [2, 7, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '3', 'data-row': '7', 'data-x': '-64', 'data-y': '88' },
+      items: [
+        { object: 'block', at: { tile: [3, 7, 0] } },
+        { object: 'track-mine', at: { tile: [3, 7, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '4', 'data-row': '7', 'data-x': '-48', 'data-y': '96' },
+      items: [
+        { object: 'block', at: { tile: [4, 7, 0] } },
+        { object: 'track-mine', at: { tile: [4, 7, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '5', 'data-row': '7', 'data-x': '-32', 'data-y': '104' },
+      items: [
+        { object: 'block-right', at: { tile: [5, 7, 0] } },
+        { object: 'track-mine', at: { tile: [5, 7, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '0', 'data-row': '8', 'data-x': '-128', 'data-y': '72' },
+      items: [
+        { object: 'block', at: { tile: [0, 8, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '1', 'data-row': '8', 'data-x': '-112', 'data-y': '80' },
+      items: [
+        { object: 'block', at: { tile: [1, 8, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '2', 'data-row': '8', 'data-x': '-96', 'data-y': '88' },
+      items: [
+        { object: 'block-road', at: { tile: [2, 8, 0] } },
+        { object: 'path', at: { tile: [2, 8, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '3', 'data-row': '8', 'data-x': '-80', 'data-y': '96' },
+      items: [
+        { object: 'block', at: { tile: [3, 8, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '4', 'data-row': '8', 'data-x': '-64', 'data-y': '104' },
+      items: [
+        { object: 'block', at: { tile: [4, 8, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '5', 'data-row': '8', 'data-x': '-48', 'data-y': '112' },
+      items: [
+        { object: 'block-right', at: { tile: [5, 8, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '0', 'data-row': '9', 'data-x': '-144', 'data-y': '80' },
+      items: [
+        { object: 'block', at: { tile: [0, 9, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '1', 'data-row': '9', 'data-x': '-128', 'data-y': '88' },
+      items: [
+        { object: 'block', at: { tile: [1, 9, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '2', 'data-row': '9', 'data-x': '-112', 'data-y': '96' },
+      items: [
+        { object: 'block-road', at: { tile: [2, 9, 0] } },
+        { object: 'path', at: { tile: [2, 9, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '3', 'data-row': '9', 'data-x': '-96', 'data-y': '104' },
+      items: [
+        { object: 'block-mine', at: { tile: [3, 9, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '4', 'data-row': '9', 'data-x': '-80', 'data-y': '112' },
+      items: [
+        { object: 'block-mine', at: { tile: [4, 9, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '5', 'data-row': '9', 'data-x': '-64', 'data-y': '120' },
+      items: [
+        { object: 'block-right', at: { tile: [5, 9, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '0', 'data-row': '10', 'data-x': '-160', 'data-y': '88' },
+      items: [
+        { object: 'block-left', at: { tile: [0, 10, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '1', 'data-row': '10', 'data-x': '-144', 'data-y': '96' },
+      items: [
+        { object: 'block-left', at: { tile: [1, 10, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '2', 'data-row': '10', 'data-x': '-128', 'data-y': '104' },
+      items: [
+        { object: 'block-road', at: { tile: [2, 10, 0] } },
+        { object: 'path', at: { tile: [2, 10, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '3', 'data-row': '10', 'data-x': '-112', 'data-y': '112' },
+      items: [
+        { object: 'block-mine-left', at: { tile: [3, 10, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '4', 'data-row': '10', 'data-x': '-96', 'data-y': '120' },
+      items: [
+        { object: 'block-mine-left', at: { tile: [4, 10, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '5', 'data-row': '10', 'data-x': '-80', 'data-y': '128' },
+      items: [
+        { object: 'block', at: { tile: [5, 10, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '158', 'data-y': '3' },
+      items: [
+        { object: 'tree-small', at: { px: [157, 3] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '231', 'data-y': '44' },
+      items: [
+        { object: 'pine', at: { px: [229, 44] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '89', 'data-y': '-16' },
+      items: [
+        { object: 'crossing-gate', id: 'gate-far', at: { px: [88, -16] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '81', 'data-y': '-12' },
+      items: [
+        { object: 'crossing-signal', id: 'signal-far', at: { px: [80, -12] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '80', 'data-y': '3' },
+      items: [
+        { object: 'truck-open', id: 'truck-far', at: { px: [80, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '48', 'data-y': '-5' },
+      items: [
+        { object: 'tunnel-rail', at: { px: [48, -16] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '140', 'data-y': '33' },
+      items: [
+        { object: 'boxcar', id: 'train-boxcar', at: { px: [140, 30] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '160', 'data-y': '43' },
+      items: [
+        { object: 'flatcar', id: 'train-flatcar', at: { px: [160, 40] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '160', 'data-y': '39' },
+      items: [
+        { object: 'container', id: 'container-train', at: { px: [160, 34] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '180', 'data-y': '54' },
+      items: [
+        { object: 'locomotive', id: 'train-loco', at: { px: [180, 50] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '48', 'data-y': '-5' },
+      items: [
+        { object: 'tunnel-rail-front', at: { px: [48, -16] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '137', 'data-y': '52' },
+      items: [
+        { object: 'crane-mast', at: { px: [136, 52] } },
+        { object: 'crane-jib', id: 'jib', at: { px: [133, 12] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '36', 'data-y': '-2' },
+      items: [
+        { object: 'pine', at: { px: [34, -2] } },
       ],
     },
     {
@@ -273,9 +964,9 @@ export default {
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '57', 'data-y': '38' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '63', 'data-y': '75' },
       items: [
-        { object: 'tree-shade', at: { px: [55, 38] } },
+        { object: 'tree-shade', at: { px: [61, 75] } },
       ],
     },
     {
@@ -297,17 +988,93 @@ export default {
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '57', 'data-y': '38' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-99', 'data-y': '68' },
       items: [
-        { object: 'pine', at: { px: [55, 38] } },
+        { object: 'pine', at: { px: [-101, 68] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-137', 'data-y': '82' },
+      items: [
+        { object: 'tree-small', at: { px: [-138, 82] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-146', 'data-y': '95' },
+      items: [
+        { object: 'tree', at: { px: [-146, 95] } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '42', 'data-y': '96' },
       items: [
         { object: 'flag', at: { px: [37, 73] } },
-        { object: 'truck', class: 'itruck it1', at: { px: [31, 6] } },
-        { object: 'truck-green', class: 'itruck it2', at: { px: [31, 6] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-80', 'data-y': '83' },
+      items: [
+        { object: 'truck-open', id: 'truck-wait', at: { px: [-80, 80] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-80', 'data-y': '83' },
+      items: [
+        { object: 'truck-open', id: 'truck-load', at: { px: [-80, 80] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '32', 'data-y': '27' },
+      items: [
+        { object: 'truck-open', id: 'truck-tip', at: { px: [32, 24] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '79', 'data-y': '13' },
+      items: [
+        { object: 'crossing-signal', id: 'signal-near', at: { px: [78, 13] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '71', 'data-y': '17' },
+      items: [
+        { object: 'crossing-gate', id: 'gate-near', at: { px: [70, 17] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-88', 'data-y': '76' },
+      items: [
+        { object: 'ore', id: 'ore-wait-1', at: { px: [-88, 76] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-80', 'data-y': '76' },
+      items: [
+        { object: 'ore', id: 'ore-wait-2', at: { px: [-80, 76] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-84', 'data-y': '74' },
+      items: [
+        { object: 'ore', id: 'ore-road-1', at: { px: [-84, 74] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-88', 'data-y': '76' },
+      items: [
+        { object: 'ore', id: 'ore-road-2', at: { px: [-88, 76] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-80', 'data-y': '76' },
+      items: [
+        { object: 'ore', id: 'ore-road-3', at: { px: [-80, 76] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-84', 'data-y': '77' },
+      items: [
+        { object: 'ore', id: 'ore-road-4', at: { px: [-84, 77] } },
       ],
     },
     {
@@ -317,16 +1084,105 @@ export default {
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '27', 'data-y': '62' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '64', 'data-y': '40' },
       items: [
-        { object: 'boxes', at: { px: [32, 62] } },
+        { object: 'conveyor-feed', at: { tile: [4, 0, 0] } },
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '60', 'data-y': '59' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '45', 'data-y': '32' },
       items: [
-        { object: 'crane-mast', at: { px: [59, 59] } },
-        { object: 'crane-jib', at: { px: [56, 19] } },
+        { object: 'ore', id: 'ore-feed-1', at: { px: [45, 32] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '45', 'data-y': '32' },
+      items: [
+        { object: 'ore', id: 'ore-feed-2', at: { px: [45, 32] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '45', 'data-y': '32' },
+      items: [
+        { object: 'ore', id: 'ore-feed-3', at: { px: [45, 32] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '55', 'data-y': '37' },
+      items: [
+        { object: 'ore', id: 'ore-feed-4', at: { px: [55, 37] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '46', 'data-y': '35' },
+      items: [
+        { object: 'hopper', at: { px: [46, 31] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '28', 'data-y': '18' },
+      items: [
+        { object: 'ore', id: 'ore-hopper-1', at: { px: [28, 18] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '24', 'data-y': '20' },
+      items: [
+        { object: 'ore', id: 'ore-hopper-2', at: { px: [24, 20] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '32', 'data-y': '20' },
+      items: [
+        { object: 'ore', id: 'ore-hopper-3', at: { px: [32, 20] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '28', 'data-y': '21' },
+      items: [
+        { object: 'ore', id: 'ore-hopper-4', at: { px: [28, 21] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '84', 'data-y': '60' },
+      items: [
+        { object: 'processor', at: { px: [80, 48] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '99', 'data-y': '53' },
+      items: [
+        { object: 'parcel', id: 'parcel', at: { px: [99, 53] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '112', 'data-y': '69' },
+      items: [
+        { object: 'container', id: 'container-load', at: { px: [112, 64] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '137', 'data-y': '52' },
+      items: [
+        { object: 'crane-hook', id: 'hook', at: { px: [103, 7] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '81', 'data-y': '70' },
+      items: [
+        { object: 'boxes', at: { px: [86, 70] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '63', 'data-y': '75' },
+      items: [
+        { object: 'pine', at: { px: [61, 75] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '174', 'data-y': '72' },
+      items: [
+        { object: 'tree-small', at: { px: [173, 72] } },
       ],
     },
     {
@@ -354,18 +1210,721 @@ export default {
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '60', 'data-y': '59' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-18', 'data-y': '93' },
       items: [
-        { object: 'crane-box', at: { px: [24, 17] } },
+        { object: 'tree-small', at: { px: [-19, 93] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-50', 'data-y': '87' },
+      items: [
+        { object: 'stone', at: { px: [-50, 87] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-42', 'data-y': '87' },
+      items: [
+        { object: 'stone', at: { px: [-42, 87] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-46', 'data-y': '88' },
+      items: [
+        { object: 'stone', at: { px: [-46, 88] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-46', 'data-y': '84' },
+      items: [
+        { object: 'stone', at: { px: [-46, 84] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-30', 'data-y': '104' },
+      items: [
+        { object: 'ore-screen', at: { px: [-32, 104] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-46', 'data-y': '88' },
+      items: [
+        { object: 'stone', id: 'stone-reject-1', at: { px: [-46, 88] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-46', 'data-y': '88' },
+      items: [
+        { object: 'stone', id: 'stone-reject-2', at: { px: [-46, 88] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-32', 'data-y': '106' },
+      items: [
+        { object: 'mine-cart', id: 'cart', at: { px: [-32, 104] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-36', 'data-y': '96' },
+      items: [
+        { object: 'ore', id: 'ore-cart-1', at: { px: [-36, 96] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-32', 'data-y': '96' },
+      items: [
+        { object: 'ore', id: 'ore-cart-2', at: { px: [-32, 96] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-48', 'data-y': '112' },
+      items: [
+        { object: 'conveyor-row', at: { tile: [5, 8, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-64', 'data-y': '120' },
+      items: [
+        { object: 'conveyor-row', at: { tile: [5, 9, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-74', 'data-y': '109' },
+      items: [
+        { object: 'ore', id: 'ore-belt-1', at: { px: [-74, 109] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-74', 'data-y': '109' },
+      items: [
+        { object: 'ore', id: 'ore-belt-2', at: { px: [-74, 109] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-74', 'data-y': '109' },
+      items: [
+        { object: 'stone', id: 'stone-belt-1', at: { px: [-74, 109] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-74', 'data-y': '109' },
+      items: [
+        { object: 'stone', id: 'stone-belt-2', at: { px: [-74, 109] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-92', 'data-y': '116' },
+      items: [
+        { object: 'stone', at: { px: [-92, 116] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-82', 'data-y': '117' },
+      items: [
+        { object: 'stone', at: { px: [-82, 117] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-96', 'data-y': '120' },
+      items: [
+        { object: 'stone', at: { px: [-96, 120] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-92', 'data-y': '120' },
+      items: [
+        { object: 'ore', at: { px: [-92, 120] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-84', 'data-y': '120' },
+      items: [
+        { object: 'ore', at: { px: [-84, 120] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-88', 'data-y': '121' },
+      items: [
+        { object: 'ore', at: { px: [-88, 121] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-88', 'data-y': '117' },
+      items: [
+        { object: 'ore', at: { px: [-88, 117] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-72', 'data-y': '131' },
+      items: [
+        { object: 'pine', at: { px: [-74, 131] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-124', 'data-y': '111' },
+      items: [
+        { object: 'tunnel-road', at: { px: [-128, 104] } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'sky' },
       items: [
-        { object: 'cloud-a', class: 'pcloud pc0', at: { px: [-85, -60] } },
-        { object: 'cloud-b', class: 'pcloud pc1', at: { px: [38, -80] } },
-        { object: 'cloud-c', class: 'pcloud pc2', at: { px: [85, -38] } },
+        { object: 'cloud-a', class: 'pcloud pc0', at: { px: [-150, -40] } },
+        { object: 'cloud-b', class: 'pcloud pc1', at: { px: [10, -86] } },
+        { object: 'cloud-c', class: 'pcloud pc2', at: { px: [200, -50] } },
       ],
     },
   ],
+  motion: {
+    duration: 28000,
+    tracks: [
+      {
+        item: 'truck-load',
+        keys: [
+          { t: 0 },
+          { t: 14000 },
+          { t: 27900, move: [112, -56] },
+          { t: 27999 },
+        ],
+      },
+      {
+        item: 'truck-tip',
+        keys: [
+          { t: 0 },
+          { t: 400, pose: 'truck-open-tipped' },
+          { t: 2800, pose: 'truck-open' },
+          { t: 3200 },
+          { t: 8528, move: [48, -24] },
+          { t: 8529, show: false },
+          { t: 8530, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'truck-far',
+        keys: [
+          { t: 0, show: false },
+          { t: 8529, show: true },
+          { t: 14079, move: [50, -25] },
+          { t: 14080, show: false },
+          { t: 14081, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'truck-wait',
+        keys: [
+          { t: 0, move: [-48, 24], show: false },
+          { t: 18900, show: true },
+          { t: 24233, move: [0, 0] },
+          { t: 27999 },
+        ],
+      },
+      {
+        item: 'cart',
+        keys: [
+          { t: 0 },
+          { t: 7200 },
+          { t: 10400, move: [-32, -16] },
+          { t: 10700, pose: 'mine-cart-tipped' },
+          { t: 11900, pose: 'mine-cart' },
+          { t: 13500, move: [0, 0] },
+          { t: 21200 },
+          { t: 24400, move: [-32, -16] },
+          { t: 24700, pose: 'mine-cart-tipped' },
+          { t: 25900, pose: 'mine-cart' },
+          { t: 27500, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'ore-belt-1',
+        keys: [
+          { t: 0, move: [8, -4] },
+          { t: 2400, move: [40, -20] },
+          { t: 2600, move: [44, -21] },
+          { t: 2601, show: false },
+          { t: 2602, move: [-12, 8] },
+          { t: 12800, show: true },
+          { t: 13400, move: [0, 0] },
+          { t: 16400, move: [40, -20] },
+          { t: 16600, move: [44, -21] },
+          { t: 16601, show: false },
+          { t: 16602, move: [-12, 8] },
+          { t: 26800, show: true },
+          { t: 27400, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'ore-belt-2',
+        keys: [
+          { t: 0, move: [-12, 8], show: false },
+          { t: 2200, show: true },
+          { t: 2800, move: [0, 0] },
+          { t: 5800, move: [40, -20] },
+          { t: 6000, move: [44, -21] },
+          { t: 6001, show: false },
+          { t: 6002, move: [-12, 8] },
+          { t: 16200, show: true },
+          { t: 16800, move: [0, 0] },
+          { t: 19800, move: [40, -20] },
+          { t: 20000, move: [44, -21] },
+          { t: 20001, show: false },
+          { t: 20002, move: [-12, 8] },
+        ],
+      },
+      {
+        item: 'stone-belt-1',
+        keys: [
+          { t: 0, move: [30, -15] },
+          { t: 750, move: [40, -20] },
+          { t: 950, move: [44, -21] },
+          { t: 951, show: false },
+          { t: 952, move: [-8, 8] },
+          { t: 11100, show: true },
+          { t: 11700, move: [0, 0] },
+          { t: 14700, move: [40, -20] },
+          { t: 14900, move: [44, -21] },
+          { t: 14901, show: false },
+          { t: 14902, move: [-8, 8] },
+          { t: 25150, show: true },
+          { t: 25750, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'stone-belt-2',
+        keys: [
+          { t: 0, move: [-8, 8], show: false },
+          { t: 500, show: true },
+          { t: 1100, move: [0, 0] },
+          { t: 4100, move: [40, -20] },
+          { t: 4300, move: [44, -21] },
+          { t: 4301, show: false },
+          { t: 4302, move: [-8, 8] },
+          { t: 14500, show: true },
+          { t: 15100, move: [0, 0] },
+          { t: 18100, move: [40, -20] },
+          { t: 18300, move: [44, -21] },
+          { t: 18301, show: false },
+          { t: 18302, move: [-8, 8] },
+        ],
+      },
+      {
+        item: 'stone-reject-1',
+        keys: [
+          { t: 0, move: [16, 0], show: false },
+          { t: 951, show: true },
+          { t: 1250 },
+          { t: 1550, move: [8, -4] },
+          { t: 1850, move: [0, 0] },
+          { t: 1851, show: false },
+          { t: 1852, move: [16, 0] },
+          { t: 14901, show: true },
+          { t: 15200 },
+          { t: 15500, move: [8, -4] },
+          { t: 15800, move: [0, 0] },
+          { t: 15801, show: false },
+          { t: 15802, move: [16, 0] },
+        ],
+      },
+      {
+        item: 'stone-reject-2',
+        keys: [
+          { t: 0, move: [16, 0], show: false },
+          { t: 4301, show: true },
+          { t: 4600 },
+          { t: 4900, move: [8, -4] },
+          { t: 5200, move: [0, 0] },
+          { t: 5201, show: false },
+          { t: 5202, move: [16, 0] },
+          { t: 18301, show: true },
+          { t: 18600 },
+          { t: 18900, move: [8, -4] },
+          { t: 19200, move: [0, 0] },
+          { t: 19201, show: false },
+          { t: 19202, move: [16, 0] },
+        ],
+      },
+      {
+        item: 'ore-cart-1',
+        keys: [
+          { t: 0, move: [6, -8], show: false },
+          { t: 2601, show: true },
+          { t: 3000, move: [0, 0] },
+          { t: 7200 },
+          { t: 10400, move: [-32, -16] },
+          { t: 10900 },
+          { t: 11300, move: [-48, -24] },
+          { t: 11500, move: [-48, -22] },
+          { t: 11600, show: false },
+          { t: 11601, move: [6, -8] },
+          { t: 16601, show: true },
+          { t: 17000, move: [0, 0] },
+          { t: 21200 },
+          { t: 24400, move: [-32, -16] },
+          { t: 24900 },
+          { t: 25300, move: [-52, -26] },
+          { t: 25500, move: [-52, -20] },
+          { t: 25600, show: false },
+          { t: 25601, move: [6, -8] },
+        ],
+      },
+      {
+        item: 'ore-cart-2',
+        keys: [
+          { t: 0, move: [2, -8], show: false },
+          { t: 6001, show: true },
+          { t: 6400, move: [0, 0] },
+          { t: 7200 },
+          { t: 10400, move: [-32, -16] },
+          { t: 11100 },
+          { t: 11500, move: [-52, -26] },
+          { t: 11700, move: [-52, -19] },
+          { t: 11800, show: false },
+          { t: 11801, move: [2, -8] },
+          { t: 20001, show: true },
+          { t: 20400, move: [0, 0] },
+          { t: 21200 },
+          { t: 24400, move: [-32, -16] },
+          { t: 25100 },
+          { t: 25500, move: [-48, -24] },
+          { t: 25700, move: [-48, -20] },
+          { t: 25800, show: false },
+          { t: 25801, move: [2, -8] },
+        ],
+      },
+      {
+        item: 'ore-road-1',
+        keys: [
+          { t: 0, show: false },
+          { t: 11600, show: true },
+          { t: 14000 },
+          { t: 27900, move: [112, -56] },
+          { t: 27999 },
+        ],
+      },
+      {
+        item: 'ore-road-2',
+        keys: [
+          { t: 0 },
+          { t: 14000 },
+          { t: 27900, move: [112, -56] },
+          { t: 27999 },
+        ],
+      },
+      {
+        item: 'ore-road-3',
+        keys: [
+          { t: 0 },
+          { t: 14000 },
+          { t: 27900, move: [112, -56] },
+          { t: 27999 },
+        ],
+      },
+      {
+        item: 'ore-road-4',
+        keys: [
+          { t: 0, show: false },
+          { t: 11800, show: true },
+          { t: 14000 },
+          { t: 27900, move: [112, -56] },
+          { t: 27999 },
+        ],
+      },
+      {
+        item: 'ore-wait-1',
+        keys: [
+          { t: 0, show: false },
+          { t: 25600, show: true },
+        ],
+      },
+      {
+        item: 'ore-wait-2',
+        keys: [
+          { t: 0, show: false },
+          { t: 25800, show: true },
+        ],
+      },
+      {
+        item: 'ore-hopper-1',
+        keys: [
+          { t: 0 },
+          { t: 1100 },
+          { t: 1600, move: [9, 3] },
+          { t: 1900, move: [17, 7] },
+          { t: 1950, show: false },
+          { t: 1951, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'ore-hopper-2',
+        keys: [
+          { t: 0 },
+          { t: 1900 },
+          { t: 2400, move: [13, 1] },
+          { t: 2700, move: [21, 5] },
+          { t: 2750, show: false },
+          { t: 2751, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'ore-hopper-3',
+        keys: [
+          { t: 0 },
+          { t: 700 },
+          { t: 1200, move: [5, 1] },
+          { t: 1500, move: [13, 5] },
+          { t: 1550, show: false },
+          { t: 1551, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'ore-hopper-4',
+        keys: [
+          { t: 0 },
+          { t: 1500 },
+          { t: 2000, move: [9, 0] },
+          { t: 2300, move: [17, 4] },
+          { t: 2350, show: false },
+          { t: 2351, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'ore-feed-1',
+        keys: [
+          { t: 0, show: false },
+          { t: 1700, show: true },
+          { t: 3350, move: [22, 11] },
+          { t: 3351, show: false },
+          { t: 3352, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'ore-feed-2',
+        keys: [
+          { t: 0, show: false },
+          { t: 2400, show: true },
+          { t: 4050, move: [22, 11] },
+          { t: 4051, show: false },
+          { t: 4052, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'ore-feed-3',
+        keys: [
+          { t: 0, show: false },
+          { t: 3100, show: true },
+          { t: 4750, move: [22, 11] },
+          { t: 4751, show: false },
+          { t: 4752, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'ore-feed-4',
+        keys: [
+          { t: 0 },
+          { t: 900, move: [12, 6] },
+          { t: 901, show: false },
+          { t: 902, move: [-10, -5] },
+          { t: 27250, show: true },
+        ],
+      },
+      {
+        item: 'parcel',
+        keys: [
+          { t: 0, show: false },
+          { t: 1050, show: true },
+          { t: 1650, move: [6, 3] },
+          { t: 1700, show: false },
+          { t: 1701, move: [0, 0] },
+          { t: 3500, show: true },
+          { t: 4100, move: [6, 3] },
+          { t: 4150, show: false },
+          { t: 4151, move: [0, 0] },
+          { t: 4200, show: true },
+          { t: 4800, move: [6, 3] },
+          { t: 4850, show: false },
+          { t: 4851, move: [0, 0] },
+          { t: 4900, show: true },
+          { t: 5500, move: [6, 3] },
+          { t: 5550, show: false },
+          { t: 5551, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'jib',
+        keys: [
+          { t: 0 },
+          { t: 7700, pose: 'crane-jib-side' },
+          { t: 8400, pose: 'crane-jib-back' },
+          { t: 24600, pose: 'crane-jib-side' },
+          { t: 25300, pose: 'crane-jib' },
+        ],
+      },
+      {
+        item: 'hook',
+        keys: [
+          { t: 0 },
+          { t: 5400, pose: 'crane-hook-drop' },
+          { t: 5900, pose: 'crane-hook-low' },
+          { t: 6500, pose: 'crane-hook-drop' },
+          { t: 7000, pose: 'crane-hook' },
+          { t: 7699 },
+          { t: 7700, move: [48, 0] },
+          { t: 8399 },
+          { t: 8400, move: [48, -24] },
+          { t: 9100, pose: 'crane-hook-drop' },
+          { t: 9700, pose: 'crane-hook' },
+          { t: 23300, pose: 'crane-hook-drop' },
+          { t: 23900, pose: 'crane-hook' },
+          { t: 24599 },
+          { t: 24600, move: [48, 0] },
+          { t: 25299 },
+          { t: 25300, move: [0, 0] },
+          { t: 26000, pose: 'crane-hook-drop' },
+          { t: 26500, pose: 'crane-hook-low' },
+          { t: 27200, pose: 'crane-hook' },
+        ],
+      },
+      {
+        item: 'container-load',
+        keys: [
+          { t: 0 },
+          { t: 6499 },
+          { t: 6500, move: [0, -6] },
+          { t: 6999 },
+          { t: 7000, move: [0, -24] },
+          { t: 7699 },
+          { t: 7700, move: [48, -24] },
+          { t: 8399 },
+          { t: 8400, move: [48, -48] },
+          { t: 9100, show: false },
+          { t: 23900, show: true },
+          { t: 24599 },
+          { t: 24600, move: [48, -24] },
+          { t: 25299 },
+          { t: 25300, move: [0, -24] },
+          { t: 25999 },
+          { t: 26000, move: [0, -6] },
+          { t: 26499 },
+          { t: 26500, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'train-loco',
+        keys: [
+          { t: 0 },
+          { t: 10200 },
+          { t: 11950, move: [28, 14] },
+          { t: 11951, show: false },
+          { t: 11952, move: [-132, -66] },
+          { t: 14700 },
+          { t: 14701, show: true },
+          { t: 22950, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'train-flatcar',
+        keys: [
+          { t: 0 },
+          { t: 10200 },
+          { t: 13200, move: [48, 24] },
+          { t: 13201, show: false },
+          { t: 13202, move: [-132, -66] },
+          { t: 14700 },
+          { t: 15950, move: [-112, -56] },
+          { t: 15951, show: true },
+          { t: 22950, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'container-train',
+        keys: [
+          { t: 0, show: false },
+          { t: 9100, show: true },
+          { t: 10200 },
+          { t: 13200, move: [48, 24] },
+          { t: 13201, show: false },
+          { t: 13202, move: [-132, -66] },
+          { t: 14700 },
+          { t: 15950, move: [-112, -56] },
+          { t: 15951, show: true },
+          { t: 22950, move: [0, 0] },
+          { t: 23900, show: false },
+        ],
+      },
+      {
+        item: 'train-boxcar',
+        keys: [
+          { t: 0 },
+          { t: 10200 },
+          { t: 14450, move: [68, 34] },
+          { t: 14451, show: false },
+          { t: 14452, move: [-132, -66] },
+          { t: 14700 },
+          { t: 17200, move: [-92, -46] },
+          { t: 17201, show: true },
+          { t: 22950, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'signal-far',
+        keys: [
+          { t: 0 },
+          { t: 13575, pose: 'crossing-signal-left' },
+          { t: 14075, pose: 'crossing-signal-right' },
+          { t: 14575, pose: 'crossing-signal-left' },
+          { t: 15075, pose: 'crossing-signal-right' },
+          { t: 15575, pose: 'crossing-signal-left' },
+          { t: 16075, pose: 'crossing-signal-right' },
+          { t: 16575, pose: 'crossing-signal-left' },
+          { t: 17075, pose: 'crossing-signal-right' },
+          { t: 17575, pose: 'crossing-signal-left' },
+          { t: 18075, pose: 'crossing-signal-right' },
+          { t: 18575, pose: 'crossing-signal-left' },
+          { t: 19075, pose: 'crossing-signal-right' },
+          { t: 19575, pose: 'crossing-signal-left' },
+          { t: 20075, pose: 'crossing-signal-right' },
+          { t: 20575, pose: 'crossing-signal-left' },
+          { t: 21075, pose: 'crossing-signal-right' },
+          { t: 21325, pose: 'crossing-signal' },
+        ],
+      },
+      {
+        item: 'signal-near',
+        keys: [
+          { t: 0 },
+          { t: 13575, pose: 'crossing-signal-left' },
+          { t: 14075, pose: 'crossing-signal-right' },
+          { t: 14575, pose: 'crossing-signal-left' },
+          { t: 15075, pose: 'crossing-signal-right' },
+          { t: 15575, pose: 'crossing-signal-left' },
+          { t: 16075, pose: 'crossing-signal-right' },
+          { t: 16575, pose: 'crossing-signal-left' },
+          { t: 17075, pose: 'crossing-signal-right' },
+          { t: 17575, pose: 'crossing-signal-left' },
+          { t: 18075, pose: 'crossing-signal-right' },
+          { t: 18575, pose: 'crossing-signal-left' },
+          { t: 19075, pose: 'crossing-signal-right' },
+          { t: 19575, pose: 'crossing-signal-left' },
+          { t: 20075, pose: 'crossing-signal-right' },
+          { t: 20575, pose: 'crossing-signal-left' },
+          { t: 21075, pose: 'crossing-signal-right' },
+          { t: 21325, pose: 'crossing-signal' },
+        ],
+      },
+      {
+        item: 'gate-far',
+        keys: [
+          { t: 0 },
+          { t: 14375, pose: 'crossing-gate-down-far' },
+          { t: 20825, pose: 'crossing-gate' },
+        ],
+      },
+      {
+        item: 'gate-near',
+        keys: [
+          { t: 0 },
+          { t: 14375, pose: 'crossing-gate-down' },
+          { t: 20825, pose: 'crossing-gate' },
+        ],
+      },
+    ],
+  },
 };

@@ -111,6 +111,7 @@ function itemText(item, depth) {
     return `{\n${pad(depth + 1)}group: ${group},\n${pad(depth + 1)}items: ${itemList(item.items, depth + 1)},\n${pad(depth)}}`;
   }
   const parts = [`object: ${str(item.object)}`];
+  if (item.id !== undefined) parts.push(`id: ${str(item.id)}`);
   if (item.class !== undefined) parts.push(`class: ${str(item.class)}`);
   const at = 'tile' in item.at ? `{ tile: ${nums(item.at.tile)} }` : `{ px: ${nums(item.at.px)} }`;
   parts.push(`at: ${at}`);
@@ -134,7 +135,33 @@ export function serializeScene(scene) {
   lines.push(`viewBox: ${nums(scene.viewBox)}`);
   if (scene.origin !== undefined) lines.push(`origin: ${nums(scene.origin)}`);
   lines.push(`items: ${itemList(scene.items, 1)}`);
+  if (scene.motion !== undefined) lines.push(`motion: ${motionText(scene.motion)}`);
   return wrap(SCENE_HEADER, lines);
+}
+
+/**
+ * A key on one line: t, then move, show and pose when it sets them.
+ * @param {any} key
+ */
+function keyText(key) {
+  const parts = [`t: ${key.t}`];
+  if (key.move !== undefined) parts.push(`move: ${nums(key.move)}`);
+  if (key.show !== undefined) parts.push(`show: ${key.show}`);
+  if (key.pose !== undefined) parts.push(`pose: ${str(key.pose)}`);
+  return `{ ${parts.join(', ')} }`;
+}
+
+/**
+ * A scene's motion (motion.mjs): the duration, then a block per track with
+ * one key per line.
+ * @param {any} motion
+ */
+function motionText(motion) {
+  const tracks = motion.tracks.map(
+    (/** @type {any} */ track) =>
+      `${pad(3)}{\n${pad(4)}item: ${str(track.item)},\n${pad(4)}keys: [\n${track.keys.map((/** @type {any} */ k) => `${pad(5)}${keyText(k)},\n`).join('')}${pad(4)}],\n${pad(3)}},\n`,
+  );
+  return `{\n${pad(2)}duration: ${motion.duration},\n${pad(2)}tracks: ${tracks.length ? `[\n${tracks.join('')}${pad(2)}]` : '[]'},\n${pad(1)}}`;
 }
 
 /**

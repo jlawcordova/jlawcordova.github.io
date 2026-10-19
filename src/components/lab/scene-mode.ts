@@ -5,6 +5,7 @@
 
 import { loadSources, type Sources } from '../../lib/pixel-art/engine.mjs';
 import { pxToTile, tileToPx } from '../../lib/pixel-art/iso.mjs';
+import { stateAt } from '../../lib/pixel-art/motion.mjs';
 import { samePath, type Lab, type Path } from './lab';
 import { placementPoint, type Stage } from './stage';
 
@@ -12,6 +13,11 @@ const CLASS_LIST = /^[a-z][a-z0-9-]*(?: [a-z][a-z0-9-]*)*$/;
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 
 // ------------------------------------------------------------ scene edits
+
+/** Takes an item's track out of the scene's motion. */
+export function dropTrack(doc: any, id: string) {
+  doc.motion.tracks = doc.motion.tracks.filter((track: any) => track.item !== id);
+}
 
 /** The list that holds the item at `path`, and its index there. */
 function parentOf(doc: any, path: Path): { list: any[]; index: number } {
@@ -85,7 +91,7 @@ export class SceneMode {
   private active: string | null = null;
   /** Held Space turns any pointer drag into a pan (spec D9.4). */
   spaceHeld = false;
-  private drag: { id: number; kind: 'move' | 'pan'; start: [number, number]; client: [number, number]; scroll: [number, number]; at: any; moved: boolean } | null = null;
+  private drag: { id: number; kind: 'move' | 'pan'; start: [number, number]; client: [number, number]; scroll: [number, number]; at: any; key?: number[] | null; moved: boolean } | null = null;
   private drags = 0;
 
   constructor(lab: Lab, stage: Stage) {
@@ -101,6 +107,15 @@ export class SceneMode {
 
   get selectedItem() {
     return itemAt(this.lab.doc, this.lab.selected);
+  }
+
+  /** Where the selected animated item is at the pane's time, if a drag would move its key. */
+  private keyStart(): number[] | null {
+    const item = this.selectedItem;
+    const motion = this.lab.doc?.motion;
+    if (!item || item.id === undefined || !motion || this.lab.time <= 0) return null;
+    const track = motion.tracks.find((tr: any) => tr.item === item.id);
+    return track ? stateAt(track, item.object, motion.duration, Math.round(this.lab.time)).move : null;
   }
 
   // ----------------------------------------------------------- operations
@@ -135,6 +150,7 @@ export class SceneMode {
   moveSelected(dc: number, dr: number, dl: number, group: string | null = null) {
     const path = this.lab.selected;
     if (!this.selectedItem || !path) return;
+    if (this.keyedMove((dc - dr) * 16, (dc + dr) * 8 - dl * 16, group)) return;
     this.lab.edit((doc) => moveByTiles(itemAt(doc, path), dc, dr, dl), group);
     const item = this.selectedItem;
     if (item.at.tile) this.lab.cursor = [...item.at.tile] as [number, number, number];
@@ -145,6 +161,7 @@ export class SceneMode {
   nudgeSelected(dx: number, dy: number, group: string | null = null) {
     const path = this.lab.selected;
     if (!this.selectedItem || !path) return;
+    if (this.keyedMove(dx, dy, group)) return;
     const origin = this.stage.origin;
     this.lab.edit((doc) => {
       const item = itemAt(doc, path);
@@ -153,6 +170,29 @@ export class SceneMode {
     }, group);
     const item = this.selectedItem;
     this.lab.announce(`${item.object} nudged to ${spoken(item)}`);
+  }
+
+  /**
+   * Past time 0, moving an animated item moves it at that time: the key
+   * there, made if there isn't one, takes the move. At time 0 the item's
+   * placement moves, and its whole path with it.
+   */
+  keyedMove(dx: number, dy: number, group: string | null = null, from?: number[]) {
+    const item = this.selectedItem;
+    const motion = this.lab.doc?.motion;
+    const t = Math.round(this.lab.time);
+    if (!item || item.id === undefined || !motion || t <= 0) return false;
+    const ti = motion.tracks.findIndex((track: any) => track.item === item.id);
+    if (ti < 0) return false;
+    const start = from ?? stateAt(motion.tracks[ti], item.object, motion.duration, t).move;
+    this.lab.edit((doc) => {
+      const keys = doc.motion.tracks[ti].keys;
+      let key = keys.find((k: any) => k.t === t);
+      if (!key) keys.splice(keys.filter((k: any) => k.t < t).length, 0, (key = { t }));
+      key.move = [start[0] + dx, start[1] + dy];
+    }, group);
+    this.lab.announce(`${item.object} moved at ${(t / 1000).toFixed(1)} s`);
+    return true;
   }
 
   /** Sets one coordinate of the selected item. */
@@ -201,6 +241,8 @@ export class SceneMode {
     const item = this.selectedItem;
     if (!item || !path) return;
     const twin = JSON.parse(JSON.stringify(item));
+    // An id names one item, so the copy doesn't take it, or its track.
+    delete twin.id;
     moveByTiles(twin, 1, 0, 0);
     const index = path[path.length - 1] + 1;
     this.lab.edit((doc) => parentOf(doc, path).list.splice(index, 0, twin));
@@ -213,7 +255,10 @@ export class SceneMode {
     const item = this.selectedItem;
     if (!item || !path) return;
     this.lab.selected = null;
-    this.lab.edit((doc) => parentOf(doc, path).list.splice(path[path.length - 1], 1));
+    this.lab.edit((doc) => {
+      parentOf(doc, path).list.splice(path[path.length - 1], 1);
+      if (item.id !== undefined && doc.motion) dropTrack(doc, item.id);
+    });
     this.lab.announce(`${item.object} removed`);
   }
 
@@ -547,10 +592,10 @@ export class SceneMode {
       this.lab.edit((doc) => {
         const item = itemAt(doc, path);
         if (value) {
-          // Keep the canonical key order: object, class, at.
-          const { object, at } = item;
+          // Keep the canonical key order: object, id, class, at.
+          const { object, id, at } = item;
           for (const key of Object.keys(item)) delete item[key];
-          Object.assign(item, { object, class: value, at });
+          Object.assign(item, { object, ...(id === undefined ? {} : { id }), class: value, at });
         } else delete item.class;
       });
       this.lab.announce(value ? `Class set to ${value}` : 'Class removed');
@@ -627,7 +672,7 @@ export class SceneMode {
           return;
         }
         if (!samePath(hit, this.lab.selected)) this.select(hit);
-        this.drag = { ...base, kind: 'move', at: JSON.parse(JSON.stringify(this.selectedItem.at)) };
+        this.drag = { ...base, kind: 'move', at: JSON.parse(JSON.stringify(this.selectedItem.at)), key: this.keyStart() };
       }
       canvas.setPointerCapture(e.pointerId);
     });
@@ -639,6 +684,12 @@ export class SceneMode {
       if (drag?.kind === 'pan') {
         stage.frame.scrollLeft = drag.scroll[0] - (e.clientX - drag.client[0]);
         stage.frame.scrollTop = drag.scroll[1] - (e.clientY - drag.client[1]);
+      } else if (drag?.kind === 'move' && drag.key && this.lab.selected) {
+        const [dx, dy] = [px[0] - drag.start[0], px[1] - drag.start[1]];
+        if (dx || dy || drag.moved) {
+          drag.moved = true;
+          this.keyedMove(dx, dy, `drag-${drag.id}`, drag.key);
+        }
       } else if (drag?.kind === 'move' && this.lab.selected) {
         const path = this.lab.selected;
         let at: any;

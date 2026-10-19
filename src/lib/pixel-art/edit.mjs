@@ -12,6 +12,7 @@
 
 import { isKey, layerMaps, resolve, SIDE_H, SIDE_W, sideCells } from './engine.mjs';
 import { blockFaces, footprint, tilePixels, TILE_H, TILE_W } from './iso.mjs';
+import { SITE_LOOPS } from './motion.mjs';
 
 /**
  * @typedef {{ layer: number, frame: number }} Where
@@ -343,4 +344,45 @@ export function deleteFrame(doc, layer, index) {
   if (frames.length <= 1) return index;
   frames.splice(index, 1);
   return Math.min(index, frames.length - 1);
+}
+
+/**
+ * Turns a still map layer into one of the site's frame loops (motion.mjs
+ * SITE_LOOPS): its map becomes frame 0, the rest frame, and is copied into
+ * every other frame the loop shows, ready to paint. A class on the layer
+ * gives way to the loop's.
+ * @param {any} doc
+ * @param {number} layer
+ * @param {string} loop
+ */
+export function animateLayer(doc, layer, loop) {
+  const { prefix, frames } = SITE_LOOPS[loop];
+  const { map } = doc.layers[layer];
+  doc.layers[layer] = { loop, prefix, frames: Array.from({ length: frames }, () => [...map]) };
+}
+
+/**
+ * Switches a frame loop to another of the site's loops: its prefix follows,
+ * and it gains copies of its last frame until it has as many as the loop
+ * shows. Extra frames stay, for the person to delete.
+ * @param {any} doc
+ * @param {number} layer
+ * @param {string} loop
+ */
+export function setLoop(doc, layer, loop) {
+  const target = doc.layers[layer];
+  const { prefix, frames } = SITE_LOOPS[loop];
+  const list = target.frames;
+  while (list.length < frames) list.push([...list[list.length - 1]]);
+  doc.layers[layer] = { loop, prefix, frames: list };
+}
+
+/**
+ * Turns a frame loop back into a still map layer, keeping one frame.
+ * @param {any} doc
+ * @param {number} layer
+ * @param {number} frame
+ */
+export function stillLayer(doc, layer, frame) {
+  doc.layers[layer] = { map: [...doc.layers[layer].frames[frame]] };
 }
