@@ -45,4 +45,4 @@ A bigger island, as sketched on the "Bigger island" design canvas, where somethi
 
 ## Open questions
 
-None open. Decided with the owner: the drawing is the idea, not the canvas's three-lane sticky note; the ends finish as drawn; the train leaves off the B–R edge; the crane may move to reach both the train and the container van; and a phone shows the whole island, smaller.
+None open. Decided with the owner at the layout review: the train is small (a truck-sized engine and one-tile cars and containers), the hopper, processor and container stand on the middle island, the crane stands on the rail section, and the rail section is grass. Decided earlier: the drawing is the idea, not the canvas's three-lane sticky note; the ends finish as drawn; the train leaves off the B–R edge; the crane may move to reach both the train and the container van; and a phone shows the whole island, smaller.
