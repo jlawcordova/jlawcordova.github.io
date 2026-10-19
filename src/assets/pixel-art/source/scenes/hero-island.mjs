@@ -857,6 +857,12 @@ export default {
       ],
     },
     {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '96', 'data-y': '-17' },
+      items: [
+        { object: 'truck-open', id: 'truck-far', at: { px: [96, -20] } },
+      ],
+    },
+    {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '48', 'data-y': '-5' },
       items: [
         { object: 'tunnel-rail', at: { px: [48, -16] } },
@@ -877,7 +883,7 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '144', 'data-y': '31' },
       items: [
-        { object: 'container', id: 'container-2', at: { px: [144, 26] } },
+        { object: 'container', id: 'container-train', at: { px: [144, 26] } },
       ],
     },
     {
@@ -908,7 +914,7 @@ export default {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '121', 'data-y': '44' },
       items: [
         { object: 'crane-mast', at: { px: [120, 44] } },
-        { object: 'crane-jib', at: { px: [117, 4] } },
+        { object: 'crane-jib', id: 'jib', at: { px: [117, 4] } },
       ],
     },
     {
@@ -990,51 +996,57 @@ export default {
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '32', 'data-y': '27' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-96', 'data-y': '91' },
       items: [
-        { object: 'truck-open-green', id: 'truck-2', at: { px: [32, 24] } },
-      ],
-    },
-    {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '28', 'data-y': '18' },
-      items: [
-        { object: 'ore', id: 'ore-h1', at: { px: [28, 18] } },
-      ],
-    },
-    {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '24', 'data-y': '20' },
-      items: [
-        { object: 'ore', id: 'ore-h2', at: { px: [24, 20] } },
-      ],
-    },
-    {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '32', 'data-y': '20' },
-      items: [
-        { object: 'ore', id: 'ore-h3', at: { px: [32, 20] } },
-      ],
-    },
-    {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '28', 'data-y': '21' },
-      items: [
-        { object: 'ore', id: 'ore-h4', at: { px: [28, 21] } },
+        { object: 'truck-open', id: 'truck-wait', at: { px: [-96, 88] } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-96', 'data-y': '91' },
       items: [
-        { object: 'truck-open', id: 'truck-1', at: { px: [-96, 88] } },
+        { object: 'truck-open', id: 'truck-load', at: { px: [-96, 88] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '32', 'data-y': '27' },
+      items: [
+        { object: 'truck-open', id: 'truck-tip', at: { px: [32, 24] } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-104', 'data-y': '84' },
       items: [
-        { object: 'ore', id: 'ore-t1', at: { px: [-104, 84] } },
+        { object: 'ore', id: 'ore-wait-1', at: { px: [-104, 84] } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-96', 'data-y': '84' },
       items: [
-        { object: 'ore', id: 'ore-t2', at: { px: [-96, 84] } },
+        { object: 'ore', id: 'ore-wait-2', at: { px: [-96, 84] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-100', 'data-y': '82' },
+      items: [
+        { object: 'ore', id: 'ore-road-1', at: { px: [-100, 82] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-104', 'data-y': '84' },
+      items: [
+        { object: 'ore', id: 'ore-road-2', at: { px: [-104, 84] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-96', 'data-y': '84' },
+      items: [
+        { object: 'ore', id: 'ore-road-3', at: { px: [-96, 84] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-100', 'data-y': '85' },
+      items: [
+        { object: 'ore', id: 'ore-road-4', at: { px: [-100, 85] } },
       ],
     },
     {
@@ -1050,21 +1062,45 @@ export default {
       ],
     },
     {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '28', 'data-y': '18' },
+      items: [
+        { object: 'ore', id: 'ore-hopper-1', at: { px: [28, 18] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '24', 'data-y': '20' },
+      items: [
+        { object: 'ore', id: 'ore-hopper-2', at: { px: [24, 20] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '32', 'data-y': '20' },
+      items: [
+        { object: 'ore', id: 'ore-hopper-3', at: { px: [32, 20] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '28', 'data-y': '21' },
+      items: [
+        { object: 'ore', id: 'ore-hopper-4', at: { px: [28, 21] } },
+      ],
+    },
+    {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '68', 'data-y': '52' },
       items: [
         { object: 'processor', at: { px: [64, 40] } },
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '87', 'data-y': '47' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '83', 'data-y': '45' },
       items: [
-        { object: 'parcel', id: 'parcel-1', at: { px: [87, 47] } },
+        { object: 'parcel', id: 'parcel', at: { px: [83, 45] } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '96', 'data-y': '61' },
       items: [
-        { object: 'container', id: 'container-1', at: { px: [96, 56] } },
+        { object: 'container', id: 'container-load', at: { px: [96, 56] } },
       ],
     },
     {
@@ -1122,21 +1158,9 @@ export default {
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-20', 'data-y': '82' },
-      items: [
-        { object: 'ore', id: 'ore-a', at: { px: [-20, 82] } },
-      ],
-    },
-    {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-34', 'data-y': '106' },
       items: [
         { object: 'conveyor-row', at: { px: [-32, 104] } },
-      ],
-    },
-    {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-36', 'data-y': '90' },
-      items: [
-        { object: 'ore', id: 'ore-b', at: { px: [-36, 90] } },
       ],
     },
     {
@@ -1146,39 +1170,21 @@ export default {
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-80', 'data-y': '98' },
-      items: [
-        { object: 'mine-cart', id: 'cart-2', at: { px: [-80, 96] } },
-      ],
-    },
-    {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-48', 'data-y': '114' },
       items: [
-        { object: 'mine-cart', id: 'cart-1', at: { px: [-48, 112] } },
+        { object: 'mine-cart', id: 'cart', at: { px: [-48, 112] } },
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-48', 'data-y': '102' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-12', 'data-y': '78' },
       items: [
-        { object: 'ore', id: 'ore-c1', at: { px: [-48, 102] } },
+        { object: 'ore', id: 'ore-belt-1', at: { px: [-12, 78] } },
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-52', 'data-y': '104' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-12', 'data-y': '78' },
       items: [
-        { object: 'ore', id: 'ore-c2', at: { px: [-52, 104] } },
-      ],
-    },
-    {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-44', 'data-y': '104' },
-      items: [
-        { object: 'ore', id: 'ore-c3', at: { px: [-44, 104] } },
-      ],
-    },
-    {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-48', 'data-y': '105' },
-      items: [
-        { object: 'ore', id: 'ore-c4', at: { px: [-48, 105] } },
+        { object: 'ore', id: 'ore-belt-2', at: { px: [-12, 78] } },
       ],
     },
     {
@@ -1208,4 +1214,362 @@ export default {
       ],
     },
   ],
+  motion: {
+    duration: 24000,
+    tracks: [
+      {
+        item: 'truck-load',
+        keys: [
+          { t: 0 },
+          { t: 9900 },
+          { t: 23900, move: [128, -64] },
+          { t: 23999 },
+        ],
+      },
+      {
+        item: 'truck-tip',
+        keys: [
+          { t: 0 },
+          { t: 600, pose: 'truck-open-tipped' },
+          { t: 3000, pose: 'truck-open' },
+          { t: 3400 },
+          { t: 4956, move: [14, -7] },
+          { t: 5400, move: [18, -11] },
+          { t: 5622, move: [20, -14] },
+          { t: 6067, move: [24, -18] },
+          { t: 6289, move: [26, -21] },
+          { t: 6511, move: [28, -23] },
+          { t: 6733, move: [30, -26] },
+          { t: 6956, move: [32, -28] },
+          { t: 7178, move: [34, -31] },
+          { t: 7400, move: [36, -33] },
+          { t: 7622, move: [38, -36] },
+          { t: 8067, move: [42, -40] },
+          { t: 8289, move: [44, -43] },
+          { t: 8733, move: [48, -47] },
+          { t: 9178, move: [52, -47] },
+          { t: 9400, move: [54, -46] },
+          { t: 9844, move: [58, -46] },
+          { t: 10067, move: [60, -45] },
+          { t: 10289, move: [62, -45] },
+          { t: 10511, move: [64, -44] },
+          { t: 10512, show: false },
+          { t: 10513, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'truck-far',
+        keys: [
+          { t: 0, show: false },
+          { t: 10512, show: true },
+          { t: 10733, move: [2, 0] },
+          { t: 10956, move: [4, 1] },
+          { t: 11178, move: [6, 1] },
+          { t: 11400, move: [8, 2] },
+          { t: 11844, move: [12, 2] },
+          { t: 12067, move: [14, 3] },
+          { t: 12511, move: [18, 3] },
+          { t: 14289, move: [34, -5] },
+          { t: 14290, show: false },
+          { t: 14291, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'truck-wait',
+        keys: [
+          { t: 0, move: [-32, 16], show: false },
+          { t: 15000, show: true },
+          { t: 18556, move: [0, 0] },
+          { t: 23999 },
+        ],
+      },
+      {
+        item: 'cart',
+        keys: [
+          { t: 0 },
+          { t: 5200 },
+          { t: 7700, move: [-32, -16] },
+          { t: 8000, pose: 'mine-cart-tipped' },
+          { t: 9200, pose: 'mine-cart' },
+          { t: 11700, move: [0, 0] },
+          { t: 17200 },
+          { t: 19700, move: [-32, -16] },
+          { t: 20000, pose: 'mine-cart-tipped' },
+          { t: 21200, pose: 'mine-cart' },
+          { t: 23700, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'ore-belt-1',
+        keys: [
+          { t: 0, move: [-20, 10] },
+          { t: 1500, move: [-40, 20] },
+          { t: 1800, move: [-40, 26] },
+          { t: 5200 },
+          { t: 7700, move: [-72, 10] },
+          { t: 8200 },
+          { t: 8600, move: [-88, 2] },
+          { t: 8800, move: [-88, 4] },
+          { t: 8900, show: false },
+          { t: 8901, move: [0, 0] },
+          { t: 10500, show: true },
+          { t: 13500, move: [-40, 20] },
+          { t: 13800, move: [-40, 26] },
+          { t: 17200 },
+          { t: 19700, move: [-72, 10] },
+          { t: 20200 },
+          { t: 20600, move: [-92, 0] },
+          { t: 20800, move: [-92, 6] },
+          { t: 20900, show: false },
+          { t: 20901, move: [0, 0] },
+          { t: 22500, show: true },
+        ],
+      },
+      {
+        item: 'ore-belt-2',
+        keys: [
+          { t: 0, show: false },
+          { t: 1300, show: true },
+          { t: 4000, move: [-36, 18] },
+          { t: 4300, move: [-36, 26] },
+          { t: 5200 },
+          { t: 7700, move: [-68, 10] },
+          { t: 8400 },
+          { t: 8800, move: [-88, 0] },
+          { t: 9000, move: [-88, 7] },
+          { t: 9100, show: false },
+          { t: 9101, move: [0, 0] },
+          { t: 13300, show: true },
+          { t: 16000, move: [-36, 18] },
+          { t: 16300, move: [-36, 26] },
+          { t: 17200 },
+          { t: 19700, move: [-68, 10] },
+          { t: 20400 },
+          { t: 20800, move: [-84, 2] },
+          { t: 21000, move: [-84, 6] },
+          { t: 21100, show: false },
+          { t: 21101, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'ore-road-1',
+        keys: [
+          { t: 0, show: false },
+          { t: 8900, show: true },
+          { t: 9900 },
+          { t: 23900, move: [128, -64] },
+          { t: 23999 },
+        ],
+      },
+      {
+        item: 'ore-road-2',
+        keys: [
+          { t: 0 },
+          { t: 9900 },
+          { t: 23900, move: [128, -64] },
+          { t: 23999 },
+        ],
+      },
+      {
+        item: 'ore-road-3',
+        keys: [
+          { t: 0 },
+          { t: 9900 },
+          { t: 23900, move: [128, -64] },
+          { t: 23999 },
+        ],
+      },
+      {
+        item: 'ore-road-4',
+        keys: [
+          { t: 0, show: false },
+          { t: 9100, show: true },
+          { t: 9900 },
+          { t: 23900, move: [128, -64] },
+          { t: 23999 },
+        ],
+      },
+      {
+        item: 'ore-wait-1',
+        keys: [
+          { t: 0, show: false },
+          { t: 20900, show: true },
+        ],
+      },
+      {
+        item: 'ore-wait-2',
+        keys: [
+          { t: 0, show: false },
+          { t: 21100, show: true },
+        ],
+      },
+      {
+        item: 'ore-hopper-1',
+        keys: [
+          { t: 0 },
+          { t: 1300 },
+          { t: 1800, move: [9, 3] },
+          { t: 2100, move: [17, 7] },
+          { t: 2150, show: false },
+          { t: 2151, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'ore-hopper-2',
+        keys: [
+          { t: 0 },
+          { t: 2100 },
+          { t: 2600, move: [13, 1] },
+          { t: 2900, move: [21, 5] },
+          { t: 2950, show: false },
+          { t: 2951, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'ore-hopper-3',
+        keys: [
+          { t: 0 },
+          { t: 900 },
+          { t: 1400, move: [5, 1] },
+          { t: 1700, move: [13, 5] },
+          { t: 1750, show: false },
+          { t: 1751, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'ore-hopper-4',
+        keys: [
+          { t: 0 },
+          { t: 1700 },
+          { t: 2200, move: [9, 0] },
+          { t: 2500, move: [17, 4] },
+          { t: 2550, show: false },
+          { t: 2551, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'parcel',
+        keys: [
+          { t: 0, show: false },
+          { t: 4600, show: true },
+          { t: 5200, move: [6, 3] },
+          { t: 5300, show: false },
+          { t: 5301, move: [0, 0] },
+          { t: 6200, show: true },
+          { t: 6800, move: [6, 3] },
+          { t: 6900, show: false },
+          { t: 6901, move: [0, 0] },
+          { t: 7800, show: true },
+          { t: 8400, move: [6, 3] },
+          { t: 8500, show: false },
+          { t: 8501, move: [0, 0] },
+          { t: 9400, show: true },
+          { t: 10000, move: [6, 3] },
+          { t: 10100, show: false },
+          { t: 10101, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'jib',
+        keys: [
+          { t: 0 },
+          { t: 16000, pose: 'crane-jib-side' },
+          { t: 17000, pose: 'crane-jib-back' },
+          { t: 19800, pose: 'crane-jib-side' },
+          { t: 20600, pose: 'crane-jib' },
+        ],
+      },
+      {
+        item: 'hook',
+        keys: [
+          { t: 0 },
+          { t: 13500, pose: 'crane-hook-drop' },
+          { t: 14000, pose: 'crane-hook-low' },
+          { t: 14800, pose: 'crane-hook-drop' },
+          { t: 15300, pose: 'crane-hook' },
+          { t: 15999 },
+          { t: 16000, move: [48, 0] },
+          { t: 16999 },
+          { t: 17000, move: [48, -24] },
+          { t: 18200, pose: 'crane-hook-drop' },
+          { t: 19000, pose: 'crane-hook' },
+          { t: 19799 },
+          { t: 19800, move: [48, 0] },
+          { t: 20599 },
+          { t: 20600, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'container-load',
+        keys: [
+          { t: 0 },
+          { t: 14799 },
+          { t: 14800, move: [0, -6] },
+          { t: 15299 },
+          { t: 15300, move: [0, -24] },
+          { t: 15999 },
+          { t: 16000, move: [48, -24] },
+          { t: 16999 },
+          { t: 17000, move: [48, -48] },
+          { t: 18200, show: false },
+          { t: 18201, move: [0, 0] },
+          { t: 21000, show: true },
+        ],
+      },
+      {
+        item: 'train-loco',
+        keys: [
+          { t: 0 },
+          { t: 1000 },
+          { t: 4667, move: [44, 22] },
+          { t: 4668, show: false },
+          { t: 4669, move: [-116, -58] },
+          { t: 8200 },
+          { t: 8201, show: true },
+          { t: 17867, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'train-flatcar',
+        keys: [
+          { t: 0 },
+          { t: 1000 },
+          { t: 6333, move: [64, 32] },
+          { t: 6334, show: false },
+          { t: 6335, move: [-116, -58] },
+          { t: 8200 },
+          { t: 9867, move: [-96, -48] },
+          { t: 9868, show: true },
+          { t: 17867, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'container-train',
+        keys: [
+          { t: 0 },
+          { t: 1000 },
+          { t: 6333, move: [64, 32] },
+          { t: 6334, show: false },
+          { t: 6335, move: [-116, -58] },
+          { t: 8200 },
+          { t: 17867, move: [0, 0] },
+          { t: 18200, show: true },
+        ],
+      },
+      {
+        item: 'train-boxcar',
+        keys: [
+          { t: 0 },
+          { t: 1000 },
+          { t: 8000, move: [84, 42] },
+          { t: 8001, show: false },
+          { t: 8002, move: [-116, -58] },
+          { t: 8200 },
+          { t: 11533, move: [-76, -38] },
+          { t: 11534, show: true },
+          { t: 17867, move: [0, 0] },
+        ],
+      },
+    ],
+  },
 };

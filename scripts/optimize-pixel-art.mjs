@@ -46,6 +46,7 @@ import {
   sceneFile,
   validate,
 } from '../src/lib/pixel-art/engine.mjs';
+import { itemsById } from '../src/lib/pixel-art/motion.mjs';
 import { serializeObject, serializeScene } from '../src/lib/pixel-art/serialize.mjs';
 import { MAX_NAME, starterBlock, starterExtends, starterScene, starterSprite } from '../src/lib/pixel-art/starter.mjs';
 import { toRectSvg } from '../src/lib/pixel-art/svg.mjs';
@@ -423,7 +424,12 @@ function sceneSizes(sources, name) {
   const total = measure(sources, name);
   const objects = new Map();
   for (const [object, placed] of placements(scene.items)) {
-    sources.scenes.set('sizes-probe', { ...scene, output: undefined, items: withoutObject(scene.items, object) });
+    const items = withoutObject(scene.items, object);
+    // A motion track moves an item by id, so the tracks of the items just
+    // taken out go with them (island level up spec).
+    const left = itemsById(items);
+    const motion = scene.motion && { ...scene.motion, tracks: scene.motion.tracks.filter((/** @type {any} */ t) => left.has(t.item)) };
+    sources.scenes.set('sizes-probe', { ...scene, output: undefined, items, ...(motion ? { motion } : {}) });
     const less = measure(sources, 'sizes-probe');
     objects.set(object, { placed, raw: total.raw - less.raw, gzip: total.gzip - less.gzip });
   }
