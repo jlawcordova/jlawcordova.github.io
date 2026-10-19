@@ -80,6 +80,21 @@ main > .hero:first-child {
   overflow: visible;
 }
 
+/* Beside the copy, the island is half again as wide as its column and
+   runs off the hero's right edge, so the rail section and its train leave
+   the picture (island level up spec). Stacked, it shows whole, smaller. */
+@media (min-width: 1024px) {
+  .hero__art,
+  .hero__float {
+    justify-content: flex-start;
+  }
+  .hero-island {
+    width: 150%;
+    max-width: none;
+    flex: none;
+  }
+}
+
 /* A pop (one of the entrance lab's moves) grows each piece of the island from its own foot (island clock sweep spec R3). */
 .hero-island .enter {
   transform-box: fill-box;
