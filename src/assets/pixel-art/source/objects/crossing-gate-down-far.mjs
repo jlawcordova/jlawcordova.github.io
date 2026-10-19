@@ -1,0 +1,27 @@
+// Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md
+export default {
+  kind: 'sprite',
+  anchor: [0, 4],
+  keys: {
+    r: 'roof-2',
+    R: 'roof-3',
+    c: 'cream',
+    k: 'soil-4',
+    s: 'path-3',
+    S: 'path-4',
+  },
+  layers: [
+    {
+      map: [
+        'kkc...........',
+        'sSscc.........',
+        'sS.ssrr.......',
+        'sS...RRrc.....',
+        'sS.....Rscc...',
+        '.........ssrr.',
+        '...........RRr',
+        '.............R',
+      ],
+    },
+  ],
+};
