@@ -91,6 +91,8 @@ npm run pixellab -- help                                  # every command: scene
 
 **Pixel Lab**, the Mac app, opens the document and draws it with the same engine: it places objects, paints them, plays a scene's motion, and **Publish** (⌘B) is `npm run art`. Agents work through its MCP server (`mcp__pixellab__*`), whose saves are proposals the owner approves in the app, or through the CLI above. The loop is edit → `npm run art` → commit the sources and the SVGs together.
 
+**Pixel Lab for Mac**, the owner's native editor (kept in a separate repository), edits the same sources with this checkout's own engine, and saves straight to them. Agents reach it through its `pixellab` CLI and MCP server: they look at renders, arrange scenes and paint objects with the same commands, and their MCP saves become proposals the owner approves in the app. The `pixel-art` skill (`.claude/skills/pixel-art/SKILL.md`) says when to use which.
+
 Sources are kept in one canonical text format, and `npm test` fails if a source isn't canonical or a committed SVG is stale against its sources.
 
 ## Deploy

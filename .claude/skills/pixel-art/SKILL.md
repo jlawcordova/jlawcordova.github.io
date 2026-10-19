@@ -1,6 +1,6 @@
 ---
 name: pixel-art
-description: Make, change or review this site's pixel art (the hero island, the Range sprite and its outfits, library objects and scenes) as text sources in the site's `.pixellab` document, checked and compiled with Pixel Lab's `pixellab` CLI (`npm run art`). Use whenever someone asks to draw, edit, recolor or check pixel art, an outfit or character, a library object, or a scene, or to add art to the site. Works headless, with no editor and no browser.
+description: Make, change or review this site's pixel art (the hero island, the Range sprite and its outfits, library objects and scenes) as text sources compiled by `npm run art`, looked at and edited through Pixel Lab (the `pixellab` MCP tools and CLI). Use whenever someone asks to draw, edit, recolor or check pixel art, an outfit or character, a library object, or a scene, to place or arrange objects in a scene, to propose an art change for the owner to approve in Pixel Lab, or to add art to the site. Works headless, with no editor and no browser.
 ---
 # Pixel art
 
@@ -22,11 +22,11 @@ New art must fit the existing world. The engine enforces every rule here except 
 
 ## Formats
 
-Every source is a `.mjs` file whose default export is plain data, in the **canonical format**: the header comment, two-space indentation, single quotes, one map row per line and trailing commas. A test fails if a file isn't canonical, so start from `object new` / `scene new` or copy an existing file's layout exactly.
+Every source is a `.mjs` file whose default export is plain data, in the **canonical format**: the header comment, two-space indentation, single quotes, one map row per line and trailing commas. A test fails if a file isn't canonical, so start from `--new` or copy an existing file's layout exactly.
 
 The examples below compile together against today's sources, as `objects/small-rock.mjs`, `objects/stone-block.mjs`, `objects/outfit-example.mjs` and `scenes/example.mjs` (a test checks this).
 
-### Objects (`jlawcordova.pixellab/objects/<name>.mjs`)
+### Objects (`source/objects/<name>.mjs`)
 
 Names are lowercase kebab-case. There are two kinds: `sprite` (pixel maps) and `block` (boxes on the isometric grid, drawn from numbers).
 
@@ -160,7 +160,7 @@ export default {
 - `character` uses world colors only, with no `ink` and no outline; its keys are in [Isometric characters](#isometric-characters). An outfit may recolor those keys or add its own. `object new <name> --extends character` writes a starter outfit with no keys or rows of its own yet.
 - `character` is a 32×35 canvas, with anchor `[20, 29]` on the ground under the figure, so a scene places it by `tile`. The figure is in its `cbob` layer (layer 1; layer 0 is empty): head rows 7–20, body rows 18–27, legs rows 25–30, columns 13–26. Draw held props in the `cbob` layer too, so they bob with the character. A prop goes left of the body (columns 8–12) or right of it (columns 27–31). A new outfit keeps its figure, with any prop it holds, within 24×32. A larger prop is a separate `prop-<class>-<name>` object (see [Isometric characters](#isometric-characters)).
 
-### Scenes (`jlawcordova.pixellab/scenes/<name>.mjs`)
+### Scenes (`source/scenes/<name>.mjs`)
 
 ```js
 // Pixel-art scene. How to edit it: .claude/skills/pixel-art/SKILL.md
@@ -201,19 +201,56 @@ export default {
 - **`id`** (optional, kebab-case, unique in the scene) names an item so a `motion` track can move it.
 - **`motion`** (optional) animates items on one loop of `duration` ms, one track per item it moves (the example walks the rock 16 px up-right and back every 2 s). Each key sets, from `t` ms on, the item's `move` (pixels from its placement), `show` and `pose` (an object drawn instead, with the same anchor). The first key is at 0, the rest frame that reduced motion and `art preview` show. Moves step a pixel at a time. The `pixel-art-motion` skill (Scene motion) has the rules, and Pixel Lab's timeline plays and scrubs it.
 
-## The main path: headless
+## Pixel Lab: the MCP and the CLI
 
-You don't need the editor or a browser. Every command below is Pixel Lab's CLI on this checkout, `npm run pixellab -- …` (`npx pixellab … --site .` is the same thing).
+Pixel Lab for Mac (the owner's editor, from `~/Projects/jlawcordova-lab`) opens this document and edits it with the engine, which lives in the lab and is installed here as the `pixellab` dev dependency. Every action it has is one command, reachable three ways: the app, the `pixellab` CLI, and the `pixellab` MCP server, whose tools are the commands with `.` → `_` (`scene.place` is `mcp__pixellab__scene_place`). Use it to look at art and to edit it. `npm run art` (its `art build`) stays the compiler: it writes the SVGs; `art preview` writes the review previews and `art sizes` measures bytes (next section).
+
+**Find it, in this order:**
+
+1. **The MCP tools.** If `mcp__pixellab__*` tools are listed (or deferred: load them with ToolSearch, query `+pixellab`), call `document_info` first. It names the document the server edits, which is the main checkout's (`~/Projects/jlawcordova.github.io/src/assets/pixel-art/jlawcordova.pixellab`) unless it was added with `--document` or `--site`. If that isn't the checkout you're working in, as in a worktree, don't edit through the MCP: use the CLI.
+2. **The CLI.** `npm run pixellab -- <group> <verb> [args]` runs the installed `pixellab` on this checkout (`--site .` is in the script). `npm run pixellab -- help` and `npm run pixellab -- <group> --help` list the commands; the reference is `docs/cli.md` in the lab repo. The app's own copy (`node "$HOME/Applications/Pixel Lab.app/Contents/Resources/cli/bin/pixellab.mjs" … --site <checkout>`) is the same CLI, possibly a different version.
+
+The owner connects the MCP with `claude mcp add pixellab -- node "$HOME/Applications/Pixel Lab.app/Contents/Resources/cli/bin/pixellab.mjs" serve --mcp`. Never run that, or install the app, yourself.
+
+**Which tool for what:**
+
+| To | Use |
+| --- | --- |
+| Look at a scene or object while you work | `scene_render` / `object_render` (MCP): the PNG comes back to you as an image, with each item's bounds. `--scale` up to 16, `--time` for a moment of the loops and the scene's motion, `--frame` for one frame of an object's loop, `--theme dark` for the site's dark theme, `--show <item path>` for another Range class. |
+| Find your way around | `scene_list`, `scene_items` (every item in paint order, with its path, such as `5.2`, its id and its placement point), `scene_show`, `object_list`, `object_show`, `object_pick`, `palette_get` |
+| Validate | `check <name>` (the engine's problems for that doc and what it uses, or its one-line summary) |
+| Change art that should land in the working tree in this run | the CLI's edit commands, or whole rows in the `.mjs` source (below) |
+| Change art the owner should approve first | MCP edits, then `doc_save`, which writes a **proposal** (below) |
+| Compile, save review images, measure bytes, test | `npm run art`, `npm run pixellab -- art preview <name> --scale N --out <png>`, `npm run pixellab -- art sizes <scene>`, `npm test` |
+
+**Edits through the MCP are proposals.** Each MCP session holds open docs as working copies with undo (`doc_undo`, `doc_redo`, `doc_status`). Renders and `check` see the unsaved edits. Nothing touches the site until `doc_save`, which validates the doc and writes a proposal for the owner instead of the source. Pixel Lab shows it in its Agent window (⌥⌘A), ghosted over the stage with a diff, and the owner approves or rejects it there (or with `pixellab proposal apply <id>`). `proposal_list` lists proposals and `proposal_render` draws one as it would land.
+- Use proposals when the task says the owner approves in Pixel Lab, or for a suggestion on art they're reviewing there.
+- Never apply, reject or force a proposal, yours or anyone's, by any route. That's the owner's call. Don't `--force` a save past problems or a conflict either.
+- Report each proposal's id, its doc and what it changes. Until it's approved the sources haven't changed, so `npm run art` and `npm test` say nothing about it. After approval, run them (Pixel Lab's Publish, ⌘B, is `npm run art`).
+
+**Edits through the CLI write the working tree.** Each edit is one-shot: load, edit, validate with the engine, serialize canonically and write atomically. It refuses a doc with problems or a file that changed on disk while it ran, and prints what changed and `wrote <file>`. `--dry-run` prints the diff instead. The commands and params match the MCP tools (`npm run pixellab -- object paint pine 3,4 4,4 --color grass-2` is `object_paint`). The `doc` commands (undo, save) exist only in the MCP session.
+
+**Draw maps as text, touch them up with commands.** Painting pixel by pixel is slow for a whole map. Write a new or redrawn map as whole rows in the source (or generate it with `serialize()` from `pixellab/serialize`), then use `object_paint`, `object_fill` and `object_erase` for fixes and feedback, and the scene commands for placing and arranging:
+- **Pixels** are map column and row, as in `object_render` at scale 1. Pass every pixel of one color in a single call. Painting a color the object doesn't use yet adds a key, as the lab does: check the key it got with `object_show`, and rename it in the source if it breaks the file's material convention (a lowercase letter for a shade, its uppercase for the darker one).
+- **Layers and frames:** `object_layer_*`, `object_frame_*`, `object_animate` (a still layer becomes a `wf`, `ff` or `hf` loop, with frame 0 copied into every frame) and `object_still`. `object_new` and `scene_new` are the same starters as `--new`.
+- **Items** are addressed by their path from `scene_items` or by their `id`. A place, remove, raise or lower shifts the paths after it, so list them again. `scene_place --at col,row,level` puts an item in back-to-front order among the tile-placed items at the top level. It can't make a group, so an item that belongs in an `enter` group (the hero island, the Range) or a `data-icon` group (the icon sheet) is added in the source, inside its group. `scene_move`, `scene_set`, `scene_raise`, `scene_lower`, `scene_duplicate` and `scene_remove` work on items inside groups too.
+- `scene_move --time <ms>` past 0 keys an animated item's move at that time (the `pixel-art-motion` skill, Scene motion).
+
+**The owner's hand edits land on disk.** Pixel Lab's own saves write the working tree directly, so there's no export step: the file on disk is the new baseline, and `git diff` shows what they changed. It reloads a file when it changes on disk and isn't open with unsaved edits, so your CLI and source edits show up in it as you make them. Pixel Lab has no links: hand the owner the names of the scenes and objects to open (its sidebar lists the scenes, then the Library of objects; double-click an object for Object mode).
+
+## The `npm run art` path
+
+This path needs no editor and no browser, and it's the one that compiles, previews and measures, so every change ends here.
 
 1. **Start from a valid file.** `npm run pixellab -- object new <name> --width 16 --height 16` (a sprite with an empty map), `object new <name> --kind block` (a block), `object new <name> --extends character` (an outfit) or `scene new <name>`, or open an existing source. Choose the smallest object that does the job, and prefer placing objects in a scene over drawing large maps. `new` refuses to overwrite a file.
-2. **Edit whole rows**, and keep every row the same width. For a block, change `size` and `faces` instead. Add each color you use to `keys`, from the world palette. (The CLI can also edit for you: `object paint`, `object fill`, `scene place`, `scene move` and the rest; `npm run pixellab -- help` lists them.)
+2. **Edit whole rows**, and keep every row the same width. For a block, change `size` and `faces` instead. Add each color you use to `keys`, from the world palette.
 3. **Check it:** `npm run pixellab -- check <name>`. It prints every problem with its file, layer, frame, row and column, and the rule broken, or a one-line summary (size, colors against the cap, layers, frames). Fix each problem where it points.
-4. **Look at it:** `npm run pixellab -- art preview <name> --scale 3 --out .art-preview/<name>@3x.png` (or `art preview palette` for the world palette's swatch sheet) writes a PNG at that scale, up to 16× (`.art-preview/` is git-ignored). **Open the PNG and look at it.** An object stands on one tile outline; a scene shows its viewBox at frame 0, on the document's card color. The picture, not the text, decides whether the art is right. `scene render` and `object render` give transparent PNGs with item bounds instead.
+4. **Look at it:** `npm run pixellab -- art preview <name> --scale 3 --out .art-preview/<name>@3x.png` (or `art preview palette` for the world palette's swatch sheet) writes a PNG at that scale, up to 16× (`.art-preview/` is git-ignored). **Open the PNG and look at it.** An object stands on one tile outline; a scene shows its viewBox at frame 0, on the document's card color. The picture, not the text, decides whether the art is right. While you iterate, `object_render` and `scene_render` (Pixel Lab) are quicker: they hand you the image directly and show other frames and times. Save the review images with `art preview`.
 5. **Generate the output:** `npm run art` writes the SVGs for scenes with an `output`, then run `npm test`. A test fails if a committed SVG is stale against its sources.
 
 A name can be written `objects/<name>` or `scenes/<name>` when an object and a scene share it.
 
-**Sizes.** Each SVG must stay within its budget, or `npm run art` reports it `OVER BUDGET` and exits 1: `hero-island.svg` 750 KB raw and 150 KB gzip, `range-sprite.svg` 200 KB and 50 KB (both in the document's `manifest.json`), every other SVG 100 KB and 25 KB. `npm run pixellab -- art sizes <scene>` shows where the bytes go: the scene's total, then what each object adds (the scene compiled without it) and what each color's path takes, raw and gzip, each against the sources at `HEAD`.
+**Sizes.** Each SVG must stay within its budget, or `npm run art` reports it `OVER BUDGET` and exits 1: `hero-island.svg` 750 KB raw and 150 KB gzip, `range-sprite.svg` 200 KB and 50 KB, every other SVG 100 KB and 25 KB. `npm run pixellab -- art sizes <scene>` shows where the bytes go: the scene's total, then what each object adds (the scene compiled without it) and what each color's path takes, raw and gzip, each against the sources at `HEAD`.
 
 **Close-ups.** Preview-only scenes frame each part of the hero island tightly, so every review round renders the same view. Preview them with `--scale 6`:
 
@@ -229,13 +266,10 @@ A name can be written `objects/<name>` or `scenes/<name>` when an object and a s
 
 They place the island's objects at the island's positions, in its paint order, and a test keeps them that way: when the island's scene renames or moves an object, change the close-ups in the same commit. They show the island's rest frame: no `id`s, no `motion`, and none of the items hidden at t 0. They don't use the entrance groups. Where a close-up cuts the island off, the cubes at its edge show their sides. The preview's card color is one shade off the hero's background, so the sky reads as it does on the site.
 
-## Pixel Lab (the editor)
+## The app (where the owner looks)
 
-The owner edits the art in **Pixel Lab**, the Mac app from `jlawcordova-lab`, which opens this document (`src/assets/pixel-art/jlawcordova.pixellab`) and draws it with the same engine as `npm run art`. There is no browser editor any more (the web lab at `/lab/pixel-art/` was retired when the engine moved to the lab). Everything the app does has a text-and-command path, the one above, so an agent never needs it.
+There is no browser editor any more: the web lab at `/lab/pixel-art/` was retired when the engine moved to Pixel Lab. The owner opens the document in the Mac app, which shows every source in the working tree (it reloads a clean doc when its file changes), places and paints, plays a scene's motion on its timeline (⌥⌘P), reviews proposals in the Agent window, and publishes with ⌘B. Hand the owner the names of the objects and scenes to open there (the sidebar lists them), a review PNG of each, and any proposal ids. A scene's `motion` keys (`show`, `pose`, `move`) are written in the source, by hand or with a script; `scene_render --time <ms>` or `npm run pixellab -- scene render <scene> --time <ms> --out <png>` shows any moment of it.
 
-- **Over MCP** (`mcp__pixellab__*`, when the server is registered): `scene_render` and `object_render` return the PNG, `scene_place`, `scene_move`, `object_paint`, `object_fill` and the rest edit, and `doc_save` writes a **proposal** the owner approves or rejects in the app's Agent window. Never apply, reject or force one yourself. The MCP server runs on whatever document the owner registered it with, usually the real checkout, not a worktree: for a worktree, use the CLI (`npm run pixellab -- …`, which writes the working tree directly).
-- **Hand edits from the owner** arrive as commits to the document (Save in Pixel Lab writes the source files; approved proposals do too). Treat a saved source as the new baseline, re-check it and re-run `npm run art`.
-- **Publishing.** Pixel Lab's Publish (⌘B) is `npm run art`: it writes the SVGs next to the document. Either way, commit the sources and the SVGs together; a test fails if they disagree.
 - **Blocks:** a block shows as the engine draws it. The app paints its top (`surface`) and its faces (`sides`); a saved block carries only that block, so apply the same change to its variants (such as the island's edge pieces) yourself.
 
 ## Achievement icons
@@ -265,7 +299,7 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
   - Seven `data-class` groups follow, one per class, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). Each holds its whole setting in entrance groups, as on the hero island: three `ground` rows (`data-row` 0 to 2) of one-level cubes from the setting's own floor set, then one `object` group per prop and one for the outfit, each with its foot `data-x`. `Range.astro` floats them up on every class change with `RANGE_TIMING` from `src/lib/island-entrance.mjs`.
   - Each outfit extends `character` and stands on the center tile, placed by `{ tile: [1, 1, 0] }` in an `object` group with `data-x="0"`. The characters are isometric figures in the [island and Range look](#island-and-range-look), with no `ink` outline ([Isometric Range](../../../docs/intents/2026-10-range-isometric/spec.md)).
   - A test requires seven class groups, each with a floor set no other class uses.
-  - `art preview range-sprite` and Pixel Lab draw only the first `data-class` group. To see another class, preview a scratch copy of the scene that keeps the shadow and only that class's group.
+  - `art preview range-sprite` and Pixel Lab draw only the first `data-class` group. To look at another class, render it with `scene_render range-sprite --show <path>`, the path of any item in that class's group (from `scene_items`). For a preview on the card color, preview a scratch copy of the scene that keeps the shadow and only that class's group.
 - **Recolors.** `truck-green` is `truck` with other colors: it `extends: 'truck'` and lists only the keys that differ. Use the same pattern for a variant that changes colors but not shape.
 - **Keep the CSS hooks.** `pixel-art.css` animates the classes on these groups (`wf w0`…, `pcloud pc0`, `cbob`); the scene's motion styles its own `mv-` groups. Don't rename a loop, prefix or placement class unless you change the CSS in the same PR.
 
@@ -299,7 +333,7 @@ The style of the hero island's objects, of the Range (its platform and its chara
   - Clouds are short-sided stacked cubes: `cream` tops, `path-2` left, `path-3` right, tip pixels clipped, no texture. A cube's top width is a multiple of 4 (8–24), and a stacked cube narrower than 12 reads as a chimney.
   - The road is `path-2` dirt with a `cream` dashed center line: one dash per tile, 4 rows on the road's 2:1 line through the tile's center, so the dashes and gaps are even along the road.
   - Pines are three stacked tiers with shallow-V skirts, split at the center (lit left, dark right), with a sawtooth of needle tips.
-  - Cardboard is `wood-1` top, `wood-2` left, `wood-3` right, with `path-1` tape. A box W px wide has a top W/2 rows tall. Judge tape on the island or a close-up, since `path-1` nearly matches the preview's background.
+  - Cardboard is `wood-1` top, `wood-2` left, `wood-3` right, with `path-1` tape. A box W px wide has a top W/2 rows tall. Judge tape on the island or a close-up, since `path-1` nearly matches the preview's background. The same goes for any `path-1` top (a concrete step, a steel rim): on an object's own `--preview` it washes out, so judge it in a close-up or a render on the grass.
   - Planks and plank gaps on a 2:1 deck sit at least 4 rows apart; every 3 rows the steps line up into a checkerboard.
   - Buildings: a flat roof reads with a 1-px parapet line in the face shades, and `water-1` glass on a `path-1` wall needs a `path-3` frame. Place wall features by offsets from each column's wall-top row.
   - Water texture follows the side rule too: a falling sheet is `water-3` with darker `water-4` stripes and few light streaks, or it reads as rain.
@@ -400,6 +434,7 @@ The achievement icons are solid objects built like the clouds and the bridge, on
 - [ ] World colors only (outfit colors only in an outfit); within the caps; light from the island's side.
 - [ ] The preview PNGs (1× and 4× at least) are attached to the PR. For the Range, each class you touched at 1× and 3×, from a scratch copy of `range-sprite` that keeps the shadow and only that class's group, and a new floor set at 6×.
 - [ ] `npm test` shows `# fail 0`.
+- [ ] Every Pixel Lab proposal you made is approved by the owner and in the working tree, or listed in your report by id as still waiting. You applied none yourself.
 - [ ] The art is generic and public-safe (`CLAUDE.md`): no names, logos or likenesses.
 - [ ] If you changed how art is made (formats, commands, rules), this skill is updated in the same PR.
 - [ ] If you changed how art moves (an entrance, a loop), the `pixel-art-motion` skill's checks pass and it's updated in the same PR.
