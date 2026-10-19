@@ -221,7 +221,7 @@ The owner connects the MCP with `claude mcp add pixellab -- node "$HOME/Applicat
 5. Report each proposal's id, its doc and what it changes, and stop there. The owner approves or rejects it in Pixel Lab.
 6. After the owner approves, run `npm run art`, `npm test` and the rest of the checks the task needs. Until then they test the old sources.
 
-**Why not the CLI or a hand edit in the owner's checkout.** Pixel Lab reloads a doc when its file changes on disk only if that doc has no unsaved edits. When the owner has unsaved edits open, a write to that file leaves them looking at the old version: they don't see your change, and their next save in the app conflicts with it. A proposal goes through the app, which applies it onto the version they're looking at. Main sessions brief subagents the same way: proposals in the owner's checkout. Never tell an agent to write sources there instead.
+**Why not the CLI or a hand edit in the owner's checkout.** Pixel Lab reloads a doc when its file changes on disk only if that doc has no unsaved edits. When the owner has unsaved edits open, a write to that file leaves them looking at the old version: they don't see your change, and their next save in the app conflicts with it. A proposal waits in the app's Agent window. The owner applies it when they're ready: after saving their own edits, it lands on the version they're looking at. Main sessions brief subagents the same way: proposals in the owner's checkout. Never tell an agent to write sources there instead.
 
 **Which tool for what:**
 
