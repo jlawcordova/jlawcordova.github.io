@@ -121,3 +121,15 @@ A pose is its own object named `<name>-<pose>`, with the same anchor: `extends` 
 - The overpass (redrawn): road top on the deck at z 23, girder underside at z 20, 2-tile ramps rising 11.5 px per tile; anchors [16, 34] (deck), [32, 31] (near ramp), [16, 23] (far ramp), same placement rules. **A `truck-open` can cross** if the scene rests it on the road height under its downhill end (about 7 units behind its centre going up the near ramp, 7 ahead going down the far one); on the deck it sits flat at z 23. Paint order: far ramp, a truck on it, the train, deck, near ramp, a truck on the near ramp or deck.
 - The hook (redrawn, no `hf` loop) has three poses with anchor [5, 0] and the rope at px x + 9, gold spreader: `crane-hook` (23 px rope, carrying: container anchor at P + (9, 33)), `crane-hook-low` (47 px, pick-up and set-down on the ground: P + (9, 57)), `crane-hook-drop` (41 px, on the flatcar: P + (9, 51)). At the island's pick-up the hook goes at (87, −1) over `container-1` at (96, 56); at the drop, (135, −25) over the flatcar's container at (144, 26). The container paints before the hook.
 - The jib has three poses, all placed at px [117, 4] on the island, swapped by show/hide in `crane-jib`'s slot after `crane-mast`: `crane-jib` (front, rope tip (96, −1), today's), `crane-jib-side` (+col, tip (144, −1); `crane-hook` at (135, −1) carries the container at (144, 32), which on screen hangs just over the train) and `crane-jib-back` (−row, tip (144, −25); `crane-hook-drop` at (135, −25) sets it on the flatcar at (144, 26)). About 2.2 KB each.
+
+## The owner's animation review (2026-10-19)
+
+The owner liked the loop and asked for:
+- **The container arrives on the train,** with no pop-in: the train comes in carrying an empty container, the crane sets it down by the processor, the boxes go in, and once it's full the crane puts it back on the same train, which then leaves.
+- **A wooden overpass** instead of stone.
+- **Slanted truck poses** for climbing and descending the ramps, and the truck going down the far ramp painted behind the bridge, not in front of it.
+- **The ore belt reversed:** ore travels from the lower left to the upper right, and the ore ground sits at the bottom-left of the mining section.
+- **The `boxes` stack moved next to the processor,** away from the river.
+- **A longer waterfall:** it falls about three blocks below the cliff.
+
+Redo order, one subagent at a time: the wooden overpass; the slanted truck poses (to the new ramps' slope); the reversed ore belt; the longer waterfall; then the scene's layout and motion.
