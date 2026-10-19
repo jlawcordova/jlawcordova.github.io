@@ -11,12 +11,12 @@ export default {
         { object: 'island-shadow', at: { px: [224, 88] } },
         { object: 'island-shadow', at: { px: [208, 96] } },
         { object: 'island-shadow', at: { px: [192, 104] } },
-        { object: 'island-shadow', at: { px: [128, 88] } },
         { object: 'island-shadow', at: { px: [144, 96] } },
         { object: 'island-shadow', at: { px: [160, 104] } },
         { object: 'island-shadow', at: { px: [176, 112] } },
-        { object: 'island-shadow', at: { px: [96, 88] } },
-        { object: 'island-shadow', at: { px: [80, 96] } },
+        { object: 'island-shadow', at: { px: [112, 96] } },
+        { object: 'island-shadow', at: { px: [96, 104] } },
+        { object: 'island-shadow', at: { px: [80, 112] } },
         { object: 'island-shadow', at: { px: [64, 104] } },
         { object: 'island-shadow', at: { px: [32, 104] } },
         { object: 'island-shadow', at: { px: [16, 112] } },
@@ -387,7 +387,7 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'ground', 'data-col': '7', 'data-row': '-1', 'data-x': '128', 'data-y': '56' },
       items: [
-        { object: 'block-left', at: { tile: [7, -1, 0] } },
+        { object: 'block', at: { tile: [7, -1, 0] } },
       ],
     },
     {
@@ -448,7 +448,13 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'ground', 'data-col': '6', 'data-row': '0', 'data-x': '96', 'data-y': '56' },
       items: [
-        { object: 'block-right', at: { tile: [6, 0, 0] } },
+        { object: 'block', at: { tile: [6, 0, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '7', 'data-row': '0', 'data-x': '112', 'data-y': '64' },
+      items: [
+        { object: 'block-right', at: { tile: [7, 0, 0] } },
       ],
     },
     {
@@ -491,7 +497,13 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'ground', 'data-col': '6', 'data-row': '1', 'data-x': '80', 'data-y': '64' },
       items: [
-        { object: 'block-right', at: { tile: [6, 1, 0] } },
+        { object: 'block', at: { tile: [6, 1, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '7', 'data-row': '1', 'data-x': '96', 'data-y': '72' },
+      items: [
+        { object: 'block-right', at: { tile: [7, 1, 0] } },
       ],
     },
     {
@@ -534,7 +546,13 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'ground', 'data-col': '6', 'data-row': '2', 'data-x': '64', 'data-y': '72' },
       items: [
-        { object: 'block', at: { tile: [6, 2, 0] } },
+        { object: 'block-left', at: { tile: [6, 2, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'ground', 'data-col': '7', 'data-row': '2', 'data-x': '80', 'data-y': '80' },
+      items: [
+        { object: 'block', at: { tile: [7, 2, 0] } },
       ],
     },
     {
@@ -879,27 +897,27 @@ export default {
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '124', 'data-y': '25' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '140', 'data-y': '33' },
       items: [
-        { object: 'boxcar', id: 'train-boxcar', at: { px: [124, 22] } },
+        { object: 'boxcar', id: 'train-boxcar', at: { px: [140, 30] } },
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '144', 'data-y': '35' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '160', 'data-y': '43' },
       items: [
-        { object: 'flatcar', id: 'train-flatcar', at: { px: [144, 32] } },
+        { object: 'flatcar', id: 'train-flatcar', at: { px: [160, 40] } },
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '144', 'data-y': '31' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '160', 'data-y': '39' },
       items: [
-        { object: 'container', id: 'container-train', at: { px: [144, 26] } },
+        { object: 'container', id: 'container-train', at: { px: [160, 34] } },
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '164', 'data-y': '46' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '180', 'data-y': '54' },
       items: [
-        { object: 'locomotive', id: 'train-loco', at: { px: [164, 42] } },
+        { object: 'locomotive', id: 'train-loco', at: { px: [180, 50] } },
       ],
     },
     {
@@ -909,10 +927,10 @@ export default {
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '121', 'data-y': '44' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '137', 'data-y': '52' },
       items: [
-        { object: 'crane-mast', at: { px: [120, 44] } },
-        { object: 'crane-jib', id: 'jib', at: { px: [117, 4] } },
+        { object: 'crane-mast', at: { px: [136, 52] } },
+        { object: 'crane-jib', id: 'jib', at: { px: [133, 12] } },
       ],
     },
     {
@@ -1066,6 +1084,36 @@ export default {
       ],
     },
     {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '64', 'data-y': '40' },
+      items: [
+        { object: 'conveyor-feed', at: { tile: [4, 0, 0] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '45', 'data-y': '32' },
+      items: [
+        { object: 'ore', id: 'ore-feed-1', at: { px: [45, 32] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '45', 'data-y': '32' },
+      items: [
+        { object: 'ore', id: 'ore-feed-2', at: { px: [45, 32] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '45', 'data-y': '32' },
+      items: [
+        { object: 'ore', id: 'ore-feed-3', at: { px: [45, 32] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '55', 'data-y': '37' },
+      items: [
+        { object: 'ore', id: 'ore-feed-4', at: { px: [55, 37] } },
+      ],
+    },
+    {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '46', 'data-y': '35' },
       items: [
         { object: 'hopper', at: { px: [46, 31] } },
@@ -1096,33 +1144,33 @@ export default {
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '68', 'data-y': '52' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '84', 'data-y': '60' },
       items: [
-        { object: 'processor', at: { px: [64, 40] } },
+        { object: 'processor', at: { px: [80, 48] } },
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '83', 'data-y': '45' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '99', 'data-y': '53' },
       items: [
-        { object: 'parcel', id: 'parcel', at: { px: [83, 45] } },
+        { object: 'parcel', id: 'parcel', at: { px: [99, 53] } },
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '96', 'data-y': '61' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '112', 'data-y': '69' },
       items: [
-        { object: 'container', id: 'container-load', at: { px: [96, 56] } },
+        { object: 'container', id: 'container-load', at: { px: [112, 64] } },
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '121', 'data-y': '44' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '137', 'data-y': '52' },
       items: [
-        { object: 'crane-hook', id: 'hook', at: { px: [87, -1] } },
+        { object: 'crane-hook', id: 'hook', at: { px: [103, 7] } },
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '65', 'data-y': '62' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '81', 'data-y': '70' },
       items: [
-        { object: 'boxes', at: { px: [70, 62] } },
+        { object: 'boxes', at: { px: [86, 70] } },
       ],
     },
     {
@@ -1638,25 +1686,65 @@ export default {
         ],
       },
       {
+        item: 'ore-feed-1',
+        keys: [
+          { t: 0, show: false },
+          { t: 1700, show: true },
+          { t: 3350, move: [22, 11] },
+          { t: 3351, show: false },
+          { t: 3352, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'ore-feed-2',
+        keys: [
+          { t: 0, show: false },
+          { t: 2400, show: true },
+          { t: 4050, move: [22, 11] },
+          { t: 4051, show: false },
+          { t: 4052, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'ore-feed-3',
+        keys: [
+          { t: 0, show: false },
+          { t: 3100, show: true },
+          { t: 4750, move: [22, 11] },
+          { t: 4751, show: false },
+          { t: 4752, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'ore-feed-4',
+        keys: [
+          { t: 0 },
+          { t: 900, move: [12, 6] },
+          { t: 901, show: false },
+          { t: 902, move: [-10, -5] },
+          { t: 27250, show: true },
+        ],
+      },
+      {
         item: 'parcel',
         keys: [
           { t: 0, show: false },
-          { t: 1600, show: true },
-          { t: 2200, move: [6, 3] },
-          { t: 2300, show: false },
-          { t: 2301, move: [0, 0] },
-          { t: 2600, show: true },
-          { t: 3200, move: [6, 3] },
-          { t: 3300, show: false },
-          { t: 3301, move: [0, 0] },
-          { t: 3600, show: true },
-          { t: 4200, move: [6, 3] },
-          { t: 4300, show: false },
-          { t: 4301, move: [0, 0] },
-          { t: 4600, show: true },
-          { t: 5200, move: [6, 3] },
-          { t: 5300, show: false },
-          { t: 5301, move: [0, 0] },
+          { t: 1050, show: true },
+          { t: 1650, move: [6, 3] },
+          { t: 1700, show: false },
+          { t: 1701, move: [0, 0] },
+          { t: 3500, show: true },
+          { t: 4100, move: [6, 3] },
+          { t: 4150, show: false },
+          { t: 4151, move: [0, 0] },
+          { t: 4200, show: true },
+          { t: 4800, move: [6, 3] },
+          { t: 4850, show: false },
+          { t: 4851, move: [0, 0] },
+          { t: 4900, show: true },
+          { t: 5500, move: [6, 3] },
+          { t: 5550, show: false },
+          { t: 5551, move: [0, 0] },
         ],
       },
       {
@@ -1723,11 +1811,11 @@ export default {
         keys: [
           { t: 0 },
           { t: 10200 },
-          { t: 12950, move: [44, 22] },
-          { t: 12951, show: false },
-          { t: 12952, move: [-116, -58] },
-          { t: 15700 },
-          { t: 15701, show: true },
+          { t: 11950, move: [28, 14] },
+          { t: 11951, show: false },
+          { t: 11952, move: [-132, -66] },
+          { t: 14700 },
+          { t: 14701, show: true },
           { t: 22950, move: [0, 0] },
         ],
       },
@@ -1736,12 +1824,12 @@ export default {
         keys: [
           { t: 0 },
           { t: 10200 },
-          { t: 14200, move: [64, 32] },
-          { t: 14201, show: false },
-          { t: 14202, move: [-116, -58] },
-          { t: 15700 },
-          { t: 16950, move: [-96, -48] },
-          { t: 16951, show: true },
+          { t: 13200, move: [48, 24] },
+          { t: 13201, show: false },
+          { t: 13202, move: [-132, -66] },
+          { t: 14700 },
+          { t: 15950, move: [-112, -56] },
+          { t: 15951, show: true },
           { t: 22950, move: [0, 0] },
         ],
       },
@@ -1751,12 +1839,12 @@ export default {
           { t: 0, show: false },
           { t: 9100, show: true },
           { t: 10200 },
-          { t: 14200, move: [64, 32] },
-          { t: 14201, show: false },
-          { t: 14202, move: [-116, -58] },
-          { t: 15700 },
-          { t: 16950, move: [-96, -48] },
-          { t: 16951, show: true },
+          { t: 13200, move: [48, 24] },
+          { t: 13201, show: false },
+          { t: 13202, move: [-132, -66] },
+          { t: 14700 },
+          { t: 15950, move: [-112, -56] },
+          { t: 15951, show: true },
           { t: 22950, move: [0, 0] },
           { t: 23900, show: false },
         ],
@@ -1766,12 +1854,12 @@ export default {
         keys: [
           { t: 0 },
           { t: 10200 },
-          { t: 15450, move: [84, 42] },
-          { t: 15451, show: false },
-          { t: 15452, move: [-116, -58] },
-          { t: 15700 },
-          { t: 18200, move: [-76, -38] },
-          { t: 18201, show: true },
+          { t: 14450, move: [68, 34] },
+          { t: 14451, show: false },
+          { t: 14452, move: [-132, -66] },
+          { t: 14700 },
+          { t: 17200, move: [-92, -46] },
+          { t: 17201, show: true },
           { t: 22950, move: [0, 0] },
         ],
       },
@@ -1779,6 +1867,8 @@ export default {
         item: 'signal-far',
         keys: [
           { t: 0 },
+          { t: 13575, pose: 'crossing-signal-left' },
+          { t: 14075, pose: 'crossing-signal-right' },
           { t: 14575, pose: 'crossing-signal-left' },
           { t: 15075, pose: 'crossing-signal-right' },
           { t: 15575, pose: 'crossing-signal-left' },
@@ -1793,15 +1883,15 @@ export default {
           { t: 20075, pose: 'crossing-signal-right' },
           { t: 20575, pose: 'crossing-signal-left' },
           { t: 21075, pose: 'crossing-signal-right' },
-          { t: 21575, pose: 'crossing-signal-left' },
-          { t: 22075, pose: 'crossing-signal-right' },
-          { t: 22325, pose: 'crossing-signal' },
+          { t: 21325, pose: 'crossing-signal' },
         ],
       },
       {
         item: 'signal-near',
         keys: [
           { t: 0 },
+          { t: 13575, pose: 'crossing-signal-left' },
+          { t: 14075, pose: 'crossing-signal-right' },
           { t: 14575, pose: 'crossing-signal-left' },
           { t: 15075, pose: 'crossing-signal-right' },
           { t: 15575, pose: 'crossing-signal-left' },
@@ -1816,25 +1906,23 @@ export default {
           { t: 20075, pose: 'crossing-signal-right' },
           { t: 20575, pose: 'crossing-signal-left' },
           { t: 21075, pose: 'crossing-signal-right' },
-          { t: 21575, pose: 'crossing-signal-left' },
-          { t: 22075, pose: 'crossing-signal-right' },
-          { t: 22325, pose: 'crossing-signal' },
+          { t: 21325, pose: 'crossing-signal' },
         ],
       },
       {
         item: 'gate-far',
         keys: [
           { t: 0 },
-          { t: 15375, pose: 'crossing-gate-down-far' },
-          { t: 21825, pose: 'crossing-gate' },
+          { t: 14375, pose: 'crossing-gate-down-far' },
+          { t: 20825, pose: 'crossing-gate' },
         ],
       },
       {
         item: 'gate-near',
         keys: [
           { t: 0 },
-          { t: 15375, pose: 'crossing-gate-down' },
-          { t: 21825, pose: 'crossing-gate' },
+          { t: 14375, pose: 'crossing-gate-down' },
+          { t: 20825, pose: 'crossing-gate' },
         ],
       },
     ],

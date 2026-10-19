@@ -27,7 +27,7 @@ export default {
     { object: 'crossing-signal', at: { px: [80, -12] } },
     { object: 'tunnel-rail', at: { px: [48, -16] } },
     { object: 'tunnel-rail-front', at: { px: [48, -16] } },
-    { object: 'crane-jib', at: { px: [117, 4] } },
+    { object: 'crane-jib', at: { px: [133, 12] } },
     { object: 'pine', at: { px: [34, -2] } },
     { object: 'cloud-a', class: 'pcloud pc0', at: { px: [-150, -40] } },
     { object: 'cloud-b', class: 'pcloud pc1', at: { px: [10, -86] } },
