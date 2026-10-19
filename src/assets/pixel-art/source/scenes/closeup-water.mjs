@@ -89,8 +89,8 @@ export default {
     { object: 'pine', at: { px: [-1, 80] } },
     { object: 'tree-small', at: { px: [-1, 90] } },
     { object: 'tree-small', at: { px: [-19, 93] } },
-    { object: 'ore-screen', at: { px: [-48, 96] } },
-    { object: 'mine-cart', at: { px: [-48, 96] } },
-    { object: 'conveyor-row', at: { tile: [4, 8, 0] } },
+    { object: 'ore-screen', at: { px: [-32, 104] } },
+    { object: 'mine-cart', at: { px: [-32, 104] } },
+    { object: 'conveyor-row', at: { tile: [5, 8, 0] } },
   ],
 };
