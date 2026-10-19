@@ -79,7 +79,8 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'ground', 'data-col': '2', 'data-row': '-5', 'data-x': '112', 'data-y': '-16' },
       items: [
-        { object: 'block', at: { tile: [2, -5, 0] } },
+        { object: 'block-road', at: { tile: [2, -5, 0] } },
+        { object: 'path', at: { tile: [2, -5, 0] } },
       ],
     },
     {
@@ -145,7 +146,8 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'ground', 'data-col': '2', 'data-row': '-4', 'data-x': '96', 'data-y': '-8' },
       items: [
-        { object: 'block', at: { tile: [2, -4, 0] } },
+        { object: 'block-road', at: { tile: [2, -4, 0] } },
+        { object: 'path', at: { tile: [2, -4, 0] } },
       ],
     },
     {
@@ -213,7 +215,7 @@ export default {
       group: { class: 'enter', 'data-enter': 'ground', 'data-col': '2', 'data-row': '-3', 'data-x': '80', 'data-y': '0' },
       items: [
         { object: 'block-road', at: { tile: [2, -3, 0] } },
-        { object: 'track', at: { tile: [2, -3, 0] } },
+        { object: 'level-crossing', at: { tile: [2, -3, 0] } },
       ],
     },
     {
@@ -287,7 +289,8 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'ground', 'data-col': '2', 'data-row': '-2', 'data-x': '64', 'data-y': '8' },
       items: [
-        { object: 'block', at: { tile: [2, -2, 0] } },
+        { object: 'block-road', at: { tile: [2, -2, 0] } },
+        { object: 'path', at: { tile: [2, -2, 0] } },
       ],
     },
     {
@@ -353,7 +356,8 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'ground', 'data-col': '2', 'data-row': '-1', 'data-x': '48', 'data-y': '16' },
       items: [
-        { object: 'block', at: { tile: [2, -1, 0] } },
+        { object: 'block-road', at: { tile: [2, -1, 0] } },
+        { object: 'path', at: { tile: [2, -1, 0] } },
       ],
     },
     {
@@ -851,15 +855,21 @@ export default {
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '88', 'data-y': '-25' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '89', 'data-y': '-16' },
       items: [
-        { object: 'truck-open-down', id: 'truck-far', at: { px: [88, -27] } },
+        { object: 'crossing-gate', id: 'gate-far', at: { px: [88, -16] } },
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '104', 'data-y': '-2' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '81', 'data-y': '-12' },
       items: [
-        { object: 'bridge-road-ramp-far', at: { px: [96, -8] } },
+        { object: 'crossing-signal', id: 'signal-far', at: { px: [80, -12] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '80', 'data-y': '3' },
+      items: [
+        { object: 'truck-open', id: 'truck-far', at: { px: [80, 0] } },
       ],
     },
     {
@@ -896,18 +906,6 @@ export default {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '48', 'data-y': '-5' },
       items: [
         { object: 'tunnel-rail-front', at: { px: [48, -16] } },
-      ],
-    },
-    {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '80', 'data-y': '-13' },
-      items: [
-        { object: 'bridge-road', at: { px: [80, 0] } },
-      ],
-    },
-    {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '56', 'data-y': '23' },
-      items: [
-        { object: 'bridge-road-ramp', at: { px: [64, 8] } },
       ],
     },
     {
@@ -1011,6 +1009,18 @@ export default {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '32', 'data-y': '27' },
       items: [
         { object: 'truck-open', id: 'truck-tip', at: { px: [32, 24] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '79', 'data-y': '13' },
+      items: [
+        { object: 'crossing-signal', id: 'signal-near', at: { px: [78, 13] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '71', 'data-y': '17' },
+      items: [
+        { object: 'crossing-gate', id: 'gate-near', at: { px: [70, 17] } },
       ],
     },
     {
@@ -1335,50 +1345,19 @@ export default {
           { t: 400, pose: 'truck-open-tipped' },
           { t: 2800, pose: 'truck-open' },
           { t: 3200 },
-          { t: 4089, move: [8, -4], pose: 'truck-open-up' },
-          { t: 4311, move: [10, -6] },
-          { t: 4533, move: [12, -9] },
-          { t: 4756, move: [14, -11] },
-          { t: 4978, move: [16, -14] },
-          { t: 5200, move: [18, -16] },
-          { t: 5422, move: [20, -19] },
-          { t: 5867, move: [24, -23] },
-          { t: 6089, move: [26, -26] },
-          { t: 6311, move: [28, -28] },
-          { t: 6533, move: [30, -31] },
-          { t: 6756, move: [32, -33] },
-          { t: 6978, move: [34, -36] },
-          { t: 7200, move: [36, -38] },
-          { t: 7422, move: [38, -41] },
-          { t: 7644, move: [40, -43], pose: 'truck-open' },
-          { t: 9422, move: [56, -51], pose: 'truck-open-down' },
-          { t: 9423, show: false, pose: 'truck-open' },
-          { t: 9424, move: [0, 0] },
+          { t: 8528, move: [48, -24] },
+          { t: 8529, show: false },
+          { t: 8530, move: [0, 0] },
         ],
       },
       {
         item: 'truck-far',
         keys: [
           { t: 0, show: false },
-          { t: 9423, show: true },
-          { t: 9644, move: [2, 0] },
-          { t: 9867, move: [4, 1] },
-          { t: 10089, move: [6, 1] },
-          { t: 10311, move: [8, 2] },
-          { t: 10533, move: [10, 2] },
-          { t: 10756, move: [12, 3] },
-          { t: 10978, move: [14, 3] },
-          { t: 11200, move: [16, 4] },
-          { t: 11644, move: [20, 4] },
-          { t: 11867, move: [22, 5] },
-          { t: 12089, move: [24, 5] },
-          { t: 12311, move: [26, 6] },
-          { t: 12533, move: [28, 6] },
-          { t: 12756, move: [30, 7] },
-          { t: 12978, move: [32, 7], pose: 'truck-open' },
-          { t: 14089, move: [42, 2] },
-          { t: 14090, show: false },
-          { t: 14091, move: [0, 0], pose: 'truck-open-down' },
+          { t: 8529, show: true },
+          { t: 14079, move: [50, -25] },
+          { t: 14080, show: false },
+          { t: 14081, move: [0, 0] },
         ],
       },
       {
@@ -1794,6 +1773,68 @@ export default {
           { t: 18200, move: [-76, -38] },
           { t: 18201, show: true },
           { t: 22950, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'signal-far',
+        keys: [
+          { t: 0 },
+          { t: 14575, pose: 'crossing-signal-left' },
+          { t: 15075, pose: 'crossing-signal-right' },
+          { t: 15575, pose: 'crossing-signal-left' },
+          { t: 16075, pose: 'crossing-signal-right' },
+          { t: 16575, pose: 'crossing-signal-left' },
+          { t: 17075, pose: 'crossing-signal-right' },
+          { t: 17575, pose: 'crossing-signal-left' },
+          { t: 18075, pose: 'crossing-signal-right' },
+          { t: 18575, pose: 'crossing-signal-left' },
+          { t: 19075, pose: 'crossing-signal-right' },
+          { t: 19575, pose: 'crossing-signal-left' },
+          { t: 20075, pose: 'crossing-signal-right' },
+          { t: 20575, pose: 'crossing-signal-left' },
+          { t: 21075, pose: 'crossing-signal-right' },
+          { t: 21575, pose: 'crossing-signal-left' },
+          { t: 22075, pose: 'crossing-signal-right' },
+          { t: 22325, pose: 'crossing-signal' },
+        ],
+      },
+      {
+        item: 'signal-near',
+        keys: [
+          { t: 0 },
+          { t: 14575, pose: 'crossing-signal-left' },
+          { t: 15075, pose: 'crossing-signal-right' },
+          { t: 15575, pose: 'crossing-signal-left' },
+          { t: 16075, pose: 'crossing-signal-right' },
+          { t: 16575, pose: 'crossing-signal-left' },
+          { t: 17075, pose: 'crossing-signal-right' },
+          { t: 17575, pose: 'crossing-signal-left' },
+          { t: 18075, pose: 'crossing-signal-right' },
+          { t: 18575, pose: 'crossing-signal-left' },
+          { t: 19075, pose: 'crossing-signal-right' },
+          { t: 19575, pose: 'crossing-signal-left' },
+          { t: 20075, pose: 'crossing-signal-right' },
+          { t: 20575, pose: 'crossing-signal-left' },
+          { t: 21075, pose: 'crossing-signal-right' },
+          { t: 21575, pose: 'crossing-signal-left' },
+          { t: 22075, pose: 'crossing-signal-right' },
+          { t: 22325, pose: 'crossing-signal' },
+        ],
+      },
+      {
+        item: 'gate-far',
+        keys: [
+          { t: 0 },
+          { t: 15375, pose: 'crossing-gate-down-far' },
+          { t: 21825, pose: 'crossing-gate' },
+        ],
+      },
+      {
+        item: 'gate-near',
+        keys: [
+          { t: 0 },
+          { t: 15375, pose: 'crossing-gate-down' },
+          { t: 21825, pose: 'crossing-gate' },
         ],
       },
     ],
