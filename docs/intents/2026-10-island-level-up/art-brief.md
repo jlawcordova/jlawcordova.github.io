@@ -113,3 +113,4 @@ A pose is its own object named `<name>-<pose>`, with the same anchor: `extends` 
 - **The hopper, processor and container stand on the middle island** (today's island). **The crane stands on the rail section** and lifts the container from the middle island onto the train.
 - **The rail section's ground is grass:** the stone yard is too strong. `block-yard` and its edges leave the island, and `block-rail` is rebuilt from the grass `block-right`.
 - Redo order, one subagent at a time: container; flatcar and block-rail; locomotive; boxcar; rail tunnel; overpass; the scene's re-layout; the crane's poses; then the motion.
+- `container` (redrawn): 22×22, anchor [11, 16] at its footprint's ground centre: 16 units long (one tile, col axis), 8 wide, 10 tall, doorway z 1–10 on the hidden up-left end. Slings 2 units in from each end land at anchor + (−6, −13) and (+6, −7).
