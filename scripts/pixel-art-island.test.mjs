@@ -37,7 +37,7 @@ const BLOCKS = ['block', 'block-left', 'block-right', 'block-road', 'block-river
 const NEW_BLOCKS = ['block-mine', 'block-mine-left', 'block-rail'];
 const CUBES = [...BLOCKS, ...NEW_BLOCKS];
 /** The flat tops laid over a cube: the road, the river, the railway and the mine track. */
-const TOPS = ['river', 'path', 'track', 'track-mine'];
+const TOPS = ['river', 'path', 'track', 'track-mine', 'level-crossing'];
 
 /** The ground's library objects: one cube per position, plus a flat top laid over it where the road, river or a track crosses it. */
 const GROUND = ['tile', ...CUBES, ...TOPS];
@@ -125,13 +125,13 @@ describe('hero island structure', () => {
     assert.deepEqual(scene.viewBox, [-182, -92, 446, 264]);
     assert.match(svg, /^<svg [^>]*viewBox="-182 -92 446 264"/);
     assert.ok(!items.some((item) => item.class?.split(' ').includes('itruck')), 'no item uses the old itruck drive');
-    for (const name of ['flag', 'river', 'waterfall-face', 'path', 'bridge', 'bridge-rail', 'house', 'boxes', 'tree-small', 'pine', 'crane-mast', 'crane-jib', 'crane-hook', 'truck-open', 'tunnel-road', 'conveyor-row', 'ore-screen', 'mine-cart', 'hopper', 'processor', 'container', 'track', 'tunnel-rail', 'bridge-road', 'locomotive', 'flatcar', 'boxcar']) {
+    for (const name of ['flag', 'river', 'waterfall-face', 'path', 'bridge', 'bridge-rail', 'house', 'boxes', 'tree-small', 'pine', 'crane-mast', 'crane-jib', 'crane-hook', 'truck-open', 'tunnel-road', 'conveyor-row', 'ore-screen', 'mine-cart', 'hopper', 'processor', 'container', 'track', 'tunnel-rail', 'level-crossing', 'crossing-signal', 'crossing-gate', 'conveyor-feed', 'stone', 'locomotive', 'flatcar', 'boxcar']) {
       assert.ok(placed.includes(name), `${name} is in the scene`);
     }
     assert.equal(trucks.length, 4, 'four truck items share the line');
     for (const truck of trucks) {
       const poses = new Set([truck.object, ...tracks.get(truck.id).keys.map((key) => key.pose).filter(Boolean)]);
-      for (const pose of poses) assert.match(pose, /^truck-open(-tipped|-up|-down)?$/, `${truck.id} is the red open-top truck in one of its poses, so the loop hands one over to the next unseen (spec R7)`);
+      for (const pose of poses) assert.match(pose, /^truck-open(-tipped)?$/, `${truck.id} is the red open-top truck in one of its poses, so the loop hands one over to the next unseen (spec R7)`);
     }
     assert.ok(!placed.includes('fence'), 'the fence is off the island (the owner\'s Stage 2 review)');
     assert.ok(!placed.includes('waterfall'), 'the 82×45 waterfall is retired (slice 4)');
@@ -144,12 +144,14 @@ describe('hero island structure', () => {
     const rivers = indexesOf(['river', 'waterfall-face']).length;
     assert.equal(rivers, 7, 'six river tiles, the whole of row 3 (island clock sweep spec R7), and the falling face');
     const count = (prefix) => groups.filter((cls) => cls.split(' ')[0] === prefix).length;
-    // The flag's streaks and the two belt segments' cleats are ff; the processor's LED is hf (island level up spec R4).
+    // The flag's streaks, the two belt segments' cleats and the feed belt's are ff; the processor's LED is hf (island level up spec R4).
+    const belts = indexesOf(['conveyor-row', 'conveyor-feed']).length;
+    assert.equal(belts, 3, 'two ore belt segments and the feed belt (the owner\'s PR review)');
     assert.deepEqual(
       Object.fromEntries(['wf', 'ff', 'hf', 'pcloud'].map((p) => [p, count(p)])),
-      { wf: rivers * 5, ff: 4 * (1 + indexesOf(['conveyor-row']).length), hf: 6, pcloud: 3 },
+      { wf: rivers * 5, ff: 4 * (1 + belts), hf: 6, pcloud: 3 },
     );
-    assert.equal(groups.length, rivers * 5 + 4 * 3 + 6 + 3, 'no other class');
+    assert.equal(groups.length, rivers * 5 + 4 * 4 + 6 + 3, 'no other class');
     const css = await readFile(join(ROOT, 'src/styles/pixel-art.css'), 'utf8');
     for (const cls of ['.pcloud', '.wf', '.ff', '.hf', '.w0', '.f0', '.h0']) assert.ok(css.includes(cls), `pixel-art.css names ${cls}`);
     for (const gone of ['idrive', '.itruck', '.it2']) assert.ok(!css.includes(gone), `pixel-art.css no longer has ${gone}`);
@@ -157,16 +159,43 @@ describe('hero island structure', () => {
     assert.ok(reduced.includes('.w0, .f0, .h0 { opacity: 1; }'), 'reduced motion shows frame 0');
   });
 
-  it('R8: the trucks paint over the ground and road; a truck on the far ramp paints before it, and the others after the near ramp', () => {
+  it('R8: the trucks paint over the ground and road; the crossing\'s far signal and gate paint behind the far truck and the train, and the near ones in front of every truck and the train', () => {
     const [lastGround, lastBehind] = [Math.max(...indexesOf([...GROUND, 'waterfall-face'])), Math.max(...indexesOf(BEHIND_TRUCKS))];
-    const [farRamp, deck, nearRamp] = ['bridge-road-ramp-far', 'bridge-road', 'bridge-road-ramp'].map((name) => indexesOf([name])[0]);
+    const at = (id) => items.findIndex((item) => item.id === id);
     for (const truck of trucks) assert.ok(items.indexOf(truck) > lastGround, `${truck.id} paints over the ground`);
-    // The ones on the road below the overpass also paint over the house, the river bridge and the back trees' shade.
+    // The ones on the road before the crossing also paint over the house, the river bridge and the back trees' shade.
     for (const truck of trucks.filter((t) => t.id !== 'truck-far')) assert.ok(items.indexOf(truck) > lastBehind, `${truck.id} paints over the house and the bridge`);
     const far = trucks.filter((t) => t.id === 'truck-far');
-    assert.equal(far.length, 1, 'one truck goes down the far ramp');
-    assert.ok(items.indexOf(far[0]) < farRamp, 'it paints behind the far ramp (the owner\'s animation review)');
-    for (const truck of trucks.filter((t) => t !== far[0])) assert.ok(items.indexOf(truck) > nearRamp && nearRamp > deck, `${truck.id} paints after the deck and the near ramp`);
+    assert.equal(far.length, 1, 'one truck drives on past the crossing');
+    // A level crossing replaced the overpass (the owner's PR review): back to front, the far gate and signal, the far truck, the train, the near signal and gate.
+    assert.ok(at('gate-far') < at('signal-far') && at('signal-far') < at('truck-far'), 'the far gate and signal paint behind the far truck');
+    const cars = ['train-loco', 'train-flatcar', 'train-boxcar', 'container-train'];
+    for (const car of cars) assert.ok(at('truck-far') < at(car) && at(car) < at('signal-near'), `${car} paints between the far truck and the near signal`);
+    assert.ok(at('signal-near') < at('gate-near'), 'the near gate paints in front of the near signal');
+    for (const truck of trucks.filter((t) => t !== far[0])) assert.ok(items.indexOf(truck) < at('signal-near'), `${truck.id} paints behind the near signal`);
+  });
+
+  it('R8: no truck is on the level crossing while the train is, and the gates are down and the lamps lit whenever a car is on it (the owner\'s PR review)', () => {
+    const [cx] = tileToPx([2, -3, 0], scene.origin);
+    const byId = (id) => items.find((item) => item.id === id);
+    const xAt = (item, time) => pointOf(item)[0] + stateOf(item, time).move[0];
+    // In screen x, the crossing tile reaches ±8 px from its centre along either axis, a car ±18 px and a truck ±10 px.
+    const cars = ['train-loco', 'train-flatcar', 'train-boxcar'].map(byId);
+    const [gateNear, gateFar, signalNear, signalFar] = ['gate-near', 'gate-far', 'signal-near', 'signal-far'].map(byId);
+    let trainOn = 0;
+    for (let time = 0; time < scene.motion.duration; time += 50) {
+      const car = cars.some((item) => stateOf(item, time).show && Math.abs(xAt(item, time) - cx) < 8 + 18);
+      const truck = trucks.some((item) => stateOf(item, time).show && Math.abs(xAt(item, time) - cx) < 8 + 10);
+      assert.ok(!(car && truck), `a truck and the train are both on the crossing at ${time} ms`);
+      if (!car) continue;
+      trainOn++;
+      assert.equal(stateOf(gateNear, time).pose, 'crossing-gate-down', `the near gate is down at ${time} ms`);
+      assert.equal(stateOf(gateFar, time).pose, 'crossing-gate-down-far', `the far gate is down at ${time} ms`);
+      for (const signal of [signalNear, signalFar]) assert.match(stateOf(signal, time).pose, /^crossing-signal-(left|right)$/, `${signal.id} is lit at ${time} ms`);
+    }
+    assert.ok(trainOn > 0, 'the train passes the crossing');
+    // At rest (and under reduced motion) the lamps are dark and the gates up.
+    for (const item of [gateNear, gateFar, signalNear, signalFar]) assert.equal(stateOf(item, 0).pose, item.object, `${item.id} at rest`);
   });
 
   it('R7: wherever a shown truck crosses a tree in the loop, the one standing further forward paints over the other', () => {
@@ -198,15 +227,15 @@ describe('hero island structure', () => {
   it('R1, R3: the ground is one cube per position on a [col, row, 0] grid in three sections, edge pieces on the front cliffs, block at the corner, and each top laid right after its cube (island level up spec R1)', () => {
     const ground = scene.items.filter((g) => g.group['data-enter'] === 'ground');
     assert.deepEqual(scene.origin, [0, 8], 'the grid origin that puts the middle island\'s top faces where the island stood');
-    // The middle island (cols 0–5, rows 0–5, plus col 6 on rows 0–2 behind the waterfall row), the mining section on its L–B
+    // The middle island (cols 0–5, rows 0–5, plus cols 6–7 on rows 0–2 behind the waterfall row, the owner's PR review), the mining section on its L–B
     // side (rows 6–10) and the rail section on its T–R side (rows −6 to −1, cols 0–10; row −6 only to col 4).
     const want = new Set();
     for (let row = -6; row <= 10; row++) {
-      const last = row === -6 ? 4 : row < 0 ? 10 : row <= 2 ? 6 : 5;
+      const last = row === -6 ? 4 : row < 0 ? 10 : row <= 2 ? 7 : 5;
       for (let col = 0; col <= last; col++) want.add(`${col},${row}`);
     }
     assert.deepEqual([...cubeAt.keys()].sort(), [...want].sort(), 'the three sections, every position once');
-    assert.equal(ground.length, 129, 'one ground group per position');
+    assert.equal(ground.length, 132, 'one ground group per position');
     // Which cube stands where, by its neighbours: the cliffs need their edge pieces (hero island detail spec, Hidden joints).
     const allowed = {
       corner: ['block'],
@@ -219,15 +248,15 @@ describe('hero island structure', () => {
       assert.ok(allowed[cliffOf(col, row)].includes(object), `[${col}, ${row}] (${cliffOf(col, row)}) is ${object}`);
     }
     // The road runs on col 2 the whole way: its cubes are block-road, and the river runs on block-river along row 3.
-    // Under the overpass's two ramps (rows −5, −4, −2 and −1) the cubes are plain grass, hidden by the ramps; the bridge crosses the river at [2, 3].
+    // The road crosses the track at ground level (the owner's PR review), and the bridge crosses the river at [2, 3].
     for (let row = -6; row <= 10; row++) {
-      const want = [-5, -4, -2, -1].includes(row) ? 'block' : row === 3 ? 'block-river' : 'block-road';
+      const want = row === 3 ? 'block-river' : 'block-road';
       assert.equal(cubeAt.get(`2,${row}`), want, `the road's cube at [2, ${row}]`);
     }
     for (let col = 0; col <= 5; col++) assert.equal(cubeAt.get(`${col},3`), 'block-river', `the river's cube at [${col}, 3]`);
     assert.equal(cubeAt.get('10,-3'), 'block-rail', 'the railway meets the B–R cliff on block-rail');
     // Each group is its cube, then any top on the same tile, laid on the material it belongs on.
-    const on = { path: ['block-road'], river: ['block-river'], track: ['block-road', 'block-rail'], 'track-mine': ['block', 'block-right'], 'waterfall-face': ['block-river'] };
+    const on = { path: ['block-road'], 'level-crossing': ['block-road'], river: ['block-river'], track: ['block-road', 'block-rail'], 'track-mine': ['block', 'block-right'], 'waterfall-face': ['block-river'] };
     for (const group of ground) {
       const [cube, ...rest] = group.items;
       assert.ok(CUBES.includes(cube.object), `${cube.object} at ${cube.at.tile} is a cube`);
@@ -366,8 +395,8 @@ describe('hero island structure', () => {
     const at = items.filter((item) => item.object === 'island-shadow').map((item) => item.at.px);
     // Under the front tiles of the three sections, 32 pixels below each top face (island level up spec, Design).
     assert.deepEqual(at, [
-      [240, 80], [224, 88], [208, 96], [192, 104], [128, 88], [144, 96], [160, 104], [176, 112],
-      [96, 88], [80, 96], [64, 104], [32, 104], [16, 112], [0, 120], [-16, 128], [-32, 136],
+      [240, 80], [224, 88], [208, 96], [192, 104], [144, 96], [160, 104], [176, 112], [112, 96],
+      [96, 104], [80, 112], [64, 104], [32, 104], [16, 112], [0, 120], [-16, 128], [-32, 136],
       [-48, 144], [-64, 152], [-160, 120], [-144, 128], [-128, 136], [-112, 144], [-96, 152], [-80, 160],
     ]);
     assert.deepEqual(resolve(sources, 'island-shadow').anchor, [15, 8], 'the anchor is the diamond\'s center');
@@ -384,10 +413,9 @@ describe('hero island structure', () => {
     assert.ok(i[0] > Math.max(...indexesOf(GROUND)), 'it paints over the ground, both banks included');
   });
 
-  it('R7, R8: every truck keeps to the road\'s line through the whole loop: at road level on the ground, and no higher than the deck on the overpass', () => {
+  it('R7, R8: every truck keeps to the road\'s line at road level through the whole loop, the level crossing included', () => {
     // A point on the road's centre line (col 2) at height z has x + 2y = 80 − 2z with the island's origin, whatever its row.
     const line = 80;
-    const deck = 23;
     for (const truck of trucks) {
       const [x0, y0] = pointOf(truck);
       let shown = 0;
@@ -397,10 +425,7 @@ describe('hero island structure', () => {
         shown++;
         const v = x0 + move[0] + 2 * (y0 + move[1]);
         const where = `${truck.id} at ${time} ms (${pose})`;
-        assert.ok(v <= line && v >= line - 2 * deck, `${where}: x + 2y is ${v}, off the road`);
-        // The pitched poses only on the ramps, and the flat ones only at road level or flat on the deck.
-        if (pose === 'truck-open-up' || pose === 'truck-open-down') assert.ok(v <= line && v >= line - 2 * deck, `${where}: a ramp pose off the ramps`);
-        else assert.ok(v === line || v === line - 2 * deck, `${where}: a flat truck between road level and the deck`);
+        assert.equal(v, line, `${where}: x + 2y is ${v}, off the road`);
       }
       assert.ok(shown > 0, `${truck.id} shows`);
     }
@@ -479,8 +504,8 @@ describe('hero island structure', () => {
     assert.deepEqual(at(['tree-shade', ...TREES, ...FRONT_PIECES]), [
       ['tree-small', [157, 3]],
       ['pine', [229, 44]],
-      ['crane-mast', [120, 44]],
-      ['crane-jib', [117, 4]],
+      ['crane-mast', [136, 52]],
+      ['crane-jib', [133, 12]],
       ['pine', [34, -2]],
       ['tree-shade', [-1, 19]],
       ['tree-shade', [-25, 29]],
@@ -492,8 +517,8 @@ describe('hero island structure', () => {
       ['tree-small', [-138, 82]],
       ['tree', [-146, 95]],
       ['bridge-rail', [2, 3, 0]],
-      ['crane-hook', [87, -1]],
-      ['boxes', [70, 62]],
+      ['crane-hook', [103, 7]],
+      ['boxes', [86, 70]],
       ['pine', [61, 75]],
       ['tree-small', [173, 72]],
       ['tree-small', [-13, 73]],
@@ -501,7 +526,7 @@ describe('hero island structure', () => {
       ['pine', [-1, 80]],
       ['tree-small', [-1, 90]],
       ['tree-small', [-19, 93]],
-      ['pine', [-66, 127]],
+      ['pine', [-74, 131]],
     ]);
     // Each shade lies under a back tree's trunk.
     for (const [, px] of at(['tree-shade'])) {
@@ -518,7 +543,7 @@ describe('hero island structure', () => {
       for (const [x, y] of lowest) feet.push([item.object, [x, y]]);
     }
     const ground = paintOf(items.filter((item) => GROUND.includes(item.object)));
-    const wet = paintOf(items.filter((item) => ['river', 'path', 'bridge', 'waterfall-face', 'track', 'track-mine'].includes(item.object)));
+    const wet = paintOf(items.filter((item) => ['river', 'path', 'level-crossing', 'bridge', 'waterfall-face', 'track', 'track-mine'].includes(item.object)));
     for (const [name, [x, y]] of feet) {
       assert.ok(ground.has(`${x},${y}`), `${name} stands on the island at ${x},${y}`);
       assert.ok(!wet.has(`${x},${y}`), `${name} stands on the river or the road at ${x},${y}`);
@@ -577,7 +602,7 @@ describe('entrance groups (island build entrance spec, Entrance groups)', () => 
 
   it('each cube is one ground group, in paint order, holding its cube and the top laid over it, with its grid place and foot (island clock sweep spec R6)', () => {
     const ground = ofKind('ground');
-    assert.equal(ground.length, 129, 'one group per position (island level up spec R1)');
+    assert.equal(ground.length, 132, 'one group per position (island level up spec R1, cols 6–7 on rows 0–2 since the owner\'s PR review)');
     for (const group of ground) {
       const [col, row] = [Number(attr(group, 'data-col')), Number(attr(group, 'data-row'))];
       for (const item of group.items) {

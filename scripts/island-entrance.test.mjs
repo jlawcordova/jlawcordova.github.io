@@ -33,7 +33,7 @@ describe('island entrance schedule', () => {
 
   it('R1: the ground sweeps in left to right by screen x, over 0.25s plus a 0.25s cascade: 0.5s in all', () => {
     const ground = startOrder(of('ground'));
-    assert.equal(ground.length, 129, 'the three sections (island level up spec R1)');
+    assert.equal(ground.length, 132, 'the three sections (island level up spec R1)');
     for (let i = 1; i < ground.length; i++) assert.ok(ground[i].x >= ground[i - 1].x, `x ${ground[i].x} starts no earlier than x ${ground[i - 1].x}`);
     close(ground[0].delay, TIMING.start + 0.12, 'the left corner starts 0.12s after the shadow');
     assert.deepEqual([ground[0].col, ground[0].row], [0, 10], 'the left corner first: the mining section\'s, at the far left');
@@ -87,7 +87,7 @@ describe('island entrance schedule', () => {
     const t = { ...TIMING, ground: 'clock', groundSpan: 0.5, cascade: 0, move: 'pop', duration: 0.5 };
     const clockPlan = schedule(pieces, t);
     const ground = startOrder(pieces.flatMap((p, i) => (p.enter === 'ground' ? [{ ...p, ...clockPlan[i] }] : [])));
-    assert.equal(ground.length, 129);
+    assert.equal(ground.length, 132);
     close(ground[0].delay, TIMING.start + 0.12, 'the first cubes start 0.12s after the shadow');
     close(end(ground.at(-1)) - t.duration - ground[0].delay, 0.5, 'the sweep');
     // Clockwise on screen: going round from the left, each cube's angle about the middle of the ground only grows. The
