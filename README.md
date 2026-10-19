@@ -101,6 +101,8 @@ npm run art -- --new scene <name>             # a valid, canonical starter sourc
 
 Everything works with the keyboard alone, with undo, and with drafts kept in the browser. **Export** gives the canonical source and the path it belongs at. The loop is export → commit the file → `npm run art`. The page is unlisted and `noindex`, but public, and it sends nothing anywhere.
 
+**Pixel Lab for Mac**, the owner's native editor (kept in a separate repository), edits the same sources with this checkout's own engine, and saves straight to them. Agents reach it through its `pixellab` CLI and MCP server: they look at renders, arrange scenes and paint objects with the same commands, and their MCP saves become proposals the owner approves in the app. The `pixel-art` skill (`.claude/skills/pixel-art/SKILL.md`) says when to use which.
+
 Sources are kept in one canonical text format, and `npm test` fails if a source isn't canonical or a committed SVG is stale against its sources.
 
 ## Deploy

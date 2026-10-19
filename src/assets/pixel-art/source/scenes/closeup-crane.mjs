@@ -85,6 +85,7 @@ export default {
     { object: 'flatcar', at: { px: [160, 40] } },
     { object: 'locomotive', at: { px: [180, 50] } },
     { object: 'tunnel-rail-front', at: { px: [48, -16] } },
+    { object: 'crane-foundation', at: { px: [136, 52] } },
     { object: 'crane-mast', at: { px: [136, 52] } },
     { object: 'crane-jib', at: { px: [133, 12] } },
     { object: 'tree-shade', at: { px: [61, 75] } },

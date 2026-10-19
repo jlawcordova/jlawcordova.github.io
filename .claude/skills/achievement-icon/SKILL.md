@@ -1,12 +1,12 @@
 ---
 name: achievement-icon
-description: Add or change an achievement icon, the 16×16 pixel-art picture that sits beside an accomplishment on the site. Use whenever someone asks for a new achievement icon, wants to redraw one, or when an accomplishment needs a kind of icon the set doesn't have. Builds on the pixel-art skill and works headless.
+description: Add or change an achievement icon, the 16×16 pixel-art picture that sits beside an accomplishment on the site. Use whenever someone asks for a new achievement icon, wants to redraw one, or when an accomplishment needs a kind of icon the set doesn't have. Builds on the pixel-art skill, uses the pixellab MCP tools and CLI where they're available, and works headless.
 ---
 # Achievement icon
 
 Each accomplishment on the home page and the full achievements list has an icon, chosen from a fixed set by the kind of thing that was done (shipped, fixed, mentored). The set is the list in `src/lib/achievement-icons.mjs`. An accomplishment names an icon by its id in its `icon` field. On the page, each icon sits in a frame colored by its kind of work. Design: `docs/intents/2026-10-gamified-accomplishments/spec.md` (D5, D6) and, for the frames, `docs/intents/2026-10-achievements-redesign/spec.md` (R8–R10).
 
-This skill covers what's specific to icons. Everything about drawing (the palette, light, previews, canonical files, never editing an output SVG by hand) is in the `pixel-art` skill, and its rules apply in full.
+This skill covers what's specific to icons. Everything about drawing (the palette, light, previews, canonical files, the Pixel Lab tools, never editing an output SVG by hand) is in the `pixel-art` skill, and its rules apply in full.
 
 ## What an icon is
 
@@ -48,12 +48,12 @@ The set is the 16 icons above, and a test fails if this table disagrees with `ac
 ## Steps
 
 1. **Pick the id and meaning.** Lowercase kebab-case, at most 64 characters. Check it isn't already covered.
-2. **Start a file:** `npm run art -- --new object icon-<id> --size 16x16`, then set the anchor to `[8, 15]`.
-3. **Draw it,** whole rows of 16 characters, 16 rows, using `keys` from the world palette. `.` is transparent.
-4. **Check it:** `npm run art -- --check icon-<id>` must pass.
+2. **Start a file:** `object new icon-<id>` through the Pixel Lab CLI (a 16×16 sprite anchored at `[8, 15]`), or `npm run art -- --new object icon-<id> --size 16x16`. Either way, check the anchor is `[8, 15]`, and replace the starter's one key, `ink`, which icons never use.
+3. **Draw it,** whole rows of 16 characters, 16 rows, using `keys` from the world palette. `.` is transparent. Touch it up with `object_paint`, `object_erase` and `object_pick` (pixels are column, row), looking with `object_render icon-<id> --scale 8` after each change.
+4. **Check it:** `npm run art -- --check icon-<id>` must pass (`check icon-<id>` in Pixel Lab is the same check).
 5. **Look at it:** `npm run art -- --preview icon-<id> --scale 3` and open the PNGs. Judge it at 3× (its 48px size on the site) and at 1×, and also dimmed as a locked row shows it (grayscale at 40% opacity on the row's `--color-surface`), since the lock is drawn over that. It must read at a glance. The picture, not the text, decides.
 6. **List it:** add `{ id, meaning, frame }` to `ICONS` in `src/lib/achievement-icons.mjs`, and a row to the table above. Check it reads on its frame's fill: `npm run art -- --preview achievement-frames --scale 3` shows the fills.
-7. **Place it in the sheet:** add an item to `src/assets/pixel-art/source/scenes/achievement-icons.mjs`, in the same position as in `SHEET_ORDER` (`star`, `lock`, then `ICONS` in order). Group `{ 'data-icon': '<id>' }`, at `px: [index × 16 + 8, 15]`, and widen the `viewBox` to `[0, 0, 16 × count, 16]`. Re-save the scene in canonical form if `npm test` says it isn't.
+7. **Place it in the sheet:** in the source, since `scene_place` can't make the group (add an item to `src/assets/pixel-art/source/scenes/achievement-icons.mjs` in the same position as in `SHEET_ORDER` (`star`, `lock`, then `ICONS` in order). Group `{ 'data-icon': '<id>' }`, at `px: [index × 16 + 8, 15]`, and widen the `viewBox` to `[0, 0, 16 × count, 16]`). `scene_render achievement-icons --scale 4` shows the sheet. Re-save the scene in canonical form if `npm test` says it isn't.
 8. **Compile and test:** `npm run art`, then `npm test` (it checks the list, the objects, the sheet order, the caps and the 6 KB gzip budget for the sheet).
 9. **Open a PR** with the 1× and 4× previews attached. Merging deploys `/achievement-icons.json`, which the `accomplishments` skill reads. Tell the owner if the lexicon's `icon` `knownValues` in `jlawcordova-atproto` needs the new id.
 
