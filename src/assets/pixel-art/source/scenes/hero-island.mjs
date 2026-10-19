@@ -1158,9 +1158,45 @@ export default {
       ],
     },
     {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-50', 'data-y': '87' },
+      items: [
+        { object: 'stone', at: { px: [-50, 87] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-42', 'data-y': '87' },
+      items: [
+        { object: 'stone', at: { px: [-42, 87] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-46', 'data-y': '88' },
+      items: [
+        { object: 'stone', at: { px: [-46, 88] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-46', 'data-y': '84' },
+      items: [
+        { object: 'stone', at: { px: [-46, 84] } },
+      ],
+    },
+    {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-30', 'data-y': '104' },
       items: [
         { object: 'ore-screen', at: { px: [-32, 104] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-46', 'data-y': '88' },
+      items: [
+        { object: 'stone', id: 'stone-reject-1', at: { px: [-46, 88] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-46', 'data-y': '88' },
+      items: [
+        { object: 'stone', id: 'stone-reject-2', at: { px: [-46, 88] } },
       ],
     },
     {
@@ -1206,6 +1242,36 @@ export default {
       ],
     },
     {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-74', 'data-y': '109' },
+      items: [
+        { object: 'stone', id: 'stone-belt-1', at: { px: [-74, 109] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-74', 'data-y': '109' },
+      items: [
+        { object: 'stone', id: 'stone-belt-2', at: { px: [-74, 109] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-92', 'data-y': '116' },
+      items: [
+        { object: 'stone', at: { px: [-92, 116] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-82', 'data-y': '117' },
+      items: [
+        { object: 'stone', at: { px: [-82, 117] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-96', 'data-y': '120' },
+      items: [
+        { object: 'stone', at: { px: [-96, 120] } },
+      ],
+    },
+    {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-92', 'data-y': '120' },
       items: [
         { object: 'ore', at: { px: [-92, 120] } },
@@ -1230,9 +1296,9 @@ export default {
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-64', 'data-y': '127' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-72', 'data-y': '131' },
       items: [
-        { object: 'pine', at: { px: [-66, 127] } },
+        { object: 'pine', at: { px: [-74, 131] } },
       ],
     },
     {
@@ -1374,6 +1440,78 @@ export default {
           { t: 20000, move: [44, -21] },
           { t: 20001, show: false },
           { t: 20002, move: [-12, 8] },
+        ],
+      },
+      {
+        item: 'stone-belt-1',
+        keys: [
+          { t: 0, move: [30, -15] },
+          { t: 750, move: [40, -20] },
+          { t: 950, move: [44, -21] },
+          { t: 951, show: false },
+          { t: 952, move: [-8, 8] },
+          { t: 11100, show: true },
+          { t: 11700, move: [0, 0] },
+          { t: 14700, move: [40, -20] },
+          { t: 14900, move: [44, -21] },
+          { t: 14901, show: false },
+          { t: 14902, move: [-8, 8] },
+          { t: 25150, show: true },
+          { t: 25750, move: [0, 0] },
+        ],
+      },
+      {
+        item: 'stone-belt-2',
+        keys: [
+          { t: 0, move: [-8, 8], show: false },
+          { t: 500, show: true },
+          { t: 1100, move: [0, 0] },
+          { t: 4100, move: [40, -20] },
+          { t: 4300, move: [44, -21] },
+          { t: 4301, show: false },
+          { t: 4302, move: [-8, 8] },
+          { t: 14500, show: true },
+          { t: 15100, move: [0, 0] },
+          { t: 18100, move: [40, -20] },
+          { t: 18300, move: [44, -21] },
+          { t: 18301, show: false },
+          { t: 18302, move: [-8, 8] },
+        ],
+      },
+      {
+        item: 'stone-reject-1',
+        keys: [
+          { t: 0, move: [16, 0], show: false },
+          { t: 951, show: true },
+          { t: 1250 },
+          { t: 1550, move: [8, -4] },
+          { t: 1850, move: [0, 0] },
+          { t: 1851, show: false },
+          { t: 1852, move: [16, 0] },
+          { t: 14901, show: true },
+          { t: 15200 },
+          { t: 15500, move: [8, -4] },
+          { t: 15800, move: [0, 0] },
+          { t: 15801, show: false },
+          { t: 15802, move: [16, 0] },
+        ],
+      },
+      {
+        item: 'stone-reject-2',
+        keys: [
+          { t: 0, move: [16, 0], show: false },
+          { t: 4301, show: true },
+          { t: 4600 },
+          { t: 4900, move: [8, -4] },
+          { t: 5200, move: [0, 0] },
+          { t: 5201, show: false },
+          { t: 5202, move: [16, 0] },
+          { t: 18301, show: true },
+          { t: 18600 },
+          { t: 18900, move: [8, -4] },
+          { t: 19200, move: [0, 0] },
+          { t: 19201, show: false },
+          { t: 19202, move: [16, 0] },
         ],
       },
       {
