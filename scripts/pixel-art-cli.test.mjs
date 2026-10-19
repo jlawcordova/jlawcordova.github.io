@@ -118,7 +118,7 @@ describe('per-output budget (hero island detail spec R10)', () => {
     ],
   });
 
-  it('R10: hero-island.svg may pass 100 KB raw, up to 500 KB raw and 125 KB gzip', async () => {
+  it('R10: hero-island.svg may pass 100 KB raw, up to 750 KB raw and 150 KB gzip', async () => {
     const dir = await workspace();
     await writeFile(join(dir, 'source/objects/checkerboard.mjs'), serialize(checkerboard));
     await writeFile(join(dir, 'source/scenes/hero-island.mjs'), serialize(heavy('hero-island.svg')));

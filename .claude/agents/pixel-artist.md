@@ -25,7 +25,7 @@ You are the pixel artist for J. Law. Cordova's site. The art is text: objects an
   - the 32×16 tile and the light direction;
   - the 64×64 cap and the character size cap;
   - 12 colors at most per object (aim for 6–8);
-  - the size limits: `hero-island.svg` at most 500 KB raw and 125 KB gzip, `range-sprite.svg` 200 KB raw and 50 KB gzip (about 22 KB raw and 5 KB gzip per setting), every other SVG 100 KB raw and 25 KB gzip, plus any tighter cap a test sets.
+  - the size limits: `hero-island.svg` at most 750 KB raw and 150 KB gzip, `range-sprite.svg` 200 KB raw and 50 KB gzip (about 22 KB raw and 5 KB gzip per setting), every other SVG 100 KB raw and 25 KB gzip, plus any tighter cap a test sets.
 - **Never hand-edit a generated SVG.** Edit sources, then run `npm run art`.
 - **No engine or test changes** (`src/lib/pixel-art/`, `scripts/*.test.mjs`) unless the task says so. If the engine can't express what's needed, stop and report what's missing rather than working around it.
 - Change only the objects and scenes the task names. Don't move scene items unless asked.
@@ -158,7 +158,7 @@ From `scripts/pixel-art-island.test.mjs`, plus the engine's R13 and R28. **(E)**
 
 | Group | Pins |
 | --- | --- |
-| All | Every placed object ≤ 64×64, ≤ 12 colors, world colors. No `ink` (R2). R6: the island within 500 KB raw and 125 KB gzip. |
+| All | Every placed object ≤ 64×64, ≤ 12 colors, world colors. No `ink` (R2). R6: the island within 750 KB raw and 150 KB gzip. |
 | Land | The edge piece at each ground position (`BLOCKS`), each pinned to `block` with only its corner column changed; the joint test on `closeup-land`; `path` faces `{ top: 'path-2' }` with surface keys `path-1`, `path-3`, `cream` in that order; a top laid right after its block; no block has an `edge`; R28 (top > left > right) on every block; R13 library sizes and the library-demo object list; `island-shadow` stays outside the ground. |
 | Water | `river` is a flat `water-2` tile with five `wf` frames, in world colors. `block-river` is `block-right` with a water band, pinned like the other edge pieces. `waterfall-face` keeps exactly 2 layers (a static map, then `wf` ×5), sits at tile `[5, 3, 0]` right after a river tile, and every `flag` pixel lands on it. |
 | Entrance | Every item sits in one top-level `enter` group: one `shadow`, six `ground` rows (`data-row` matches each item's row), `object` groups whose `data-x` is each object's foot (shades take their tree's, the crane's jib and box the mast's), one `sky`. R2: the settled island paints exactly what the old flat inland tiles painted, in every loop frame. The ground paints row by row. |

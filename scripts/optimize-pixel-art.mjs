@@ -9,7 +9,8 @@
 // work. verifyLossless() then checks that every fill group covers exactly the
 // same pixels as before and that nothing else changed, and the budget is
 // checked: 100 KB raw and 25 KB gzip per file (redesign spec §8), except the
-// hero island's 500 KB and 125 KB (hero island detail spec R10). Node
+// hero island's 750 KB and 150 KB (hero island detail spec R10, raised by the
+// island level up spec). Node
 // built-ins only.
 //
 // Usage:
@@ -59,7 +60,7 @@ const MAX_SCALE = 16;
 /** Each output's budget in bytes: the engine's, or its own (hero island detail spec R10, Range settings spec R11). */
 export const BUDGET = { raw: 100 * 1024, gzip: 25 * 1024 };
 export const OUTPUT_BUDGETS = {
-  'hero-island.svg': { raw: 500 * 1024, gzip: 125 * 1024 },
+  'hero-island.svg': { raw: 750 * 1024, gzip: 150 * 1024 },
   'range-sprite.svg': { raw: 200 * 1024, gzip: 50 * 1024 },
 };
 

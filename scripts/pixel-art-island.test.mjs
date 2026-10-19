@@ -36,9 +36,9 @@ const BLOCKS = ['block', 'block-left', 'block-right', 'block-road', 'block-river
 /** The ground's library objects: one per position, plus a flat top laid over a front block where the river or road crosses it. */
 const GROUND = ['tile', ...BLOCKS, 'river', 'path'];
 
-/** The island's limits, in bytes (hero island detail spec R10), which replace R6's "no heavier than today". */
-const MAX_RAW = 500 * 1024;
-const MAX_GZIP = 125 * 1024;
+/** The island's limits, in bytes (hero island detail spec R10, raised by the island level up spec), which replace R6's "no heavier than today". */
+const MAX_RAW = 750 * 1024;
+const MAX_GZIP = 150 * 1024;
 
 /**
  * Objects that paint behind the trucks (ground, water, road, bridge, house, the back trees' shade) and in front of them
