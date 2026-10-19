@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
-    "pixellab": "github:jlawcordova/jlawcordova-lab#44b96dbb70261d92656cb45e22a406246904c661",
+    "pixellab": "github:jlawcordova/jlawcordova-lab#v0.3.0",
     "typescript": "6.0.3"
   }
 }
