@@ -43,6 +43,7 @@ export default {
     { object: 'mine-cart', at: { px: [-32, 104] } },
     { object: 'conveyor-row', at: { tile: [5, 8, 0] } },
     { object: 'conveyor-row', at: { tile: [5, 9, 0] } },
+    { object: 'conveyor-ramp', at: { px: [-84, 120] } },
     { object: 'stone', at: { px: [-92, 116] } },
     { object: 'stone', at: { px: [-82, 117] } },
     { object: 'stone', at: { px: [-96, 120] } },
