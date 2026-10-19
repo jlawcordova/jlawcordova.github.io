@@ -27,8 +27,8 @@ import { site } from '../../site';
 
 <script>
   // The hero's entrance (pixel-first look spec, Hero): the copy staggers in,
-  // and the island builds itself from its enter groups (island sweep drop
-  // spec). Each start state is set by the call that animates it, and nothing
+  // and the island builds itself from its enter groups (island sweep drop and
+  // island edge sweep specs). Each start state is set by the call that animates it, and nothing
   // runs under reduced motion.
   import { schedule, TIMING } from '../../lib/island-entrance.mjs';
   import { easeOut, play, stagger } from '../../lib/motion';

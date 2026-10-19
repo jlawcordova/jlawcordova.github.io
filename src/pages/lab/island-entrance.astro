@@ -48,10 +48,14 @@ import EntranceLab from '../../components/lab/EntranceLab.astro';
     gap: 24px;
     align-items: start;
   }
+  /* Clipped at the bottom, so the island stands on the stage's edge as it
+     does on the hero's (hero.css, .hero-island). */
   .entrance-stage {
+    --hero-pad-bottom: 48px;
     display: flex;
     justify-content: center;
-    padding: 48px 16px;
+    padding: 48px 16px var(--hero-pad-bottom);
+    overflow: hidden;
     background-color: var(--color-hero);
     border: var(--border-thick);
     border-radius: var(--radius-stage);

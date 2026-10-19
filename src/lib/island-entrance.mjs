@@ -1,6 +1,6 @@
 // @ts-check
 // The build-up entrances: when each `enter` group starts and how it moves, for
-// the hero island (island sweep drop spec R1–R5) and for each Range setting
+// the hero island (island edge sweep spec R3–R7) and for each Range setting
 // (Range settings spec R4, R5). Pure data in, timings out, so node:test can
 // check the order without a browser; Hero.astro, Range.astro and the entrance
 // lab play it with playEntrance() from src/lib/play-entrance.ts.
@@ -64,15 +64,15 @@ export const OBJECT_MOVES = /** @type {const} */ (['same', ...MOVES]);
  *   entrance lab can show and copy any one.
  */
 
-/** The owner's pick from the entrance lab (island sweep drop spec R1–R5). */
+/** The owner's pick from the entrance lab (island edge sweep spec R3–R7). */
 export const TIMING = /** @type {Timing} */ ({
   /** When the shadow starts, alongside the hero copy. */
   start: 0.2,
   /** From the shadow's start to the first ground piece's. */
   groundDelay: 0.12,
   /** From the first ground piece's start to the last one's. */
-  groundSpan: 0.25,
-  /** An extra left-to-right delay, spread over the island's width. With the sweep, the ground spans 0.5s in all. */
+  groundSpan: 1,
+  /** An extra left-to-right delay, spread over the island's width. With the sweep, the ground spans 1.25s in all. */
   cascade: 0.25,
   /** The ground sweeps in from the left corner to the right. */
   ground: 'sweep',
@@ -85,13 +85,13 @@ export const TIMING = /** @type {Timing} */ ({
   /** Without `with`: from the first object's start to the last one's. */
   objectSpan: 0.6,
   /** How long after the cube under it an object starts. */
-  lag: 0.42,
+  lag: 0.5,
   /** The ground floats up and overshoots. */
   move: 'float',
   /** The objects drop from above. With a move of their own, they use the object numbers below; with `same`, the ground's. */
   objectMove: 'drop',
   /** Each ground piece's move, from its start to settled. */
-  duration: 0.25,
+  duration: 0.35,
   /** The share of a move spent reaching its peak, before settling. */
   peak: 0.6,
   /** Float and drop: how far from its spot a piece starts, in art pixels. */
@@ -103,8 +103,8 @@ export const TIMING = /** @type {Timing} */ ({
   /** Pop: the size it grows to before settling. */
   popPeak: 1.1,
   /** The objects' own numbers: a quick drop from 24 art px with a small dip. */
-  objectDuration: 0.25,
-  objectPeak: 0.45,
+  objectDuration: 0.3,
+  objectPeak: 0.5,
   objectRise: 24,
   objectOvershoot: 1.5,
   objectPopFrom: 0.3,
