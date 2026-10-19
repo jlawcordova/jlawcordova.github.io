@@ -33,11 +33,11 @@ describe('island entrance schedule', () => {
 
   it('R1: the ground sweeps in left to right by screen x, over 0.25s plus a 0.25s cascade: 0.5s in all', () => {
     const ground = startOrder(of('ground'));
-    assert.equal(ground.length, 36);
+    assert.equal(ground.length, 129, 'the three sections (island level up spec R1)');
     for (let i = 1; i < ground.length; i++) assert.ok(ground[i].x >= ground[i - 1].x, `x ${ground[i].x} starts no earlier than x ${ground[i - 1].x}`);
     close(ground[0].delay, TIMING.start + 0.12, 'the left corner starts 0.12s after the shadow');
-    assert.deepEqual([ground[0].col, ground[0].row], [0, 5], 'the left corner first');
-    assert.deepEqual([ground.at(-1).col, ground.at(-1).row], [5, 0], 'the right corner last');
+    assert.deepEqual([ground[0].col, ground[0].row], [0, 10], 'the left corner first: the mining section\'s, at the far left');
+    assert.deepEqual([ground.at(-1).col, ground.at(-1).row], [10, -5], 'the right corner last: the rail section\'s, at the far right');
     close(ground.at(-1).delay - ground[0].delay, 0.5, 'the sweep and the cascade');
     for (const x of new Set(ground.map((g) => g.x))) assert.equal(new Set(ground.filter((g) => g.x === x).map((g) => g.delay)).size, 1, `the column at x ${x} starts together`);
   });
@@ -77,32 +77,26 @@ describe('island entrance schedule', () => {
     close(sky.delay, 0.445, 'the clouds');
   });
 
-  it('R5: the whole island has settled by 1.45s', () => {
+  it('R5: the whole island has settled by 1.5s (island level up spec R19; 1.45s when it was 6×6)', () => {
     const last = settledBy(plan);
-    assert.ok(last <= 1.45, `settled at ${last.toFixed(2)}s`);
-    close(last, 1.44, 'the last object lands');
+    assert.ok(last <= 1.5, `settled at ${last.toFixed(2)}s`);
+    close(last, 1.47, 'the last object lands');
   });
 
   it('the clock order (island clock sweep spec R1, now a lab option): cube by cube, clockwise from the left corner', () => {
     const t = { ...TIMING, ground: 'clock', groundSpan: 0.5, cascade: 0, move: 'pop', duration: 0.5 };
     const clockPlan = schedule(pieces, t);
     const ground = startOrder(pieces.flatMap((p, i) => (p.enter === 'ground' ? [{ ...p, ...clockPlan[i] }] : [])));
-    assert.equal(ground.length, 36);
-    const at = (col, row) => ground.find((g) => g.col === col && g.row === row);
-    // The four corners, a quarter turn apart: left [0, 5], back [0, 0], right [5, 0], front [5, 5].
-    // The clock's hand starts on the line from the middle to the left corner, so those three cubes start together.
-    const first = ground.filter((g) => g.delay === ground[0].delay).map((g) => [g.col, g.row]);
-    assert.deepEqual(first, [[2, 3], [1, 4], [0, 5]], 'the hand from the middle to the left corner starts');
+    assert.equal(ground.length, 129);
     close(ground[0].delay, TIMING.start + 0.12, 'the first cubes start 0.12s after the shadow');
-    const corners = [at(0, 5), at(0, 0), at(5, 0), at(5, 5)];
-    for (let i = 1; i < 4; i++) assert.ok(corners[i].delay > corners[i - 1].delay, `corner ${i} turns clockwise`);
-    // The sweep ends at the last cube before the hand comes round again, so the right corner lands a little after half-way.
-    const half = (at(5, 0).delay - at(0, 5).delay) / 0.5;
-    assert.ok(half > 0.45 && half < 0.55, `the right corner is about half a turn on (${half.toFixed(2)})`);
     close(end(ground.at(-1)) - t.duration - ground[0].delay, 0.5, 'the sweep');
-    // Clockwise on screen: going round from the left corner, each cube's angle about the island's middle only grows.
+    // Clockwise on screen: going round from the left, each cube's angle about the middle of the ground only grows. The
+    // middle is the centre of the ground's box, as the schedule finds it (the island level up spec's three sections).
+    const xs = ground.map((g) => g.x);
+    const ys = ground.map((g) => g.y);
+    const [mx, my] = [(Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2];
     const angle = (g) => {
-      const a = Math.atan2(g.y - 48, g.x);
+      const a = Math.atan2(g.y - my, g.x - mx);
       return (((a - Math.PI) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
     };
     for (let i = 1; i < ground.length; i++) assert.ok(angle(ground[i]) >= angle(ground[i - 1]), `[${ground[i].col}, ${ground[i].row}] follows the clock`);

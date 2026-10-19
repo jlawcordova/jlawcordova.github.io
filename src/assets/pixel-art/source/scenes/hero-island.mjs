@@ -1209,8 +1209,23 @@ export default {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-100', 'data-y': '118' },
       items: [
         { object: 'ore', at: { px: [-100, 118] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-92', 'data-y': '118' },
+      items: [
         { object: 'ore', at: { px: [-92, 118] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-96', 'data-y': '119' },
+      items: [
         { object: 'ore', at: { px: [-96, 119] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-96', 'data-y': '115' },
+      items: [
         { object: 'ore', at: { px: [-96, 115] } },
       ],
     },
