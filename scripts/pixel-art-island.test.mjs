@@ -144,8 +144,8 @@ describe('hero island structure', () => {
     const rivers = indexesOf(['river', 'waterfall-face']).length;
     assert.equal(rivers, 7, 'six river tiles, the whole of row 3 (island clock sweep spec R7), and the falling face');
     const count = (prefix) => groups.filter((cls) => cls.split(' ')[0] === prefix).length;
-    // The flag's streaks, the two belt segments' cleats and the feed belt's are ff; the processor's LED is hf (island level up spec R4).
-    const belts = indexesOf(['conveyor-row', 'conveyor-feed']).length;
+    // The flag's streaks, the two belt segments' cleats (the straight one and the corner) and the feed belt's are ff; the processor's LED is hf (island level up spec R4).
+    const belts = indexesOf(['conveyor-row', 'conveyor-corner', 'conveyor-feed']).length;
     assert.equal(belts, 3, 'two ore belt segments and the feed belt (the owner\'s PR review)');
     assert.deepEqual(
       Object.fromEntries(['wf', 'ff', 'hf', 'pcloud'].map((p) => [p, count(p)])),
@@ -515,7 +515,6 @@ describe('hero island structure', () => {
       ['tree-small', [-25, 29]],
       ['pine', [-101, 68]],
       ['tree-small', [-138, 82]],
-      ['tree', [-146, 95]],
       ['bridge-rail', [2, 3, 0]],
       ['crane-hook', [103, 7]],
       ['boxes', [86, 70]],
