@@ -1,7 +1,7 @@
 // Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md
 export default {
   kind: 'sprite',
-  anchor: [9, 26],
+  anchor: [9, 28],
   keys: {
     a: 'soil-2',
     b: 'soil-3',
@@ -25,6 +25,8 @@ export default {
         '....bccceecccccbdd',
         '....bcffcccccccbdd',
         '....bcccffcccccbdd',
+        '....bcffccffcccbdd',
+        '....bcccffccfccbdd',
         '....bcffccffcccbdd',
         '....bcccffccfccbdd',
         '....bcffccffcccbdd',
