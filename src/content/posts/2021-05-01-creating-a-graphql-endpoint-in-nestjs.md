@@ -2,7 +2,7 @@
 title: Creating a GraphQL Endpoint in NestJS
 tags: graphql 101 nestjs
 categories: architecture
-featured-image: /public/2021-05-01/2021-05-01-graphql-featured-image.png
+featured-image: /public/thumbnails/graphql.png
 featured-image-alt: uml abstract feature
 description: Spin up a quick GraphQL endpoint for your UIs with NestJS.
 ---

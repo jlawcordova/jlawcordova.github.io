@@ -2,7 +2,7 @@
 title: REST in a Nutshell
 tags: REST architecture
 categories: architecture
-featured-image: /public/2019-04-28/2019-04-28-rest-featured-image.png
+featured-image: /public/thumbnails/rest.png
 featured-image-alt: rest abstract feature
 ---
 

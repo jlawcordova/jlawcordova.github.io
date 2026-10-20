@@ -2,7 +2,7 @@
 title: Using Caching to Create Performant APIs
 tags: caching 101
 categories: architecture
-featured-image: /public/2021-04-17/2021-04-17-caching-featured-image.png
+featured-image: /public/thumbnails/caching.png
 featured-image-alt: uml abstract feature
 description: Create performant systems by utilizing caches into your architecture.
 ---

@@ -2,7 +2,7 @@
 title: Mocking APIs with Prism
 tags: mock api prism nodejs
 categories: api
-featured-image: /public/2022-01-08/2022-01-08-prism-featured-image.png
+featured-image: /public/thumbnails/prism.png
 featured-image-alt: prism abstract feature
 description: Quickly mock APIs using OpenAPI and Prism.
 ---
