@@ -3,12 +3,12 @@ export default {
   kind: 'block',
   size: [1, 1, 0],
   faces: {
-    top: 'path-3',
+    top: 'path-1',
   },
   surface: {
     keys: {
-      c: 'cream',
-      d: 'path-4',
+      c: 'gold-3',
+      d: 'path-3',
     },
     map: [
       '................................',
