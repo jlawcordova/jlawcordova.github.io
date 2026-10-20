@@ -28,5 +28,8 @@ export default {
     { object: 'cubicle-wall-turned', at: { tile: [0, 1, 0] } },
     { object: 'cubicle-wall-turned', at: { tile: [2, 0, 0] } },
     { object: 'cubicle-wall', at: { tile: [0, 2, 0] } },
+    { object: 'staff-developer', at: { tile: [1, 3, 0] } },
+    { object: 'staff-manager', at: { tile: [2, 2, 0] } },
+    { object: 'staff-analyst', at: { tile: [3, 1, 0] } },
   ],
 };
