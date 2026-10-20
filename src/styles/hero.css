@@ -94,11 +94,11 @@ main > .hero:first-child {
   display: block;
   overflow: visible;
   /* Down through the band's bottom padding and past its edge, which clips
-     the island through its lowest block: 28 of the viewBox's 264 units, the
-     shadow under that block and the bottom half of its side, and 3px more
+     the island just under its lowest block: 10 of the viewBox's 264 units, the
+     shadow under that block and a sliver of its side, and 3px more
      for the middle of the floaty loop's 6px. A transform, so the band keeps
      its height. */
-  transform: translate(var(--island-x), calc(var(--hero-pad-bottom, 0px) + 28 / 264 * 100% + 3px + var(--island-y)));
+  transform: translate(var(--island-x), calc(var(--hero-pad-bottom, 0px) + 10 / 264 * 100% + 3px + var(--island-y)));
 }
 
 /* Beside the copy, the island is nearly twice as wide as its column, reaches
@@ -109,8 +109,8 @@ main > .hero:first-child {
    buttons. */
 @media (min-width: 1024px) {
   .hero {
-    --island-w: 184%;
-    --island-x: -23.7%;
+    --island-w: 150%;
+    --island-x: -8%;
     --island-y: 0px;
   }
   .hero__art,
@@ -122,7 +122,7 @@ main > .hero:first-child {
 /* On a phone, the island is 1.6 times as wide as the column so it reads at a
    size, centred on the screen and running off both edges. The column comes
    up by what the island moves down (above), so the island's top sits just
-   under the buttons: the padding, and 28 viewBox units of an island 446
+   under the buttons: the padding, and 10 viewBox units of an island 446
    units wide at --island-w of the column (a margin's percentage is of the
    column's width). */
 @media (max-width: 640px) {
@@ -132,7 +132,7 @@ main > .hero:first-child {
     --island-y: 0px;
   }
   .hero__art {
-    margin-top: calc(-1 * var(--hero-pad-bottom) - 28 / 446 * var(--island-w));
+    margin-top: calc(-1 * var(--hero-pad-bottom) - 10 / 446 * var(--island-w));
   }
 }
 
