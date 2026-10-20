@@ -6,7 +6,9 @@
 // links are 44px targets and "↑ TOP" goes to the top; the hero's greeting is
 // gone, its island keeps the floaty loop, and its entrance (the copy and each
 // of the island's enter groups) ends visible or doesn't run under reduced
-// motion; nothing is rounded and nothing scrolls sideways.
+// motion; nothing is rounded and nothing scrolls sideways. The entrance lab's
+// stage shows the island whole, standing on the stage's clipped bottom edge
+// (island edge sweep spec R2).
 //
 // Run with `npm run e2e` after `npm run build`. Tests poll for end states and
 // never sleep for a fixed time.
@@ -358,6 +360,37 @@ test('R11, R12: without JavaScript and under reduced motion the hero shows at on
       if (!el.float || options.reducedMotion) assert.ok(untransformed(el.transform), `${JSON.stringify(options)}: ${el.transform}`);
       if (options.reducedMotion) assert.equal(el.animations, 0, 'no animation runs under reduced motion');
     }
+    await close(page);
+  }
+});
+
+// The island takes its width from custom properties that .hero sets, and the
+// lab's stage isn't inside .hero, so it sets its own; without them the island
+// measures 0 × 0 (#135).
+test('Island edge sweep R2: the entrance lab shows the whole island, standing on the stage’s clipped bottom edge', async () => {
+  for (const width of [NARROW, WIDE]) {
+    const page = await open('/lab/island-entrance/', { width, reducedMotion: 'reduce' });
+    const lab = await page.evaluate(() => {
+      const stage = /** @type {HTMLElement} */ (document.querySelector('.entrance-stage'));
+      const s = getComputedStyle(stage);
+      const box = stage.getBoundingClientRect();
+      const island = /** @type {SVGSVGElement} */ (stage.querySelector('.hero-island')).getBoundingClientRect();
+      return {
+        content: stage.clientWidth - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight),
+        top: box.top + parseFloat(s.borderTopWidth),
+        bottom: box.bottom - parseFloat(s.borderBottomWidth),
+        island: { width: island.width, height: island.height, top: island.top, bottom: island.bottom },
+        scrollWidth: document.documentElement.scrollWidth,
+      };
+    });
+    const { island } = lab;
+    assert.ok(Math.abs(island.width - Math.min(675, lab.content)) < 1, `${width}px: ${island.width}px wide, of ${lab.content}px`);
+    assert.ok(island.top > lab.top, `${width}px: its top is inside the stage`);
+    assert.ok(
+      island.bottom > lab.bottom && island.bottom - lab.bottom < island.height / 10,
+      `${width}px: it runs ${island.bottom - lab.bottom}px past the bottom edge`,
+    );
+    assert.ok(lab.scrollWidth <= width, `${width}px: no horizontal scroll (${lab.scrollWidth})`);
     await close(page);
   }
 });
