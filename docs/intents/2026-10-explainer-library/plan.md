@@ -39,7 +39,7 @@ Batch sizes follow complexity: characters and big machines get one or two assets
 | 2–18 | one `pixel-artist` subagent per batch, never two at once | the same worktree, with the CLI and `--document art/explainer-library.pixellab` | the main session looks at the previews, asks the subagent (resumed) for fixes if needed, runs `check`, commits |
 | 19 | main session | the worktree | run every check, open the PR |
 
-- Subagents edit only their batch's objects and their sheet scene, never commit, and write review PNGs to `docs/intents/2026-10-explainer-library/samples/` (git-ignored).
+- Subagents edit only their batch's objects and their sheet scene, never commit, and write review PNGs to `.art-preview/explainer/` (git-ignored). Only the contact sheets are committed, to `samples/`, in step 19.
 - Owner reviews: the chef and the waiter were approved before this plan. The rest is reviewed in the final PR, as the owner asked, with the contact sheets attached.
 - Independent review: none. The art is checked by the engine and the new test, and nothing on the site changes.
 
