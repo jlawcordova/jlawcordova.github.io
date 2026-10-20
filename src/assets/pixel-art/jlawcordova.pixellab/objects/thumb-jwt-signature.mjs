@@ -3,10 +3,10 @@ export default {
   kind: 'sprite',
   anchor: [20, 8],
   keys: {
-    a: 'water-1',
-    b: 'water-2',
-    c: 'water-3',
-    d: 'water-4',
+    a: 'soil-1',
+    b: 'soil-2',
+    c: 'soil-3',
+    d: 'soil-4',
   },
   layers: [
     {

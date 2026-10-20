@@ -4,8 +4,8 @@ export default {
   anchor: [4, 3],
   keys: {
     a: 'wood-1',
-    b: 'wood-3',
-    c: 'wood-4',
+    b: 'wood-4',
+    c: 'soil-4',
   },
   layers: [
     {
