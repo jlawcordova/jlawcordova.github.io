@@ -3,7 +3,7 @@ title: Mocking APIs with Prism
 tags: mock api prism nodejs
 categories: api
 featured-image: /public/thumbnails/prism.png
-featured-image-alt: prism abstract feature
+featured-image-alt: Two faceted pyramids, a dark one and a taller red one, standing side by side on a floating teal stone island.
 description: Quickly mock APIs using OpenAPI and Prism.
 ---
 

@@ -3,7 +3,7 @@ title: Taking on the Cloud Resume Challenge (with DevOps Mods)
 tags: aws github_actions terraform crc
 categories: devops
 featured-image: /public/thumbnails/cloud-resume.png
-featured-image-alt: cloud resume challenge results mock
+featured-image-alt: An open laptop and a phone both showing a résumé page, standing on a floating island made of cloud.
 description: I got my hands dirty and made a scalable website using AWS resources and DevOps tools.
 ---
 

@@ -3,7 +3,7 @@ title: Setting Up Continuous Integration for an ASP.NET Core Project with Github
 tags: ci asp.net github actions
 categories: workflow
 featured-image: /public/thumbnails/github-actions.png
-featured-image-alt: github actions abstract feature
+featured-image-alt: Three red round stations in a row on a dark conveyor belt carrying crates, on a floating server-room floor.
 description: Automate unit testing and reporting for your ASP.NET Core Projects with Github Actions for continuous integration.
 ---
 

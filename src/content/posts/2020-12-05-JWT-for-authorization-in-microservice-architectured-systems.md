@@ -3,7 +3,7 @@ title: JWT for Authorization in Microservice-Architectured Systems
 tags: microservice JWT
 categories: security
 featured-image: /public/thumbnails/jwt.png
-featured-image-alt: jwt abstract feature
+featured-image-alt: A floating teal stone vault with a long three-part token in red, gold and brown joined by round dark studs, a gold key beside it, and a brazier and a banner at the corners.
 description: JWT's stateless nature provides a scalable authentication method.
 ---
 

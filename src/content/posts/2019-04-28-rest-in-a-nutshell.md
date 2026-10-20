@@ -3,7 +3,7 @@ title: REST in a Nutshell
 tags: REST architecture
 categories: architecture
 featured-image: /public/thumbnails/rest.png
-featured-image-alt: rest abstract feature
+featured-image-alt: A small floating stone plaza where two dark round clients each connect by a pale dashed road to one large red server building with a grid of lit windows.
 ---
 
 Years ago, the world wide web was simply a publishing platform where we were able to read and share documents through browsers. The web we now know has grown into something more than that. We can now search for information, book flights, make payments, and even automate our homes - basically any process we can think of. In other words, the web has grown into the largest application platform we've ever known.

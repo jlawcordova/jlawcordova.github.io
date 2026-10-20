@@ -3,7 +3,7 @@ title: Creating a GraphQL Endpoint in NestJS
 tags: graphql 101 nestjs
 categories: architecture
 featured-image: /public/thumbnails/graphql.png
-featured-image-alt: uml abstract feature
+featured-image-alt: A computer monitor showing a simple page layout, joined by a cable to a sculpture of gold balls linked by rods, on a floating red-carpet office island.
 description: Spin up a quick GraphQL endpoint for your UIs with NestJS.
 ---
 

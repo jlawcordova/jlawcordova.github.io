@@ -3,7 +3,7 @@ title: Creating Unit Test Coverage Reports for ASP.NET Core 3.1 Projects with Co
 tags: asp.net report
 categories: testing
 featured-image: /public/thumbnails/coverlet.png
-featured-image-alt: coverlet abstract feature
+featured-image-alt: A wooden board showing six bars like lines of code, with green and pink marks beside them, on a small floating brick lab platform beside a table of glass flasks.
 description: Using Coverlet to generate ASP.NET Core project coverage.
 ---
 

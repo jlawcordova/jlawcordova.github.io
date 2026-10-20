@@ -3,7 +3,7 @@ title: Collecting and Monitoring Application Metrics with Elasticsearch, Logstas
 tags: elasticsearch logstash kibana ELK
 categories: monitoring
 featured-image: /public/thumbnails/elk.png
-featured-image-alt: elk abstract feature
+featured-image-alt: A small dark server rack on a floating island of brown ore ground, linked by a red cable to a large red-framed dashboard showing a colorful bar chart, with a mine cart and gold ore nearby.
 description: Application metric is an important data point when it comes to working with production software. The ELK stack should help us efficiently collect these application metrics.
 ---
 
