@@ -68,7 +68,7 @@ Numbers 1–20 are the owner's list; 21–44 were added in the brainstorm and ap
 | 30 | Globe | `globe` (on a stand, with region pins) | `wf` spin |
 | 31 | Monitoring wall | `monitor-wall` | `wf` graphs |
 | 32 | Vault | `vault`, `padlock` | still |
-| 33 | Robot agents | `robot`, `robot-small` (outfits on `character`) | `cbob`, `hf` antenna blink |
+| 33 | Robot agents | `robot`, `robot-small` (outfits on `character`) | `cbob` (antenna drawn lit) |
 | 34 | Tokens | `token`, `token-gold`, `token-water` (cubes with a glyph shape; recolors extend `token`) | still |
 | 35 | Bookshelf | `bookshelf` | still |
 | 36 | Toolbox | `toolbox` | still |
@@ -96,6 +96,7 @@ The base `character` is left out.
 ## Areas of concern
 - **Palette.** The world tier is full and has no neutral gray, blue or pure white, which machines, screens and white goods want. The spec keeps the site's palette as is (R2) and uses the materials above. If an asset reads wrong without a true gray, the fix is a palette change in both documents, which is the owner's call; the build reports it rather than adding a color.
 - **Animation in the export.** The loops play in Pixel Lab and as frame sequences in the export. A compiled SVG would need the site's CSS to animate, so the library publishes no SVGs.
+- **Robot blink.** An outfit (`extends: 'character'`) can only override rows, not add a loop layer, and only outfits may use the `silver` ramp. The robots stay silver outfits with the idle bob, their antenna drawn lit; a blinking, world-color robot would need an engine change.
 - **Size.** Oversized pieces stay within the engine's 64×64 cap; the server rack and the giant bulb are the largest.
 
 ## Open questions
