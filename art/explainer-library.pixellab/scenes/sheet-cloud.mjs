@@ -52,6 +52,10 @@ export default {
     { object: 'data-packet', at: { tile: [1, 2, 0] } },
     { object: 'database-stack', at: { tile: [4, 0, 0] } },
     { object: 'data-packet', at: { tile: [3, 1, 0] } },
+    { object: 'firewall', at: { tile: [1, 3, 0] } },
+    { object: 'globe', at: { tile: [0, 4, 0] } },
     { object: 'database', at: { tile: [5, 0, 0] } },
+    { object: 'vault', at: { tile: [5, 3, 0] } },
+    { object: 'padlock', at: { tile: [5, 4, 0] } },
   ],
 };
