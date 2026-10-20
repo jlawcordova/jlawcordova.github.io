@@ -23,11 +23,11 @@ export default {
     { object: 'block-studio-left', at: { tile: [1, 2, 0] } },
     { object: 'block-studio-left', at: { tile: [2, 2, 0] } },
     { object: 'block-studio-corner', at: { tile: [3, 2, 0] } },
-    { object: 'prop-data-engineering-shelf', at: { tile: [3, 0, 0] } },
+    { object: 'prop-data-engineering-shelf', at: { px: [34, 30] } },
     { object: 'thumb-nswag-bar', at: { px: [0, 20] } },
     { object: 'thumb-nswag-bar', at: { px: [0, 14] } },
     { object: 'thumb-nswag-open', at: { px: [0, 8] } },
     { object: 'thumb-nswag-bar', at: { px: [0, -8] } },
-    { object: 'prop-front-end-lectern', at: { tile: [0, 2, 0] } },
+    { object: 'prop-front-end-lectern', at: { px: [-42, 18] } },
   ],
 };
