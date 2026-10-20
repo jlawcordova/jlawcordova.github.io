@@ -1,6 +1,8 @@
 # Spec: The island sweeps in, and its objects drop onto it (from intent.md 2026-10-18)
 Status: draft; built in the same PR, approved when the owner merges it. The owner asked for a PR that applies their lab pick, so the intent, spec, plan and build are reviewed together there.
 
+The numbers in R1–R5 (the spans, durations, lag and settle time) are replaced by the [island edge sweep spec](../2026-10-island-edge-sweep/spec.md). The order and the moves still hold.
+
 This change replaces R1–R5 of the [island clock sweep spec](../2026-10-island-clock-sweep/spec.md) (the clock order, the pop and their timing). Its R6–R13 still hold: the cube groups and feet, the water along row 3, the lab, the skill and the motion rules.
 
 ## Requirements

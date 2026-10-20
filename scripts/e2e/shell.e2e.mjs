@@ -331,7 +331,7 @@ test('R5, Hero: the greeting is gone and the island keeps its floaty loop on an 
 
 test('R10, R11: the hero entrance ends with everything fully visible in place, every island piece included', async () => {
   const page = await open('/', { width: WIDE });
-  // The island's enter groups build it up over about 1.45s (island sweep drop spec R5).
+  // The island's enter groups build it up over about 2.3s (island edge sweep spec R7).
   await page.waitForFunction(() =>
     [...document.querySelectorAll('.hero__title, .hero__lede, .hero__actions, .hero__art, .hero-island .enter')].every((el) => {
       const style = getComputedStyle(el);

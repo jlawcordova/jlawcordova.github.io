@@ -1,6 +1,7 @@
 .hero {
+  --hero-pad-bottom: 96px;
   background-color: var(--color-hero);
-  padding: 72px var(--gutter) 96px;
+  padding: 72px var(--gutter) var(--hero-pad-bottom);
   overflow: hidden;
 }
 
@@ -63,6 +64,8 @@ main > .hero:first-child {
   min-width: 0;
   display: flex;
   justify-content: center;
+  /* The island sits on the hero's bottom edge, not centred beside the copy. */
+  align-self: flex-end;
 }
 
 /* The inner wrapper carries the floaty loop; .hero__art takes the entrance. */
@@ -78,11 +81,18 @@ main > .hero:first-child {
   height: auto;
   display: block;
   overflow: visible;
+  /* Down through the band's bottom padding and past its edge, which clips
+     the island through its lowest block: 28 of the viewBox's 264 units, the
+     shadow under that block and the bottom half of its side, and 3px more
+     for the middle of the floaty loop's 6px. A transform, so the band keeps
+     its height. */
+  transform: translateY(calc(var(--hero-pad-bottom, 0px) + 28 / 264 * 100% + 3px));
 }
 
 /* Beside the copy, the island is half again as wide as its column and
    runs off the hero's right edge, so the rail section and its train leave
-   the picture (island level up spec). Stacked, it shows whole, smaller. */
+   the picture (island level up spec). Stacked, it shows whole, smaller,
+   except on a phone (below), where whole would be too small. */
 @media (min-width: 1024px) {
   .hero__art,
   .hero__float {
@@ -90,6 +100,23 @@ main > .hero:first-child {
   }
   .hero-island {
     width: 150%;
+    max-width: none;
+    flex: none;
+  }
+}
+
+/* On a phone, the island is a third wider than the column so it reads at a
+   size, centred on the screen and running off both edges. The column comes
+   up by what the island moves down (above), so the island's top sits just
+   under the buttons: the padding, and 28 viewBox units of an island 446
+   units wide at 135% of the column (a margin's percentage is of the
+   column's width). */
+@media (max-width: 640px) {
+  .hero__art {
+    margin-top: calc(-1 * var(--hero-pad-bottom) - 28 / 446 * 135%);
+  }
+  .hero__float .hero-island {
+    width: 135%;
     max-width: none;
     flex: none;
   }
@@ -111,7 +138,8 @@ html[data-theme="dark"] .hero-island [data-enter="shadow"] path {
 
 @media (max-width: 480px) {
   .hero {
-    padding: 48px var(--gutter) 64px;
+    --hero-pad-bottom: 64px;
+    padding-top: 48px;
   }
   main > .hero:first-child {
     padding-top: calc(var(--site-header-height) + 48px);

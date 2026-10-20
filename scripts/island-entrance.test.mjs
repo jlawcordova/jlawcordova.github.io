@@ -1,5 +1,5 @@
-// Tests for the build-up schedule: the hero island's (island sweep drop spec
-// R1–R5), run against the groups in the compiled hero-island.svg, and a Range
+// Tests for the build-up schedule: the hero island's (island edge sweep spec
+// R3–R7), run against the groups in the compiled hero-island.svg, and a Range
 // setting's (Range settings spec R4, R5), run against the groups in the
 // compiled range-sprite.svg. Node built-ins only.
 
@@ -31,56 +31,56 @@ describe('island entrance schedule', () => {
     assert.ok(plan.every(Boolean));
   });
 
-  it('R1: the ground sweeps in left to right by screen x, over 0.25s plus a 0.25s cascade: 0.5s in all', () => {
+  it('R3: the ground sweeps in left to right by screen x, over 1s plus a 0.25s cascade: 1.25s in all', () => {
     const ground = startOrder(of('ground'));
     assert.equal(ground.length, 132, 'the three sections (island level up spec R1)');
     for (let i = 1; i < ground.length; i++) assert.ok(ground[i].x >= ground[i - 1].x, `x ${ground[i].x} starts no earlier than x ${ground[i - 1].x}`);
     close(ground[0].delay, TIMING.start + 0.12, 'the left corner starts 0.12s after the shadow');
     assert.deepEqual([ground[0].col, ground[0].row], [0, 10], 'the left corner first: the mining section\'s, at the far left');
     assert.deepEqual([ground.at(-1).col, ground.at(-1).row], [10, -5], 'the right corner last: the rail section\'s, at the far right');
-    close(ground.at(-1).delay - ground[0].delay, 0.5, 'the sweep and the cascade');
+    close(ground.at(-1).delay - ground[0].delay, 1.25, 'the sweep and the cascade');
     for (const x of new Set(ground.map((g) => g.x))) assert.equal(new Set(ground.filter((g) => g.x === x).map((g) => g.delay)).size, 1, `the column at x ${x} starts together`);
   });
 
-  it('R2: each cube floats up 16 art px to 6 past its spot, then settles, over 0.25s', () => {
+  it('R4: each cube floats up 16 art px to 6 past its spot, then settles, over 0.35s', () => {
     for (const piece of of('ground')) {
       assert.equal(piece.move, 'float');
       assert.deepEqual(piece.keyframes, { opacity: [0, 1, 1], y: [16, -6, 0] });
       assert.deepEqual(piece.times, [0, 0.6, 1]);
-      assert.equal(piece.duration, 0.25);
+      assert.equal(piece.duration, 0.35);
     }
   });
 
-  it('R3: each object drops 24 art px onto its spot, dips 1.5, settles over 0.25s, starting 0.42s after the cube under it', () => {
+  it('R5: each object drops 24 art px onto its spot, dips 1.5, settles over 0.3s, starting 0.5s after the cube under it', () => {
     const ground = of('ground');
     const objects = of('object');
     for (const piece of objects) {
       assert.equal(piece.move, 'drop');
       assert.deepEqual(piece.keyframes, { opacity: [0, 1, 1], y: [-24, 1.5, 0] });
-      assert.deepEqual(piece.times, [0, 0.45, 1]);
-      assert.equal(piece.duration, 0.25);
-      // Some cube starts exactly 0.42s before it: the one nearest its foot.
-      assert.ok(ground.some((g) => Math.abs(piece.delay - g.delay - 0.42) < 1e-9), `the object at ${piece.x}, ${piece.y} follows a cube`);
+      assert.deepEqual(piece.times, [0, 0.5, 1]);
+      assert.equal(piece.duration, 0.3);
+      // Some cube starts exactly 0.5s before it: the one nearest its foot.
+      assert.ok(ground.some((g) => Math.abs(piece.delay - g.delay - 0.5) < 1e-9), `the object at ${piece.x}, ${piece.y} follows a cube`);
     }
     for (const y of new Set(objects.map((o) => `${o.x},${o.y}`))) {
       assert.equal(new Set(objects.filter((o) => `${o.x},${o.y}` === y).map((o) => o.delay)).size, 1, `everything with its foot at ${y} arrives together`);
     }
   });
 
-  it('R4: the shadow fades in first, and the clouds drift in from the left halfway through the ground\'s span', () => {
+  it('R6: the shadow fades in first, and the clouds drift in from the left halfway through the ground\'s span', () => {
     const [shadow] = of('shadow');
     assert.equal(shadow.move, 'fade');
     assert.equal(shadow.delay, TIMING.start);
     assert.ok(shadow.delay < Math.min(...of('ground').map((g) => g.delay)));
     const [sky] = of('sky');
     assert.deepEqual([sky.move, sky.keyframes], ['drift', { opacity: [0, 1], x: [-6, 0] }]);
-    close(sky.delay, 0.445, 'the clouds');
+    close(sky.delay, 0.82, 'the clouds');
   });
 
-  it('R5: the whole island has settled by 1.5s (island level up spec R19; 1.45s when it was 6×6)', () => {
+  it('R7: the whole island has settled by 2.35s (1.47s with the island sweep drop\'s numbers)', () => {
     const last = settledBy(plan);
-    assert.ok(last <= 1.5, `settled at ${last.toFixed(2)}s`);
-    close(last, 1.47, 'the last object lands');
+    assert.ok(last <= 2.35, `settled at ${last.toFixed(2)}s`);
+    close(last, 2.32, 'the last object lands');
   });
 
   it('the clock order (island clock sweep spec R1, now a lab option): cube by cube, clockwise from the left corner', () => {
@@ -203,7 +203,7 @@ describe('Range setting schedule', () => {
   it('the island takes the owner\'s pick, and the Range keeps every number of its own (island sweep drop spec R6)', () => {
     const pick = Object.fromEntries(Object.entries(TIMING).filter(([k]) => ['groundSpan', 'cascade', 'ground', 'objects', 'with', 'lag', 'move', 'objectMove', 'duration', 'peak', 'rise', 'overshoot', 'objectDuration', 'objectPeak', 'objectRise', 'objectOvershoot'].includes(k)));
     // The owner's line from the lab, as given.
-    assert.deepEqual(pick, { groundSpan: 0.25, cascade: 0.25, ground: 'sweep', objects: 'same', with: true, lag: 0.42, move: 'float', objectMove: 'drop', duration: 0.25, peak: 0.6, rise: 16, overshoot: 6, objectDuration: 0.25, objectPeak: 0.45, objectRise: 24, objectOvershoot: 1.5 });
+    assert.deepEqual(pick, { groundSpan: 1, cascade: 0.25, ground: 'sweep', objects: 'same', with: true, lag: 0.5, move: 'float', objectMove: 'drop', duration: 0.35, peak: 0.6, rise: 16, overshoot: 6, objectDuration: 0.3, objectPeak: 0.5, objectRise: 24, objectOvershoot: 1.5 });
     assert.deepEqual(RANGE_TIMING, {
       start: 0, groundDelay: 0.08, groundSpan: 0.16, cascade: 0, ground: 'rows', objects: 'ltr', with: false, objectLead: 0.1, objectSpan: 0.3, lag: 0.4,
       move: 'float', objectMove: 'same', duration: 0.5, peak: 0.55, rise: 10, overshoot: 2, popFrom: 0.3, popPeak: 1.1,

@@ -34,7 +34,7 @@ Written after the owner reviewed the work in stages (the object list, each objec
 
 - **R17.** `hero-island.svg` stays within **750 KB raw and 150 KB gzip** (raised from 500 KB and 125 KB by the owner on 2026-10-19). It is about 511 KB raw and 101 KB gzip, the motion's CSS about 28 KB of that.
 - **R18.** The lab's JS, engine included, stays within **36 KB gzip** (raised from 30 KB for the Animation pane, the owner's call).
-- **R19.** The island still builds in with the entrance schedule (`TIMING`, unchanged): the ground sweeps left to right by screen x in 0.5 s, and the whole island settles by **1.5 s** (it settled by 1.45 s when it was 6×6; the bigger island lands its last piece at 1.47 s).
+- **R19.** The island still builds in with the entrance schedule (`TIMING`, unchanged): the ground sweeps left to right by screen x in 0.5 s, and the whole island settles by **1.5 s** (it settled by 1.45 s when it was 6×6; the bigger island lands its last piece at 1.47 s). The settle time is now 2.32 s ([island edge sweep spec](../2026-10-island-edge-sweep/spec.md) R7).
 
 ## Design
 
