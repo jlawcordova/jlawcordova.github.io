@@ -2,6 +2,7 @@
 export default {
   kind: 'sprite',
   anchor: [11, 16],
+  footprint: [2, 2],
   keys: {
     r: 'roof-1',
     R: 'roof-2',

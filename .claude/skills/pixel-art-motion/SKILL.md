@@ -43,7 +43,7 @@ Every item in an animated scene sits in exactly one top-level group with class `
 | `data-enter` | Data | Hero island | Range setting |
 | --- | --- | --- | --- |
 | `shadow` | none | the 11 shadow pieces, one group | none: the shadow sits outside the classes |
-| `ground` | `data-col`, `data-row`, and the foot `data-x`, `data-y` (its tile's center) | one group per cube (132), row by row in paint order | one group per floor row, with `data-row` only |
+| `ground` | `data-col`, `data-row`, and the foot `data-x`, `data-y` (its tile's center) | one group per cube (132), row by row (their depth order) | one group per floor row, with `data-row` only |
 | `object` | the foot `data-x`, `data-y` | one group per run of objects that arrive together | one per prop, and one for the outfit, with `data-x` |
 | `sky` | none | the three clouds | none |
 
@@ -51,11 +51,13 @@ Every item in an animated scene sits in exactly one top-level group with class `
 
 **Adding a piece to the island:**
 
-1. Put it in its own `object` group, in paint order, with its foot `data-x` and `data-y`.
+1. Put it in its own `object` group with its foot `data-x` and `data-y` (`scene_place --new-group '{"class": "enter", "data-enter": "object"}' --foot`). The edit sorts the scene, so the group lands where the piece stands; give the piece a `level` if it rides or hangs above the ground (the `pixel-art` skill, Depth order).
 2. Run `npm run art`.
 3. The schedule places it in the order by its foot, so no motion code changes.
 
 A new ground position is its own `ground` group with its place and foot. Groups break up color merges, so each one costs bytes (`npm run pixellab -- art sizes hero-island`).
+
+**Groups are in depth order.** The groups sit in the SVG in the scene's depth order, which every edit keeps. The orders below read each group's data, not its place, so a sort doesn't change when a piece enters, except for `random`, which seeds each piece by its index in the SVG: after a sort that moves groups it gives another, equally random, shuffle (the depth order migration moved 34 of the island's 219 pieces in it).
 
 ## The schedule
 
@@ -66,7 +68,7 @@ A new ground position is its own `ground` group with its place and foot. Groups 
 3. Objects start `objectLead` before the last ground piece lands, spread over `objectSpan` by the object order. With `with: true`, each object instead starts `lag` after the ground piece nearest its foot.
 4. The clouds drift in as the objects begin.
 
-**Orders.** Each order gives a piece a score, lower first, and the scores are spread over the span:
+**Orders.** Each order gives a piece a score, lower first, and the scores are spread over the span. All but `random` score a piece by its data:
 
 | Order | Enters first |
 | --- | --- |
@@ -77,7 +79,7 @@ A new ground position is its own `ground` group with its place and foot. Groups 
 | `center`, `edges` | rippling out from the middle, or in from the edges |
 | `clock` | the screen angle about the ground's middle, clockwise from the left corner |
 | `checker` | two waves, like a checkerboard |
-| `random` | shuffled by `seed`, the same on every replay |
+| `random` | shuffled by `seed` and the piece's index in the SVG, the same on every replay until a sort moves the groups |
 | `together` | all at once |
 | `same` | objects only: the ground's order |
 
@@ -124,7 +126,8 @@ A sequence where pieces travel and hand things on (a truck drives up, tips its l
 - **Keys.** Each key at `t` ms sets, from then on, the item's `move` (pixels from where the scene places it), `show` and `pose` (another object with the same anchor, such as `truck-open-tipped`). Values carry over from the key before. The first key is at 0, the rest frame, which is what reduced motion shows, and every `t` is less than `duration`.
 - **Moves step a pixel at a time.** Between two keys an item steps toward the next key's move: one pixel per step along a straight line, 1 across and 1 up or down along a 1:1 diagonal (what a ramp along the belt's axis uses), or 2 across and 1 down along the 2:1 grid. Another angle takes fewer, larger steps, so keep moves on the grid's lines. After the last key it steps back to the first key's move over the rest of the loop, so hide it or hold it there.
 - **What it compiles to.** Each tracked item gets a `<g class="mv-<id>">`, one `<g class="mv-<id>-<n>">` per pose, and keyframes in a `<style>` at the top of the SVG: `steps()` transforms for moves, `step-end` opacity for show and poses, and a reduced-motion rule that turns them all off. The art is drawn at the rest frame, with hidden pieces and unused poses kept in the SVG at opacity 0.
-- **Editing it.** In the owner's checkout, key moves over the MCP and send them for approval with `doc_save`, as the `pixel-art` skill's flow says. Tracks, `show` and `pose` keys, and a track rewritten as a whole, live only in the source: that's an edit the MCP can't express, so ask the owner before writing it. In a worktree, write the `motion` block in the source, by hand or with a script, or use Pixel Lab's commands. `scene_set <scene> <item> --id <id>` names an item. Once it has a track in the source's `motion` (tracks, `show` and `pose` keys are written there), `scene_move <scene> <id> --by col,row --time <ms>` (or `--nudge x,y`) keys its move at that time, making the key if needed, and `scene_render <scene> --time <ms>` shows that moment, with every frame loop. Pixel Lab's timeline plays and scrubs the result (⌥⌘P) for the owner.
+- **Editing it.** In the owner's checkout, key it over the MCP and send it for approval with `doc_save`, as the `pixel-art` skill's flow says: `scene_track_add` makes a track, `scene_key_set` sets a key's `move`, `show` and `pose`, and `scene_motion_path` keys a run along the grid. Only a track rewritten as a whole lives in the source: that's an edit the MCP can't express, so ask the owner before writing it. In a worktree, write the `motion` block in the source, by hand or with a script, or use Pixel Lab's commands. `scene_set <scene> <item> --id <id>` names an item. Once it has a track (`scene_track_add`), `scene_move <scene> <id> --by col,row --time <ms>` (or `--nudge x,y`) keys its move at that time, making the key if needed, and `scene_render <scene> --time <ms>` shows that moment, with every frame loop. Pixel Lab's timeline plays and scrubs the result (⌥⌘P) for the owner.
+- **Depth while moving.** A moving item that is alone in its list changes place in the depth order as it moves, and the SVG draws a copy of it for each place, which costs bytes (`check` lists `copies`). Keep every moving piece alone in its own `enter` group: a group keeps its place at rest for the whole loop, so there are no copies, and the island's tests can read the list as the paint order at every moment (a test checks both). Its order against a piece it only meets mid-loop is then the list's order, so render those moments (`scene_render --time`) and fix a wrong one with a `level` or the override, never by moving lines.
 - **The page.** Scene motion runs inside the `enter` groups like the frame loops, so the entrance and the motion never set the same element's transform. Class and keyframe names are `mv-<id>`, unprefixed, so only one inline SVG on a page may carry motion.
 
 ## The CSS loops

@@ -267,7 +267,7 @@ export default {
 };
 ```
 
-- **Items** paint in source order, so z-order is explicit and deterministic. The editor inserts new items in back-to-front order (by `row + col`, then `level`), and you can raise or lower one by hand.
+- *(Superseded by [the depth order spec](../2026-10-pixel-lab-depth-order/spec.md): since Pixel Lab v0.5.0 items draw by where they stand, and raise and lower are gone.)* **Items** paint in source order, so z-order is explicit and deterministic. The editor inserts new items in back-to-front order (by `row + col`, then `level`), and you can raise or lower one by hand.
 - **Groups** carry attributes onto a `<g>` (only `class` and `data-*`), so the Range variants keep their `data-class` hooks.
 - **Placement classes** (`{ object: 'truck', class: 'itruck it1', … }`) put the object inside a `<g class>`, which is how the two trucks and three clouds keep their CSS hooks.
 - The values above are illustrative. The importer finds the real offsets.
