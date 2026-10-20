@@ -1,8 +1,12 @@
 // Pixel-art scene. How to edit it: .claude/skills/pixel-art/SKILL.md
 export default {
-  viewBox: [-86, -54, 188, 156],
+  viewBox: [-102, -78, 204, 180],
   origin: [0, 0],
   items: [
+    { object: 'cloud-platform-shadow', at: { tile: [-3, 1, 0] } },
+    { object: 'cloud-platform', at: { tile: [-3, 1, 2] } },
+    { object: 'database', at: { tile: [-2, 1, 2] } },
+    { object: 'server-tower', at: { tile: [-3, 2, 2] } },
     { object: 'block-office', at: { tile: [0, 0, 0] } },
     { object: 'wire-plug', at: { tile: [0, 0, 0] } },
     { object: 'block-office', at: { tile: [0, 1, 0] } },
@@ -55,6 +59,7 @@ export default {
     { object: 'firewall', at: { tile: [1, 3, 0] } },
     { object: 'globe', at: { tile: [0, 4, 0] } },
     { object: 'database', at: { tile: [5, 0, 0] } },
+    { object: 'monitor-wall', at: { tile: [3, 4, 0] } },
     { object: 'vault', at: { tile: [5, 3, 0] } },
     { object: 'padlock', at: { tile: [5, 4, 0] } },
   ],
