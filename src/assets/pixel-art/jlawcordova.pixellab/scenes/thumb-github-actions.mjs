@@ -3,7 +3,7 @@ export default {
   viewBox: [-120, -46, 240, 126],
   origin: [-24, -12],
   items: [
-    { object: 'cloud-a', at: { px: [-92, -24] } },
+    { object: 'cloud-a', at: { px: [-100, -26] } },
     { object: 'cloud-c', at: { px: [70, -34] } },
     { object: 'island-shadow', at: { px: [-56, 36] } },
     { object: 'island-shadow', at: { px: [-40, 44] } },
