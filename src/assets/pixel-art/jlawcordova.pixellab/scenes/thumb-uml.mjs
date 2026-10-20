@@ -25,6 +25,6 @@ export default {
     { object: 'block-site-corner', at: { tile: [3, 2, 0] } },
     { object: 'thumb-uml-board', at: { px: [8, 4] } },
     { object: 'thumb-uml-heart', at: { px: [-22, 12] } },
-    { object: 'thumb-uml-hat', at: { px: [24, 36] } },
+    { object: 'thumb-uml-hat', at: { px: [16, 30] } },
   ],
 };
