@@ -2,8 +2,8 @@
 title: Creating UML Diagrams in Visual Studio Code
 tags: UML diagrams
 categories: documentation
-featured-image: /public/2021-02-14/2021-02-14-uml-featured-image.png
-featured-image-alt: uml abstract feature
+featured-image: /public/thumbnails/uml.png
+featured-image-alt: A pink heart on a stone pedestal beside a drafting board showing boxes, lines, a stick figure and an oval, on a floating construction site.
 description: Make your UML diagrams easier to manage by using a textual format. All with the help of a useful Visual Studio Code extension.
 ---
 

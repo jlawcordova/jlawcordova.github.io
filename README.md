@@ -13,6 +13,8 @@ npm run build    # type-check (astro check) and build to dist/
 npm run preview  # serve the built site
 npm run fetch-accomplishments  # refresh src/data/accomplishments.json from AT Protocol
 npm run art      # publish the pixel-art document to the optimized SVGs with Pixel Lab's CLI (see Pixel art below)
+npm run thumbnails  # render the blog's pixel-art thumbnails (the thumb-* scenes) to static/public/thumbnails/
+npm run diagrams    # render the blog's diagrams (scripts/diagrams/) to the PNGs the posts embed, with the environment's Playwright
 npm test         # tests for the fetch, pixel-art and e2e-runner scripts (Node built-ins, no network)
 npm run e2e      # browser checks against the built dist/ (run npm run build first)
 npm run e2e -- scripts/e2e/accomplishments.e2e.mjs  # one suite only
@@ -47,6 +49,8 @@ npm run e2e -- scripts/e2e/accomplishments.e2e.mjs  # one suite only
 | `.claude/skills/` | Project skills: `write-intent`, `write-spec`, `write-plan` and `verify-change` (an independent, report-only check of a PR) for the AI-native SDLC (see `CLAUDE.md`), `pixel-art` for making and changing the art, `design-scene` for designing a scene with Pixel Lab open, `pixel-art-motion` for animating it, and `achievement-icon` for the accomplishment icons. `.claude/agents/pixel-artist.md` is the subagent that draws the art. |
 | `docs/references/` | Public-safe reference material shared across changes, such as `profile.md`. |
 | `docs/design-system/` | The design system and its source of truth: the brand book (`README.md`), `tokens.json`, and each component's guidelines and `preview.html`. `scripts/design-system.test.mjs` keeps the tokens in step with `variables.css`. |
+| `scripts/blog-thumbnails.mjs` | The blog's thumbnails: each post's `thumb-<key>` scene in the Pixel Lab document, rendered on the card color to the 1200×630 `static/public/thumbnails/<key>.png` its `featured-image` names (`npm run thumbnails`). `blog-thumbnails.test.mjs` fails when a post has none or a PNG is stale. |
+| `scripts/diagrams/` | The blog's diagrams in the design system's diagram style: `kit.mjs` (the drawing helpers and a sequence-diagram layout), `diagrams.mjs` (one entry per PNG a post embeds) and `render.mjs` (`npm run diagrams`, which renders them at 2× with the site's fonts using the environment's Playwright). |
 | `static/` | Copied to the site root as-is. `static/public/*` is served at `/public/*` (images, favicons, resume). |
 
 ## Writing a post
@@ -58,7 +62,7 @@ Create `src/content/posts/YYYY-MM-DD-my-post.md`:
 title: My Post
 tags: space separated tags
 categories: architecture
-featured-image: /public/YYYY-MM-DD/featured.png
+featured-image: /public/thumbnails/my-post.png
 featured-image-alt: short description of the image
 description: One-line summary shown on the blog page and in link previews.
 ---
@@ -67,6 +71,8 @@ Post body in Markdown. Fenced code blocks (```ts) are syntax highlighted.
 ```
 
 The post is published at `/<categories>/<YYYY>/<MM>/<DD>/<slug>/`, the same scheme as the old Jekyll site, so existing links keep working.
+
+The featured image is a pixel-art thumbnail. Add the post to `THUMBNAILS` in `scripts/blog-thumbnails.mjs` with a key (`my-post`), draw its scene as `src/assets/pixel-art/jlawcordova.pixellab/scenes/thumb-my-post.mjs` (copy another `thumb-*` scene: a small floating island with the post's idea on it, in a 240×126 viewBox, preview-only), and run `npm run thumbnails`. Draw a diagram as an entry in `scripts/diagrams/diagrams.mjs` and run `npm run diagrams`.
 
 ## Pixel art
 
