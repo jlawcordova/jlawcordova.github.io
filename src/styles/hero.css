@@ -1,5 +1,12 @@
 .hero {
   --hero-pad-bottom: 96px;
+  /* The island's size, as a share of its column, and a nudge off its place
+     (x as a share of the island's own width, so it scales with it). These
+     are the stacked tablet layout's; the desktop and phone layouts below set
+     their own. */
+  --island-w: 120%;
+  --island-x: 0%;
+  --island-y: -120px;
   background-color: var(--color-hero);
   padding: 72px var(--gutter) var(--hero-pad-bottom);
   overflow: hidden;
@@ -23,6 +30,10 @@ main > .hero:first-child {
 }
 
 .hero__copy {
+  /* Above the island, which reaches under the copy (a transform puts the
+     island in its own layer, so the copy needs a z-index to stay on top). */
+  position: relative;
+  z-index: 1;
   flex: 1 1 480px;
   min-width: 0;
   max-width: 600px;
@@ -76,8 +87,9 @@ main > .hero:first-child {
 }
 
 .hero-island {
-  width: 675px;
-  max-width: 100%;
+  width: var(--island-w);
+  max-width: none;
+  flex: none;
   height: auto;
   display: block;
   overflow: visible;
@@ -86,39 +98,41 @@ main > .hero:first-child {
      shadow under that block and the bottom half of its side, and 3px more
      for the middle of the floaty loop's 6px. A transform, so the band keeps
      its height. */
-  transform: translateY(calc(var(--hero-pad-bottom, 0px) + 28 / 264 * 100% + 3px));
+  transform: translate(var(--island-x), calc(var(--hero-pad-bottom, 0px) + 28 / 264 * 100% + 3px + var(--island-y)));
 }
 
-/* Beside the copy, the island is half again as wide as its column and
-   runs off the hero's right edge, so the rail section and its train leave
-   the picture (island level up spec). Stacked, it shows whole, smaller,
-   except on a phone (below), where whole would be too small. */
+/* Beside the copy, the island is nearly twice as wide as its column, reaches
+   back under the copy and runs off the hero's right edge, so the rail
+   section and its train leave the picture (island level up spec). Stacked
+   on a tablet (the defaults above), it's a fifth wider than the column,
+   centred and running off both edges, and sits 120px higher, behind the
+   buttons. */
 @media (min-width: 1024px) {
+  .hero {
+    --island-w: 184%;
+    --island-x: -23.7%;
+    --island-y: 0px;
+  }
   .hero__art,
   .hero__float {
     justify-content: flex-start;
   }
-  .hero-island {
-    width: 150%;
-    max-width: none;
-    flex: none;
-  }
 }
 
-/* On a phone, the island is a third wider than the column so it reads at a
+/* On a phone, the island is 1.6 times as wide as the column so it reads at a
    size, centred on the screen and running off both edges. The column comes
    up by what the island moves down (above), so the island's top sits just
    under the buttons: the padding, and 28 viewBox units of an island 446
-   units wide at 135% of the column (a margin's percentage is of the
+   units wide at --island-w of the column (a margin's percentage is of the
    column's width). */
 @media (max-width: 640px) {
-  .hero__art {
-    margin-top: calc(-1 * var(--hero-pad-bottom) - 28 / 446 * 135%);
+  .hero {
+    --island-w: 160%;
+    --island-x: 2.9%;
+    --island-y: 0px;
   }
-  .hero__float .hero-island {
-    width: 135%;
-    max-width: none;
-    flex: none;
+  .hero__art {
+    margin-top: calc(-1 * var(--hero-pad-bottom) - 28 / 446 * var(--island-w));
   }
 }
 
