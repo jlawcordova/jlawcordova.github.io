@@ -1,0 +1,24 @@
+// Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md
+export default {
+  kind: 'sprite',
+  extends: 'cat',
+  keys: {
+    t: 'soil-3',
+    s: 'soil-3',
+    l: 'wood-4',
+    L: 'soil-4',
+    r: 'soil-4',
+    R: 'soil-4',
+    S: 'soil-4',
+    e: 'gold-1',
+    n: 'roof-3',
+    u: 'wood-4',
+    U: 'soil-4',
+    v: 'wood-4',
+    V: 'soil-4',
+    a: 'soil-3',
+    A: 'soil-3',
+    b: 'soil-4',
+    B: 'soil-4',
+  },
+};

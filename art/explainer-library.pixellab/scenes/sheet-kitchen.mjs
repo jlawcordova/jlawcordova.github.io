@@ -48,6 +48,7 @@ export default {
     { object: 'plate-stack', at: { px: [-48, 18] } },
     { object: 'plate', at: { px: [-32, 26] } },
     { object: 'recipe-book', at: { tile: [4, 0, 0] } },
+    { object: 'cat', at: { tile: [3, 2, 0] } },
     { object: 'chair', at: { tile: [4, 2, 0] } },
     { object: 'chair-turned', at: { tile: [3, 3, 0] } },
     { object: 'table', at: { tile: [4, 3, 0] } },
