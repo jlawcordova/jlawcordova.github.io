@@ -1,6 +1,6 @@
 // Pixel-art scene. How to edit it: .claude/skills/pixel-art/SKILL.md
 export default {
-  viewBox: [-72, -48, 208, 128],
+  viewBox: [-72, -48, 208, 136],
   origin: [0, 0],
   items: [
     { object: 'tile-kitchen', at: { tile: [3, -3, 0] } },
@@ -20,13 +20,25 @@ export default {
     { object: 'block-kitchen', at: { tile: [1, 3, 0] } },
     { object: 'block-kitchen', at: { tile: [2, 2, 0] } },
     { object: 'block-kitchen', at: { tile: [3, 1, 0] } },
+    { object: 'block-kitchen', at: { tile: [4, 0, 0] } },
     { object: 'block-kitchen', at: { tile: [2, 3, 0] } },
     { object: 'block-kitchen', at: { tile: [3, 2, 0] } },
+    { object: 'block-kitchen', at: { tile: [4, 1, 0] } },
     { object: 'block-kitchen', at: { tile: [3, 3, 0] } },
+    { object: 'block-kitchen', at: { tile: [4, 2, 0] } },
+    { object: 'block-kitchen', at: { tile: [4, 3, 0] } },
     { object: 'fridge', at: { tile: [0, 0, 0] } },
     { object: 'sink', at: { tile: [2, 0, 0] } },
     { object: 'stove', at: { tile: [3, 0, 0] } },
     { object: 'chef', at: { tile: [1, 2, 0] } },
     { object: 'waiter', at: { tile: [2, 1, 0] } },
+    { object: 'table-long', at: { tile: [0, 3, 0] } },
+    { object: 'plate-stack', at: { px: [-48, 18] } },
+    { object: 'plate', at: { px: [-32, 26] } },
+    { object: 'recipe-book', at: { tile: [4, 0, 0] } },
+    { object: 'chair', at: { tile: [4, 2, 0] } },
+    { object: 'chair-turned', at: { tile: [3, 3, 0] } },
+    { object: 'table', at: { tile: [4, 3, 0] } },
+    { object: 'plate-dish', at: { px: [16, 50] } },
   ],
 };
