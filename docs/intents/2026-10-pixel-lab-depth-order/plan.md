@@ -7,7 +7,7 @@ Status: approved (the owner approved ahead of review; reviewed once, in the fina
 - `src/assets/pixel-art/jlawcordova.pixellab/scenes/hero-island.mjs`: the depth data (D3), then sorted.
 - `src/assets/pixel-art/jlawcordova.pixellab/objects/mine-cart.mjs`, `objects/container.mjs`: a `footprint` each (D3).
 - `src/assets/pixel-art/jlawcordova.pixellab/scenes/closeup-*.mjs` (all seven): the island's levels and overrides, in the island's order (D5).
-- `src/assets/pixel-art/jlawcordova.pixellab/scenes/range-sprite.mjs`: sorted (four items move inside their groups, no pixel changes).
+- `src/assets/pixel-art/jlawcordova.pixellab/scenes/range-sprite.mjs`: `depth: 'back'` on its four shared shadow pieces (D3); with it the sort moves nothing and the SVG is unchanged.
 - `src/assets/pixel-art/hero-island.svg`, `range-sprite.svg`: republished by `npm run art`.
 - `scripts/pixel-art-island.test.mjs`: the two pinned sequences, the new depth-order test, comments (D6). `scripts/range-art.test.mjs`: comments.
 - `.claude/skills/pixel-art/SKILL.md`, `.claude/skills/pixel-art-motion/SKILL.md`, `.claude/agents/pixel-artist.md`, `README.md`, `docs/intents/2026-10-pixel-art-engine/spec.md` (a one-line pointer): D7.
@@ -69,4 +69,5 @@ main ── feat/pixel-lab-depth-order ── PR (owner merges) ──▶ main
 
 ## As built
 
-No departures yet.
+- **The Range's shadow (step 6).** The one sort moved `range-sprite`'s four shared `island-shadow` pieces from the top of the list to after the class groups (no pixel changed, all seven classes checked). They got `depth: 'back'` with `scene set`, as the island's shadow has, so they draw first again and `range-sprite.svg` is byte-identical to the v0.3.0 output. Added to spec D3.
+- **Docs beyond depth order (step 5).** The bump also brings v0.4.0's commands: placing into groups, `scene group set`, `data-x`/`data-y` kept in step, and motion keys with `show` and `pose` over the MCP. The `pixel-art` skill's Items line had to be rewritten for depth order anyway, so the skill's "What the MCP can't express" list, its app section, the `pixel-art-motion` skill's Scene motion bullet, the agent's matching line and the `achievement-icon` skill's reason for a hand edit now say what v0.5.0 does. Listed in the PR's decisions.

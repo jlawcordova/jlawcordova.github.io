@@ -45,6 +45,7 @@ Two facts about the engine shape the design:
 | Where | Data | Why |
 | --- | --- | --- |
 | The island's shadow group | `depth: 'back'` | under the whole island, the waterfall included (site notes step 3) |
+| The Range's four shared `island-shadow` pieces (outside its class groups) | `depth: 'back'` | under every setting, as the island's; sorted alone they move after the class groups (no pixel changes today, but nothing would stop a deeper floor going under them), and with it `range-sprite.svg` is the v0.3.0 output, byte for byte |
 | The bridge rail's group | `depth: 'front'` | over the bridge and the trucks crossing it; in v0.3.0 it already drew over everything it touches |
 | Ore and stones that ride: `ore-wait-1`, `-2`, `ore-road-1`…`-4` (truck beds), `ore-hopper-1`…`-4` (the tipping truck), `ore-feed-1`…`-4` (the feed belt), `ore-belt-1`, `-2`, `stone-belt-1`, `-2` (the ore belt), `stone-reject-1`, `-2`, `ore-cart-1`, `-2` (the cart) | `level: 1` | over their carrier |
 | The heaps' top lumps: stones at (−46, 84) and (−90, 103), ore at (−96, 103) and (−92, 106) | `level: 1` | over the lumps under them, and the belt riders that start in the heap |
@@ -86,7 +87,7 @@ They place island items with no groups, ids or motion, and the close-up test key
 
 ### D8. The build-up
 
-The shipped orders read each group's data, not its index. Compared piece by piece between the committed and the new SVGs: with `TIMING` and `RANGE_TIMING` no piece starts at another time, and with every ground and object order the lab offers, only `random` for the objects changes, for 34 of the island's 219 pieces. `range-sprite`'s groups keep their indexes (its four sorted items moved inside groups).
+The shipped orders read each group's data, not its index. Compared piece by piece between the committed and the new SVGs: with `TIMING` and `RANGE_TIMING` no piece starts at another time, and with every ground and object order the lab offers, only `random` for the objects changes, for 34 of the island's 219 pieces. `range-sprite`'s enter groups keep their indexes (the four items the sort moved are its shared shadow pieces, which sit outside the enter groups, and `depth: 'back'` puts them back first).
 
 ## Areas of concern
 
