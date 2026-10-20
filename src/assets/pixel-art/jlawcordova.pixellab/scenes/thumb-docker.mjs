@@ -1,0 +1,25 @@
+// Pixel-art scene. How to edit it: .claude/skills/pixel-art/SKILL.md
+export default {
+  viewBox: [-120, -46, 240, 126],
+  origin: [-8, 0],
+  items: [
+    { object: 'island-shadow', at: { px: [-40, 48] } },
+    { object: 'island-shadow', at: { px: [-24, 56] } },
+    { object: 'island-shadow', at: { px: [-8, 64] } },
+    { object: 'island-shadow', at: { px: [40, 56] } },
+    { object: 'island-shadow', at: { px: [24, 64] } },
+    { object: 'island-shadow', at: { px: [8, 72] } },
+    { object: 'block', at: { tile: [0, 0, 0] } },
+    { object: 'block', at: { tile: [1, 0, 0] } },
+    { object: 'block', at: { tile: [2, 0, 0] } },
+    { object: 'block-right', at: { tile: [3, 0, 0] } },
+    { object: 'block', at: { tile: [0, 1, 0] } },
+    { object: 'block', at: { tile: [1, 1, 0] } },
+    { object: 'block', at: { tile: [2, 1, 0] } },
+    { object: 'block-right', at: { tile: [3, 1, 0] } },
+    { object: 'block-left', at: { tile: [0, 2, 0] } },
+    { object: 'block-left', at: { tile: [1, 2, 0] } },
+    { object: 'block-left', at: { tile: [2, 2, 0] } },
+    { object: 'block', at: { tile: [3, 2, 0] } },
+  ],
+};
