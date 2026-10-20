@@ -50,13 +50,30 @@ after(async () => {
   await browser?.close();
 });
 
-/** The home page at a width, scrolled to the Range section. */
-async function openRange({ width = 1440, reducedMotion = 'no-preference' } = {}) {
+/**
+ * The home page at a width, scrolled to the Range section, with the console
+ * at rest. Scrolled in, the console fades in and slides up 48px (reveal() in
+ * src/lib/motion.ts), and its keys are only 44px tall, so a click aimed as
+ * the slide starts can land above the key it meant to press.
+ *
+ * `paused` pauses the rotation as soon as the page loads, before the
+ * countdown's first 3s can move it off the first class. It's setup, so it
+ * clicks START as an event, not with the pointer.
+ */
+async function openRange({ width = 1440, reducedMotion = 'no-preference', paused = false } = {}) {
   const page = await browser.newPage({ viewport: { width, height: 900 }, reducedMotion });
   await page.goto(`${BASE}/`);
+  if (paused && (await page.locator('.range__toggle').getAttribute('aria-pressed')) === 'false') {
+    await page.locator('.range__toggle').dispatchEvent('click');
+  }
   await page.evaluate(() => document.fonts.ready);
   await page.locator('#range').scrollIntoViewIfNeeded();
   await page.mouse.move(0, 0);
+  await page.waitForFunction(() => {
+    const panel = /** @type {HTMLElement} */ (document.querySelector('.range__console'));
+    const { opacity, transform } = getComputedStyle(panel);
+    return opacity === '1' && (transform === 'none' || transform === 'matrix(1, 0, 0, 1, 0, 0)') && panel.getAnimations().length === 0;
+  });
   return page;
 }
 
@@ -132,8 +149,7 @@ const prev = (page) => page.locator('.range__arrow[data-dir="-1"]').click();
 
 for (const width of [390, 1440]) {
   test(`R6, R8: at ${width}px every class has its name, label and swatch on one line, with no horizontal scroll`, async () => {
-    const page = await openRange({ width });
-    await pause(page);
+    const page = await openRange({ width, paused: true });
     const home = await readFile(new URL('src/data/home.ts', `file://${ROOT}`), 'utf8');
     const shadows = [...home.matchAll(/shadow: '(#[0-9A-Fa-f]{6})'/g)].map((m) => m[1].toUpperCase());
     assert.equal(await page.locator('.range__dot').count(), 0, 'the pager dots are gone (C5)');
@@ -162,8 +178,7 @@ for (const width of [390, 1440]) {
 }
 
 test('R7: the arrows wrap both ways', async () => {
-  const page = await openRange();
-  await pause(page);
+  const page = await openRange({ paused: true });
   await prev(page);
   assert.equal((await state(page)).current, names.length - 1, 'Previous from the first goes to the last');
   await next(page);
@@ -181,8 +196,7 @@ const settingPieces = (page) =>
 const pieceAtRest = ({ opacity, transform }) => opacity === '1' && (transform === 'none' || transform === 'matrix(1, 0, 0, 1, 0, 0)');
 
 test('Settings R4, R8: a switch builds the new setting, and a quick double press still ends with every piece in place', async () => {
-  const page = await openRange();
-  await pause(page);
+  const page = await openRange({ paused: true });
   await next(page);
   // The build starts at once: the floor rows start below their spots and transparent.
   await page.waitForFunction(
@@ -297,8 +311,7 @@ test('Console: START pauses and plays the rotation', async () => {
 });
 
 test('Console: B goes back a class, like Previous, and announces it', async () => {
-  const page = await openRange();
-  await pause(page);
+  const page = await openRange({ paused: true });
   const b = page.getByRole('button', { name: 'B: previous class' });
   assert.equal(await b.count(), 1);
   await b.click();
@@ -314,8 +327,7 @@ test('Console: B goes back a class, like Previous, and announces it', async () =
 });
 
 test('Console, Pop R6: A makes only the character hop, and leaves its setting and the class alone', async () => {
-  const page = await openRange();
-  await pause(page);
+  const page = await openRange({ paused: true });
   await settled(page);
   // Let the setting finish building first, so anything that moves is the hop.
   await page.waitForFunction(() =>
@@ -433,8 +445,7 @@ const contrast = (a, b) => {
 };
 
 test('Pop R1: each class tints the section and the screen, and the copy stays readable on every one', async () => {
-  const page = await openRange();
-  await pause(page);
+  const page = await openRange({ paused: true });
   const grounds = new Set();
   for (let i = 0; i < names.length; i += 1) {
     const c = await colors(page);
@@ -450,8 +461,7 @@ test('Pop R1: each class tints the section and the screen, and the copy stays re
 });
 
 test('Pop R2, R3: a change sweeps battle bars over the screen and slashes the section, then clears both layers', async () => {
-  const page = await openRange();
-  await pause(page);
+  const page = await openRange({ paused: true });
   await next(page);
   const during = await page.evaluate(() => ({
     screen: document.querySelectorAll('.range__stage > .range__change canvas').length,
