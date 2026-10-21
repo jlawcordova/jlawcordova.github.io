@@ -318,6 +318,17 @@ There is no browser editor any more: the web lab at `/lab/pixel-art/` was retire
 
 - **Blocks:** a block shows as the engine draws it. The app paints its top (`surface`) and its faces (`sides`); a saved block carries only that block, so apply the same change to its variants (such as the island's edge pieces) yourself.
 
+## The explainer library
+
+`art/explainer-library.pixellab/` is a second document: isometric assets for the owner's videos and infographics, not the site ([explainer library spec](../../../docs/intents/2026-10-explainer-library/spec.md) lists every asset and its loop). The same rules and look apply, with these differences:
+
+- **Its palette is a copy of the site's.** A test keeps the two files identical, so a palette change edits both.
+- **Edit it with the CLI and `--document`:** `npx pixellab <group> <verb> … --document art/explainer-library.pixellab` (the flag goes after the command). The `pixellab` MCP server is bound to the site's document, so it can't edit this one; review PNGs come from `art preview … --out` into `.art-preview/`.
+- **It publishes nothing.** Its scenes are preview-only contact sheets (`sheet-kitchen`, `sheet-office`, `sheet-cloud`, `sheet-ai`, `sheet-glue`), and every asset must stand on one of them. `npm run explainer-export` renders every object (one PNG per loop frame) and sheet for video.
+- **A new asset** goes in the spec's Asset list and in `ASSETS` in `scripts/explainer-library.test.mjs`, with its loop.
+- **Depth order applies here too.** Something placed by pixel on a table, desk or counter top stands at `level: 1`, and the multi-tile sprites (`desk-l`, `table-long`, `kitchen-pass`, `monitor-wall`, `sandbox`) carry a `footprint`. `desk` and `chair-turned` have a `[2, 1]` footprint so they sort in front of the cubicle walls on their tile (the walls are drawn on their tile's back edge but sort as the whole tile).
+- **Outfits can't loop.** An object that `extends` another overrides rows only, so it can't add a frame loop; and only outfits may use outfit colors. The robots are silver outfits with the idle bob for that reason.
+
 ## Achievement icons
 
 The 16×16 icons beside the accomplishments on the site are objects named `icon-<id>`, placed in the `achievement-icons` scene. They're drawn in the [island and Range look](#island-and-range-look), following [Isometric icons](#isometric-icons), and have a few rules of their own (size, anchor, sheet order, the icon list). Use the `achievement-icon` skill to add or change one.
