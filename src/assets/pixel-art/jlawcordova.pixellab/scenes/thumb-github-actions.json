@@ -1,4 +1,5 @@
 {
+  "image": { "file": "github-actions.png", "scale": 5 },
   "viewBox": [-120, -46, 240, 126],
   "origin": [-24, -12],
   "items": [

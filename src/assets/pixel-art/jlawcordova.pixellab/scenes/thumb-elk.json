@@ -1,4 +1,5 @@
 {
+  "image": { "file": "elk.png", "scale": 5 },
   "viewBox": [-120, -46, 240, 126],
   "origin": [0, -4],
   "items": [

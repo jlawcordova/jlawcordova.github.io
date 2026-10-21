@@ -208,7 +208,7 @@
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "25" },
           "items": [
-            { "object": "cloud-c", "class": "pcloud pc0", "at": { "px": [14, -9] } }
+            { "object": "cloud-c", "at": { "px": [14, -9] }, "ambient": { "duration": 16000, "offset": 0, "keys": [{ "t": 0, "move": [0, 0] }, { "t": 8000, "move": [12, 0] }] } }
           ]
         },
         {

@@ -3,6 +3,7 @@
   "name": "jlawcordova",
   "publish": {
     "dir": "..",
+    "images": "../../../../static/public/thumbnails",
     "budgets": {
       "hero-island.svg": {
         "raw": 768000,
