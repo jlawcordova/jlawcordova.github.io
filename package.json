@@ -7,18 +7,18 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro check && astro build",
+    "dev": "npm run art && astro dev",
+    "build": "npm run art && astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "fetch-accomplishments": "node scripts/fetch-accomplishments.mjs",
-    "art": "pixellab art build --site .",
-    "pixellab": "pixellab --site .",
+    "art": "node scripts/pixellab.mjs art build --site .",
+    "pixellab": "node scripts/pixellab.mjs --site .",
     "explainer-export": "node scripts/export-explainer-library.mjs",
     "thumbnails": "node scripts/blog-thumbnails.mjs",
     "diagrams": "node scripts/diagrams/render.mjs",
     "e2e": "node scripts/e2e/run.mjs",
-    "test": "node --test \"scripts/*.test.mjs\""
+    "test": "npm run art && node --test \"scripts/*.test.mjs\""
   },
   "dependencies": {
     "@astrojs/prism": "4.0.2",

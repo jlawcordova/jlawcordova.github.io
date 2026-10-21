@@ -52,3 +52,6 @@ dist
 
 # The explainer library's PNG export (npm run explainer-export)
 .explainer-export/
+
+# Pixel Lab's program, downloaded by scripts/pixellab.mjs
+.pixellab-bin/
