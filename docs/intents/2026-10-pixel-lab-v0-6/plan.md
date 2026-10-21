@@ -92,3 +92,4 @@ Pasted into PR #143:
 ## As built
 
 - **Step 7, the hop's browser check.** The first full `npm run e2e` failed "A makes only the character hop": the check read the `transform` of `.character`, but the SVG moves a generated element inside that group (`<g class="character"><g class="range-sprite--a1">…`). The check now reads the group's drawn position instead (spec R22, updated in the same commit). The art and the page were right: the frame comparison had already matched every hop frame.
+- **Step 7, the proof's images.** The before/after screenshots and the frame comparison's report are committed in `snapshots/`, so the PR can show them. GitHub's API can't attach images to a PR body. They're art and public site copy only.
