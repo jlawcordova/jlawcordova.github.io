@@ -16,6 +16,7 @@ npm run art      # publish the pixel-art document to the optimized SVGs with Pix
 npm run thumbnails  # render the blog's pixel-art thumbnails (the thumb-* scenes) to static/public/thumbnails/
 npm run diagrams    # render the blog's diagrams (scripts/diagrams/) to the PNGs the posts embed, with the environment's Playwright
 npm test         # tests for the fetch, pixel-art and e2e-runner scripts (Node built-ins, no network)
+npm run explainer-export  # the explainer library as transparent PNGs, into .explainer-export/ (see Explainer library below)
 npm run e2e      # browser checks against the built dist/ (run npm run build first)
 npm run e2e -- scripts/e2e/accomplishments.e2e.mjs  # one suite only
 ```
@@ -51,6 +52,7 @@ npm run e2e -- scripts/e2e/accomplishments.e2e.mjs  # one suite only
 | `docs/design-system/` | The design system and its source of truth: the brand book (`README.md`), `tokens.json`, and each component's guidelines and `preview.html`. `scripts/design-system.test.mjs` keeps the tokens in step with `variables.css`. |
 | `scripts/blog-thumbnails.mjs` | The blog's thumbnails: each post's `thumb-<key>` scene in the Pixel Lab document, rendered on the card color to the 1200×630 `static/public/thumbnails/<key>.png` its `featured-image` names (`npm run thumbnails`). `blog-thumbnails.test.mjs` fails when a post has none or a PNG is stale. |
 | `scripts/diagrams/` | The blog's diagrams in the design system's diagram style: `kit.mjs` (the drawing helpers and a sequence-diagram layout), `diagrams.mjs` (one entry per PNG a post embeds) and `render.mjs` (`npm run diagrams`, which renders them at 2× with the site's fonts using the environment's Playwright). |
+| `art/explainer-library.pixellab/` | The explainer asset library: a second Pixel Lab document of isometric assets for videos and infographics, separate from the site's art (nothing on the site reads it). Its palette is the site's; its scenes are preview-only contact sheets. `scripts/export-explainer-library.mjs` (`npm run explainer-export`) exports it as PNGs, and `scripts/explainer-library.test.mjs` checks it. |
 | `static/` | Copied to the site root as-is. `static/public/*` is served at `/public/*` (images, favicons, resume). |
 
 ## Writing a post
@@ -100,6 +102,19 @@ npm run pixellab -- help                                  # every command: scene
 **Pixel Lab for Mac**, the owner's native editor (kept in a separate repository), edits the same sources with this checkout's own engine, and saves straight to them. Agents reach it through its `pixellab` CLI and MCP server: they look at renders, arrange scenes and paint objects with the same commands, and their MCP saves become proposals the owner approves in the app. The `pixel-art` skill (`.claude/skills/pixel-art/SKILL.md`) says when to use which.
 
 Sources are kept in one canonical text format, and `npm test` fails if a source isn't canonical or a committed SVG is stale against its sources.
+
+### Explainer library
+
+`art/explainer-library.pixellab/` is a separate document of about 100 isometric objects for videos and infographics: a kitchen (for the peer-review analogy), an office, a server room and cloud pieces, AI pieces (robots, tokens, tools, memory), and arrows, bubbles, signs and markers. `docs/intents/2026-10-explainer-library/spec.md` lists every asset and its loop. It uses the site's palette and look, publishes no SVGs, and is never read by the site.
+
+```sh
+npx pixellab check --document art/explainer-library.pixellab     # validate it
+npx pixellab art preview scenes/sheet-office --scale 3 --out sheet.png --document art/explainer-library.pixellab
+npm run explainer-export                                           # every object (one PNG per loop frame) and sheet, 8×
+npm run explainer-export -- --scale 4 --out ~/Desktop/explainer    # another scale or folder
+```
+
+Open it in Pixel Lab with File › Open Document…. Its five contact sheets (`sheet-kitchen`, `sheet-office`, `sheet-cloud`, `sheet-ai`, `sheet-glue`) show every asset in place.
 
 ## Deploy
 

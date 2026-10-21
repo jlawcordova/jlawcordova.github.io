@@ -1,0 +1,17 @@
+// Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md
+export default {
+  kind: 'sprite',
+  extends: 'bubble-speech',
+  keys: {
+    G: 'grass-3',
+  },
+  rows: {
+    0: {
+      4: 'cccccccccccccGGccccccc',
+      5: 'ccccccccccccGGcccccccc',
+      6: 'cccccccGGccGGccccccccc',
+      7: 'ccccccccGGGGcccccccccc',
+      8: 'cccccccccGGccccccccccc',
+    },
+  },
+};
