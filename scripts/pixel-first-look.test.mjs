@@ -151,16 +151,19 @@ describe('pixel-first look', () => {
     assert.equal(match[1].trim(), thick.value);
   });
 
-  it('R9: motion is the only new dependency, pinned exactly (pixellab is a dev dependency pinned to a commit: art-to-Pixel-Lab spec R2)', async () => {
+  it('R9: motion is the only new dependency, pinned exactly; Pixel Lab is a pinned program, not a package (Pixel Lab v0.6.0 spec R10, R14)', async () => {
     const pkg = JSON.parse(await read('package.json'));
     assert.deepEqual(Object.keys(pkg.dependencies).sort(), ['@astrojs/prism', 'astro', 'motion']);
-    assert.deepEqual(Object.keys(pkg.devDependencies).sort(), ['@astrojs/check', 'pixellab', 'typescript']);
+    assert.deepEqual(Object.keys(pkg.devDependencies).sort(), ['@astrojs/check', 'typescript']);
     assert.match(pkg.dependencies.motion, /^\d+\.\d+\.\d+$/, 'motion has an exact version');
-    assert.match(pkg.devDependencies.pixellab, /^github:jlawcordova\/jlawcordova-lab#([0-9a-f]{40}|v\d+\.\d+\.\d+)$/, 'pixellab is pinned to a commit or a release tag');
+
+    const { VERSION, ASSETS } = await import('./pixellab.mjs');
+    assert.match(VERSION, /^v\d+\.\d+\.\d+$/, 'pixellab is pinned to a release tag');
+    for (const { sha256 } of Object.values(ASSETS)) assert.match(sha256, /^[0-9a-f]{64}$/, 'with a SHA-256 for each program');
 
     const lock = JSON.parse(await read('package-lock.json'));
     const installed = Object.keys(lock.packages);
-    for (const name of ['react', 'react-dom']) {
+    for (const name of ['react', 'react-dom', 'pixellab']) {
       assert.ok(!installed.includes(`node_modules/${name}`), `${name} isn't installed`);
     }
   });

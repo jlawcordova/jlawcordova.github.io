@@ -1,0 +1,47 @@
+{
+  "kind": "sprite",
+  "extends": "character",
+  "keys": {
+    "g": "violet-1",
+    "h": "violet-2",
+    "i": "violet-3",
+    "k": "gold-1",
+    "K": "gold-3",
+    "l": "cream",
+    "w": "soil-2",
+    "W": "soil-3"
+  },
+  "rows": {
+    "1": {
+      "0": ".....................hi.........",
+      "1": ".........kk.........ghi.........",
+      "2": "........klkK.......ghi..........",
+      "3": "........kkKK......ghii..........",
+      "4": ".........KK......ghhii..........",
+      "5": ".........wW......ghhiii.........",
+      "6": ".........wW.....ghhhiii.........",
+      "7": ".........wW.....ghhhiiii........",
+      "8": ".........wW...gghhhhiiiigg......",
+      "9": ".........wW.gggkkhhhiiiKKggg....",
+      "10": ".........wW.gggggkkkkKKggggg....",
+      "11": ".........wW.hhggggggggggggii....",
+      "12": ".........wW..bhhggggggggiia.....",
+      "13": ".........wW..bcchhggggiiaaa.....",
+      "14": ".........wW..ccccchhiiaaaaa.....",
+      "15": ".........wW..cceccccbaaaaaa.....",
+      "16": ".........wW..ccecceccddaaaa.....",
+      "17": ".........wW..ccccceccddaaaa.....",
+      "18": ".........wW..ggccccccddddaa.....",
+      "19": ".........wWgghhhhccccddddi......",
+      "20": ".........cccihhhhhhhhhigggg.....",
+      "21": ".........dddihhhhhhhhhihhii.....",
+      "22": ".........wW.iikkhhhhhhihhii.....",
+      "23": ".........wW..hhhkkhhhhihhii.....",
+      "24": ".........wW..hhhhhkkhhihhii.....",
+      "25": ".........wW..iiihhhhkkKccdd.....",
+      "26": ".........wW....aiihhhhiccdd.....",
+      "27": ".........wW.....aaiihhiii.......",
+      "28": ".........wW.........iiii........"
+    }
+  }
+}

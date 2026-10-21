@@ -1,0 +1,48 @@
+{
+  "kind": "sprite",
+  "anchor": [13, 11],
+  "keys": {
+    "p": "soil-2",
+    "s": "soil-3",
+    "k": "soil-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "........sppp..............................................",
+        "......sskkkppp............................................",
+        "....sskkkkkkkppp..........................................",
+        "..sskkkkkkkkkksppp........................................",
+        "pppkkkkkkkkksskkkppp......................................",
+        "sspppkkkkksskkkkkkkppp....................................",
+        "sssspppksskkkkkkkkkksppp..................................",
+        "sssssspppkkkkkkkkksskkkppp................................",
+        "kssssssspppkkkkksskkkkkkkppp..............................",
+        "kkkssssssspppksskkkkkkkkkksppp............................",
+        "..kkkssssssspppkkkkkkkkksskkkppp..........................",
+        "....kkkssssssspppkkkkksskkkkkkkppp........................",
+        "......kkkssssssspppksskkkkkkkkkksppp......................",
+        "........kkkssssssspppkkkkkkkkksskkkppp....................",
+        "..........kkkssssssspppkkkkksskkkkkkkppp..................",
+        "............kkkssssssspppksskkkkkkkkkksppp................",
+        "..............kkkssssssspppkkkkkkkkksskkkppp..............",
+        "................kkkssssssspppkkkkksskkkkkkkppp............",
+        "..................kkkssssssspppksskkkkkkkkkksppp..........",
+        "....................kkkssssssspppkkkkkkkkksskkkppp........",
+        "......................kkkssssssspppkkkkksskkkkkkkppp......",
+        "........................kkkssssssspppksskkkkkkkkkksppp....",
+        "..........................kkkssssssspppkkkkkkkkksskkkppp..",
+        "............................kkkssssssspppkkkkksskkkkkkkppp",
+        "..............................kkkssssssspppksskkkkkkkkkkkk",
+        "................................kkkssssssspppkkkkkkkkkkkkk",
+        "..................................kkkssssssspppkkkkkkkkkkk",
+        "....................................kkkssssssspppkkkkkkkkk",
+        "......................................kkkssssssskkkkkkkkkk",
+        "........................................kkkssssskkkkkkkk..",
+        "..........................................kkkssskkkkkk....",
+        "............................................kkkskkkk......",
+        "..............................................kkkk........"
+      ]
+    }
+  ]
+}

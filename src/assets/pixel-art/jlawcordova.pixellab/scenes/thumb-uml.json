@@ -1,0 +1,30 @@
+{
+  "image": { "file": "uml.png", "scale": 5 },
+  "viewBox": [-120, -46, 240, 126],
+  "origin": [-8, -4],
+  "items": [
+    { "object": "island-shadow", "depth": "back", "at": { "px": [40, 52] } },
+    { "object": "island-shadow", "depth": "back", "at": { "px": [-40, 44] } },
+    { "object": "island-shadow", "depth": "back", "at": { "px": [-24, 52] } },
+    { "object": "island-shadow", "depth": "back", "at": { "px": [-8, 60] } },
+    { "object": "island-shadow", "depth": "back", "at": { "px": [24, 60] } },
+    { "object": "island-shadow", "depth": "back", "at": { "px": [8, 68] } },
+    { "object": "cloud-b", "at": { "px": [-96, -22] } },
+    { "object": "cloud-c", "at": { "px": [72, -36] } },
+    { "object": "block-site", "at": { "tile": [0, 0, 0] } },
+    { "object": "block-site", "at": { "tile": [1, 0, 0] } },
+    { "object": "block-site", "at": { "tile": [2, 0, 0] } },
+    { "object": "block-site-right", "at": { "tile": [3, 0, 0] } },
+    { "object": "block-site", "at": { "tile": [0, 1, 0] } },
+    { "object": "block-site", "at": { "tile": [1, 1, 0] } },
+    { "object": "block-site", "at": { "tile": [2, 1, 0] } },
+    { "object": "block-site-right", "at": { "tile": [3, 1, 0] } },
+    { "object": "block-site-left", "at": { "tile": [0, 2, 0] } },
+    { "object": "block-site-left", "at": { "tile": [1, 2, 0] } },
+    { "object": "block-site-left", "at": { "tile": [2, 2, 0] } },
+    { "object": "block-site-corner", "at": { "tile": [3, 2, 0] } },
+    { "object": "thumb-uml-board", "at": { "px": [8, 4] } },
+    { "object": "thumb-uml-heart", "at": { "px": [-22, 12] } },
+    { "object": "thumb-uml-hat", "at": { "px": [16, 30] } }
+  ]
+}

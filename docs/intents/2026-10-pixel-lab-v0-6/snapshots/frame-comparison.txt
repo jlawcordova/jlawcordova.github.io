@@ -1,0 +1,12 @@
+1440: horizontal overflow old 0px, new 0px; Range class old 0, new 0
+1440: 362 frames compared
+1440-reduced: horizontal overflow old 0px, new 0px; Range class old 0, new 0
+1440-reduced: A button display old flex, new flex
+1440-reduced: 6 frames compared
+390: horizontal overflow old 0px, new 0px; Range class old 0, new 0
+390: 362 frames compared
+390-reduced: horizontal overflow old 0px, new 0px; Range class old 0, new 0
+390-reduced: A button display old flex, new flex
+390-reduced: 6 frames compared
+736 frames compared (303 distinct), 0 mismatched
+Every frame matches.

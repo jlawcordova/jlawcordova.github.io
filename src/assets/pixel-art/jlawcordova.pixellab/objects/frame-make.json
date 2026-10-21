@@ -1,0 +1,8 @@
+{
+  "kind": "sprite",
+  "extends": "frame-plain",
+  "keys": {
+    "p": "gold-1",
+    "P": "gold-3"
+  }
+}

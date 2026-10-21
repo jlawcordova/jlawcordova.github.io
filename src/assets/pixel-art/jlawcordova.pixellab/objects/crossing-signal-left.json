@@ -1,0 +1,14 @@
+{
+  "kind": "sprite",
+  "extends": "crossing-signal",
+  "keys": {
+    "l": "roof-1",
+    "h": "gold-1"
+  },
+  "rows": {
+    "0": {
+      "9": "khlkkkkkkmmk",
+      "10": "kllk.pP.kmmk"
+    }
+  }
+}

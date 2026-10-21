@@ -260,15 +260,19 @@ const [first] = rangeClasses;
     motion.addEventListener('change', () => ((playing = !motion.matches), schedule()));
     document.addEventListener('visibilitychange', schedule);
 
-    // A: only the character hops (R6), with chop in pixel-art.css. Its
-    // setting stays put, and the class stays. A press mid-hop starts it over.
+    // A: only the character hops (R6), with the art's hop action, played
+    // through data-play (Pixel Lab's site contract). Its setting stays put,
+    // and the class stays. A press mid-hop starts it over.
     $('.range__a').addEventListener('click', () => {
-      const character = art.querySelector(`g[data-class="${index}"] .cbob`);
-      if (!character || motion.matches) return;
-      character.classList.remove('is-hopping');
-      character.getBoundingClientRect();
-      character.classList.add('is-hopping');
-      character.addEventListener('animationend', () => character.classList.remove('is-hopping'), { once: true });
+      const group = art.querySelector(`g[data-class="${index}"]`);
+      if (!group || motion.matches) return;
+      group.removeAttribute('data-play');
+      group.getBoundingClientRect();
+      group.setAttribute('data-play', 'hop');
+    });
+    art.addEventListener('animationend', (e) => {
+      if ((e as AnimationEvent).animationName !== 'range-sprite--hop') return;
+      (e.target as Element).closest('[data-play]')?.removeAttribute('data-play');
     });
 
     section.classList.add('is-ready');

@@ -1,0 +1,35 @@
+{
+  "kind": "sprite",
+  "anchor": [0, 16],
+  "keys": {
+    "r": "roof-2",
+    "R": "roof-3",
+    "c": "cream",
+    "k": "soil-4",
+    "s": "path-3",
+    "S": "path-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "rR",
+        "rR",
+        "rR",
+        "cs",
+        "cs",
+        "cs",
+        "rR",
+        "rR",
+        "rR",
+        "cs",
+        "cs",
+        "cs",
+        "kk",
+        "sS",
+        "sS",
+        "sS",
+        "sS"
+      ]
+    }
+  ]
+}

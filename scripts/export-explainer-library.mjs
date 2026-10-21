@@ -1,7 +1,7 @@
 // Exports the explainer asset library (art/explainer-library.pixellab/) for
 // videos and infographics (explainer library spec R8): a transparent PNG of
 // every object, one per loop frame, and each contact sheet on the preview
-// card color, rendered by Pixel Lab's CLI.
+// card color, rendered by Pixel Lab's program (scripts/pixellab.mjs).
 //
 //   npm run explainer-export                  # 8×, into .explainer-export/
 //   npm run explainer-export -- --scale 4 --out <dir>
@@ -15,13 +15,14 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 
+import { ensureProgram } from './pixellab.mjs';
+
 const run = promisify(execFile);
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
-const CLI = join(ROOT, 'node_modules/pixellab/cli/bin/pixellab.mjs');
 export const DOC = join(ROOT, 'art/explainer-library.pixellab');
 
-/** @param {string[]} args */
-const pixellab = async (args, doc) => (await run(process.execPath, [CLI, ...args, '--document', doc])).stdout;
+/** @param {string[]} args @param {string} doc */
+const pixellab = async (args, doc) => (await run(await ensureProgram(), [...args, '--document', doc], { maxBuffer: 64 * 1024 * 1024 })).stdout;
 
 /**
  * The renders to make: one per object frame, then one per scene.

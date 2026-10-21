@@ -1,0 +1,37 @@
+{
+  "kind": "sprite",
+  "anchor": [2, 19],
+  "keys": {
+    "p": "path-1",
+    "P": "path-2",
+    "q": "path-3",
+    "w": "water-3",
+    "W": "water-4"
+  },
+  "layers": [
+    {
+      "map": [
+        ".pp...............",
+        "Ppppp.............",
+        "PPPpppp...........",
+        "PwwPPpppp.........",
+        "PwwwwPPpppp.......",
+        "PwwwWwwPPpppp.....",
+        "PwwwwwwwwPPpppp...",
+        "PwwwwwwwwwwPPpppp.",
+        "PwwwwwwwwwwwwPPppq",
+        "PwwwwwwwwwwwwwwPqq",
+        "PwwwwwwwwwwWwwwPqq",
+        "qwwWwwwWwwwwwwwPqq",
+        ".qqwwwwwwwwwwwwPqq",
+        "...qqwwwwwwwwwwPqq",
+        ".....qqwwwwwwwwPqq",
+        ".......qqwwwwWwPqq",
+        ".........qqwwwwPqq",
+        "...........qqwwPqq",
+        ".............qqPqq",
+        "...............qq."
+      ]
+    }
+  ]
+}

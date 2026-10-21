@@ -1,0 +1,8 @@
+{
+  "kind": "sprite",
+  "extends": "frame-plain",
+  "keys": {
+    "p": "skin-1",
+    "P": "wood-1"
+  }
+}

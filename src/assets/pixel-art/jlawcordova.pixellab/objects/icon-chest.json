@@ -1,0 +1,36 @@
+{
+  "kind": "sprite",
+  "anchor": [8, 15],
+  "keys": {
+    "h": "wood-1",
+    "w": "wood-2",
+    "W": "wood-3",
+    "d": "wood-4",
+    "D": "soil-4",
+    "g": "gold-1",
+    "G": "gold-2",
+    "b": "gold-3"
+  },
+  "layers": [
+    {
+      "map": [
+        "................",
+        "................",
+        "...WWggW........",
+        "..wghhhhW.......",
+        ".wggwwhhhhW.....",
+        ".wgwwwwwhhggW...",
+        ".dbwwwwwwgwwddd.",
+        ".WGddggwggwdddd.",
+        ".WGWWGbwgwdddDD.",
+        ".WGWWDbdbwdDDdd.",
+        ".WGWWWWWGdDdddd.",
+        ".dbWWWWWGWdbbdd.",
+        "...ddWWWGWdDDdd.",
+        ".....ddWGWdddDD.",
+        ".......dbWdDD...",
+        ".........dD....."
+      ]
+    }
+  ]
+}

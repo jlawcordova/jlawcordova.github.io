@@ -1,0 +1,22 @@
+{
+  "image": { "file": "coverlet.png", "scale": 5 },
+  "viewBox": [-120, -46, 240, 126],
+  "origin": [0, 2],
+  "items": [
+    { "object": "island-shadow", "depth": "back", "at": { "px": [32, 50] } },
+    { "object": "island-shadow", "depth": "back", "at": { "px": [-32, 50] } },
+    { "object": "island-shadow", "depth": "back", "at": { "px": [-16, 58] } },
+    { "object": "island-shadow", "depth": "back", "at": { "px": [16, 58] } },
+    { "object": "block-lab", "at": { "tile": [0, 0, 0] } },
+    { "object": "block-lab", "at": { "tile": [1, 0, 0] } },
+    { "object": "block-lab", "at": { "tile": [0, 1, 0] } },
+    { "object": "block-lab-right", "at": { "tile": [2, 0, 0] } },
+    { "object": "block-lab", "at": { "tile": [1, 1, 0] } },
+    { "object": "block-lab-left", "at": { "tile": [0, 2, 0] } },
+    { "object": "block-lab-right", "at": { "tile": [2, 1, 0] } },
+    { "object": "block-lab-left", "at": { "tile": [1, 2, 0] } },
+    { "object": "block-lab", "at": { "tile": [2, 2, 0] } },
+    { "object": "thumb-coverlet-report", "at": { "px": [0, 16] } },
+    { "object": "prop-data-engineering-bench", "at": { "px": [-31, 18] } }
+  ]
+}

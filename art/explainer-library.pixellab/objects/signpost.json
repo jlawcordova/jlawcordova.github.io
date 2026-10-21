@@ -1,0 +1,53 @@
+{
+  "kind": "sprite",
+  "anchor": [13, 36],
+  "keys": {
+    "l": "wood-1",
+    "w": "wood-2",
+    "W": "wood-3",
+    "d": "wood-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "...........llll..........",
+        "..........wllllW.........",
+        "..........wwwWWW.........",
+        "..........wwwWWW.........",
+        "......wll.wwwWWW.........",
+        "......wwwllwwWWW.........",
+        "......wwwwwllWWW.........",
+        "......wwwwwwwllW.........",
+        "......wwwwwwwwwll........",
+        "......wwwwwwwwwwwll......",
+        "......Wwwwwwwwwwwwwll....",
+        ".......WWwwwwwwwwwwwW....",
+        ".........WWwwwwwwwwwwl...",
+        "..........wWWwwwwwwwwwl..",
+        "..........wwwWWwwwwwwwWl.",
+        "..........wwwWWWWwwwwwwWl",
+        "..........wwwllWWWWwwwwWW",
+        "..........wllWWWWWWWWWW..",
+        ".........llWWWWWWWW......",
+        ".......llWWWWWWWWWW......",
+        ".....llWWWWWWWWWWWW......",
+        "....wWWWWWWWWWWWWdd......",
+        "...wlWWWWWWWWWWdd........",
+        "..wlWWWWWWWWWddW.........",
+        "..lWWWWWWWWddWWW.........",
+        ".lWWWWWWWddwwWWW.........",
+        "wddWWWWdd.wwwWWW.........",
+        "...dddd...wwwWWW.........",
+        "..........wwwWWW.........",
+        "..........wwwWWW.........",
+        "..........wwwWWW.........",
+        "..........wwwWWW.........",
+        "..........wwwWWW.........",
+        "..........wwwWWW.........",
+        "..........wwwWWW.........",
+        "..........WwwWWd.........",
+        "...........WWdd.........."
+      ]
+    }
+  ]
+}

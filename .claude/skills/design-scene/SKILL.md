@@ -21,7 +21,7 @@ In every report, give the owner, as a list:
 - a review image of each: `art_preview` over the MCP, or `proposal_render` for one still waiting (an object on its tile, a scene at its viewBox);
 - each proposal's id (`doc_save` returns it) and what it changes.
 
-To show several new objects side by side, add a preview-only scene with no `output` (a review board, such as `scenes/<slug>-objects.mjs`) that places them on a few tiles, and name it. Remove it before the PR unless the spec keeps it.
+To show several new objects side by side, add a preview-only scene with no `output` (a review board, such as `scenes/<slug>-objects.json`) that places them on a few tiles, and name it. Remove it before the PR unless the spec keeps it.
 
 ## 3. Make the art: one subagent at a time
 
@@ -44,6 +44,6 @@ Pause for the owner only at the reviews the plan names (for example, the object 
 
 ## 5. Before the PR
 
-- The `pixel-art` skill's checklist passes: `npm run art` reports every file `lossless` and none `OVER BUDGET`, and `npm test` shows `# fail 0`.
+- The `pixel-art` skill's checklist passes: `npm run art` reports every file `lossless` (an over-budget line is a warning to report), `npm run pixellab -- check` shows no new warnings, and `npm test` shows `# fail 0`.
 - Review boards and scratch scenes are gone unless the spec keeps them.
 - Leave the dev server running and say how to stop it: `preview_stop`, or `npx astro dev stop` from the checkout.

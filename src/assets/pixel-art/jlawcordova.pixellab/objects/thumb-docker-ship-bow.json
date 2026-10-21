@@ -1,0 +1,50 @@
+{
+  "kind": "sprite",
+  "anchor": [2, 12],
+  "keys": {
+    "a": "roof-1",
+    "b": "roof-2",
+    "c": "roof-3",
+    "g": "cream",
+    "f": "path-1",
+    "e": "path-2",
+    "w": "water-3",
+    "o": "wood-2",
+    "h": "water-1",
+    "d": "roof-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "aa..............................",
+        "ooaa............................",
+        "ooooaa..........................",
+        "ooooooaa........................",
+        "ooooooooaa......................",
+        "ooooooooooaa....................",
+        "ooooooooooooaa..................",
+        "ooooooooooooooaa................",
+        "ooooooooooooooooaa..............",
+        "ooooooooooooooooooaa............",
+        "aaooooooooooooooooooaa..........",
+        "bbaaooooooooooooooooooaa........",
+        "bbbbaaooooooooooooooooooaa......",
+        "bbbbbbaaoooooooooooooooooa......",
+        "bbbbbbbbaaooooooooooooooooa.....",
+        "bbbbbbbbbbaaooooooooooooooaa....",
+        "ccbbbbbbbbbbaaoooooooooooooa....",
+        "whccbbbbbbbbbbaaaaoaoooooooa....",
+        "hhhhccbbbbbbbbccccacaaaaaaoaa...",
+        "..hwwwccbbbbbbccccccccccccacaa..",
+        "....whhhccbbbbcccccccccccccccc..",
+        "......hhhwccbbcccccccccccccccc..",
+        "........wwwhcccccccccccccccccc..",
+        "..........hhhhddddcdcccccccccc..",
+        "............hwwwhwdhddddddcdcch.",
+        "..............wwwwwwwwhwhhdhddww",
+        "..................w.wwwwhwwhhwhw",
+        "..........................w.wwh."
+      ]
+    }
+  ]
+}

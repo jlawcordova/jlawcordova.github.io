@@ -1,0 +1,47 @@
+{
+  "kind": "sprite",
+  "anchor": [20, 8],
+  "keys": {
+    "a": "soil-1",
+    "b": "soil-2",
+    "c": "soil-3",
+    "d": "soil-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "...................aa.........................",
+        ".................aaaaaa.......................",
+        "...............aaabbbbaaa.....................",
+        ".............aaabbbbbbbbaaa...................",
+        "...........aaabbbbbbbbbbbbaaa.................",
+        ".........aaabbbbbbbbbbbbbbbbaaa...............",
+        ".......aaabbbbbbbbbbbbbbbbbbbbaaa.............",
+        ".....aaabbbbbbbbbbbbbbccbbbbbbbbaaa...........",
+        "...aaabbbbbbbbbbbbbbbbbbccbbbbbbbbaaa.........",
+        ".aaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaa.......",
+        "cabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaa.....",
+        "cccbbbbbbbbbbbccbbbbbbbbbbbbbbccbbbbbbbbaaa...",
+        "cccccbbbbbbbbbbbccbbbbbbbbbbbbbbccbbbbbbbbaaa.",
+        "cccccccbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbad",
+        "cccccccccbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbddd",
+        "cccccccccccbbbbbbbbbbbccbbbbbbbbbbbbbbbbbddddd",
+        "cccccccccccccbbbbbbbbbbbccbbbbbbbbbbbbbddddddd",
+        "dccccccccccccccbbbbbbbbbbbbbbbbbbbbbbddddddddd",
+        ".ddccccccccccccccbbbbbbbbbbbbbbbbbbddddddddddd",
+        "...ddccccccccccccccbbbbbbbbbbbbbbddddddddddddd",
+        ".....ddccccccccccccccbbbbbbbbbbddddddddddddddd",
+        ".......ddccccccccccccccbbbbbbdddddddddddddddd.",
+        ".........ddccccccccccccccbbdddddddddddddddd...",
+        "...........ddcccccccccccccddddddddddddddd.....",
+        ".............ddcccccccccccddddddddddddd.......",
+        "...............ddcccccccccddddddddddd.........",
+        ".................ddcccccccddddddddd...........",
+        "...................ddcccccddddddd.............",
+        ".....................ddcccddddd...............",
+        ".......................ddcddd.................",
+        ".........................dd..................."
+      ]
+    }
+  ]
+}

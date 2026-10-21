@@ -169,5 +169,5 @@ Intentional additions, for the content model above:
 These site pieces are left out. Each one is specific to the personal site, and none is needed for working documents.
 
 - The Range carousel (`src/components/home/Range.astro`), the hero island scene, and the outfit sprite. The home page shows the Range on a handheld console: a square `color-shell` gray shell, cut off by the section's bottom edge, with a D-pad for class, START to pause, A to make the character hop and B to go back. The keys are `color-ink` with `color-page` symbols, and only START has a label, in Silkscreen at 10px. The screen carries a HUD: the nameplate, a 12-segment countdown along its foot and a PAUSED badge at its upper right. Each class tints the section's ground and the screen from its color, at one lightness per role ([Range pop spec](../intents/2026-10-range-pop/spec.md) R1).
-- The featured post and related-post cards. They need post images: each post's is a pixel-art thumbnail, a small floating island in the hero island's style drawn as a `thumb-<key>` scene and rendered by `npm run thumbnails`.
+- The featured post and related-post cards. They need post images: each post's is a pixel-art thumbnail, a small floating island in the hero island's style drawn as a `thumb-<key>` scene and rendered by `npm run art`.
 - The pixel-art lab UI (`src/styles/lab.css`).
