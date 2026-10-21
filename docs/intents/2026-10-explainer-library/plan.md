@@ -54,3 +54,8 @@ Batch sizes follow complexity: characters and big machines get one or two assets
 - `npm test` shows `# fail 0`, including `explainer-library.test.mjs`.
 - `npm run build` ends with 0 errors, 0 warnings, 0 hints (nothing on the site changes; this confirms it).
 - `npm run explainer-export` writes the PNGs; the five contact sheets are attached to the PR.
+
+## Departures
+- Batch 13 added `cloud-platform-shadow` (the floating cloud's dithered ground shadow, like the site's `island-shadow`); the spec's row 29 lists it.
+- Batch 14: an outfit can't carry a loop layer, and only outfits may use the `silver` ramp, so the robots keep the idle bob with the antenna drawn lit instead of an `hf` blink; the spec's row 33 and Areas of concern say so.
+- Batches 5 and 15 each took one round of fixes from the main session's review (the developer's hoodie, height and mug; the tokens' glyph, which read as a first-aid cross).

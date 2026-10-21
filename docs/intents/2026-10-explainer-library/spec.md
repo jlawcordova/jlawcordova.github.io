@@ -64,7 +64,7 @@ Numbers 1–20 are the owner's list; 21–44 were added in the brainstorm and ap
 | 26 | Database | `database`, `database-stack` | still |
 | 27 | Router / load balancer | `router` | `hf` port lights |
 | 28 | Firewall | `firewall` (brick wall with a flame) | `ff` flame |
-| 29 | Cloud platform | `cloud-platform` (a cloud slab things stand on) | still |
+| 29 | Cloud platform | `cloud-platform` (a cloud slab things stand on), `cloud-platform-shadow` (its dithered shadow on the ground) | still |
 | 30 | Globe | `globe` (on a stand, with region pins) | `wf` spin |
 | 31 | Monitoring wall | `monitor-wall` | `wf` graphs |
 | 32 | Vault | `vault`, `padlock` | still |

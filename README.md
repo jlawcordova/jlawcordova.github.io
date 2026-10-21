@@ -14,6 +14,7 @@ npm run preview  # serve the built site
 npm run fetch-accomplishments  # refresh src/data/accomplishments.json from AT Protocol
 npm run art      # publish the pixel-art document to the optimized SVGs with Pixel Lab's CLI (see Pixel art below)
 npm test         # tests for the fetch, pixel-art and e2e-runner scripts (Node built-ins, no network)
+npm run explainer-export  # the explainer library as transparent PNGs, into .explainer-export/ (see Explainer library below)
 npm run e2e      # browser checks against the built dist/ (run npm run build first)
 npm run e2e -- scripts/e2e/accomplishments.e2e.mjs  # one suite only
 ```
@@ -47,6 +48,7 @@ npm run e2e -- scripts/e2e/accomplishments.e2e.mjs  # one suite only
 | `.claude/skills/` | Project skills: `write-intent`, `write-spec`, `write-plan` and `verify-change` (an independent, report-only check of a PR) for the AI-native SDLC (see `CLAUDE.md`), `pixel-art` for making and changing the art, `design-scene` for designing a scene with Pixel Lab open, `pixel-art-motion` for animating it, and `achievement-icon` for the accomplishment icons. `.claude/agents/pixel-artist.md` is the subagent that draws the art. |
 | `docs/references/` | Public-safe reference material shared across changes, such as `profile.md`. |
 | `docs/design-system/` | The design system and its source of truth: the brand book (`README.md`), `tokens.json`, and each component's guidelines and `preview.html`. `scripts/design-system.test.mjs` keeps the tokens in step with `variables.css`. |
+| `art/explainer-library.pixellab/` | The explainer asset library: a second Pixel Lab document of isometric assets for videos and infographics, separate from the site's art (nothing on the site reads it). Its palette is the site's; its scenes are preview-only contact sheets. `scripts/export-explainer-library.mjs` (`npm run explainer-export`) exports it as PNGs, and `scripts/explainer-library.test.mjs` checks it. |
 | `static/` | Copied to the site root as-is. `static/public/*` is served at `/public/*` (images, favicons, resume). |
 
 ## Writing a post
@@ -94,6 +96,19 @@ npm run pixellab -- help                                  # every command: scene
 **Pixel Lab for Mac**, the owner's native editor (kept in a separate repository), edits the same sources with this checkout's own engine, and saves straight to them. Agents reach it through its `pixellab` CLI and MCP server: they look at renders, arrange scenes and paint objects with the same commands, and their MCP saves become proposals the owner approves in the app. The `pixel-art` skill (`.claude/skills/pixel-art/SKILL.md`) says when to use which.
 
 Sources are kept in one canonical text format, and `npm test` fails if a source isn't canonical or a committed SVG is stale against its sources.
+
+### Explainer library
+
+`art/explainer-library.pixellab/` is a separate document of about 100 isometric objects for videos and infographics: a kitchen (for the peer-review analogy), an office, a server room and cloud pieces, AI pieces (robots, tokens, tools, memory), and arrows, bubbles, signs and markers. `docs/intents/2026-10-explainer-library/spec.md` lists every asset and its loop. It uses the site's palette and look, publishes no SVGs, and is never read by the site.
+
+```sh
+npx pixellab check --document art/explainer-library.pixellab     # validate it
+npx pixellab art preview scenes/sheet-office --scale 3 --out sheet.png --document art/explainer-library.pixellab
+npm run explainer-export                                           # every object (one PNG per loop frame) and sheet, 8×
+npm run explainer-export -- --scale 4 --out ~/Desktop/explainer    # another scale or folder
+```
+
+Open it in Pixel Lab with File › Open Document…. Its five contact sheets (`sheet-kitchen`, `sheet-office`, `sheet-cloud`, `sheet-ai`, `sheet-glue`) show every asset in place.
 
 ## Deploy
 
