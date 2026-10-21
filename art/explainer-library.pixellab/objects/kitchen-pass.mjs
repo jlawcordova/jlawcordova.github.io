@@ -2,6 +2,7 @@
 export default {
   kind: 'sprite',
   anchor: [13, 31],
+  footprint: [2, 1],
   keys: {
     c: 'cream',
     p: 'path-1',

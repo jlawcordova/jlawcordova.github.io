@@ -326,6 +326,7 @@ There is no browser editor any more: the web lab at `/lab/pixel-art/` was retire
 - **Edit it with the CLI and `--document`:** `npx pixellab <group> <verb> … --document art/explainer-library.pixellab` (the flag goes after the command). The `pixellab` MCP server is bound to the site's document, so it can't edit this one; review PNGs come from `art preview … --out` into `.art-preview/`.
 - **It publishes nothing.** Its scenes are preview-only contact sheets (`sheet-kitchen`, `sheet-office`, `sheet-cloud`, `sheet-ai`, `sheet-glue`), and every asset must stand on one of them. `npm run explainer-export` renders every object (one PNG per loop frame) and sheet for video.
 - **A new asset** goes in the spec's Asset list and in `ASSETS` in `scripts/explainer-library.test.mjs`, with its loop.
+- **Depth order applies here too.** Something placed by pixel on a table, desk or counter top stands at `level: 1`, and the multi-tile sprites (`desk-l`, `table-long`, `kitchen-pass`, `monitor-wall`, `sandbox`) carry a `footprint`. `desk` and `chair-turned` have a `[2, 1]` footprint so they sort in front of the cubicle walls on their tile (the walls are drawn on their tile's back edge but sort as the whole tile).
 - **Outfits can't loop.** An object that `extends` another overrides rows only, so it can't add a frame loop; and only outfits may use outfit colors. The robots are silver outfits with the idle bob for that reason.
 
 ## Achievement icons

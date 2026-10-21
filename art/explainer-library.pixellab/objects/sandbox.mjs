@@ -2,6 +2,7 @@
 export default {
   kind: 'sprite',
   anchor: [30, 12],
+  footprint: [2, 2],
   keys: {
     l: 'wood-1',
     m: 'wood-2',

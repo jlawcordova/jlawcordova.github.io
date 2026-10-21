@@ -2,6 +2,7 @@
 export default {
   kind: 'sprite',
   anchor: [9, 37],
+  footprint: [2, 1],
   keys: {
     K: 'soil-4',
     w: 'water-1',
