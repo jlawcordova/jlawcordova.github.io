@@ -49,3 +49,6 @@ dist
 # Browser-check screenshots and pixel-art previews
 .e2e-output/
 .art-preview/
+
+# The explainer library's PNG export (npm run explainer-export)
+.explainer-export/

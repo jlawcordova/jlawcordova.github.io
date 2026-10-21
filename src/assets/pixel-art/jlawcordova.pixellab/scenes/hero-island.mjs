@@ -6,6 +6,7 @@ export default {
   items: [
     {
       group: { class: 'enter', 'data-enter': 'shadow' },
+      depth: 'back',
       items: [
         { object: 'island-shadow', at: { px: [240, 80] } },
         { object: 'island-shadow', at: { px: [224, 88] } },
@@ -16,8 +17,8 @@ export default {
         { object: 'island-shadow', at: { px: [176, 112] } },
         { object: 'island-shadow', at: { px: [112, 96] } },
         { object: 'island-shadow', at: { px: [96, 104] } },
-        { object: 'island-shadow', at: { px: [80, 112] } },
         { object: 'island-shadow', at: { px: [64, 104] } },
+        { object: 'island-shadow', at: { px: [80, 112] } },
         { object: 'island-shadow', at: { px: [32, 104] } },
         { object: 'island-shadow', at: { px: [16, 112] } },
         { object: 'island-shadow', at: { px: [0, 120] } },
@@ -873,6 +874,14 @@ export default {
       ],
     },
     {
+      group: { class: 'enter', 'data-enter': 'sky' },
+      items: [
+        { object: 'cloud-a', class: 'pcloud pc0', at: { px: [-150, -40] } },
+        { object: 'cloud-b', class: 'pcloud pc1', at: { px: [10, -86] } },
+        { object: 'cloud-c', class: 'pcloud pc2', at: { px: [200, -50] } },
+      ],
+    },
+    {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '89', 'data-y': '-16' },
       items: [
         { object: 'crossing-gate', id: 'gate-far', at: { px: [88, -16] } },
@@ -885,15 +894,15 @@ export default {
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '80', 'data-y': '3' },
-      items: [
-        { object: 'truck-open', id: 'truck-far', at: { px: [80, 0] } },
-      ],
-    },
-    {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '48', 'data-y': '-5' },
       items: [
         { object: 'tunnel-rail', at: { px: [48, -16] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '80', 'data-y': '3' },
+      items: [
+        { object: 'truck-open', id: 'truck-far', at: { px: [80, 0] } },
       ],
     },
     {
@@ -936,13 +945,19 @@ export default {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '137', 'data-y': '52' },
       items: [
         { object: 'crane-mast', at: { px: [136, 52] } },
-        { object: 'crane-jib', id: 'jib', at: { px: [133, 12] } },
+        { object: 'crane-jib', id: 'jib', at: { px: [133, 12], level: 2 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '36', 'data-y': '-2' },
       items: [
         { object: 'pine', at: { px: [34, -2] } },
+      ],
+    },
+    {
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-24', 'data-y': '29' },
+      items: [
+        { object: 'tree-shade', at: { px: [-25, 29] } },
       ],
     },
     {
@@ -961,12 +976,6 @@ export default {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '0', 'data-y': '19' },
       items: [
         { object: 'tree-shade', at: { px: [-1, 19] } },
-      ],
-    },
-    {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-24', 'data-y': '29' },
-      items: [
-        { object: 'tree-shade', at: { px: [-25, 29] } },
       ],
     },
     {
@@ -1044,43 +1053,37 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-88', 'data-y': '76' },
       items: [
-        { object: 'ore', id: 'ore-wait-1', at: { px: [-88, 76] } },
+        { object: 'ore', id: 'ore-wait-1', at: { px: [-88, 76], level: 1 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-80', 'data-y': '76' },
       items: [
-        { object: 'ore', id: 'ore-wait-2', at: { px: [-80, 76] } },
+        { object: 'ore', id: 'ore-wait-2', at: { px: [-80, 76], level: 1 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-84', 'data-y': '74' },
       items: [
-        { object: 'ore', id: 'ore-road-1', at: { px: [-84, 74] } },
+        { object: 'ore', id: 'ore-road-1', at: { px: [-84, 74], level: 1 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-88', 'data-y': '76' },
       items: [
-        { object: 'ore', id: 'ore-road-2', at: { px: [-88, 76] } },
+        { object: 'ore', id: 'ore-road-2', at: { px: [-88, 76], level: 1 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-80', 'data-y': '76' },
       items: [
-        { object: 'ore', id: 'ore-road-3', at: { px: [-80, 76] } },
+        { object: 'ore', id: 'ore-road-3', at: { px: [-80, 76], level: 1 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-84', 'data-y': '77' },
       items: [
-        { object: 'ore', id: 'ore-road-4', at: { px: [-84, 77] } },
-      ],
-    },
-    {
-      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-16', 'data-y': '48' },
-      items: [
-        { object: 'bridge-rail', at: { tile: [2, 3, 0] } },
+        { object: 'ore', id: 'ore-road-4', at: { px: [-84, 77], level: 1 } },
       ],
     },
     {
@@ -1092,55 +1095,55 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '45', 'data-y': '32' },
       items: [
-        { object: 'ore', id: 'ore-feed-1', at: { px: [45, 32] } },
+        { object: 'ore', id: 'ore-feed-1', at: { px: [45, 32], level: 1 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '45', 'data-y': '32' },
       items: [
-        { object: 'ore', id: 'ore-feed-2', at: { px: [45, 32] } },
+        { object: 'ore', id: 'ore-feed-2', at: { px: [45, 32], level: 1 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '45', 'data-y': '32' },
       items: [
-        { object: 'ore', id: 'ore-feed-3', at: { px: [45, 32] } },
+        { object: 'ore', id: 'ore-feed-3', at: { px: [45, 32], level: 1 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '55', 'data-y': '37' },
       items: [
-        { object: 'ore', id: 'ore-feed-4', at: { px: [55, 37] } },
+        { object: 'ore', id: 'ore-feed-4', at: { px: [55, 37], level: 1 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '46', 'data-y': '35' },
       items: [
-        { object: 'hopper', at: { px: [46, 31] } },
+        { object: 'hopper', at: { px: [46, 31], level: 2 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '28', 'data-y': '18' },
       items: [
-        { object: 'ore', id: 'ore-hopper-1', at: { px: [28, 18] } },
+        { object: 'ore', id: 'ore-hopper-1', at: { px: [28, 18], level: 1 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '24', 'data-y': '20' },
       items: [
-        { object: 'ore', id: 'ore-hopper-2', at: { px: [24, 20] } },
+        { object: 'ore', id: 'ore-hopper-2', at: { px: [24, 20], level: 1 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '32', 'data-y': '20' },
       items: [
-        { object: 'ore', id: 'ore-hopper-3', at: { px: [32, 20] } },
+        { object: 'ore', id: 'ore-hopper-3', at: { px: [32, 20], level: 1 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '28', 'data-y': '21' },
       items: [
-        { object: 'ore', id: 'ore-hopper-4', at: { px: [28, 21] } },
+        { object: 'ore', id: 'ore-hopper-4', at: { px: [28, 21], level: 1 } },
       ],
     },
     {
@@ -1164,7 +1167,7 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '137', 'data-y': '52' },
       items: [
-        { object: 'crane-hook', id: 'hook', at: { px: [103, 7] } },
+        { object: 'crane-hook', id: 'hook', at: { px: [103, 7], level: 3 } },
       ],
     },
     {
@@ -1236,7 +1239,7 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-46', 'data-y': '84' },
       items: [
-        { object: 'stone', at: { px: [-46, 84] } },
+        { object: 'stone', at: { px: [-46, 84], level: 1 } },
       ],
     },
     {
@@ -1248,13 +1251,13 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-46', 'data-y': '88' },
       items: [
-        { object: 'stone', id: 'stone-reject-1', at: { px: [-46, 88] } },
+        { object: 'stone', id: 'stone-reject-1', at: { px: [-46, 88], level: 1 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-46', 'data-y': '88' },
       items: [
-        { object: 'stone', id: 'stone-reject-2', at: { px: [-46, 88] } },
+        { object: 'stone', id: 'stone-reject-2', at: { px: [-46, 88], level: 1 } },
       ],
     },
     {
@@ -1266,13 +1269,13 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-36', 'data-y': '96' },
       items: [
-        { object: 'ore', id: 'ore-cart-1', at: { px: [-36, 96] } },
+        { object: 'ore', id: 'ore-cart-1', at: { px: [-36, 96], level: 1 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-32', 'data-y': '96' },
       items: [
-        { object: 'ore', id: 'ore-cart-2', at: { px: [-32, 96] } },
+        { object: 'ore', id: 'ore-cart-2', at: { px: [-32, 96], level: 1 } },
       ],
     },
     {
@@ -1296,25 +1299,25 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-74', 'data-y': '109' },
       items: [
-        { object: 'ore', id: 'ore-belt-1', at: { px: [-74, 109] } },
+        { object: 'ore', id: 'ore-belt-1', at: { px: [-74, 109], level: 1 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-74', 'data-y': '109' },
       items: [
-        { object: 'ore', id: 'ore-belt-2', at: { px: [-74, 109] } },
+        { object: 'ore', id: 'ore-belt-2', at: { px: [-74, 109], level: 1 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-74', 'data-y': '109' },
       items: [
-        { object: 'stone', id: 'stone-belt-1', at: { px: [-74, 109] } },
+        { object: 'stone', id: 'stone-belt-1', at: { px: [-74, 109], level: 1 } },
       ],
     },
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-74', 'data-y': '109' },
       items: [
-        { object: 'stone', id: 'stone-belt-2', at: { px: [-74, 109] } },
+        { object: 'stone', id: 'stone-belt-2', at: { px: [-74, 109], level: 1 } },
       ],
     },
     {
@@ -1326,7 +1329,7 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-90', 'data-y': '103' },
       items: [
-        { object: 'stone', at: { px: [-90, 103] } },
+        { object: 'stone', at: { px: [-90, 103], level: 1 } },
       ],
     },
     {
@@ -1344,7 +1347,7 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-92', 'data-y': '106' },
       items: [
-        { object: 'ore', at: { px: [-92, 106] } },
+        { object: 'ore', at: { px: [-92, 106], level: 1 } },
       ],
     },
     {
@@ -1356,7 +1359,7 @@ export default {
     {
       group: { class: 'enter', 'data-enter': 'object', 'data-x': '-96', 'data-y': '103' },
       items: [
-        { object: 'ore', at: { px: [-96, 103] } },
+        { object: 'ore', at: { px: [-96, 103], level: 1 } },
       ],
     },
     {
@@ -1372,11 +1375,10 @@ export default {
       ],
     },
     {
-      group: { class: 'enter', 'data-enter': 'sky' },
+      group: { class: 'enter', 'data-enter': 'object', 'data-x': '-16', 'data-y': '48' },
+      depth: 'front',
       items: [
-        { object: 'cloud-a', class: 'pcloud pc0', at: { px: [-150, -40] } },
-        { object: 'cloud-b', class: 'pcloud pc1', at: { px: [10, -86] } },
-        { object: 'cloud-c', class: 'pcloud pc2', at: { px: [200, -50] } },
+        { object: 'bridge-rail', at: { tile: [2, 3, 0] } },
       ],
     },
   ],
