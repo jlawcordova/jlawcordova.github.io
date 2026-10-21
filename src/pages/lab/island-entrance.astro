@@ -52,6 +52,11 @@ import EntranceLab from '../../components/lab/EntranceLab.astro';
      does on the hero's (hero.css, .hero-island). */
   .entrance-stage {
     --hero-pad-bottom: 48px;
+    /* The island's size and nudge, which hero.css takes from .hero's
+       layouts: here it's shown whole, up to 675px wide, and not nudged. */
+    --island-w: min(675px, 100%);
+    --island-x: 0%;
+    --island-y: 0px;
     display: flex;
     justify-content: center;
     padding: 48px 16px var(--hero-pad-bottom);
@@ -59,6 +64,13 @@ import EntranceLab from '../../components/lab/EntranceLab.astro';
     background-color: var(--color-hero);
     border: var(--border-thick);
     border-radius: var(--radius-stage);
+  }
+  /* As wide as the stage, like .hero__float on the hero, so the island's
+     width has a size to be a share of; shrunk to fit, it falls to 300px. */
+  .entrance-stage .floaty {
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
   @media (max-width: 900px) {
     .entrance-page__grid {
