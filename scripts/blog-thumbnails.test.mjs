@@ -1,60 +1,41 @@
-// Checks for the blog's pixel-art thumbnails (scripts/blog-thumbnails.mjs):
-// every post has one, each is a preview-only thumb-<key> scene of the right
-// size, and every committed PNG is what its scene renders.
+// Checks for the blog's pixel-art thumbnails: each post's featured image is the
+// PNG its preview-only thumb-<key> scene declares, which `npm run art` writes to
+// static/public/thumbnails/<key>.png (Pixel Lab v0.6.0 spec R4, R19).
 
 import assert from 'node:assert/strict';
-import { existsSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
-import { inflateSync } from 'node:zlib';
-
-import { HEIGHT, THUMBNAILS, WIDTH, fileFor, loadDocument, renderThumbnail, sceneFor, urlFor } from './blog-thumbnails.mjs';
 
 const POSTS = new URL('../src/content/posts/', import.meta.url);
-const doc = await loadDocument();
+const SCENES = new URL('../src/assets/pixel-art/jlawcordova.pixellab/scenes/', import.meta.url);
 
-/** A PNG's pixels: its size and its IDAT stream, inflated. */
-function pixels(/** @type {Buffer} */ png) {
-  const idat = [];
-  let width = 0;
-  let height = 0;
-  for (let at = 8; at < png.length; ) {
-    const length = png.readUInt32BE(at);
-    const type = png.toString('latin1', at + 4, at + 8);
-    const data = png.subarray(at + 8, at + 8 + length);
-    if (type === 'IHDR') [width, height] = [data.readUInt32BE(0), data.readUInt32BE(4)];
-    if (type === 'IDAT') idat.push(data);
-    at += 12 + length;
-  }
-  return { width, height, raw: inflateSync(Buffer.concat(idat)) };
-}
+const scenes = new Map(
+  await Promise.all(
+    (await readdir(SCENES))
+      .filter((f) => f.startsWith('thumb-') && f.endsWith('.json'))
+      .map(async (f) => [f.slice(0, -5), JSON.parse(await readFile(new URL(f, SCENES), 'utf8'))]),
+  ),
+);
 
 test('every post has exactly one thumbnail, and its featured image is that thumbnail', async () => {
-  const posts = (await readdir(POSTS)).filter((f) => f.endsWith('.md')).map((f) => f.slice(0, -3)).sort();
-  assert.deepEqual(THUMBNAILS.map((t) => t.post).sort(), posts);
-  assert.equal(new Set(THUMBNAILS.map((t) => t.key)).size, THUMBNAILS.length, 'keys are unique');
-  for (const { post, key } of THUMBNAILS) {
-    const text = await readFile(new URL(`${post}.md`, POSTS), 'utf8');
-    assert.match(text, new RegExp(`^featured-image: ${urlFor(key).replaceAll('.', '\\.')}$`, 'm'), `${post} uses ${urlFor(key)}`);
+  const posts = (await readdir(POSTS)).filter((f) => f.endsWith('.md'));
+  const used = [];
+  for (const post of posts) {
+    const text = await readFile(new URL(post, POSTS), 'utf8');
+    const key = /^featured-image: \/public\/thumbnails\/([a-z0-9-]+)\.png$/m.exec(text)?.[1];
+    assert.ok(key, `${post}'s featured image is a /public/thumbnails/<key>.png`);
+    assert.ok(scenes.has(`thumb-${key}`), `${post}: there's a thumb-${key} scene`);
+    used.push(key);
   }
+  assert.equal(new Set(used).size, used.length, 'no two posts share a thumbnail');
+  assert.deepEqual(used.map((key) => `thumb-${key}`).sort(), [...scenes.keys()].sort(), 'every thumb scene is a post\'s');
 });
 
-test('every thumbnail is a preview-only thumb-<key> scene with a 240×126 viewBox', () => {
-  const thumbs = [...doc.sources.scenes.keys()].filter((name) => name.startsWith('thumb-')).sort();
-  assert.deepEqual(thumbs, THUMBNAILS.map((t) => sceneFor(t.key)).sort(), 'one scene per thumbnail, and no others');
-  for (const name of thumbs) {
-    const scene = doc.sources.scenes.get(name);
+test('every thumb-<key> scene is preview-only and declares <key>.png at 5×', async () => {
+  const manifest = JSON.parse(await readFile(new URL('../manifest.json', SCENES), 'utf8'));
+  assert.equal(manifest.publish.images, '../../../../static/public/thumbnails');
+  for (const [name, scene] of scenes) {
     assert.equal(scene.output, undefined, `${name} writes no SVG`);
-    assert.deepEqual(scene.viewBox.slice(2), [WIDTH, HEIGHT], `${name}'s viewBox`);
-  }
-});
-
-test('every committed thumbnail PNG is what its scene renders (run npm run thumbnails if not)', async () => {
-  for (const { key } of THUMBNAILS) {
-    assert.ok(existsSync(fileFor(key)), `static${urlFor(key)} exists`);
-    const committed = pixels(await readFile(fileFor(key)));
-    const fresh = pixels(renderThumbnail(doc, key));
-    assert.deepEqual([committed.width, committed.height], [1200, 630]);
-    assert.ok(committed.raw.equals(fresh.raw), `static${urlFor(key)} is stale against scenes/${sceneFor(key)}.mjs; run npm run thumbnails`);
+    assert.deepEqual(scene.image, { file: `${name.slice('thumb-'.length)}.png`, scale: 5 }, `${name}'s image`);
   }
 });

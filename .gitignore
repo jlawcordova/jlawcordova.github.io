@@ -55,3 +55,7 @@ dist
 
 # Pixel Lab's program, downloaded by scripts/pixellab.mjs
 .pixellab-bin/
+
+# Compiled by npm run art (pixellab art build) from the Pixel Lab document
+src/assets/pixel-art/*.svg
+static/public/thumbnails/*.png

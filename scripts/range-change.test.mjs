@@ -82,22 +82,26 @@ describe('slash and countdown', () => {
 });
 
 describe("A's hop", () => {
-  it('R6: every class has one character group, and the hop moves it by whole pixels and lands where it started', async () => {
+  it('R6: every class has one character, and its hop moves it by whole pixels, rises and lands where it started', async () => {
     const svg = await read('src/assets/pixel-art/range-sprite.svg');
-    const classes = [...svg.matchAll(/<g data-class="(\d+)">/g)].length;
-    assert.equal([...svg.matchAll(/<g class="cbob">/g)].length, classes, 'one character per class');
+    const groups = svg.split(/<g data-class="\d+">/).slice(1);
+    assert.ok(groups.length > 0);
+    for (const group of groups) assert.equal([...group.matchAll(/class="character[ "]/g)].length, 1, 'one character per class');
+    assert.match(svg, /\[data-play~="hop"\]/, 'the sprite plays hop through data-play');
 
-    const css = await read('src/styles/pixel-art.css');
-    const hop = /@keyframes chop\{(.*?)\}\s*\n/.exec(css)?.[1];
-    assert.ok(hop, 'pixel-art.css has the chop keyframes');
-    const ys = [...hop.matchAll(/translateY\((-?\d+(?:\.\d+)?)(?:px)?\)/g)].map(([, y]) => Number(y));
-    assert.ok(ys.length > 4);
-    assert.ok(ys.every(Number.isInteger), 'whole pixels');
-    assert.equal(ys[0], 0);
-    assert.equal(ys.at(-1), 0, 'it lands where it started');
-    assert.ok(Math.min(...ys) < 0, 'it rises');
-    assert.match(css, /\.cbob\.is-hopping\{animation:chop [\d.]+s step-end\}/);
-    const reduced = /@media \(prefers-reduced-motion: reduce\) \{\s*([^{]*)\{ animation: none; \}/.exec(css)?.[1] ?? '';
-    assert.ok(reduced.split(',').map((s) => s.trim()).includes('.cbob.is-hopping'), 'off under reduced motion');
+    const character = JSON.parse(await read('src/assets/pixel-art/jlawcordova.pixellab/objects/character.json'));
+    const layer = character.layers.find((l) => l.class === 'character');
+    const hop = layer?.actions?.hop;
+    assert.ok(hop, "the character's layer has the hop action");
+    assert.equal(hop.keys[0].t, 0);
+    assert.ok(hop.keys.every(({ move: [x, y] }) => x === 0 && Number.isInteger(y)), 'up and down, by whole pixels');
+    const ys = hop.keys.map(({ move }) => move[1]);
+    assert.equal(ys[0], 0, 'it starts at rest');
+    assert.ok(Math.min(...ys) <= -5, 'it rises');
+    assert.ok(Math.abs(ys.at(-1)) <= 1, 'it lands (and returns to rest when the action ends)');
+
+    const range = await read('src/components/home/Range.astro');
+    assert.match(range, /setAttribute\('data-play', 'hop'\)/, 'A plays it with data-play');
+    assert.match(range, /animationName !== 'range-sprite--hop'/, 'and clears it when the hop ends');
   });
 });

@@ -15,7 +15,6 @@
     "art": "node scripts/pixellab.mjs art build --site .",
     "pixellab": "node scripts/pixellab.mjs --site .",
     "explainer-export": "node scripts/export-explainer-library.mjs",
-    "thumbnails": "node scripts/blog-thumbnails.mjs",
     "diagrams": "node scripts/diagrams/render.mjs",
     "e2e": "node scripts/e2e/run.mjs",
     "test": "npm run art && node --test \"scripts/*.test.mjs\""
@@ -27,7 +26,6 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
-    "pixellab": "github:jlawcordova/jlawcordova-lab#v0.5.0",
     "typescript": "6.0.3"
   }
 }
