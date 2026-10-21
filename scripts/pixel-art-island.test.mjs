@@ -12,7 +12,7 @@ import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
-import { CAPS, composite, renderScene, resolve, usedColors } from 'pixellab/engine';
+import { CAPS, composite, isInDepthOrder, motionCopies, renderScene, resolve, usedColors } from 'pixellab/engine';
 import { pxToTile, tileToPx } from 'pixellab/iso';
 import { stateAt } from 'pixellab/motion';
 import { compileScene, readSources } from 'pixellab/compile';
@@ -22,7 +22,11 @@ const ART_DIR = join(ROOT, 'src/assets/pixel-art');
 
 const { sources } = await readSources(join(ART_DIR, 'jlawcordova.pixellab'));
 const scene = sources.scenes.get('hero-island');
-/** The scene's items in paint order, flattened out of their entrance groups (island build entrance spec). */
+/**
+ * The scene's items in paint order, flattened out of their entrance groups (island build entrance spec). The file is kept
+ * in depth order, and no moving piece changes place in it, so its order is the paint order at every moment (the depth
+ * order test below).
+ */
 const flatten = (items) => items.flatMap((item) => (item.group ? flatten(item.items) : [item]));
 const items = flatten(scene.items);
 const placed = items.map((item) => item.object);
@@ -396,7 +400,7 @@ describe('hero island structure', () => {
     // Under the front tiles of the three sections, 32 pixels below each top face (island level up spec, Design).
     assert.deepEqual(at, [
       [240, 80], [224, 88], [208, 96], [192, 104], [144, 96], [160, 104], [176, 112], [112, 96],
-      [96, 104], [80, 112], [64, 104], [32, 104], [16, 112], [0, 120], [-16, 128], [-32, 136],
+      [96, 104], [64, 104], [80, 112], [32, 104], [16, 112], [0, 120], [-16, 128], [-32, 136],
       [-48, 144], [-64, 152], [-160, 120], [-144, 128], [-128, 136], [-112, 144], [-96, 152], [-80, 160],
     ]);
     assert.deepEqual(resolve(sources, 'island-shadow').anchor, [15, 8], 'the anchor is the diamond\'s center');
@@ -507,15 +511,14 @@ describe('hero island structure', () => {
       ['crane-mast', [136, 52]],
       ['crane-jib', [133, 12]],
       ['pine', [34, -2]],
-      ['tree-shade', [-1, 19]],
       ['tree-shade', [-25, 29]],
+      ['tree-shade', [-1, 19]],
       ['tree-shade', [61, 75]],
       ['tree-small', [-1, 19]],
       ['pine', [-25, 20]],
       ['tree-small', [-25, 29]],
       ['pine', [-101, 68]],
       ['tree-small', [-138, 82]],
-      ['bridge-rail', [2, 3, 0]],
       ['crane-hook', [103, 7]],
       ['boxes', [86, 70]],
       ['pine', [61, 75]],
@@ -526,6 +529,7 @@ describe('hero island structure', () => {
       ['tree-small', [-1, 90]],
       ['tree-small', [-19, 93]],
       ['pine', [-74, 131]],
+      ['bridge-rail', [2, 3, 0]],
     ]);
     // Each shade lies under a back tree's trunk.
     for (const [, px] of at(['tree-shade'])) {
@@ -599,7 +603,7 @@ describe('entrance groups (island build entrance spec, Entrance groups)', () => 
     assert.equal(ofKind('shadow').length + ofKind('sky').length, 2, 'one shadow group and one sky group');
   });
 
-  it('each cube is one ground group, in paint order, holding its cube and the top laid over it, with its grid place and foot (island clock sweep spec R6)', () => {
+  it('each cube is one ground group, in depth order, holding its cube and the top laid over it, with its grid place and foot (island clock sweep spec R6)', () => {
     const ground = ofKind('ground');
     assert.equal(ground.length, 132, 'one group per position (island level up spec R1, cols 6–7 on rows 0–2 since the owner\'s PR review)');
     for (const group of ground) {
@@ -704,5 +708,15 @@ describe('close-up scenes (hero island detail plan, step 5)', () => {
     const names = sources.scenes.get('closeup-office').items.map((item) => item.object);
     for (const name of ['house', 'path', 'bridge', 'bridge-rail']) assert.ok(names.includes(name), `closeup-office shows ${name}`);
     assert.ok(!names.some((n) => n.startsWith('truck')), 'the trucks are the motion\'s, not the close-up\'s');
+  });
+});
+
+describe('depth order (Pixel Lab depth order spec R3, R10)', () => {
+  it('the island and its close-ups list their items in depth order, and no moving piece takes a second place, so each list is what its scene paints at every moment', () => {
+    const closeups = [...sources.scenes.keys()].filter((name) => name.startsWith('closeup-'));
+    assert.equal(closeups.length, 7, 'the seven close-ups');
+    for (const name of ['hero-island', ...closeups]) assert.ok(isInDepthOrder(sources, sources.scenes.get(name)), `${name} is in depth order (npm run pixellab -- scene sort ${name})`);
+    // Every moving piece sits alone in its own enter group, so it keeps its place at rest for the whole loop (spec D2).
+    assert.deepEqual(motionCopies(sources, 'hero-island'), [], 'no moving piece is drawn in copies');
   });
 });

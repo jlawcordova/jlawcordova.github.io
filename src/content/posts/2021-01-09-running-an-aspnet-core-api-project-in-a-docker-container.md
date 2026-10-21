@@ -2,8 +2,8 @@
 title: Running an ASP.NET Core API Project in a Docker Container
 tags: docker
 categories: containerization
-featured-image: /public/2021-01-09/2021-01-09-docker-featured-image.png
-featured-image-alt: docker abstract feature
+featured-image: /public/thumbnails/docker.png
+featured-image-alt: A small red cargo boat carrying five stacked shipping containers, floating in a water basin on a stone harbor quay.
 description: Containerize your ASP.NET Core API project using Docker.
 ---
 

@@ -4,10 +4,10 @@ export default {
   viewBox: [-51, -9, 103, 72],
   origin: [0, 7],
   items: [
-    { object: 'island-shadow', at: { px: [32, 55] } },
-    { object: 'island-shadow', at: { px: [-32, 55] } },
-    { object: 'island-shadow', at: { px: [16, 63] } },
-    { object: 'island-shadow', at: { px: [-16, 63] } },
+    { object: 'island-shadow', depth: 'back', at: { px: [32, 55] } },
+    { object: 'island-shadow', depth: 'back', at: { px: [-32, 55] } },
+    { object: 'island-shadow', depth: 'back', at: { px: [16, 63] } },
+    { object: 'island-shadow', depth: 'back', at: { px: [-16, 63] } },
     {
       group: { 'data-class': '0' },
       items: [

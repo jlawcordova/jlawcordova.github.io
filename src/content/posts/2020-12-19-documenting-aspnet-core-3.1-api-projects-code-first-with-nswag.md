@@ -2,8 +2,8 @@
 title: Documenting ASP.NET Core 3.1 API Projects Code-First with NSwag
 tags: asp.net nswag swagger openapi
 categories: documentation
-featured-image: /public/2020-12-19-aspnet-nswag-featured-image.png
-featured-image-alt: asp.net nswag abstract feature
+featured-image: /public/thumbnails/nswag.png
+featured-image-alt: A tall stack of red slabs with a dark one in the middle, like collapsed and expanded API endpoints, on a floating wooden-floored island with a lectern and a bookcase.
 description: How to setup NSWag to generate Swagger UI and OpenAPI documentation.
 ---
 

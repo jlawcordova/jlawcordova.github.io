@@ -11,7 +11,7 @@ import { describe, it } from 'node:test';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
-import { resolve } from 'pixellab/engine';
+import { isInDepthOrder, resolve } from 'pixellab/engine';
 import { readSources } from 'pixellab/compile';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
@@ -23,7 +23,7 @@ const { sources } = await readSources(SOURCE);
 const scene = sources.scenes.get('range-sprite');
 const css = await readFile(join(ROOT, 'src/styles/range.css'), 'utf8');
 
-/** A scene's items in paint order, flattened out of their groups. */
+/** A scene's items in paint order, flattened out of their groups: the file is kept in depth order (checked below). */
 const flatten = (items) => items.flatMap((item) => (item.group ? flatten(item.items) : [item]));
 /** The class groups, each holding its own setting (Range settings spec, The scene). */
 const classes = scene.items.filter((i) => i.group?.['data-class'] !== undefined);
@@ -96,6 +96,10 @@ describe('Range art (Isometric Range spec, Range settings spec)', () => {
       const keys = { ...(r.keys ?? {}), ...(r.sides?.keys ?? {}), ...(r.surface?.keys ?? {}) };
       for (const color of Object.values(keys)) assert.notEqual(color, 'ink', `${name} paints ink`);
     }
+  });
+
+  it('the scene lists its items in depth order, so the list is the paint order these tests read (Pixel Lab depth order spec R3)', () => {
+    assert.ok(isInDepthOrder(sources, scene), 'range-sprite is in depth order (npm run pixellab -- scene sort range-sprite)');
   });
 
   it('R7: the viewBox keeps the stage size', () => {
