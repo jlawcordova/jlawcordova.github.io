@@ -1,0 +1,24 @@
+{
+  "kind": "sprite",
+  "extends": "cat",
+  "keys": {
+    "c": "soil-3"
+  },
+  "rows": {
+    "0": {
+      "2": "..tRt...........",
+      "3": "ttRtRtt.........",
+      "4": "ssttRttRt.......",
+      "5": "sessttRtL.......",
+      "6": "sessssLRL.......",
+      "7": "ssssesLRLtR.....",
+      "8": "LssnesLRLtsR....",
+      "9": ".LLsssLRLtLc....",
+      "10": "..sLLsLcRLcR....",
+      "11": "..sssLRcLRcL....",
+      "12": "..ssssLcLRcL....",
+      "13": "...sssLcLL......",
+      "14": ".....sL........."
+    }
+  }
+}

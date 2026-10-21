@@ -3,13 +3,13 @@
   "extends": "marker-1",
   "rows": {
     "0": {
-      "3": ".abbwwwwbbbb.",
-      "4": "abbbbbbwwbbbb",
-      "5": "abbbbbbwwbbbb",
-      "6": "abbbbwwwbbbbb",
-      "7": "bbbbbbbwwbbbb",
-      "8": "bbbbbbbwwbbbb",
-      "9": "Bbbbwwwwbbbbn"
+      "3": ".gGGwwwwGGGG.",
+      "4": "gGGGGGGwwGGGG",
+      "5": "gGGGGGGwwGGGG",
+      "6": "gGGGGwwwGGGGG",
+      "7": "GGGGGGGwwGGGG",
+      "8": "GGGGGGGwwGGGG",
+      "9": "cGGGwwwwGGGGd"
     }
   }
 }

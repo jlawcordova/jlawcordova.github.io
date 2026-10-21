@@ -36,11 +36,11 @@ const ASSETS = {
   chef: 'cbob', waiter: 'cbob',
   'block-kitchen': null, 'tile-kitchen': null,
   stove: 'ff', sink: 'wf',
-  table: null, 'table-long': null, chair: null, 'chair-turned': null,
+  table: null, 'table-long': null, chair: null, 'chair-turned': null, 'chair-office': null,
   'ticket-rail': null, 'kitchen-pass': null, fridge: null, 'recipe-book': null,
   plate: null, 'plate-dish': null, 'plate-stack': null,
   // Office
-  'server-rack': 'hf', 'server-tower': 'hf', computer: 'ff', desk: null, 'desk-l': null,
+  'server-rack': 'hf', 'server-tower': 'hf', computer: 'ff', desk: null, 'desk-l': null, 'desk-white-oak': null, 'desk-l-white-oak': null,
   'plant-tall': null, 'plant-bush': null, 'plant-cactus': null,
   'cubicle-wall': null, 'cubicle-wall-turned': null, 'cubicle-corner': null,
   'block-office': null, 'tile-office': null, 'water-dispenser': 'hf',
@@ -48,7 +48,7 @@ const ASSETS = {
   'wire-corner-s': null, 'wire-corner-w': null, 'wire-junction': null, 'wire-plug': null,
   'staff-developer': 'cbob', 'staff-manager': 'cbob', 'staff-analyst': 'cbob',
   laptop: 'ff',
-  cat: 'hf', 'cat-black': 'hf', 'cat-gray': 'hf', 'cat-white': 'hf', 'cat-calico': 'hf',
+  cat: 'hf', 'cat-tabby': 'hf', 'cat-tuxedo': 'hf', 'cat-black': 'hf', 'cat-gray': 'hf', 'cat-white': 'hf', 'cat-calico': 'hf',
   'chart-bar': null, 'chart-line-up': null, 'chart-line-down': null, 'chart-pie': null,
   bulb: 'ff', 'bulb-off': null, whiteboard: null,
   // Cloud
@@ -68,7 +68,7 @@ const ASSETS = {
   'marker-1': null, 'marker-2': null, 'marker-3': null, 'marker-4': null, 'marker-5': null,
 };
 
-const SHEETS = ['sheet-kitchen', 'sheet-office', 'sheet-cloud', 'sheet-ai', 'sheet-glue'];
+const SHEETS = ['sheet-kitchen', 'sheet-office', 'sheet-cloud', 'sheet-ai', 'sheet-glue', 'sheet-consolidated'];
 
 describe('explainer library document', () => {
   it('R6: every source loads and validates', () => {

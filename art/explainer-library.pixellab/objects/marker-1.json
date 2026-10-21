@@ -6,32 +6,36 @@
     "b": "roof-2",
     "B": "roof-3",
     "n": "roof-4",
-    "w": "cream"
+    "w": "cream",
+    "g": "grass-1",
+    "G": "grass-2",
+    "c": "grass-3",
+    "d": "grass-4"
   },
   "layers": [
     {
       "map": [
-        "....aaaaa....",
-        "..aabbbbbbb..",
-        ".abbbbbbbbbb.",
-        ".abbbbwwbbbb.",
-        "abbbbwwwbbbbb",
-        "abbbbbwwbbbbb",
-        "abbbbbwwbbbbb",
-        "bbbbbbwwbbbbb",
-        "bbbbbbwwbbbbb",
-        "Bbbbbwwwwbbbn",
-        "Bbbbbbbbbbbbn",
-        ".Bbbbbbbbbbn.",
-        ".BBbbbbbbbnn.",
-        "..BBbbbbbnn..",
-        "...Bbbbbbn...",
-        "....Bbbbn....",
-        "....Bbbbn....",
-        ".....Bbn.....",
-        ".....Bbn.....",
-        "......B......",
-        "......B......"
+        "....ggggg....",
+        "..ggGGGGGGG..",
+        ".gGGGGGGGGGG.",
+        ".gGGGGwwGGGG.",
+        "gGGGGwwwGGGGG",
+        "gGGGGGwwGGGGG",
+        "gGGGGGwwGGGGG",
+        "GGGGGGwwGGGGG",
+        "GGGGGGwwGGGGG",
+        "cGGGGwwwwGGGd",
+        "cGGGGGGGGGGGd",
+        ".cGGGGGGGGGd.",
+        ".ccGGGGGGGdd.",
+        "..ccGGGGGdd..",
+        "...cGGGGGd...",
+        "....cGGGd....",
+        "....cGGGd....",
+        ".....cGd.....",
+        ".....cGd.....",
+        "......c......",
+        "......c......"
       ]
     }
   ]

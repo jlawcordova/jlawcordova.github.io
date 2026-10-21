@@ -1,0 +1,23 @@
+{
+  "kind": "sprite",
+  "extends": "cat-black",
+  "keys": {
+    "c": "roof-1",
+    "C": "cream",
+    "p": "path-2"
+  },
+  "rows": {
+    "0": {
+      "5": "lellttttL.......",
+      "6": "lellllLLL.......",
+      "7": "llllelLLLtt.....",
+      "8": "LlCceCLLLttt....",
+      "9": ".LCCCCLLLtLL....",
+      "10": "..lCplLLLLLL....",
+      "11": "..lCpLLLLLLL....",
+      "12": "..llllLLLLLL....",
+      "13": "...CClLLLL......",
+      "14": ".....CL........."
+    }
+  }
+}
