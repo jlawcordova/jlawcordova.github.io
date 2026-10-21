@@ -1,8 +1,8 @@
 ---
 import heroIsland from '../../assets/pixel-art/hero-island.svg?raw';
 
-// Inline, not <img>, so pixel-art.css can animate the clouds, trucks and
-// frame loops. Sizing comes from the class, not from the SVG.
+// Inline, not <img>, so the entrance can reach its groups; the SVG plays its
+// own clouds, trucks and frame loops. Sizing comes from the class, not from the SVG.
 const svg = heroIsland.replace('<svg ', '<svg class="hero-island pixel-art" ');
 ---
 

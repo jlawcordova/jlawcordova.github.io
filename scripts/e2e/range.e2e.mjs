@@ -345,7 +345,7 @@ test('Console, Pop R6: A makes only the character hop, and leaves its setting an
     const tick = () => {
       const g = shown();
       seen.push({
-        character: new DOMMatrix(getComputedStyle(/** @type {Element} */ (g.querySelector('.cbob'))).transform).f,
+        character: new DOMMatrix(getComputedStyle(/** @type {Element} */ (g.querySelector('.character'))).transform).f,
         sprite: getComputedStyle(/** @type {Element} */ (document.querySelector('.range__sprite'))).transform,
         ground: [...g.querySelectorAll('.enter[data-enter="ground"]')].map((e) => getComputedStyle(e).transform),
       });
@@ -369,7 +369,7 @@ test('Console, Pop R6: A makes only the character hop, and leaves its setting an
   // It lands back where it started.
   await page.waitForFunction(() => {
     const g = [...document.querySelectorAll('.range__sprite g[data-class]')].find((e) => getComputedStyle(e).display !== 'none');
-    return !g?.querySelector('.cbob.is-hopping');
+    return !g?.hasAttribute('data-play');
   });
   await settled(page);
   const after = await state(page);

@@ -1,7 +1,7 @@
 /*
- * Pixel art: crisp rendering, sprite-style animation and reduced motion.
- * The keyframes are ported verbatim from the Prototype B mock. The classes
- * they target are kept on the art's groups by Pixel Lab's compiler (the pixellab package).
+ * Pixel art: crisp rendering, and the HTML wrappers' float. The compiled SVGs
+ * play their own animation and reduced motion (Pixel Lab's site contract);
+ * the rules here are for the page's own markup.
  */
 .pixel-art,
 .pixel-art * {
@@ -12,25 +12,9 @@ img.pixel-art {
   image-rendering: pixelated;
 }
 
-/* From the mock, minus its unused .bob, and minus the trucks' drive: the hero
-   island's scene motion drives its trucks now (island level up spec). */
-@keyframes wfk{0%{opacity:1}20.000%{opacity:0}100%{opacity:0}}.wf{opacity:0;animation:wfk 1.0s step-end infinite}.wf.w0{animation-delay:0.000s}.wf.w1{animation-delay:-0.800s}.wf.w2{animation-delay:-0.600s}.wf.w3{animation-delay:-0.400s}.wf.w4{animation-delay:-0.200s}@keyframes ffk{0%{opacity:1}25.000%{opacity:0}100%{opacity:0}}.ff{opacity:0;animation:ffk 0.6s step-end infinite}.ff.f0{animation-delay:0.000s}.ff.f1{animation-delay:-0.450s}.ff.f2{animation-delay:-0.300s}.ff.f3{animation-delay:-0.150s}@keyframes hfk{0%{opacity:1}16.667%{opacity:0}100%{opacity:0}}.hf{opacity:0;animation:hfk 3.0s step-end infinite}.hf.h0{animation-delay:0.000s}.hf.h1{animation-delay:-2.500s}.hf.h2{animation-delay:-2.000s}.hf.h3{animation-delay:-1.500s}.hf.h4{animation-delay:-1.000s}.hf.h5{animation-delay:-0.500s}
-@keyframes pcloud{0%,100%{transform:translateX(0)}50%{transform:translateX(12px)}}
-.pcloud{animation:pcloud 16s steps(12,end) infinite}
-.pc1{animation-duration:20s;animation-delay:-7s}.pc2{animation-duration:13s;animation-delay:-3s}
 @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 .floaty{animation:floaty 6s steps(2,end) infinite}
-@keyframes cbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-1px)}}
-.cbob{animation:cbob 1s step-end infinite}
-/* A's hop on the Range (Range pop spec R6): only the character, up six pixels,
-   back down and one more on landing, a whole pixel at a time. */
-@keyframes chop{0%{transform:translateY(0)}9.09%{transform:translateY(-2px)}18.18%{transform:translateY(-4px)}27.27%{transform:translateY(-5px)}36.36%{transform:translateY(-6px)}45.45%{transform:translateY(-6px)}54.55%{transform:translateY(-5px)}63.64%{transform:translateY(-4px)}72.73%{transform:translateY(-2px)}81.82%{transform:translateY(0)}90.91%{transform:translateY(-1px)}100%{transform:translateY(0)}}
-.cbob.is-hopping{animation:chop 0.48s step-end}
 
-/* One static frame each: the first frame of every loop. The hero island's
-   scene motion turns itself off in its own SVG (motion.mjs). */
 @media (prefers-reduced-motion: reduce) {
-  .pcloud, .floaty, .wf, .ff, .hf, .cbob, .cbob.is-hopping { animation: none; }
-  .wf, .ff, .hf { opacity: 0; }
-  .w0, .f0, .h0 { opacity: 1; }
+  .floaty { animation: none; }
 }
