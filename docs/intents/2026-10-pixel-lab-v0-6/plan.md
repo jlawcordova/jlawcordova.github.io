@@ -88,3 +88,7 @@ Pasted into PR #143:
 - `grep -rn "pixellab/" scripts src` finds no import of the package.
 - The frame comparison report (D7): frames compared and frames matched, normal and reduced motion, the hop included.
 - Screenshots of the home page's hero and Range at 1440 and 390 px, before and after: at rest, mid-hop and under reduced motion. Also a check that there's no horizontal scroll at either width.
+
+## As built
+
+- **Step 7, the hop's browser check.** The first full `npm run e2e` failed "A makes only the character hop": the check read the `transform` of `.character`, but the SVG moves a generated element inside that group (`<g class="character"><g class="range-sprite--a1">…`). The check now reads the group's drawn position instead (spec R22, updated in the same commit). The art and the page were right: the frame comparison had already matched every hop frame.

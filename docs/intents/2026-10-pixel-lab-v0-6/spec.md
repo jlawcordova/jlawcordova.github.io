@@ -107,7 +107,7 @@ This spec turns the accepted [intent](intent.md) into requirements and a design.
   - skipping the download when the executable is already there.
 
   It uses a local fake fetch and a tiny fake tarball, so `node --test` uses no network.
-- **R22. Browser checks follow the hop.** `scripts/e2e/range.e2e.mjs`'s "A makes only the character hop" samples `g[data-class] .character` instead of `.cbob`. It waits for `data-play` to clear, not `.is-hopping`. Its assertions don't change.
+- **R22. Browser checks follow the hop.** `scripts/e2e/range.e2e.mjs`'s "A makes only the character hop" samples `g[data-class] .character` instead of `.cbob`. It reads where the group is drawn (its box, in art pixels from the sprite's top, against its lowest point at rest), because the SVG moves an element inside it and the contract doesn't promise which. It waits for `data-play` to clear, not `.is-hopping`. Its assertions don't change.
 
 ### Docs, skills and the agent
 

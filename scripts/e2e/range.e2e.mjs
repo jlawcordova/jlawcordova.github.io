@@ -337,30 +337,53 @@ test('Console, Pop R6: A makes only the character hop, and leaves its setting an
     }),
   );
   const before = await state(page);
-  // Sample the character's and the sprite's transforms every frame while A runs.
+  // Sample where the character's `character` group is drawn, in art pixels from
+  // the sprite's top, and the sprite's and the floor's transforms, every frame:
+  // first at rest (its bob's lowest point is where it stands), then while A runs.
+  // The SVG moves an element inside the group (Pixel Lab's site contract
+  // promises the group's class, not what's in it), so this reads its box.
   await page.evaluate(() => {
     const seen = /** @type {{ character: number, sprite: string, ground: string[] }[]} */ ([]);
-    Object.assign(window, { hopFrames: seen });
+    Object.assign(window, { hopFrames: seen, restFrames: [] });
+    const art = /** @type {SVGSVGElement} */ (document.querySelector('.range__sprite-art'));
     const shown = () => /** @type {Element} */ ([...document.querySelectorAll('.range__sprite g[data-class]')].find((g) => getComputedStyle(g).display !== 'none'));
-    const tick = () => {
-      const g = shown();
-      seen.push({
-        character: new DOMMatrix(getComputedStyle(/** @type {Element} */ (g.querySelector('.character'))).transform).f,
-        sprite: getComputedStyle(/** @type {Element} */ (document.querySelector('.range__sprite'))).transform,
-        ground: [...g.querySelectorAll('.enter[data-enter="ground"]')].map((e) => getComputedStyle(e).transform),
-      });
-      if (seen.length < 60) requestAnimationFrame(tick);
+    const y = (g) => {
+      const box = art.getBoundingClientRect();
+      const scale = box.height / art.viewBox.baseVal.height;
+      return (/** @type {Element} */ (g.querySelector('.character')).getBoundingClientRect().top - box.top) / scale;
     };
-    requestAnimationFrame(tick);
+    Object.assign(window, {
+      sampleRest: () => {
+        const rest = /** @type {number[]} */ (/** @type {any} */ (window).restFrames);
+        const tick = () => (rest.push(y(shown())), rest.length < 50 && requestAnimationFrame(tick));
+        requestAnimationFrame(tick);
+      },
+      sampleHop: () => {
+        const tick = () => {
+          const g = shown();
+          seen.push({
+            character: y(g),
+            sprite: getComputedStyle(/** @type {Element} */ (document.querySelector('.range__sprite'))).transform,
+            ground: [...g.querySelectorAll('.enter[data-enter="ground"]')].map((e) => getComputedStyle(e).transform),
+          });
+          if (seen.length < 60) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      },
+    });
+    /** @type {any} */ (window).sampleRest();
   });
+  await page.waitForFunction(() => /** @type {any} */ (window).restFrames.length >= 50);
+  const rest = Math.max(...(await page.evaluate(() => /** @type {number[]} */ (/** @type {any} */ (window).restFrames))));
   const a = page.getByRole('button', { name: 'A: jump' });
   assert.equal(await a.count(), 1);
+  await page.evaluate(() => /** @type {any} */ (window).sampleHop());
   await a.click();
   await page.waitForFunction(() => /** @type {{ hopFrames: unknown[] }} */ (/** @type {unknown} */ (window)).hopFrames.length >= 60);
-  const frames = await page.evaluate(() => /** @type {{ hopFrames: { character: number, sprite: string, ground: string[] }[] }} */ (/** @type {unknown} */ (window)).hopFrames);
+  const frames = (await page.evaluate(() => /** @type {{ hopFrames: { character: number, sprite: string, ground: string[] }[] }} */ (/** @type {unknown} */ (window)).hopFrames)).map((f) => ({ ...f, character: f.character - rest }));
   const lowest = Math.min(...frames.map((f) => f.character));
-  assert.ok(lowest <= -5, `the character rises (to ${lowest})`);
-  assert.ok(frames.every((f) => Number.isInteger(f.character)), 'by whole pixels');
+  assert.ok(lowest <= -5 + 0.01, `the character rises (to ${lowest})`);
+  assert.ok(frames.every((f) => Math.abs(f.character - Math.round(f.character)) < 0.01), 'by whole pixels');
   assert.ok(frames.every((f) => f.sprite === 'none'), 'the sprite as a whole stays put');
   assert.ok(
     frames.every((f) => f.ground.every((t) => t === 'none' || t === 'matrix(1, 0, 0, 1, 0, 0)')),
