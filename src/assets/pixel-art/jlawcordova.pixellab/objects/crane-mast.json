@@ -1,0 +1,56 @@
+{
+  "kind": "sprite",
+  "anchor": [3, 39],
+  "keys": {
+    "l": "gold-1",
+    "g": "gold-2",
+    "G": "gold-3",
+    "d": "gold-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "l..gG..d",
+        "l.ggGG.d",
+        "lg.gG.Gd",
+        "l..gG..d",
+        "lg.gG.Gd",
+        "l.ggGG.d",
+        "l..gG..d",
+        "l.ggGG.d",
+        "lg.gG.Gd",
+        "l..gG..d",
+        "lg.gG.Gd",
+        "l.ggGG.d",
+        "l..gG..d",
+        "l.ggGG.d",
+        "lg.gG.Gd",
+        "l..gG..d",
+        "lg.gG.Gd",
+        "l.ggGG.d",
+        "l..gG..d",
+        "l.ggGG.d",
+        "lg.gG.Gd",
+        "l..gG..d",
+        "lg.gG.Gd",
+        "l.ggGG.d",
+        "l..gG..d",
+        "l.ggGG.d",
+        "lg.gG.Gd",
+        "l..gG..d",
+        "lg.gG.Gd",
+        "l.ggGG.d",
+        "l..gG..d",
+        "l.ggGG.d",
+        "lg.gG.Gd",
+        "l..gG..d",
+        "lg.gG.Gd",
+        "l.ggGG.d",
+        "l..gG..d",
+        "l.ggGG.d",
+        "GGGGdddd",
+        "..GGdd.."
+      ]
+    }
+  ]
+}

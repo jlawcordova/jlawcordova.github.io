@@ -1,0 +1,36 @@
+{
+  "kind": "sprite",
+  "extends": "cat",
+  "keys": {
+    "t": "cream",
+    "s": "cream",
+    "l": "path-2",
+    "L": "path-3",
+    "r": "path-3",
+    "R": "path-4",
+    "S": "path-3",
+    "v": "soil-3",
+    "V": "soil-4",
+    "A": "soil-3",
+    "B": "soil-4",
+    "o": "gold-1",
+    "p": "gold-3",
+    "P": "soil-1",
+    "k": "soil-3",
+    "K": "soil-4"
+  },
+  "rows": {
+    "0": {
+      "2": "..oot...........",
+      "3": "ooootkk.........",
+      "4": "ppootkkkk.......",
+      "5": "pepltkkkK.......",
+      "6": "lellllKKK.......",
+      "7": "llllelKrrkk.....",
+      "8": "LllnelrrrkkP....",
+      "9": ".LLlllrrrkPP....",
+      "10": "..lLLlrRRPPP....",
+      "11": "..lllLRrrPPr...."
+    }
+  }
+}

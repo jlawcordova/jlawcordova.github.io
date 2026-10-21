@@ -1,0 +1,30 @@
+{
+  "kind": "sprite",
+  "anchor": [8, 10],
+  "keys": {
+    "c": "wood-1",
+    "m": "wood-2",
+    "M": "wood-3",
+    "t": "path-1"
+  },
+  "layers": [
+    {
+      "map": [
+        ".......cc.......",
+        ".....cccccc.....",
+        "...cccccctttt...",
+        ".ccccccttttcccc.",
+        "mccccttttccccccM",
+        "mmmttttccccccMMM",
+        "mmmttccccccMMMMM",
+        "mmmttmmccMMMMMMM",
+        "mmmttmmmMMMMMMMM",
+        "mmmttmmmMMMMMMMM",
+        ".mmttmmmMMMMMMM.",
+        "...ttmmmMMMMM...",
+        ".....mmmMMM.....",
+        ".......mM......."
+      ]
+    }
+  ]
+}

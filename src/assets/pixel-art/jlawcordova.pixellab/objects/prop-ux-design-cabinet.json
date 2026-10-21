@@ -1,0 +1,40 @@
+{
+  "kind": "sprite",
+  "anchor": [8, 14],
+  "keys": {
+    "w": "water-2",
+    "W": "water-3",
+    "V": "water-4",
+    "B": "wood-3",
+    "p": "path-2",
+    "P": "path-3",
+    "r": "roof-1",
+    "y": "gold-1",
+    "Y": "gold-2",
+    "g": "grass-2"
+  },
+  "layers": [
+    {
+      "map": [
+        "...........r.y..",
+        "...........B.Bg.",
+        "....rrw....BBB..",
+        "...rrrrww..pPP..",
+        ".wwppPyywwwpPP..",
+        "WwwwpyyyywwpPP..",
+        "WWWwwppPPwwwwww.",
+        "VVWWWwpPwwwwwwwV",
+        "WWYVWWWwwwwwwVVV",
+        "WWWWVVWWWwwVVVVV",
+        "VVWWWWVVWWVVVVVV",
+        "WWVVYWWWVVVVVVVV",
+        "WWWWVVWWWWVVVVVV",
+        ".WWWWWVVWWVVVVVV",
+        "...WWWYWVVVVVVVV",
+        ".....WWWWWVVVVV.",
+        ".......WWWVVV...",
+        ".........WV....."
+      ]
+    }
+  ]
+}

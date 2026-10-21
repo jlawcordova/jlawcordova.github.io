@@ -1,0 +1,42 @@
+{
+  "kind": "sprite",
+  "extends": "character",
+  "keys": {
+    "g": "sky-1",
+    "h": "sky-2",
+    "i": "navy-1",
+    "o": "roof-1",
+    "r": "roof-2",
+    "R": "roof-3",
+    "p": "wood-1",
+    "n": "soil-3",
+    "k": "gold-2"
+  },
+  "rows": {
+    "1": {
+      "5": "...................r............",
+      "6": "..............ooooooooo.........",
+      "7": ".............ooooooooooooo......",
+      "8": ".............oooooooooooooo.....",
+      "9": ".............roooooooooooooo....",
+      "10": ".............brroooooooooooo....",
+      "11": ".............bbbrrroooooooRR....",
+      "12": ".............bcbbbbrrRRRRRa.....",
+      "13": ".............bcccbbbbaaaaaa.r...",
+      "14": ".............ccccccbbaaaaaa.rR..",
+      "15": ".............cceccccbaaaaaa.rR..",
+      "16": ".............ccecceccddaaaa.gh..",
+      "17": ".............ccccceccddaaaa.pn..",
+      "18": ".............hhccccccddddaa.pn..",
+      "19": ".........pppphhhhccccddddi..pn..",
+      "20": "........prpkpchhhhhccddgggg.pn..",
+      "21": ".......pppppcchhhhhrrRihhiicdn..",
+      "22": ".......pippgn.hhhhhhrhihhiicdn..",
+      "23": "........nnnn..hhkhhhhhihhii.pn..",
+      "24": "...............hhhhrhhihhii.pn..",
+      "25": "................hhhhhhi.........",
+      "26": "................iiiiiii.........",
+      "27": "................afFafhiii......."
+    }
+  }
+}

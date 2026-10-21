@@ -1,0 +1,9 @@
+{
+  "kind": "sprite",
+  "extends": "flower",
+  "keys": {
+    "p": "roof-1",
+    "q": "roof-2",
+    "c": "gold-1"
+  }
+}

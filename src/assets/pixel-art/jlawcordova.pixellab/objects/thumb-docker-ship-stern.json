@@ -1,0 +1,62 @@
+{
+  "kind": "sprite",
+  "anchor": [36, 34],
+  "keys": {
+    "a": "roof-1",
+    "b": "roof-2",
+    "c": "roof-3",
+    "g": "cream",
+    "f": "path-1",
+    "e": "path-2",
+    "w": "water-3",
+    "o": "wood-2",
+    "h": "water-1",
+    "d": "roof-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "...........aaa....................",
+        "..........bbac....................",
+        "..........bbcc....................",
+        ".........gbbccgg..................",
+        ".......gggbbccgggg................",
+        ".....fggggggcgggge................",
+        ".....fffgggggggeee................",
+        ".....fffffgggeeeee................",
+        ".....ffffffeeeeeee................",
+        ".....ffffffeeeeeee................",
+        ".....ffffffeeeeeee................",
+        ".....ffffffeeeeeee................",
+        ".....fwffffeeeewee................",
+        ".....fffwffeeweeee................",
+        ".....ffffffeeeeeeeaa..............",
+        ".....ffffffeeeeeeeooaa............",
+        "...aaofffffeeeeeeoooooaa..........",
+        "..bbaaoofffeeeeoooooooooaa........",
+        "..bbbbaaoofeeoooooooooooooaa......",
+        "..bbbbbbaaooooooooooooooooooaa....",
+        "..bbbbbbbbaaooooooooooooooooooaa..",
+        "..bbbbbbbbbbaaooooooooooooooooooaa",
+        ".hccbbbbbbbbbbaaoooooooooooooooooo",
+        "hhhwccbbbbbbbbbbaaoooooooooooooooo",
+        "..wwwhccbbbbbbbbbbaaoooooooooooooo",
+        "....hhhhccbbbbbbbbbbaaoooooooooooo",
+        "......hwwwccbbbbbbbbbbaaoooooooooo",
+        "........whhhccbbbbbbbbbbaaoooooooo",
+        "..........hhhwccbbbbbbbbbbaaoooooo",
+        "............wwwhccbbbbbbbbbbaaoooo",
+        "..............hhhhccbbbbbbbbbbaaoo",
+        "................hwwwccbbbbbbbbbbaa",
+        "..................whhhccbbbbbbbbbb",
+        "....................hhhwccbbbbbbbb",
+        "......................wwwhccbbbbbb",
+        "........................hhhhccbbbb",
+        "..........................hwwwccbb",
+        "............................whhhcc",
+        "..............................hhhw",
+        "................................ww"
+      ]
+    }
+  ]
+}

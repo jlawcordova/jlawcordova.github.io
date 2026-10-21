@@ -1,0 +1,37 @@
+{
+  "kind": "sprite",
+  "anchor": [12, 15],
+  "keys": {
+    "L": "path-1",
+    "s": "path-3",
+    "S": "path-4",
+    "k": "soil-4",
+    "m": "wood-2",
+    "d": "wood-3",
+    "D": "wood-4"
+  },
+  "layers": [
+    {
+      "map": [
+        ".....................LLS",
+        "................LLsssssS",
+        "...........LsssssskkkSSS",
+        ".......ssssskkkkkkkSSSSS",
+        ".......kkkkkkkkkkSSSSSS.",
+        ".....kkkkkkkksssSSSSS...",
+        "...kkkkkssssssssSSS.....",
+        ".kksssssssssssssSmd.....",
+        "sssssssssssss....md.....",
+        "ssssssssSSSd.....md.....",
+        "sssSSSSSSSSd.....md.....",
+        "sssSSSSSS.md.....md.....",
+        "sssSSSS...md.....md.....",
+        ".ssSS.....md.....md.....",
+        "..........md.....mD.....",
+        "..........md............",
+        "..........md............",
+        "..........mD............"
+      ]
+    }
+  ]
+}

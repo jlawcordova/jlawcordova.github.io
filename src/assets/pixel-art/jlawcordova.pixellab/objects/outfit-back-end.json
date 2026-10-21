@@ -1,0 +1,38 @@
+{
+  "kind": "sprite",
+  "extends": "character",
+  "keys": {
+    "g": "slate-1",
+    "h": "slate-2",
+    "i": "slate-3",
+    "k": "wood-1",
+    "l": "silver-3",
+    "L": "slate-3",
+    "o": "cream"
+  },
+  "rows": {
+    "1": {
+      "6": "................jjjjjj..........",
+      "7": "..............jjjkkjjjj.........",
+      "8": ".............jjkkjjjjjjjj.......",
+      "9": "............bjjjjjjjjjjjjjj.....",
+      "10": "............bbbjjjjjjjjjjjja....",
+      "11": "............bbbbbjjjjjjjjaaa....",
+      "12": "............bbcbbbbjjjjaaaaa....",
+      "13": "............bbcccbbbbaaaaaaa....",
+      "14": ".............ccccccbbaaaaaaa....",
+      "15": ".............cceccccbaaaaaaa....",
+      "16": "......oo.....ccecceccddaaaaa....",
+      "17": "......lloo...ccccceccddaaaa.....",
+      "18": ".....clllloo.hhccccccddddaa.....",
+      "19": ".....dlllllloohhhccccddddi......",
+      "20": "......lllollllLohhhccddgggg.....",
+      "21": "......lllollllLooohhhhihhii.....",
+      "22": "......llllllllLoocdohhihhii.....",
+      "23": "......LLllllllLllloohhihhii.....",
+      "24": "........LLllllLlllLLhhihhii.....",
+      "25": "..........LLllLoLLhhhhi.........",
+      "26": "............LLLLffFhhhi........."
+    }
+  }
+}

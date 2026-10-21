@@ -1,0 +1,8 @@
+{
+  "kind": "sprite",
+  "extends": "frame-plain",
+  "keys": {
+    "p": "grass-1",
+    "P": "grass-2"
+  }
+}

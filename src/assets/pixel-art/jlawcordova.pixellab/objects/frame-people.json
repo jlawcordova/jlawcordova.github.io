@@ -1,0 +1,8 @@
+{
+  "kind": "sprite",
+  "extends": "frame-plain",
+  "keys": {
+    "p": "water-1",
+    "P": "water-2"
+  }
+}

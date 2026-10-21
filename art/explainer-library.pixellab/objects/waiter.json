@@ -1,0 +1,47 @@
+{
+  "kind": "sprite",
+  "extends": "character",
+  "keys": {
+    "f": "slate-3",
+    "F": "soil-4",
+    "g": "cream",
+    "h": "silver-1",
+    "i": "silver-2",
+    "v": "slate-2",
+    "V": "slate-3",
+    "n": "roof-2",
+    "t": "silver-1",
+    "s": "silver-2",
+    "S": "silver-3",
+    "p": "silver-1",
+    "L": "silver-3"
+  },
+  "rows": {
+    "1": {
+      "2": ".......tS.......................",
+      "3": ".....ttssSS.....................",
+      "4": "....ttsssSSS....................",
+      "5": "....tssssSSS....................",
+      "6": "....sssssSSS....................",
+      "7": "...pSSSSSSSSp....jjjj...........",
+      "8": "...LppppppppL..jjjjjjjj.........",
+      "9": "....LLLLLLLL.jjjjjjjjjjjj.......",
+      "10": ".......cd....bbjjjjjjjjjjjj.....",
+      "11": ".......hi....bbbbjjjjjjjjaa.....",
+      "12": "........hi...bcbbbbjjjjaaaa.....",
+      "13": "........hi...bcccbbbbaaaaaa.....",
+      "14": ".........hi..ccccccbbaaaaaa.....",
+      "15": ".........hi..cceccccbaaaaaa.....",
+      "16": "..........hi.ccecceccddaaaa.....",
+      "17": "...........hiccccceccddaaaa.....",
+      "18": "............hhhccccccddddaa.....",
+      "20": ".............vhnnhvccddgggg.....",
+      "21": ".............vvvhvvvvvVhhii.....",
+      "22": "..............vvvvVvvvVhhii.....",
+      "23": "..............vvvvvvvvVhhii.....",
+      "24": "...............vvvVvvvVhhii.....",
+      "25": "................fVVVVVVccdd.....",
+      "26": "................ffFVVVVccdd....."
+    }
+  }
+}

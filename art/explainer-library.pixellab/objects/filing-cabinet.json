@@ -1,0 +1,51 @@
+{
+  "kind": "sprite",
+  "anchor": [18, 27],
+  "keys": {
+    "C": "cream",
+    "c": "water-1",
+    "p": "water-3",
+    "q": "water-4",
+    "K": "soil-4",
+    "y": "gold-1"
+  },
+  "layers": [
+    {
+      "map": [
+        ".................cc...........",
+        "...............cccccc.........",
+        ".............cccccccccc.......",
+        "...........cccccccccccccc.....",
+        ".........cccccccccccccccccc...",
+        ".......cccccccccccccccccccccc.",
+        "......Kycccccccccccccccccccccq",
+        ".....cqyyycccccccccccccccccqqq",
+        "...cqqqyyyKccccccccccccccqqqqq",
+        "qccqyyKyyyKKKccccccccccqqqqqqq",
+        "pqqccyyKKyCCKKKccccccqqqqqqqqq",
+        "pppqqccKKKCCCKKKKccqqqqqqqqqqq",
+        "pppppqqccKCCCKKKcKqqqqqqqqqqqq",
+        "pppppCCqqccCCKcqqKqqqqqqqqqqqq",
+        ".ppppppCCqqccqqqqKqqqqqqqqqqqq",
+        "...ppccppppqqqqqqKqqqqqqqqqqqq",
+        ".....pppppppqqqqqKqqqqqqqqqqqq",
+        "......ppppppqqqqpqqqqqqqqqqqqq",
+        "......ppppppqqppppqqqqqqqqqqqq",
+        "......ppppppqpppppqqqqqqqqqqqq",
+        "......pppppCCqqpppqqqqqqqqqqqq",
+        "......qppppppCCqqpqqqqqqqqqqqq",
+        "......pqqppccppppqqqqqqqqqqqqq",
+        "......pppqqpppppppqqqqqqqqqqqq",
+        "......pppppqqpppppqqqqqqqqqqqq",
+        "......pppppCCqqpppqqqqqqqqqqqq",
+        "......qppppppCCqqpqqqqqqqqqqqq",
+        ".......qqppccppppqqqqqqqqqqqq.",
+        ".........qqpppppppqqqqqqqqq...",
+        "...........qqpppppqqqqqqq.....",
+        ".............qqpppqqqqq.......",
+        "...............qqpqqq.........",
+        ".................qq..........."
+      ]
+    }
+  ]
+}

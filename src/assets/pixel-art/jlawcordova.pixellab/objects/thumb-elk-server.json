@@ -1,0 +1,46 @@
+{
+  "kind": "sprite",
+  "anchor": [8, 18],
+  "keys": {
+    "a": "water-3",
+    "l": "water-4",
+    "S": "soil-4",
+    "s": "soil-3",
+    "y": "gold-1"
+  },
+  "layers": [
+    {
+      "map": [
+        ".......aaa..........",
+        ".....aaaaaaa........",
+        "...aaaaaaaaaaa......",
+        ".aaaaaaaaaaaaaaa....",
+        "llaaaaaaaaaaaaaaaa..",
+        "llllaaaaaaaaaaaaaaaa",
+        "llllllaaaaaaaaaaaaaS",
+        "llllllllaaaaaaaaaSSS",
+        "llssllllllaaaaaSSSSS",
+        "llllssllllllaSSSSSSS",
+        "llllllssllllSSSSSSSS",
+        "llllllllssllSSSSSSSS",
+        "llssllllllllSSSSSSSS",
+        "llllssllllllSSSSSSSS",
+        "llllllssllllSSSSSSSS",
+        "llllllllssllSSSSSSSS",
+        "llssllllllllSSSSSSSS",
+        "llllssllllllSSSSSSSS",
+        "llllllssllllSSSSSSSS",
+        "llyyllllssllSSSSSSSS",
+        "llyyllllllllSSSSSSSS",
+        "SSllllllllllSSSSSSSS",
+        "..SSllllllllSSSSSSSS",
+        "....SSllllllSSSSSSSS",
+        "......SSllllSSSSSSS.",
+        "........SSllSSSSS...",
+        "..........SSSSS.....",
+        "............S.......",
+        "...................."
+      ]
+    }
+  ]
+}

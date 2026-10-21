@@ -1,0 +1,32 @@
+{
+  "kind": "sprite",
+  "anchor": [8, 15],
+  "keys": {
+    "t": "gold-1",
+    "T": "gold-2",
+    "l": "gold-3",
+    "r": "gold-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "................",
+        "................",
+        "................",
+        "................",
+        ".......tt.......",
+        ".......tT.......",
+        "......ttTt......",
+        ".tttttttTTtttTT.",
+        ".lttttttTTTTTTr.",
+        ".lllttttTTTTrrr.",
+        ".llltTTrlttTrrr.",
+        ".lltTrrrllltTrr.",
+        "..llrrrrllllrr..",
+        "...lrrrrllllr...",
+        "...lrrr..lllr...",
+        "...lr......lr..."
+      ]
+    }
+  ]
+}

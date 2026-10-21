@@ -1,0 +1,36 @@
+{
+  "kind": "sprite",
+  "anchor": [8, 15],
+  "keys": {
+    "l": "grass-1",
+    "g": "grass-2",
+    "e": "grass-3",
+    "E": "grass-4",
+    "n": "soil-1",
+    "s": "soil-2",
+    "S": "soil-3",
+    "d": "soil-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "................",
+        "...........lll..",
+        "..l.......lgggg.",
+        ".lggg....lgggg..",
+        ".egggg..lgggE...",
+        "..eegggggggE....",
+        "....eegggeE.....",
+        "......eeeE......",
+        ".......eE.......",
+        ".......eE.......",
+        ".....nneEs......",
+        "...nnssssssd....",
+        "..nsssssssSdd...",
+        "..SsssssssSddd..",
+        "..SSSSSssSdddd..",
+        "...SSSSSSdddd..."
+      ]
+    }
+  ]
+}

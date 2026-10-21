@@ -1,0 +1,40 @@
+{
+  "kind": "sprite",
+  "anchor": [11, 16],
+  "footprint": [2, 2],
+  "keys": {
+    "r": "roof-1",
+    "R": "roof-2",
+    "q": "roof-3",
+    "Q": "roof-4",
+    "k": "soil-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "......rr..............",
+        "....rrRRrr............",
+        "..rrRRRRRRrr..........",
+        "rrRRRRRRRRRRrr........",
+        "rrRRRRRRRRRRRRrr......",
+        "RqrrRRRRRRRRRRRRrr....",
+        "RqqqrrRRRRRRRRRRRRrr..",
+        "RqqqqqrrRRRRRRRRRRRRrr",
+        "RqqqQqqqrrRRRRRRRRRRrr",
+        "RqqqQqqQqqrrRRRRRRrrQQ",
+        "RqqqQqqQqqqqrrRRrrQQQQ",
+        "RqqqQqqQqqQqqqrrQQqQQQ",
+        "RqqqQqqQqqQqqqqQQQqQQQ",
+        "RqqqQqqQqqQqqqqQQQqQQQ",
+        "QQqqQqqQqqQqqqqQQQqQQQ",
+        "..QQQqqQqqQqqqqQQQqQQQ",
+        "....QQqQqqQqqqqQQQqQQQ",
+        "......QQqqQqqqqQQQqQQQ",
+        "........QQQqqqqQQQqQkk",
+        "..........QQqqqQQQkk..",
+        "............QQqQkk....",
+        "..............Qk......"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "kind": "sprite",
+  "anchor": [14, 19],
+  "keys": {
+    "o": "gold-2",
+    "O": "gold-3",
+    "G": "grass-3",
+    "f": "grass-4",
+    "p": "path-1",
+    "d": "path-2",
+    "s": "path-3",
+    "k": "soil-4",
+    "w": "water-1",
+    "W": "water-3"
+  },
+  "layers": [
+    {
+      "map": [
+        "...................dd.......",
+        ".................dddddd.....",
+        "...............dddddddddd...",
+        ".......GGGG..ddddddddddkk...",
+        ".....GGGGGGddddddddddkkkk...",
+        "...GGGGGGGfddddddddkkkkWk...",
+        "...ffGGGGGfffddddkkkkWWWk...",
+        "...ffffGGGfffffkkkkkkWWWk...",
+        "...fffkffGfwwffkkWWkkWWkk...",
+        ".ppfffkffffwwwfkWWWkkkkkk...",
+        ".psppfkffkfwwwfkWWWkkkkkk...",
+        "opsssppffkfwwwfkWkkkkGGGG...",
+        "OoossspppkfffwfkkkkGGGGkk...",
+        ".OOoospsspfffffkkGGGGppkk...",
+        "...OOoosssfffffkkffkkppkkss.",
+        "...kkOOoosfffffkkffkkkkkkssO",
+        "...kkk.OOooffffppffkkkkssOOk",
+        "....kk...OOooffkkpfkkssOOkk.",
+        "...........OOoosspsssOOkk...",
+        ".............OOoopsOOkkkk...",
+        "..............kOOoOkk.kkk...",
+        "..............kkkOk.........",
+        "..............kkk...........",
+        "................k..........."
+      ]
+    }
+  ]
+}
