@@ -92,7 +92,7 @@ When implementing, follow it as written:
 # Plan: pixel-art outfit for security work (from intent.md 2026-10-01)
 
 ## Files that change
-src/assets/pixel-art/jlawcordova.pixellab/scenes/range-sprite.mjs, src/assets/pixel-art/range-sprite.svg,
+src/assets/pixel-art/jlawcordova.pixellab/scenes/range-sprite.json,
 src/data/home.ts, src/styles/range.css
 
 ## Order of work
@@ -108,8 +108,8 @@ step 1, the outfit's previews at 1× and 4×, since it sets the look; steps 2 an
 it's approved. Independent review: none. The art, test and build checks cover it.
 
 ## Risks
-The sprite file grows. It must stay within 100 KB raw and 25 KB gzip, or the art
-script fails.
+The sprite file grows. It should stay within 100 KB raw and 25 KB gzip; the art
+script warns when it doesn't.
 
 ## Proof
 npm run art reports lossless and within budget, npm test and npm run build pass,

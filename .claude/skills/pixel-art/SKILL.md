@@ -4,16 +4,16 @@ description: Make, change or review this site's pixel art (the hero island, the 
 ---
 # Pixel art
 
-The site's pixel art is text. **Objects** (pixel maps) and **scenes** (objects placed on the grid, drawn back to front by where each stands) live in the site's Pixel Lab document, `src/assets/pixel-art/jlawcordova.pixellab/` (a folder: `manifest.json`, `palette.mjs`, `objects/`, `scenes/`), and `npm run art` (Pixel Lab's `pixellab art build`) compiles each scene with an `output` to an optimized SVG in `src/assets/pixel-art/`. The engine, the compiler and the CLI are the `pixellab` dev dependency, installed from the lab repo (`jlawcordova-lab`); `npm run pixellab -- <group> <verb> …` runs any of its commands on this checkout (the `--site .` is in the script, so it works in a worktree too). The design is in `docs/intents/2026-10-pixel-art-engine/spec.md` (D2–D6, R26–R30), the move to the document in `docs/intents/2026-10-art-to-pixel-lab/spec.md`, and depth order (Pixel Lab v0.5.0) in `docs/intents/2026-10-pixel-lab-depth-order/spec.md`.
+The site's pixel art is text. **Objects** (pixel maps) and **scenes** (objects placed on the grid, drawn back to front by where each stands) live in the site's Pixel Lab document, `src/assets/pixel-art/jlawcordova.pixellab/` (a folder in Pixel Lab's format 2: `manifest.json`, `palette.json`, `objects/<name>.json`, `scenes/<name>.json`), and `npm run art` (Pixel Lab's `pixellab art build`) compiles each scene with an `output` to an optimized SVG in `src/assets/pixel-art/`, and each scene with an `image` to a PNG in `static/public/thumbnails/`. Both are git-ignored outputs. The engine, the compiler and the CLI are one program, Pixel Lab's release, pinned with its SHA-256 in `scripts/pixellab.mjs`, which downloads it into `.pixellab-bin/` on first use; `npm run pixellab -- <group> <verb> …` runs any of its commands on this checkout (the `--site .` is in the script, so it works in a worktree too). The lab's `docs/document-format.md` and `docs/site-contract.md` (at the pinned tag) are the references for the files and for what the page may rely on in an SVG. The design is in `docs/intents/2026-10-pixel-art-engine/spec.md` (D2–D6, R26–R30), the move to the document in `docs/intents/2026-10-art-to-pixel-lab/spec.md`, depth order (Pixel Lab v0.5.0) in `docs/intents/2026-10-pixel-lab-depth-order/spec.md`, and format 2 with self-contained SVGs (v0.6.0) in `docs/intents/2026-10-pixel-lab-v0-6/spec.md`.
 
-**Never write or edit an output SVG by hand.** Output SVGs only ever come from the compiler. Change a source, then run `npm run art`.
+**Never write or edit an output SVG or thumbnail by hand, and never commit one.** They only ever come from the compiler. Change a source, then run `npm run art`.
 
 ## The design language (hard rules)
 
 New art must fit the existing world. The engine enforces every rule here except the 6–8 color target.
 
 - **Grid.** A tile is 32×16 pixels, 2:1 dimetric: every edge steps 2 pixels across for 1 down. One level is 16 pixels high, so a one-level block is 32×32 and reads as a cube. A tile at `[col, row, level]` has its top-face center at `x = (col − row) × 16 + ox`, `y = (col + row) × 8 − level × 16 + oy`, where `[ox, oy]` is the scene's `origin`.
-- **Palette tiers** (`jlawcordova.pixellab/palette.mjs`):
+- **Palette tiers** (`jlawcordova.pixellab/palette.json`):
   - **world**: exactly 32 colors, as seven material ramps of 4 shades (`grass-1` highlight … `grass-4` shadow, and the same for soil, wood, path, water, roof and gold), plus `ink`, `cream`, `skin-1` and `skin-2`. They were picked from the island's own shades. `npm run pixellab -- art preview palette --out .art-preview/palette.png` writes the swatch sheet: a row per material, shade 1 to 4 across. The tier is full, so a new color means dropping one.
   - **outfit**: at most 16 clothing colors (full: the `silver`, `violet`, `slate`, `orange`, `sky` and `navy` ramps, light to dark; a new color means dropping one), only for objects that extend `character`.
   - Colors are added to the palette by hand, in a reviewed commit. Brand entries keep their `src/styles/variables.css` values.
@@ -22,104 +22,100 @@ New art must fit the existing world. The engine enforces every rule here except 
 
 ## Formats
 
-Every source is a `.mjs` file whose default export is plain data, in the **canonical format**: the header comment, two-space indentation, single quotes, one map row per line and trailing commas. A test fails if a file isn't canonical, so start from `--new` or copy an existing file's layout exactly.
+Every source is a JSON file in Pixel Lab's **canonical form**: two-space indentation, keys in a fixed order, a list of numbers on one line, one map row per line, one line per placed item and per motion, ambient or action key, no trailing commas and a final newline. Every save by Pixel Lab, the MCP or the CLI writes it; `npm run pixellab -- check` warns `isn't in canonical form` about a file that isn't (one edited by hand). Start from `object new` / `scene new`, or copy an existing file's layout exactly. An object or scene may carry `notes`, a list of strings, first.
 
-The examples below compile together against today's sources, as `objects/small-rock.mjs`, `objects/stone-block.mjs`, `objects/outfit-example.mjs` and `scenes/example.mjs` (a test checks this).
-
-### Objects (`source/objects/<name>.mjs`)
+### Objects (`objects/<name>.json`)
 
 Names are lowercase kebab-case. There are two kinds: `sprite` (pixel maps) and `block` (boxes on the isometric grid, drawn from numbers).
 
-```js
-// Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md
-export default {
-  kind: 'sprite',
-  anchor: [2, 3],
-  keys: {
-    g: 'ink',
-    c: 'cream',
+```json
+{
+  "kind": "sprite",
+  "anchor": [2, 3],
+  "keys": {
+    "g": "ink",
+    "c": "cream"
   },
-  layers: [
+  "layers": [
     {
-      map: [
-        '.gg.',
-        'gccg',
-        'gccg',
-        '.gg.',
-      ],
-    },
-  ],
-};
+      "map": [
+        ".gg.",
+        "gccg",
+        "gccg",
+        ".gg."
+      ]
+    }
+  ]
+}
 ```
 
 - **`keys`** maps one printable character (not space, not `.`) to a palette name. `.` is always transparent. Keys are case-sensitive: use a letter for a material and its uppercase for a darker shade of it.
 - **`anchor`** is the map pixel that sits on the placement point. For something standing on a tile, put it at the bottom center.
-- **`layers`** paint bottom to top, and every map in an object has the same size. A layer can carry `class: 'cbob'` (or any fixed class), which puts it in its own group for CSS to move.
-- **Frame loops:** a layer `{ loop: 'wf', prefix: 'w', frames: [map, map, …] }` compiles to groups `class="wf w0"`, `class="wf w1"` and so on. Frame 0 is what reduced motion shows. The loops the site's CSS animates are `wf` (w0–w4), `ff` (f0–f3) and `hf` (h0–h5).
+- **`layers`** paint bottom to top, and every map in an object has the same size. A layer can carry a `class` (the character's `"class": "character"`), which puts it in its own group that page code can find, and an `ambient` loop or `actions` (below, and the `pixel-art-motion` skill), which the SVG plays by itself.
+- **Frame loops:** a layer `{ "loop": "wf", "prefix": "w", "frames": [map, map, …] }` compiles to groups `class="wf w0"`, `class="wf w1"` and so on, and the SVG's own `<style>` cycles them. Frame 0 is what reduced motion shows. `wf` (w0–w4, 1 s), `ff` (f0–f3, 0.6 s) and `hf` (h0–h5, 3 s) keep the site's timing; any other loop plays 200 ms a frame.
 - **Paint order inside a layer** follows `keys`: each color is drawn in the order its key is listed.
 
-### Blocks (`kind: 'block'`)
+### Blocks (`"kind": "block"`)
 
-A block is described by numbers, not drawn. Use one for ground, walls and water. `block`, `tile`, `water` and `path` (a flat road tile) in `jlawcordova.pixellab/objects/` are the library, and `scenes/library-demo.mjs` places them with `tree`, `pebble` and `bridge`. This example is `objects/stone-block.mjs` in the skill's test.
+A block is described by numbers, not drawn. Use one for ground, walls and water. `block`, `tile`, `water` and `path` (a flat road tile) in `jlawcordova.pixellab/objects/` are the library, and `scenes/library-demo.json` places them with `tree`, `pebble` and `bridge`.
 
-**Adding to the library demo.** A test (`library (R13, R31)` in `scripts/pixel-art-engine.test.mjs`) lists the objects `library-demo` places, and checks that every item sits within its 3×3 grid (columns and rows 0 to 2). When you place a new object there, add its name to that list in the same change, and keep it on the grid. A small object can stand on a block's top: give it the block's tile (its top face's level), and depth order draws it over the block.
+**Adding to the library demo.** `library-demo` is a 3×3 island (columns and rows 0 to 2): keep a new object on the grid. A small object can stand on a block's top: give it the block's tile (its top face's level), and depth order draws it over the block.
 
-```js
-// Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md
-export default {
-  kind: 'block',
-  size: [1, 1, 1],
-  faces: {
-    top: 'grass-2',
-    left: 'soil-2',
-    right: 'soil-3',
-    edge: 'soil-4',
+```json
+{
+  "kind": "block",
+  "size": [1, 1, 1],
+  "faces": {
+    "top": "grass-2",
+    "left": "soil-2",
+    "right": "soil-3",
+    "edge": "soil-4"
   },
-  sides: {
-    keys: {
-      g: 'grass-3',
-      G: 'grass-4',
-      s: 'soil-3',
-      S: 'soil-4',
+  "sides": {
+    "keys": {
+      "g": "grass-3",
+      "G": "grass-4",
+      "s": "soil-3",
+      "S": "soil-4"
     },
-    left: [
-      'gggggggggggggggg',
-      'GGGGGGGGGGGGGGGG',
-      '..G.....G....G..',
-      '................',
-      '................',
-      '................',
-      '................',
-      '....s...........',
-      '................',
-      '................',
-      '................',
-      '..........ss....',
-      '..........ss....',
-      '................',
-      '................',
-      '................',
+    "left": [
+      "gggggggggggggggg",
+      "GGGGGGGGGGGGGGGG",
+      "..G.....G....G..",
+      "................",
+      "................",
+      "................",
+      "................",
+      "....s...........",
+      "................",
+      "................",
+      "................",
+      "..........ss....",
+      "..........ss....",
+      "................",
+      "................",
+      "................"
     ],
-    right: [
-      'GGGGGGGGGGGGGGGG',
-      'GGGGGGGGGGGGGGGG',
-      '...G......G.....',
-      '................',
-      '................',
-      '................',
-      '.........S......',
-      '................',
-      '................',
-      '................',
-      '...SS...........',
-      '...SS...........',
-      '................',
-      '................',
-      '................',
-      '................',
-    ],
-  },
-};
+    "right": [
+      "GGGGGGGGGGGGGGGG",
+      "GGGGGGGGGGGGGGGG",
+      "...G......G.....",
+      "................",
+      "................",
+      "................",
+      ".........S......",
+      "................",
+      "................",
+      "................",
+      "...SS...........",
+      "...SS...........",
+      "................",
+      "................",
+      "................",
+      "................"
+    ]
+  }
+}
 ```
 
 - **`size`** is `[tiles wide, tiles deep, levels high]`. `[1, 1, 0]` is a flat tile and `[1, 1, 1]` a cube. A block is at most 64×64 pixels, so `[2, 2, 0]` fits and `[3, 3, 0]` doesn't.
@@ -127,7 +123,7 @@ export default {
 - **Placement.** `at` is the top-face center of the block's first tile. The sides hang `levels × 16` pixels *below* it, so a cube on the ground is placed at `[col, row, 0]` and its sides reach one level under the ground. To sit a cube on top of a tile, place it at level 1: `[col, row, 1]`. A `[2, 1, 2]` block covers the tiles `[col, row]` and `[col + 1, row]`.
 - **Depth.** A block sorts by the box it fills: its `size` from its first tile, and its levels down from `at`. A wide or tall block goes behind and in front of its neighbours by that box ([Depth order](#depth-order)).
 - **A tile is 30 pixels wide at its widest row,** not 32: pixel centers never land on an edge, so neighbouring tiles share no pixel and leave no gap. Don't nudge blocks by a pixel to hide a seam; there isn't one.
-- **`surface`** (optional) paints a one-tile (32×16) sprite over each tile of the top face, clipped to each tile's own diamond. It's `{ keys, map }`, or `{ keys, loop, prefix, frames }` for a loop. `water` uses five frames of `wf w0`…`w4`, which is what the site's CSS animates. Frame 0 is the reduced-motion frame. Surface colors count toward the 12-color cap.
+- **`surface`** (optional) paints a one-tile (32×16) sprite over each tile of the top face, clipped to each tile's own diamond. It's `{ keys, map }`, or `{ keys, loop, prefix, frames }` for a loop. `water` uses five frames of `wf w0`…`w4`, which its SVG cycles. Frame 0 is the reduced-motion frame. Surface colors count toward the 12-color cap.
 - **`sides`** (optional, blocks with levels only) textures the left and right faces: `{ keys, left, right }`, each map 16 columns by 16 rows. A map is face-local: row 0 is the first pixel below the top's edge in each column, so a band that follows the top edge is just the map's first rows (the grass band above). Column *c* of a face reads map column *c* mod 16, and the map repeats up every level. A 1×1 face is 15 pixels wide, so it shows columns 0–14, and column 15 shows only where a longer face repeats the map. The engine draws the faces, then the sides, then the surface, then `edge`. Side colors count toward the 12-color cap.
 - `npm run pixellab -- object new <name> --kind block` writes a starter block.
 
@@ -135,69 +131,69 @@ export default {
 
 Every outfit extends `character` and replaces whole rows:
 
-```js
-// Pixel-art object. How to edit it: .claude/skills/pixel-art/SKILL.md
-export default {
-  kind: 'sprite',
-  extends: 'character',
-  keys: {
-    g: 'roof-1',
-    h: 'roof-2',
-    i: 'roof-3',
-    t: 'gold-2',
+```json
+{
+  "kind": "sprite",
+  "extends": "character",
+  "keys": {
+    "g": "roof-1",
+    "h": "roof-2",
+    "i": "roof-3",
+    "t": "gold-2"
   },
-  rows: {
-    1: {
-      24: '...............hhhthhhihhii.....',
-    },
-  },
-};
+  "rows": {
+    "1": {
+      "24": "...............hhhthhhihhii....."
+    }
+  }
+}
 ```
 
-- `rows` is `{ <layer index>: { <row index>: '<whole row>' } }`. A row override must be the full width of the base's map.
+- `rows` is `{ "<layer index>": { "<row index>": "<whole row>" } }`. A row override must be the full width of the base's map.
 - `keys` adds keys, or overrides the base's: the base's order comes first, then new keys.
 - The example recolors the base's shirt keys (`g`, `h`, `i`) red and adds a gold buckle `t` on one row of the chest.
 - `character` uses world colors only, with no `ink` and no outline; its keys are in [Isometric characters](#isometric-characters). An outfit may recolor those keys or add its own. `object new <name> --extends character` writes a starter outfit with no keys or rows of its own yet.
-- `character` is a 32×35 canvas, with anchor `[20, 29]` on the ground under the figure, so a scene places it by `tile`. The figure is in its `cbob` layer (layer 1; layer 0 is empty): head rows 7–20, body rows 18–27, legs rows 25–30, columns 13–26. Draw held props in the `cbob` layer too, so they bob with the character. A prop goes left of the body (columns 8–12) or right of it (columns 27–31). A new outfit keeps its figure, with any prop it holds, within 24×32. A larger prop is a separate `prop-<class>-<name>` object (see [Isometric characters](#isometric-characters)).
+- `character` is a 32×35 canvas, with anchor `[20, 29]` on the ground under the figure, so a scene places it by `tile`. The figure is in its `character` layer (layer 1, which carries the bob as an ambient loop and the Range's `hop` action; layer 0 is empty): head rows 7–20, body rows 18–27, legs rows 25–30, columns 13–26. Draw held props in that layer too, so they bob and hop with the character. A prop goes left of the body (columns 8–12) or right of it (columns 27–31). A new outfit keeps its figure, with any prop it holds, within 24×32. A larger prop is a separate `prop-<class>-<name>` object (see [Isometric characters](#isometric-characters)).
 
-### Scenes (`source/scenes/<name>.mjs`)
+### Scenes (`scenes/<name>.json`)
 
-```js
-// Pixel-art scene. How to edit it: .claude/skills/pixel-art/SKILL.md
-export default {
-  output: 'example.svg',
-  viewBox: [-51, -9, 103, 72],
-  origin: [0, 32],
-  items: [
-    { object: 'tile', at: { tile: [0, 0, 0] } },
-    { object: 'small-rock', id: 'rock', at: { tile: [1, 2, 0] } },
-    { object: 'small-rock', class: 'pcloud pc0', at: { px: [30, 0] } },
+```json
+{
+  "output": "example.svg",
+  "viewBox": [-51, -9, 103, 72],
+  "origin": [0, 32],
+  "items": [
+    { "object": "tile", "at": { "tile": [0, 0, 0] } },
+    { "object": "small-rock", "id": "rock", "at": { "tile": [1, 2, 0] } },
+    { "object": "small-rock", "at": { "px": [30, 0] }, "ambient": { "duration": 16000, "offset": 0, "keys": [{ "t": 0, "move": [0, 0] }, { "t": 8000, "move": [12, 0] }] } },
     {
-      group: { 'data-class': '0' },
-      items: [
-        { object: 'outfit-example', at: { px: [-24, -6] } },
-      ],
-    },
+      "group": { "data-class": "0" },
+      "items": [
+        { "object": "outfit-example", "at": { "px": [-24, -6] } }
+      ]
+    }
   ],
-  motion: {
-    duration: 2000,
-    tracks: [
+  "motion": {
+    "duration": 2000,
+    "tracks": [
       {
-        item: 'rock',
-        keys: [
-          { t: 0 },
-          { t: 1000, move: [16, -8] },
-        ],
-      },
-    ],
-  },
-};
+        "item": "rock",
+        "keys": [
+          { "t": 0 },
+          { "t": 1000, "move": [16, -8] }
+        ]
+      }
+    ]
+  }
+}
 ```
 
 - **Items draw back to front by where they stand,** not by their place in the list, and the file is kept in that order ([Depth order](#depth-order)). Never reorder lines to fix an overlap.
-- **`at`** is `{ tile: [col, row, level] }` (snaps to the grid) or `{ px: [x, y] }` (exact, for imported art and nudges), with an optional `level` for a pixel-placed item (`{ px: [x, y], level: 1 }`): how high it stands, which only changes its depth. All are whole numbers.
-- **`depth`** (optional, `'front'` or `'back'`) on an item or a `{ group }`: draw it over, or under, everything else in its list.
-- **`class`** on an item wraps the object in a `<g class>` (the clouds' `pcloud pc0`). **`group`** makes a `<g>` with `class` or `data-*` attributes around its items (the Range's `data-class` variants).
+- **`at`** is `{ "tile": [col, row, level] }` (snaps to the grid) or `{ "px": [x, y] }` (exact, for imported art and nudges), with an optional `level` for a pixel-placed item (`{ "px": [x, y], "level": 1 }`): how high it stands, which only changes its depth. All are whole numbers.
+- **`depth`** (optional, `"front"` or `"back"`) on an item or a `{ group }`: draw it over, or under, everything else in its list.
+- **`class`** on an item wraps the object in a `<g class>`. **`group`** makes a `<g>` with `class` or `data-*` attributes around its items (the Range's `data-class` variants). Both pass through to the SVG unchanged: they're what page code may select (Pixel Lab's site contract).
+- **`ambient`** (optional) on an item is a loop that repeats on its own (the clouds' drift, as in the example). **`actions`** are one-shot moves the page plays by name with `data-play`. Set them with `scene ambient` and `scene action`; the `pixel-art-motion` skill has the rules.
+- **`image`** (optional, `{ "file": "<name>.png", "scale": 5 }`) also renders the scene's viewBox on the card color to `static/public/thumbnails/<file>` (the blog's thumbnails).
 - **`output`** names the SVG it writes in `src/assets/pixel-art/`. Leave it out for a preview-only scene; it's still compiled and checked.
 - **`id`** (optional, kebab-case, unique in the scene) names an item so a `motion` track can move it.
 - **`motion`** (optional) animates items on one loop of `duration` ms, one track per item it moves (the example walks the rock 16 px up-right and back every 2 s). Each key sets, from `t` ms on, the item's `move` (pixels from its placement), `show` and `pose` (an object drawn instead, with the same anchor). The first key is at 0, the rest frame that reduced motion and `art preview` show. Moves step a pixel at a time. The `pixel-art-motion` skill (Scene motion) has the rules, and Pixel Lab's timeline plays and scrubs it.
@@ -211,22 +207,22 @@ Pixel Lab (v0.5.0 on) works out what draws in front from where each item stands,
 - **An edit can change paths.** `scene_place`, `scene_move`, `scene_set` and the rest return the item's path after the sort, and `reordered` lists the other paths that moved. List the items again (`scene_items`) after an edit before using a path.
 - **`level` on a pixel-placed item** says how high it stands: `scene_set <scene> <item> --level <n>`. It doesn't move what's drawn; each level brings the item one tile closer on both axes in depth. Every pixel item stands on level 0 until it has one, so give one to anything that rides or hangs above the ground: the island's ore and stones on trucks, belts, the hopper and the cart, and the heaps' top lumps are at 1, the hopper and the jib at 2, the hook at 3. An item on a tile takes its level from its tile, and changing that moves it.
 - **`footprint: [wide, deep]` on a sprite** (`object_footprint <name> --to w,d`) says how many tiles its box covers, from its anchor's tile toward the front (+col, +row), as a block's size does from its first tile. The site's sprites are anchored at their front foot, so a footprint claims ground in front of the sprite, and whatever is placed there next sorts behind it. Add one only where a sort needs it, and check the scene: `mine-cart` ([2, 1]) and `container` ([2, 2]) have one, so the cart draws in front of the ore screen it stands under and the train's container between its flatcar and the locomotive. A footprint changes where every scene using the object sorts; sort them (`check` warns until you do).
-- **`depth: 'front'` or `'back'`** on an item or a group draws it over, or under, everything else in its list: `scene_set <scene> <path> --depth front|back|auto` (`auto` takes it off). On a top-level item or group it means the whole scene. The island's shadow group is `back`, and the bridge rail's group is `front`. Use it when nothing about where the item stands can say it; it holds against anything placed later.
+- **`"depth": "front"` or `"back"`** on an item or a group draws it over, or under, everything else in its list: `scene_set <scene> <path> --depth front|back|auto` (`auto` takes it off). On a top-level item or group it means the whole scene. The island's shadow group is `back`, and the bridge rail's group is `front`. Use it when nothing about where the item stands can say it; it holds against anything placed later.
 - **Groups sort as one object,** by the box around their members, and their members sort among themselves inside. A run of `data-class` variant groups sorts as one.
-- **Moving items.** An item with a motion track that is alone in its list reorders as it moves, and the SVG draws a copy for each place it takes (`check` lists `copies`). One inside a group keeps its place at rest for the whole loop. Every moving piece on the island is alone in its own `enter` group, so nothing on the island reorders and there are no copies; a test keeps it so. Its order against a piece it only meets mid-loop is the list's order, so check those moments with `scene_render --time <ms>`.
+- **Moving items.** An item with a motion track that is alone in its list reorders as it moves, and the SVG draws a copy for each place it takes (`check` lists `copies`). One inside a group keeps its place at rest for the whole loop. Every moving piece on the island is alone in its own `enter` group, so nothing on the island reorders and there are no copies; `check` would list them (`copies`). Its order against a piece it only meets mid-loop is the list's order, so check those moments with `scene_render --time <ms>`.
 - **There is no raise or lower,** and `scene_place` takes no index: the override and the data above are the only controls. Don't reorder lines to fix an overlap.
 - **Adding many depth fields at once** (a migration, a new section): each edit re-sorts, and a sort made with only part of the data in place can move pieces that only meet mid-loop out of order. Add the data, then sort once, and compare the renders with the scene as it was ([depth order spec](../../../docs/intents/2026-10-pixel-lab-depth-order/spec.md), D4).
 
 ## Pixel Lab: the MCP and the CLI
 
-Pixel Lab for Mac (the owner's editor, from `~/Projects/jlawcordova-lab`) opens this document and edits it with the engine, which lives in the lab and is installed here as the `pixellab` dev dependency. Every action it has is one command, reachable three ways: the app, the `pixellab` CLI, and the `pixellab` MCP server, whose tools are the commands with `.` → `_` (`scene.place` is `mcp__pixellab__scene_place`). Use it to look at art and to edit it. `npm run art` (its `art build`) stays the compiler: it writes the SVGs; `art preview` writes the review previews and `art sizes` measures bytes (next section).
+Pixel Lab for Mac (the owner's editor, from `~/Projects/jlawcordova-lab`, v0.6.0 or later) opens this document and edits it with the program it bundles, the same one `scripts/pixellab.mjs` pins here. Every action it has is one command, reachable three ways: the app, the `pixellab` CLI, and the `pixellab` MCP server, whose tools are the commands with `.` → `_` (`scene.place` is `mcp__pixellab__scene_place`). Use it to look at art and to edit it. `npm run art` (its `art build`) stays the compiler: it writes the SVGs and the thumbnails; `art preview` writes the review previews and `art sizes` measures bytes (next section).
 
 **Find it, in this order:**
 
 1. **The MCP tools are the way to work, and the first choice.** If `mcp__pixellab__*` tools are listed (or deferred: load them with ToolSearch, query `+pixellab`), use them for looking at art and for editing it. Call `document_info` first. Its `root` must be this site's document (`~/Projects/jlawcordova.github.io/src/assets/pixel-art/jlawcordova.pixellab`, or this checkout's). If it names another document, such as a scratch copy, the server is bound to the wrong place: don't edit or draw through it. Stop and tell the owner to point the MCP at this document (`--document` or `--site`); never connect it yourself. Only a worktree, or an MCP that can't be fixed, falls back to the CLI, and then only if the owner says so.
-2. **The CLI** (the fallback, and what compiles). `npm run pixellab -- <group> <verb> [args]` runs the installed `pixellab` on this checkout (`--site .` is in the script). `npm run pixellab -- help` and `npm run pixellab -- <group> --help` list the commands; the reference is `docs/cli.md` in the lab repo. The app's own copy (`node "$HOME/Applications/Pixel Lab.app/Contents/Resources/cli/bin/pixellab.mjs" … --site <checkout>`) is the same CLI, possibly a different version.
+2. **The CLI** (the fallback, and what compiles). `npm run pixellab -- <group> <verb> [args]` runs the pinned `pixellab` program on this checkout (`--site .` is in the script; the program is downloaded into `.pixellab-bin/` on first use). `npm run pixellab -- help` and `npm run pixellab -- <group> --help` list the commands; the reference is `docs/cli.md` in the lab repo at the pinned tag. The app bundles its own copy of the same program, possibly a different version.
 
-The owner connects the MCP with `claude mcp add pixellab -- node "$HOME/Applications/Pixel Lab.app/Contents/Resources/cli/bin/pixellab.mjs" serve --mcp`. Never run that, or install the app, yourself.
+The owner connects the MCP to the app's bundled program (`serve --mcp`), as the lab's README shows. Never run `claude mcp add`, or install the app, yourself.
 
 **The flow: make the change, then send it for approval over the MCP.** In the owner's checkout, every art change, small or large, goes this way:
 
@@ -248,8 +244,8 @@ The owner connects the MCP with `claude mcp add pixellab -- node "$HOME/Applicat
 | Validate | `check <name>` (the engine's problems for that doc and what it uses, or its one-line summary, and warnings: `out_of_order`, `copies`, `off_grid`) |
 | Fix what draws in front | `scene_set --level` (a pixel item), `object_footprint`, `scene_set --depth`; `scene_sort` for a file out of order ([Depth order](#depth-order)) |
 | Change art (the default) | MCP edits, then `doc_save`, which writes a **proposal** for the owner to approve (the flow above) |
-| Change art in a worktree, or what the MCP can't express once the owner says so | the CLI's edit commands, or whole rows in the `.mjs` source (below) |
-| Compile and test | `npm run art`, `npm test` |
+| Change art in a worktree, or what the MCP can't express once the owner says so | the CLI's edit commands, or whole rows in the `.json` source, in canonical form (below) |
+| Compile and test | `npm run art`, `npm run pixellab -- check`, `npm test` |
 | Review images and bytes | `art_preview`, `art_sizes` (MCP), not PNG files opened from disk |
 
 **Edits through the MCP are proposals.** Each MCP session holds open docs as working copies with undo (`doc_undo`, `doc_redo`, `doc_status`). Renders and `check` see the unsaved edits. Nothing touches the site until `doc_save`, which validates the doc and writes a proposal for the owner instead of the source. Pixel Lab shows it in its Agent window (⌥⌘A), ghosted over the stage with a diff, and the owner approves or rejects it there (or with `pixellab proposal apply <id>`). `proposal_list` lists proposals and `proposal_render` draws one as it would land.
@@ -262,7 +258,7 @@ The owner connects the MCP with `claude mcp add pixellab -- node "$HOME/Applicat
 
 **Draw maps in bulk, touch them up with commands.** Painting pixel by pixel is slow for a whole map.
 - **In the owner's checkout:** generate the map with a script, then send it through the MCP. Size the object with `object_new` or `object_resize`, then make one `object_paint` call per color with every pixel of that color, and one `object_erase` for the pixels that go. Save it as one proposal.
-- **In a worktree:** write the whole rows in the source, or generate them with `serialize()` from `pixellab/serialize`.
+- **In a worktree:** write the whole rows in the source, or send a whole map at once with `object map set <name> <rows>`. A hand edit must stay in canonical form; `check` warns if it isn't.
 
 Then use `object_paint`, `object_fill` and `object_erase` for fixes and feedback, and the scene commands for placing and arranging:
 - **Pixels** are map column and row, as in `object_render` at scale 1. Pass every pixel of one color in a single call. Painting a color the object doesn't use yet adds a key, as the lab does: check the key it got with `object_show`, and rename it in the source if it breaks the file's material convention (a lowercase letter for a shade, its uppercase for the darker one).
@@ -273,6 +269,7 @@ Then use `object_paint`, `object_fill` and `object_erase` for fixes and feedback
 **What the MCP can't express.** Since Pixel Lab v0.4.0 the MCP places items into groups (`scene_place --group`, `--new-group … --foot`), sets a group's attributes (`scene_group_set`), keeps `data-x`/`data-y` in step when an item moves, and keys a track's `show` and `pose` (`scene_track_add`, `scene_key_set`, `scene_motion_path`). A few edits are still only in the source:
 - moving an item from one `{ group }` to another;
 - a track rewritten as a whole, rather than key by key;
+- a layer's `class`, a scene's `image`, and the manifest;
 - depth data added to many items before a single sort ([Depth order](#depth-order)).
 
 In the owner's checkout, say which edit it is and ask before writing it. With the owner's OK:
@@ -292,11 +289,11 @@ This path needs no editor and no browser, and it's the one that compiles, previe
 2. **Edit whole rows**, and keep every row the same width. For a block, change `size` and `faces` instead. Add each color you use to `keys`, from the world palette.
 3. **Check it:** `npm run pixellab -- check <name>`. It prints every problem with its file, layer, frame, row and column, and the rule broken, or a one-line summary (size, colors against the cap, layers, frames). Fix each problem where it points.
 4. **Look at it with the MCP, not by opening PNG files.** `object_render` and `scene_render` hand you the image directly, with other frames (`frame`), times (`time`), scales (up to 16×), themes and `show` paths; `art_preview` (also `palette`) gives the review PNG on the document's card color and `art_sizes` the bytes. Don't write PNGs with the CLI and open them with Read to check art. If the MCP isn't usable, say so rather than falling back to PNG files. The picture, not the text, decides whether the art is right: an object stands on one tile outline, a scene shows its viewBox at frame 0.
-5. **Generate the output:** `npm run art` writes the SVGs for scenes with an `output`, then run `npm test`. A test fails if a committed SVG is stale against its sources.
+5. **Generate the output:** `npm run art` writes the SVGs for scenes with an `output` and the PNGs for scenes with an `image`, then run `npm test`. The outputs are git-ignored: commit only the sources. `npm run dev`, `npm run build` and `npm test` rebuild them first.
 
 A name can be written `objects/<name>` or `scenes/<name>` when an object and a scene share it.
 
-**Sizes.** Each SVG must stay within its budget, or `npm run art` reports it `OVER BUDGET` and exits 1: `hero-island.svg` 750 KB raw and 150 KB gzip, `range-sprite.svg` 200 KB and 50 KB, every other SVG 100 KB and 25 KB. `npm run pixellab -- art sizes <scene>` shows where the bytes go: the scene's total, then what each object adds (the scene compiled without it) and what each color's path takes, raw and gzip, each against the sources at `HEAD`.
+**Sizes.** Each SVG should stay within its budget. Over it, `npm run art` still writes it and prints a warning (never a failure): report it, and cut bytes before the PR. The budgets: `hero-island.svg` 750 KB raw and 150 KB gzip, `range-sprite.svg` 200 KB and 50 KB, every other SVG 100 KB and 25 KB. `npm run pixellab -- art sizes <scene>` shows where the bytes go: the scene's total, then what each object adds (the scene compiled without it) and what each color's path takes, raw and gzip, each against the sources at `HEAD`.
 
 **Close-ups.** Preview-only scenes frame each part of the hero island tightly, so every review round renders the same view. Preview them with `--scale 6`:
 
@@ -310,7 +307,7 @@ A name can be written `objects/<name>` or `scenes/<name>` when an object and a s
 | `closeup-front-trees` | The front trees of the middle and mining sections |
 | `closeup-sky` | The three clouds and the crane jib's head |
 
-They place the island's objects at the island's positions, with the island's levels and the overrides of the island's groups (the shadow pieces `back`, the bridge rail `front`), in the island's order (its depth order, flattened out of its groups), and a test keeps them that way: when the island's scene renames, moves or re-levels an object, change the close-ups in the same commit. Sorted on its own, a close-up can settle pieces that don't overlap in another order than the island; put it in the island's order instead, which is a valid depth order for it (`scene sort` then moves nothing). They show the island's rest frame: no `id`s, no `motion`, and none of the items hidden at t 0. They don't use the entrance groups. Where a close-up cuts the island off, the cubes at its edge show their sides. The preview's card color is one shade off the hero's background, so the sky reads as it does on the site.
+They place the island's objects at the island's positions, with the island's levels and the overrides of the island's groups (the shadow pieces `back`, the bridge rail `front`), in the island's order (its depth order, flattened out of its groups). No test checks that any more (Pixel Lab v0.6.0 spec R18): when the island's scene renames, moves or re-levels an object, change the close-ups in the same commit, and compare their renders. Sorted on its own, a close-up can settle pieces that don't overlap in another order than the island; put it in the island's order instead, which is a valid depth order for it (`scene sort` then moves nothing). They show the island's rest frame: no `id`s, no `motion`, and none of the items hidden at t 0. They don't use the entrance groups. Where a close-up cuts the island off, the cubes at its edge show their sides. The preview's card color is one shade off the hero's background, so the sky reads as it does on the site.
 
 ## The app (where the owner looks)
 
@@ -322,8 +319,8 @@ There is no browser editor any more: the web lab at `/lab/pixel-art/` was retire
 
 `art/explainer-library.pixellab/` is a second document: isometric assets for the owner's videos and infographics, not the site ([explainer library spec](../../../docs/intents/2026-10-explainer-library/spec.md) lists every asset and its loop). The same rules and look apply, with these differences:
 
-- **Its palette is a copy of the site's.** A test keeps the two files identical, so a palette change edits both.
-- **Edit it with the CLI and `--document`:** `npx pixellab <group> <verb> … --document art/explainer-library.pixellab` (the flag goes after the command). The `pixellab` MCP server is bound to the site's document, so it can't edit this one; review PNGs come from `art preview … --out` into `.art-preview/`.
+- **Its palette is a copy of the site's.** A test keeps the two `palette.json` files identical, so a palette change edits both.
+- **Edit it with the CLI and `--document`:** `npm run pixellab -- <group> <verb> … --document art/explainer-library.pixellab` (`--document` wins over the script's `--site .`). The `pixellab` MCP server is bound to the site's document, so it can't edit this one; review PNGs come from `art preview … --out` into `.art-preview/`.
 - **It publishes nothing.** Its scenes are preview-only contact sheets (`sheet-kitchen`, `sheet-office`, `sheet-cloud`, `sheet-ai`, `sheet-glue`), and every asset must stand on one of them. `npm run explainer-export` renders every object (one PNG per loop frame) and sheet for video.
 - **A new asset** goes in the spec's Asset list and in `ASSETS` in `scripts/explainer-library.test.mjs`, with its loop.
 - **Depth order applies here too.** Something placed by pixel on a table, desk or counter top stands at `level: 1`, and the multi-tile sprites (`desk-l`, `table-long`, `kitchen-pass`, `monitor-wall`, `sandbox`) carry a `footprint`. `desk` and `chair-turned` have a `[2, 1]` footprint so they sort in front of the cubicle walls on their tile (the walls are drawn on their tile's back edge but sort as the whole tile).
@@ -335,31 +332,32 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
 
 ## The art that's already on the site
 
-- **The hero island** (`scenes/hero-island.mjs`, written to `hero-island.svg`) is three joined sections with a production line running through them ([island level up spec](../../../docs/intents/2026-10-island-level-up/spec.md), and [art-brief.md](../../../docs/intents/2026-10-island-level-up/art-brief.md) for every object's sizes, anchors and paint-order rules):
-  - the ground: 132 one-level cubes, listed row by row (row −6 to 10, then by column), which is their depth order. The middle island is cols 0–5 on rows 0–5, plus cols 6–7 on rows 0–2; the mining section is rows 6–10 and the rail section rows −6 to −1 (cols 0–10). Inland and at the front corner it's `block` (or `block-mine` on the ore ground), the cliffs take the edge pieces (`block-left`, `block-right`, `block-mine-left`, and `block-rail` where the railway meets the B–R cliff), and the road and the river run on `block-road` and `block-river` with `path` and `river` laid over them; `track`, `track-mine` and `level-crossing` lie on their cubes the same way. The road runs the whole of col 2 (crossing the track at [2, −3]), and the river the whole of row 3 to the waterfall at [5, 3]. Inland cubes' sides are hidden at rest, and a test checks the settled island paints what flat tiles would (except one corner column at each concave step in the outline, which shows by design);
+- **The hero island** (`scenes/hero-island.json`, written to `hero-island.svg`) is three joined sections with a production line running through them ([island level up spec](../../../docs/intents/2026-10-island-level-up/spec.md), and [art-brief.md](../../../docs/intents/2026-10-island-level-up/art-brief.md) for every object's sizes, anchors and paint-order rules):
+  - the ground: 132 one-level cubes, listed row by row (row −6 to 10, then by column), which is their depth order. The middle island is cols 0–5 on rows 0–5, plus cols 6–7 on rows 0–2; the mining section is rows 6–10 and the rail section rows −6 to −1 (cols 0–10). Inland and at the front corner it's `block` (or `block-mine` on the ore ground), the cliffs take the edge pieces (`block-left`, `block-right`, `block-mine-left`, and `block-rail` where the railway meets the B–R cliff), and the road and the river run on `block-road` and `block-river` with `path` and `river` laid over them; `track`, `track-mine` and `level-crossing` lie on their cubes the same way. The road runs the whole of col 2 (crossing the track at [2, −3]), and the river the whole of row 3 to the waterfall at [5, 3]. Inland cubes' sides are hidden at rest, so the settled island paints what flat tiles would (except one corner column at each concave step in the outline, which shows by design);
   - the middle island's house, river bridge and rail, back trees on their `tree-shade`s, and the waterfall (`waterfall-face` and `flag`, falling below the island);
   - the mining section: `tunnel-road`, the heap of gold-cube `ore` and gray `stone`, `conveyor-row` into the `ore-screen`, which sorts the ore into the `mine-cart` on `track-mine` and the stone onto a reject pile;
   - the processing line: `hopper`, `conveyor-feed` carrying the ore into the `processor` (its LED is an `hf` loop), the `container`'s loading spot and `boxes`;
   - the rail section: the two-piece `tunnel-rail`, `track`, the `level-crossing` with a `crossing-signal` and `crossing-gate` on each side, the crane (`crane-mast`, `crane-jib` and `crane-hook`, with their poses) and the train;
   - the trucks (`truck-open` and its poses), the ore, the parcel, the containers, the cart, the hook, the jib, the stones, the crossing's signals and gates and the train cars carry `id`s, and the scene's 28 s `motion` moves them (the `pixel-art-motion` skill, Scene motion);
-  - `cloud-a`, `cloud-b` and `cloud-c`, placed with `pcloud pc0` to `pc2`. `fence`, `truck`, `truck-green` and `crane-box` are in the library but off the island.
+  - `cloud-a`, `cloud-b` and `cloud-c`, each with an ambient loop that drifts it 12 px right and back (16 s; 20 s from 7 s in; 13 s from 3 s in). `fence`, `truck`, `truck-green` and `crane-box` are in the library but off the island.
 
   **Entrance groups.** Every item sits in one top-level group with class `enter`, which `Hero.astro` animates with the schedule in `src/lib/island-entrance.mjs`. How they move, and how to try another build-up, is the `pixel-art-motion` skill:
-  - `'data-enter': 'shadow'`: the 24 shadow pieces;
-  - `'data-enter': 'ground'` with `'data-col'`, `'data-row'`, `'data-x'` and `'data-y'`: one group per cube, holding the cube and any top laid over it, with its tile's center as its foot;
-  - `'data-enter': 'object'` with `'data-x'` and `'data-y'`: one group per run of objects that arrive together, in depth order. The foot is the center of the sprite's bottom row (`[round(at.px[0] − anchor[0] + width / 2), at.px[1] − anchor[1] + height − 1]`), or a tile-placed object's tile center. Every item shares the group's x, and its y is the first item's. A `tree-shade` takes its tree's foot, and the crane's jib and hook take the mast's;
-  - `'data-enter': 'sky'`: the clouds.
+  - `"data-enter": "shadow"`: the 24 shadow pieces;
+  - `"data-enter": "ground"` with `"data-col"`, `"data-row"`, `"data-x"` and `"data-y"`: one group per cube, holding the cube and any top laid over it, with its tile's center as its foot;
+  - `"data-enter": "object"` with `"data-x"` and `"data-y"`: one group per run of objects that arrive together, in depth order. The foot is the center of the sprite's bottom row (`[round(at.px[0] − anchor[0] + width / 2), at.px[1] − anchor[1] + height − 1]`), or a tile-placed object's tile center. Every item shares the group's x, and its y is the first item's. A `tree-shade` takes its tree's foot, and the crane's jib and hook take the mast's;
+  - `"data-enter": "sky"`: the clouds.
 
-  A new object goes in its own `object` group with its foot (`scene_place --new-group '{"class": "enter", "data-enter": "object"}' --foot`), and the sort puts the group where it stands; a test checks every x and y. Give it a `level` if it rides or hangs above the ground ([Depth order](#depth-order)). Groups don't merge colors across each other, so they cost bytes.
-- **The Range sprite** (`scenes/range-sprite.mjs`) puts each character in its own setting ([Range settings spec](../../../docs/intents/2026-10-range-settings/spec.md)):
+  A new object goes in its own `object` group with its foot (`scene_place --new-group '{"class": "enter", "data-enter": "object"}' --foot`), and the sort puts the group where it stands; `island-entrance.test.mjs` reads every group's x and y from the compiled SVG. Give it a `level` if it rides or hangs above the ground ([Depth order](#depth-order)). Groups don't merge colors across each other, so they cost bytes.
+- **The Range sprite** (`scenes/range-sprite.json`) puts each character in its own setting ([Range settings spec](../../../docs/intents/2026-10-range-settings/spec.md)):
   - Four `island-shadow` pieces sit outside every group, shared by all classes.
-  - Seven `data-class` groups follow, one per class, in the order of `rangeClasses` in `src/data/home.ts` (a test keeps them in step). Each holds its whole setting in entrance groups, as on the hero island: three `ground` rows (`data-row` 0 to 2) of one-level cubes from the setting's own floor set, then one `object` group per prop and one for the outfit, each with its foot `data-x`. `Range.astro` floats them up on every class change with `RANGE_TIMING` from `src/lib/island-entrance.mjs`.
-  - Each outfit extends `character` and stands on the center tile, placed by `{ tile: [1, 1, 0] }` in an `object` group with `data-x="0"`. The characters are isometric figures in the [island and Range look](#island-and-range-look), with no `ink` outline ([Isometric Range](../../../docs/intents/2026-10-range-isometric/spec.md)).
-  - A test requires seven class groups, each with a floor set no other class uses.
+  - Seven `data-class` groups follow, one per class, in the order of `rangeClasses` in `src/data/home.ts` (keep them in step by hand; no test checks it since v0.6.0). Each holds its whole setting in entrance groups, as on the hero island: three `ground` rows (`data-row` 0 to 2) of one-level cubes from the setting's own floor set, then one `object` group per prop and one for the outfit, each with its foot `data-x`. `Range.astro` floats them up on every class change with `RANGE_TIMING` from `src/lib/island-entrance.mjs`.
+  - Each outfit extends `character` and stands on the center tile, placed by `{ "tile": [1, 1, 0] }` in an `object` group with `data-x="0"`. The characters are isometric figures in the [island and Range look](#island-and-range-look), with no `ink` outline ([Isometric Range](../../../docs/intents/2026-10-range-isometric/spec.md)).
+  - Seven class groups, each with a floor set no other class uses.
+  - The character's `character` layer bobs (an ambient loop of 1 s) and carries the `hop` action the Range's A plays with `data-play="hop"` on the class's group (`range-sprite--hop` ends it).
   - `art preview range-sprite` and Pixel Lab draw only the first `data-class` group. To look at another class, render it with `scene_render range-sprite --show <path>`, the path of any item in that class's group (from `scene_items`). For a preview on the card color, preview a scratch copy of the scene that keeps the shadow and only that class's group.
-- **The blog's thumbnails** (`scenes/thumb-<key>.mjs`, one per post) are preview-only scenes: a small floating island (`block`, `block-left`, `block-right`, with `island-shadow` pieces at each cliff tile's center + [0, 32]) holding the post's idea, in a `viewBox` exactly 240×126, so `npm run thumbnails` (`scripts/blog-thumbnails.mjs`) renders it on the card color at 5× to the 1200×630 `static/public/thumbnails/<key>.png`. The site crops it to 16:9, so keep the subject 12 px clear of the left and right edges. Objects made for one thumbnail are named `thumb-<key>-<thing>`. A test fails when a post has no thumbnail or a PNG is stale; after changing a `thumb-*` scene, or an object one places, run `npm run thumbnails`.
-- **Recolors.** `truck-green` is `truck` with other colors: it `extends: 'truck'` and lists only the keys that differ. Use the same pattern for a variant that changes colors but not shape.
-- **Keep the CSS hooks.** `pixel-art.css` animates the classes on these groups (`wf w0`…, `pcloud pc0`, `cbob`); the scene's motion styles its own `mv-` groups. Don't rename a loop, prefix or placement class unless you change the CSS in the same PR.
+- **The blog's thumbnails** (`scenes/thumb-<key>.json`, one per post) are preview-only scenes: a small floating island (`block`, `block-left`, `block-right`, with `island-shadow` pieces at each cliff tile's center + [0, 32]) holding the post's idea, in a `viewBox` exactly 240×126, with `"image": { "file": "<key>.png", "scale": 5 }`, so `npm run art` renders it on the card color to the 1200×630 `static/public/thumbnails/<key>.png`. The site crops it to 16:9, so keep the subject 12 px clear of the left and right edges. Objects made for one thumbnail are named `thumb-<key>-<thing>`. A test fails when a post has no thumbnail scene or a scene has no `image`. The size isn't tested: keep the viewBox 240×126.
+- **Recolors.** `truck-green` is `truck` with other colors: it `"extends": "truck"` and lists only the keys that differ. Use the same pattern for a variant that changes colors but not shape.
+- **Keep the page's hooks.** Each SVG plays its own animation; the page's CSS animates none of it. Page code selects only what Pixel Lab's site contract promises: the root's `data-pixellab`, the document's classes and `data-*` attributes (`enter`, `data-enter`, `data-class`, `data-row`, `data-x`, the `character` class) and `data-play` with `animationend`. Don't rename one of those unless you change the page in the same PR, and never select a generated `<scene>--…` class.
 
 ## Island and Range look
 
@@ -438,7 +436,7 @@ The Range's characters are built like the clouds: stacked boxes, no outline, no 
   - The legs change only their colors.
   - Keep the base's face where the outfit shows it, so every class reads as the same person (the knight wears an open helm).
 - **Props.**
-  - A held prop is drawn in the `cbob` layer.
+  - A held prop is drawn in the `character` layer (layer 1), so it bobs and hops with the figure.
   - A flat prop (a shield) lies on the left face's plane, so its top and bottom, and any emblem bar, follow the 2:1 slope, with a 1-px darker edge on its right for its thickness.
   - A long prop (a sword, a staff) is a vertical 2-px stroke, lit on the left and dark on the right, 1 px clear of the head, with the fist drawn over its grip.
   - A prop too big for 24×32 is its own `prop-<class>-<name>` object, placed by `tile` next to the figure inside that class's `data-class` group, so it shows and hides with it; depth order draws it behind or in front of the figure by where it stands.
@@ -483,14 +481,14 @@ The achievement icons are solid objects built like the clouds and the bridge, on
 
 - `.` is transparent. A space is not a valid key.
 - Keys are case-sensitive: `g` and `G` are different colors.
-- Long runs of one character are easy to miscount. Count against the preview, not the text, and let `--check` find ragged rows.
-- Don't hand-edit `src/assets/pixel-art/*.svg`, and don't add `.src.svg` files.
+- Long runs of one character are easy to miscount. Count against the preview, not the text, and let `check` find ragged rows.
+- Don't hand-edit or commit `src/assets/pixel-art/*.svg` or `static/public/thumbnails/*.png`, and don't add `.src.svg` files.
 - Don't reorder a scene's lines to change what draws in front: the next edit sorts them back. Give the item a `level`, its object a `footprint`, or the `depth` override ([Depth order](#depth-order)).
 - A path from before an edit can point at another item after it. Use the path the edit returns, or list the items again.
 
 ## Before opening a PR
 
-- [ ] `npm run pixellab -- check <name>` passes for everything you touched, with no `out_of_order` warning (and any `copies` warning explained in the PR), and `npm run art` reports every file `lossless` and none `OVER BUDGET`. For the hero island, paste `npm run pixellab -- art sizes hero-island` into the PR.
+- [ ] `npm run pixellab -- check <name>` passes for everything you touched, with no `out_of_order` warning (and any `copies` warning explained in the PR), and no `isn't in canonical form` warning; `npm run art` reports every file `lossless`, and any over-budget warning is in the PR with what you'll cut. For the hero island, paste `npm run pixellab -- art sizes hero-island` into the PR.
 - [ ] World colors only (outfit colors only in an outfit); within the caps; light from the island's side.
 - [ ] The preview PNGs (1× and 4× at least) are attached to the PR. For the Range, each class you touched at 1× and 3×, from a scratch copy of `range-sprite` that keeps the shadow and only that class's group, and a new floor set at 6×.
 - [ ] `npm test` shows `# fail 0`.
