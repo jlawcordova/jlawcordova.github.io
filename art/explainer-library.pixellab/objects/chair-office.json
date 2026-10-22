@@ -1,0 +1,35 @@
+{
+  "kind": "sprite",
+  "extends": "chair",
+  "keys": {
+    "w": "water-3",
+    "W": "water-4",
+    "s": "soil-4",
+    "a": "water-1"
+  },
+  "rows": {
+    "0": {
+      "0": ".......ww.......",
+      "1": ".......WWww.....",
+      "2": ".......WWWWww...",
+      "3": ".......WWWWWWww.",
+      "4": ".......WWWWWWWWw",
+      "5": ".......sWWWWWWWW",
+      "6": "........ssWWWWWW",
+      "7": "..........ssWWWW",
+      "8": "............ssWs",
+      "9": ".....wwwwww..sW.",
+      "10": "...wwwwwwwwww.sW",
+      "11": ".wwwwwwwwwwwwws.",
+      "12": "Wwwwwwwwwwwwwwws",
+      "13": "WWWwwwwwwwwwwwss",
+      "14": "sWWWWwwwwwwWWsss",
+      "15": ".ssWWWWWWWWWWss.",
+      "16": "...sssWWWWsss...",
+      "17": ".......as.......",
+      "18": "....sssassss....",
+      "19": "..sss..ss..sss..",
+      "20": "..s....ss....s.."
+    }
+  }
+}

@@ -5,22 +5,26 @@
     "r": "roof-1",
     "R": "roof-2",
     "s": "roof-3",
-    "S": "roof-4"
+    "S": "roof-4",
+    "g": "grass-1",
+    "G": "grass-2",
+    "a": "grass-3",
+    "b": "grass-4"
   },
   "layers": [
     {
       "map": [
-        "rrrrrrrrrrr.....",
-        "RRRRRRRRRSS.....",
-        "RRRRRRRRSSS.....",
-        "RRRRRRRRRR......",
-        "RRRsRRRRRRRR....",
-        "RSSsssRRRRRRRR..",
-        "SSS.ssssRRRRRRRR",
-        "S.....ssssRRRRRS",
-        "........ssssRSSS",
-        "..........sssSS.",
-        "............s..."
+        "ggggggggggg.....",
+        "GGGGGGGGGbb.....",
+        "GGGGGGGGbbb.....",
+        "GGGGGGGGGG......",
+        "GGGaGGGGGGGG....",
+        "GbbaaaGGGGGGGG..",
+        "bbb.aaaaGGGGGGGG",
+        "b.....aaaaGGGGGb",
+        "........aaaaGbbb",
+        "..........aaabb.",
+        "............a..."
       ]
     }
   ]

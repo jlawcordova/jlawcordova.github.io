@@ -42,10 +42,10 @@ Numbers 1–20 are the owner's list; 21–44 were added in the brainstorm and ap
 | 4 | Stove | `stove` | `ff` flames, steam |
 | 5 | Sink | `sink` | `wf` running water |
 | 6 | Tables | `table`, `table-long` | still |
-| 7 | Chairs | `chair`, `chair-turned` (the other facing) | still |
+| 7 | Chairs | `chair`, `chair-turned` (the other facing), `chair-office` (extends `chair`) | still |
 | 8 | Server machines | `server-rack` (oversized), `server-tower` | `hf` LEDs |
 | 9 | Computer | `computer` | `ff` cursor on screen |
-| 10 | Desks | `desk`, `desk-l` | still |
+| 10 | Desks | `desk`, `desk-l`, `desk-white-oak`, `desk-l-white-oak` (white-oak recolors) | still |
 | 11 | Potted plants | `plant-tall`, `plant-bush`, `plant-cactus` | still |
 | 12 | Cubicle walls | `cubicle-wall`, `cubicle-wall-turned`, `cubicle-corner` | still |
 | 13 | Office floor | `block-office`, `tile-office` | still |
@@ -53,7 +53,7 @@ Numbers 1–20 are the owner's list; 21–44 were added in the brainstorm and ap
 | 15 | Wires | `wire`, `wire-turned`, `wire-corner-n`, `wire-corner-e`, `wire-corner-s`, `wire-corner-w`, `wire-junction`, `wire-plug` | `wf` packets on `wire` and `wire-turned` |
 | 16 | Office staff | `staff-developer`, `staff-manager`, `staff-analyst` | `cbob` |
 | 17 | Laptop | `laptop` | `ff` screen |
-| 18 | Cats | `cat`, `cat-black`, `cat-gray`, `cat-white`, `cat-calico` (recolors extend `cat`) | `hf` tail flick |
+| 18 | Cats | `cat`, `cat-tabby`, `cat-tuxedo`, `cat-black`, `cat-gray`, `cat-white`, `cat-calico` (recolors extend `cat`) | `hf` tail flick |
 | 19 | Charts | `chart-bar`, `chart-line-up`, `chart-line-down`, `chart-pie` (each on an easel board) | still |
 | 20 | Giant light bulb | `bulb`, `bulb-off` (oversized) | `ff` glow on `bulb` |
 | 21 | Order ticket rail | `ticket-rail` | still |
@@ -82,7 +82,7 @@ Numbers 1–20 are the owner's list; 21–44 were added in the brainstorm and ap
 | 44 | Whiteboard | `whiteboard` | still |
 
 ### Contact sheets
-Preview-only scenes (no `output`) that place each group on its floor: `sheet-kitchen` (1–7, 21–25), `sheet-office` (8–20, 44), `sheet-cloud` (8, 15, 26–32), `sheet-ai` (33–40) and `sheet-glue` (41–43). Each batch adds its assets to its sheet.
+Preview-only scenes (no `output`) that place each group on its floor: `sheet-kitchen` (1–7, 21–25), `sheet-office` (8–20, 44), `sheet-cloud` (8, 15, 26–32), `sheet-ai` (33–40) and `sheet-glue` (41–43), plus `sheet-consolidated`, an office scene that combines pieces from the others. Each batch adds its assets to its sheet.
 
 ### Export
 `npm run explainer-export` runs `scripts/export-explainer-library.mjs`. It lists the document's objects and scenes with the `pixellab` CLI and writes, into `.explainer-export/` (git-ignored):

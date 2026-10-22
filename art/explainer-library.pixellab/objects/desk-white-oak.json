@@ -1,0 +1,32 @@
+{
+  "kind": "sprite",
+  "extends": "desk",
+  "keys": {
+    "p": "path-1",
+    "a": "path-3",
+    "b": "path-4"
+  },
+  "rows": {
+    "0": {
+      "0": ".........pp.............",
+      "1": ".......pppppp...........",
+      "2": ".....pppppppppp.........",
+      "3": "...pppppppppppppp.......",
+      "4": ".pppppppppppppppppp.....",
+      "5": "Ppppppppppppppppppppp...",
+      "6": ".PPpppppppppppppppppppp.",
+      "7": "..PPPppppppppppppppppppa",
+      "8": "..PbbPPppppppppppppppaab",
+      "9": "..PbbbbPPppppppppppaabbb",
+      "10": "..PbbbbbbPPppppppaabbbbb",
+      "11": "..Pbbbb..PPPPppaabbbbbbb",
+      "12": "..Pbb....PPPPPabbbbbbbbb",
+      "13": ".........aaddPPbbbbbbbbb",
+      "14": ".........PPaaPPbbbbbbbbb",
+      "15": ".........PPPPaabbbbbbbb.",
+      "16": ".........PPddPPbbbbbb...",
+      "17": "...........PPPPbbbb.....",
+      "18": ".............PPbb......."
+    }
+  }
+}
