@@ -1938,16 +1938,16 @@
         "item": "gate-far",
         "keys": [
           { "t": 0 },
-          { "t": 14375, "pose": "crossing-gate-down-far" },
-          { "t": 20825, "pose": "crossing-gate" }
+          { "t": 14375, "state": "down-far" },
+          { "t": 20825, "state": "rest" }
         ]
       },
       {
         "item": "gate-near",
         "keys": [
           { "t": 0 },
-          { "t": 14375, "pose": "crossing-gate-down" },
-          { "t": 20825, "pose": "crossing-gate" }
+          { "t": 14375, "state": "down" },
+          { "t": 20825, "state": "rest" }
         ]
       }
     ]
