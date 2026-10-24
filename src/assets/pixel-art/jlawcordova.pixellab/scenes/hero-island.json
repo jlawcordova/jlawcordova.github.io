@@ -1430,13 +1430,13 @@
           { "t": 0 },
           { "t": 7200 },
           { "t": 10400, "move": [-32, -16] },
-          { "t": 10700, "pose": "mine-cart-tipped" },
-          { "t": 11900, "pose": "mine-cart" },
+          { "t": 10700, "state": "tipped" },
+          { "t": 11900, "state": "rest" },
           { "t": 13500, "move": [0, 0] },
           { "t": 21200 },
           { "t": 24400, "move": [-32, -16] },
-          { "t": 24700, "pose": "mine-cart-tipped" },
-          { "t": 25900, "pose": "mine-cart" },
+          { "t": 24700, "state": "tipped" },
+          { "t": 25900, "state": "rest" },
           { "t": 27500, "move": [0, 0] }
         ]
       },
