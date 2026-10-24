@@ -20,26 +20,55 @@
   },
   "layers": [
     {
-      "map": [
-        ".............hh.....",
-        "...........hhhhhh...",
-        ".........hhhhhhhhhh.",
-        "........dhhhhhhhhhhg",
-        "........deehhhhhhggg",
-        ".......llddeehhggeeg",
-        ".....llSslldddggeeeg",
-        "...llSSkksslldggeegg",
-        ".llSSkkkkkkllsgggggf",
-        "pllkkkkkkllsSsgggff.",
-        "pppllkkllSssSsgffkk.",
-        "prpppllssSssSSfkkSk.",
-        "spppppsssSsSS..kkkk.",
-        ".sspprsssSS....kk...",
-        ".kksspsSSkk.........",
-        ".kkkksSkkSk.........",
-        ".kk..kkkkkk.........",
-        ".....kkkk..........."
+      "loop": "pf",
+      "prefix": "p",
+      "frames": [
+        [
+          ".............hh.....",
+          "...........hhhhhh...",
+          ".........hhhhhhhhhh.",
+          "........dhhhhhhhhhhg",
+          "........deehhhhhhggg",
+          ".......llddeehhggeeg",
+          ".....llSslldddggeeeg",
+          "...llSSkksslldggeegg",
+          ".llSSkkkkkkllsgggggf",
+          "pllkkkkkkllsSsgggff.",
+          "pppllkkllSssSsgffkk.",
+          "prpppllssSssSSfkkSk.",
+          "spppppsssSsSS..kkkk.",
+          ".sspprsssSS....kk...",
+          ".kksspsSSkk.........",
+          ".kkkksSkkSk.........",
+          ".kk..kkkkkk.........",
+          ".....kkkk..........."
+        ],
+        [
+          ".............hh.....",
+          ".......ll..hhhhhh...",
+          ".....llllhhhhhhhhhh.",
+          "...lllSSslhhhhhhhhhg",
+          ".lllSSSSsslhhhhhhggg",
+          "llSSSSkkkslldhhggeeg",
+          "pllSkkkkkkslldggeeeg",
+          "ppllkkkkkkksllggeegg",
+          "ppplkkkkkkkkksgggggf",
+          "srpplkkkkkksSsgggff.",
+          ".spppllkkSssSsgffkk.",
+          "..spppsssSssSSfkkSk.",
+          "..SsppsssSsSS..kkkk.",
+          "..S.srsssSS....kk...",
+          ".kkkkpsSSkk.........",
+          ".kkkksSkkSk.........",
+          ".kk..kkkkkk.........",
+          ".....kkkk..........."
+        ]
       ]
     }
-  ]
+  ],
+  "start": "rest",
+  "states": {
+    "rest": { "frames": [0], "ms": 200 },
+    "tipped": { "frames": [1], "ms": 200 }
+  }
 }
