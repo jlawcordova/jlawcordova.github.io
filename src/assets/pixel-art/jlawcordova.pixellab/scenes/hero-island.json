@@ -1806,10 +1806,10 @@
         "item": "jib",
         "keys": [
           { "t": 0 },
-          { "t": 7700, "pose": "crane-jib-side" },
-          { "t": 8400, "pose": "crane-jib-back" },
-          { "t": 24600, "pose": "crane-jib-side" },
-          { "t": 25300, "pose": "crane-jib" }
+          { "t": 7700, "state": "side" },
+          { "t": 8400, "state": "back" },
+          { "t": 24600, "state": "side" },
+          { "t": 25300, "state": "rest" }
         ]
       },
       {
