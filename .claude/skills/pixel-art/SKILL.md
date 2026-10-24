@@ -8,6 +8,27 @@ The site's pixel art is text. **Objects** (pixel maps) and **scenes** (objects p
 
 **Never write or edit an output SVG or thumbnail by hand, and never commit one.** They only ever come from the compiler. Change a source, then run `npm run art`.
 
+## Reference files
+
+This skill keeps the detail a task needs only sometimes in files beside it. Open the ones your task needs before you pick an approach:
+
+| File | Open it when |
+| --- | --- |
+| [`rules.md`](rules.md) | changing anything on the hero island or the Range: the rules tests used to pin, and the silhouettes, anchors and loops to keep |
+| [`blocks.md`](blocks.md) | drawing a block's sides, converting a cube sprite into a block, or touching the cliffs' edge pieces and joints |
+| [`cost.md`](cost.md) | adding texture, frames or placements to the island or the Range, or when `art sizes` runs over a budget |
+| [`review.md`](review.md) | handing art to the owner: review images, close-ups, the report, feedback rounds, and habits that save time |
+
+## Working rules
+
+Beyond the design language below:
+
+- **Change only the objects and scenes the task names.** Don't move scene items unless asked.
+- **No engine or test changes** (the pinned `pixellab` program, `scripts/*.test.mjs`) unless the task says so. If the engine can't express what's needed, stop and report what's missing rather than working around it. Never edit a test to make it pass.
+- **Look before you change.** Render the art as it is, and save the before images ([`review.md`](review.md)), before your first edit.
+- **Publishing and history are the owner's.** Don't publish, don't undo or restore the owner's versions, don't `--force` a CLI edit or a save past problems or a conflict, and don't run `claude mcp add` or install the app.
+- **Public-safe art.** The repo is public: art is generic, with no names, lettering, logos or likenesses. Never copy a reference's palette or pixels: translate its style into the world palette, and keep reference images out of the repo.
+
 ## The design language (hard rules)
 
 New art must fit the existing world. The engine enforces every rule here except the 6–8 color target.
@@ -231,7 +252,7 @@ The owner connects the MCP to the app's bundled program (`serve --mcp`), as the 
 3. Make the change with the MCP's edit tools (`object_paint`, `scene_move`, `scene_set`, …). Render it again, and run `check` on each doc you changed.
 4. Report what you changed, doc by doc. The edits are already in the document, so run `npm run art`, `npm test` and the rest of the checks the task needs straight away.
 
-There are no proposals since Pixel Lab v0.7.0 (the lab's autosave spec, R16): an MCP edit changes the document as you make it, and it saves itself. While Pixel Lab has the document open, the owner sees each edit on the stage as it happens. A doc with problems isn't saved until they're fixed, and `check` says what they are. The owner reviews in Pixel Lab's Versions panel and in `git diff` before committing. With the app open, a CLI edit in the owner's checkout goes through the app too, so it no longer leaves the owner looking at a stale copy, but the MCP is still the way to work there. Main sessions brief subagents the same way.
+There are no proposals since Pixel Lab v0.7.0 (the lab's autosave spec, R16): an MCP edit changes the document as you make it, and it saves itself. While Pixel Lab has the document open, the owner sees each edit on the stage as it happens. A doc with problems isn't saved until they're fixed, and `check` says what they are. The owner reviews in Pixel Lab's Versions panel and in `git diff` before committing. With the app open, a CLI edit in the owner's checkout goes through the app too, so it no longer leaves the owner looking at a stale copy, but the MCP is still the way to work there. A subagent, when one runs, works the same way.
 
 **Taking a change back.** Every change is a version in the document's history, with its author. `doc_undo` takes back your last edit (not one the owner made since). `history_list`, `history_show` and `history_render` look back, and `history_undo <version>` takes back a whole version of yours, keeping what came after. The owner does the same in the Versions panel. Never undo or restore the owner's versions.
 
@@ -364,7 +385,7 @@ The 16×16 icons beside the accomplishments on the site are objects named `icon-
 
 ## Island and Range look
 
-The style of the hero island's objects, of the Range (its platform and its characters) and of the achievement icons ([hero island detail spec](../../../docs/intents/2026-10-hero-island-detail/spec.md), [Isometric Range spec](../../../docs/intents/2026-10-range-isometric/spec.md), [isometric icons spec](../../../docs/intents/2026-10-isometric-icons/spec.md)). Detailed, calm, no outlines. The `pixel-artist` agent (`.claude/agents/pixel-artist.md`) draws in it.
+The style of the hero island's objects, of the Range (its platform and its characters) and of the achievement icons ([hero island detail spec](../../../docs/intents/2026-10-hero-island-detail/spec.md), [Isometric Range spec](../../../docs/intents/2026-10-range-isometric/spec.md), [isometric icons spec](../../../docs/intents/2026-10-isometric-icons/spec.md)). Detailed, calm, no outlines.
 
 - **Shade order.**
   - Each material uses its own ramp. The lit top is shade 2. The left face is the mid shade and the right face the dark one (for soil, `soil-2` and `soil-3`).

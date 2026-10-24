@@ -1,6 +1,6 @@
 ---
 name: design-scene
-description: Design a pixel-art scene for this site, the hero island included, with Pixel Lab open on the work and the site running, so the owner can see, edit and approve every object and scene as it lands. Use whenever the owner asks to design, prototype, extend or level up a scene or the island, or to make the art assets for one. Builds on the pixel-art skill, uses the pixellab MCP tools and CLI, and runs the pixel-artist agent.
+description: Design a pixel-art scene for this site, the hero island included, with Pixel Lab open on the work and the site running, so the owner can see, edit and approve every object and scene as it lands. Use whenever the owner asks to design, prototype, extend or level up a scene or the island, or to make the art assets for one. Builds on the pixel-art skill, uses the pixellab MCP tools and CLI, and makes the art in the main session.
 ---
 # Design a scene
 
@@ -23,17 +23,17 @@ In every report, give the owner, as a list:
 
 To show several new objects side by side, add a preview-only scene with no `output` (a review board, such as `scenes/<slug>-objects.json`) that places them on a few tiles, and name it. Remove it before the PR unless the spec keeps it.
 
-## 3. Make the art: one subagent at a time
+## 3. Make the art: in this session, one piece at a time
 
-Run the work as a dynamic workflow of `pixel-artist` subagents (`.claude/agents/pixel-artist.md`):
+Make every approved object, then the scene, yourself, in this session, with the `pixel-art` skill and its reference files. One context keeps what each object settled (its colors per face, its texture, how it meets the ground) in front of you for the next one, and the owner's feedback lands where the work was done. Handing each piece to a subagent lost that at every hand-off (Anthropic's article on [when to fold subagents into the main agent loop](https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop)).
 
-- **One subagent per approved object,** started only after the previous one has reported. Never two at once. Small objects (a tile, a prop of a few pixels, a simple part) may share a run, at most 3 per run, so each still gets full attention. Large ones always get their own.
-- **The scene gets its own subagent,** after every object it needs is in.
-- **Brief each one fully:** the change's folder (`docs/intents/<YYYY-MM-slug>/`), the one object or scene it owns and what it's for, its size, frames and placement from the spec or the approved object list, the objects already made that it must match, and these rules: make every change over the MCP (in a worktree, use the CLI instead), give every new object a category (an existing one where it fits), don't write sources in the owner's checkout by hand, don't start a server, don't commit, and change only what it owns.
-- **When one reports,** check its work yourself: `history_list` and `history_show` for what it changed, then `art_preview` and `check` on each doc. Send the owner the names and the images to review in Pixel Lab.
-  - If the subagent left out an edit the MCP couldn't express, ask the owner before writing it (the `pixel-art` skill, Pixel Lab).
-  - Run `npm run art` and `npm test`, then start the next one once the owner is happy with it.
-- **Feedback goes back to the subagent that made the piece** (SendMessage), so it keeps its context. A source the owner saved from Pixel Lab is the new baseline.
+- **One object at a time,** in the order of the approved list. Small objects (a tile, a prop of a few pixels, a simple part) may go together, at most 3 at once, so each still gets full attention. The scene comes last, once every object it needs is in.
+- **Before each one,** open the skill's reference files it needs (`rules.md` for anything on the island or the Range, `blocks.md` for a block, `cost.md` for its bytes), save the before images, and look at the objects already made that it must match.
+- **After each one,** `check` each doc and `art_preview` it, run `npm run art` and `npm test`, and send the owner the names and the images to review in Pixel Lab (§2). Go on to the next once the owner is happy with it.
+  - An edit the MCP can't express: ask the owner before writing it (the `pixel-art` skill, Pixel Lab).
+- **Feedback** is applied here, as the skill's `review.md` (Feedback rounds) says. A source the owner saved from Pixel Lab is the new baseline.
+- **Keep the context light:** look at renders at the scale the question needs, and save only the review images. If a long run gets to where earlier decisions slip, write what's settled (each object's colors per face and texture) into the change's `notes.md`, and suggest the owner continue in a fresh session from it, rather than splitting the work across agents.
+- **The `pixel-artist` agent** (`.claude/agents/pixel-artist.md`) is for a fresh-eyes critique of a piece before the owner reviews it, where not sharing this session's context is the point. It doesn't edit; weigh what it finds yourself.
 
 Pause for the owner only at the reviews the plan names (for example, the object list, then the objects, then the scene) or when blocked.
 
