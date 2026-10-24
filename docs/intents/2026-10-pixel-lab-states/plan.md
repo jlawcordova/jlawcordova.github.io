@@ -83,3 +83,8 @@ main ── claude/gallant-curie-wa7i88 (steps 1–6, one commit each; step 4 on
 - `npm run build`: `- 0 errors`, `- 0 warnings`, `- 0 hints`, `[build] Complete!`.
 - `npm run e2e`: `# fail 0`, with the Range hop check among them. If it can't run, the PR says NOT RUN, never that it passed.
 - Screenshots of the home page at 1440 and 390 px, the hero and the Range, with no horizontal scroll.
+
+## As built
+- **Step 5** runs inside step 4, as described there: `from-poses` refuses a base that already has states.
+- **The hop's render** is compared with `object render` (spec D5), since `scene render --play` takes actions only.
+- **The screenshots** of the home page's hero and Range at 1440 and 390 px are committed in `snapshots/`, so the PR can show them. The Range ones catch a setting part-way through its build-up. They're public site art only.
