@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Roles",
+    "Cloud & DevOps"
+  ],
   "kind": "sprite",
   "extends": "character",
   "keys": {

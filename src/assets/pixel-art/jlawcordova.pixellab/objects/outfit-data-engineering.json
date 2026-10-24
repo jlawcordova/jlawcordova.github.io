@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Roles",
+    "Data engineering"
+  ],
   "kind": "sprite",
   "extends": "character",
   "keys": {

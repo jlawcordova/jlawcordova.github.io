@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Roles",
+    "Back end"
+  ],
   "kind": "sprite",
   "extends": "character",
   "keys": {

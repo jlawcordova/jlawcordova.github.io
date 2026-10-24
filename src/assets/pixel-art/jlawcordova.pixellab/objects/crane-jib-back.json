@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Industry",
+    "Crane"
+  ],
   "kind": "sprite",
   "anchor": [9, 37],
   "keys": {

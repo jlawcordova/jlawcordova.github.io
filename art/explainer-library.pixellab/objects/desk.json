@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Office",
+    "Desks"
+  ],
   "kind": "sprite",
   "anchor": [12, 14],
   "footprint": [2, 1],

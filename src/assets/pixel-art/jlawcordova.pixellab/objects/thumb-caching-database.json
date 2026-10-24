@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Thumbnails",
+    "Caching"
+  ],
   "kind": "sprite",
   "anchor": [17, 41],
   "keys": {

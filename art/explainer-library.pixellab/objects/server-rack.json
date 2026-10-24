@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Cloud",
+    "Servers"
+  ],
   "kind": "sprite",
   "anchor": [12, 44],
   "keys": {

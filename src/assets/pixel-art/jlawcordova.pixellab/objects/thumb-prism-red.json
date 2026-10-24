@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Thumbnails",
+    "Prism"
+  ],
   "kind": "sprite",
   "anchor": [25, 50],
   "keys": {

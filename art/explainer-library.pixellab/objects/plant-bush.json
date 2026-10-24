@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Office",
+    "Plants"
+  ],
   "kind": "sprite",
   "anchor": [10, 19],
   "keys": {

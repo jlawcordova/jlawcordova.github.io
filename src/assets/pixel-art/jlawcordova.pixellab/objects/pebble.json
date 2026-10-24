@@ -1,4 +1,7 @@
 {
+  "category": [
+    "Terrain"
+  ],
   "kind": "sprite",
   "anchor": [5, 6],
   "keys": {

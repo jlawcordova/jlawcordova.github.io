@@ -1,4 +1,7 @@
 {
+  "category": [
+    "People"
+  ],
   "kind": "sprite",
   "extends": "character",
   "keys": {

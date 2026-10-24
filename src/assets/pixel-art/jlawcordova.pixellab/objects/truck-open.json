@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Transport",
+    "Trucks"
+  ],
   "kind": "sprite",
   "anchor": [10, 14],
   "keys": {

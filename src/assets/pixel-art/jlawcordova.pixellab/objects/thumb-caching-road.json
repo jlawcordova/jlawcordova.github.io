@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Thumbnails",
+    "Caching"
+  ],
   "kind": "block",
   "size": [1, 1, 0],
   "faces": {

@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Roles",
+    "Security & governance"
+  ],
   "kind": "sprite",
   "extends": "character",
   "keys": {

@@ -1,4 +1,7 @@
 {
+  "category": [
+    "Cloud"
+  ],
   "kind": "sprite",
   "anchor": [32, 24],
   "keys": {

@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Nature",
+    "Flowers"
+  ],
   "kind": "sprite",
   "extends": "flower",
   "keys": {

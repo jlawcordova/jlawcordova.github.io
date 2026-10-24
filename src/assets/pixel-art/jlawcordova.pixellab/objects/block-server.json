@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Buildings",
+    "Server"
+  ],
   "kind": "block",
   "size": [1, 1, 1],
   "faces": {

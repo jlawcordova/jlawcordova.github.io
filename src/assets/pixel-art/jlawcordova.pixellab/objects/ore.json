@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Industry",
+    "Mine"
+  ],
   "kind": "sprite",
   "anchor": [2, 4],
   "keys": {

@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Nature",
+    "Trees"
+  ],
   "kind": "sprite",
   "anchor": [4, 3],
   "keys": {

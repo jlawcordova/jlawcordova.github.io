@@ -97,6 +97,13 @@ describe('explainer library document', () => {
     assert.deepEqual(objects.map((o) => o.name).sort(), [...Object.keys(ASSETS), 'character'].sort());
   });
 
+  // Pixel Lab categories spec R7: any category will do, so the Library never
+  // drifts back to one long list in Others.
+  it('every asset has a category', () => {
+    const without = objects.filter((o) => !o.category?.length).map((o) => o.name);
+    assert.deepEqual(without, [], 'give these a category with `object category <name> --to <path>`');
+  });
+
   it('R5: each asset plays the loop the list gives it, and only that', () => {
     for (const [name, loop] of Object.entries(ASSETS)) {
       const object = shown.get(name);

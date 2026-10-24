@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Office",
+    "Charts"
+  ],
   "kind": "sprite",
   "anchor": [10, 37],
   "keys": {

@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Thumbnails",
+    "Docker"
+  ],
   "kind": "sprite",
   "anchor": [36, 34],
   "keys": {

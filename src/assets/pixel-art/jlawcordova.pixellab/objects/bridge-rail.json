@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Transport",
+    "Rail"
+  ],
   "kind": "sprite",
   "anchor": [0, 12],
   "keys": {

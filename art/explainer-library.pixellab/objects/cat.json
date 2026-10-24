@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Animals",
+    "Cats"
+  ],
   "kind": "sprite",
   "anchor": [6, 13],
   "keys": {

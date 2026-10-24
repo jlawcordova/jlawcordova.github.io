@@ -1,4 +1,7 @@
 {
+  "category": [
+    "AI"
+  ],
   "kind": "sprite",
   "anchor": [30, 12],
   "footprint": [2, 2],

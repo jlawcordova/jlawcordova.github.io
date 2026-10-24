@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Industry",
+    "Conveyor"
+  ],
   "kind": "sprite",
   "anchor": [6, 26],
   "keys": {

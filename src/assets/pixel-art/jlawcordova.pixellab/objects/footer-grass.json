@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Terrain",
+    "Footer"
+  ],
   "kind": "sprite",
   "anchor": [24, 27],
   "keys": {

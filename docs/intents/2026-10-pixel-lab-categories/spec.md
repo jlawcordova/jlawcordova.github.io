@@ -1,5 +1,5 @@
 # Spec: The site's art in Pixel Lab categories (from intent.md 2026-10-24)
-Status: draft. Each Area of concern below carries a recommendation for the owner to accept or change in this PR's review.
+Status: approved, with every Area of concern's recommendation accepted as written. The release is v0.7.0.
 
 This spec turns the [intent](intent.md) into requirements and a design. Its source of truth for Pixel Lab is the lab repo's `main` at the object libraries merge (`jlawcordova-lab` PR #57), until that is released:
 - `docs/intents/2026-10-object-libraries/spec.md`: R1–R3 (categories), R10–R16 and R25 (libraries), and Appendices A and B (the categories).

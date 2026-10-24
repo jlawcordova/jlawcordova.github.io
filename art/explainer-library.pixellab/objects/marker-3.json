@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Glue",
+    "Markers"
+  ],
   "kind": "sprite",
   "extends": "marker-1",
   "rows": {

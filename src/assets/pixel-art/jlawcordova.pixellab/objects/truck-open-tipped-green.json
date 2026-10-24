@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Transport",
+    "Trucks"
+  ],
   "kind": "sprite",
   "extends": "truck-open-tipped",
   "keys": {

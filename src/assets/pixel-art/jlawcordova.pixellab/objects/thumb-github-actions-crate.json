@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Thumbnails",
+    "GitHub Actions"
+  ],
   "kind": "sprite",
   "anchor": [8, 10],
   "keys": {

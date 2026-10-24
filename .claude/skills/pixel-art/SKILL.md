@@ -1,6 +1,6 @@
 ---
 name: pixel-art
-description: Make, change or review this site's pixel art (the hero island, the Range sprite and its outfits, library objects and scenes) as text sources compiled by `npm run art`, looked at and edited through Pixel Lab (the `pixellab` MCP tools and CLI). Use whenever someone asks to draw, edit, recolor or check pixel art, an outfit or character, a library object, or a scene, to place or arrange objects in a scene, to propose an art change for the owner to approve in Pixel Lab, or to add art to the site. Works headless, with no editor and no browser.
+description: Make, change or review this site's pixel art (the hero island, the Range sprite and its outfits, library objects and scenes) as text sources compiled by `npm run art`, looked at and edited through Pixel Lab (the `pixellab` MCP tools and CLI). Use whenever someone asks to draw, edit, recolor or check pixel art, an outfit or character, a library object, or a scene, to place or arrange objects in a scene, to sort objects into Pixel Lab categories, or to add art to the site. Works headless, with no editor and no browser.
 ---
 # Pixel art
 
@@ -215,7 +215,7 @@ Pixel Lab (v0.5.0 on) works out what draws in front from where each item stands,
 
 ## Pixel Lab: the MCP and the CLI
 
-Pixel Lab for Mac (the owner's editor, from `~/Projects/jlawcordova-lab`, v0.6.0 or later) opens this document and edits it with the program it bundles, the same one `scripts/pixellab.mjs` pins here. Every action it has is one command, reachable three ways: the app, the `pixellab` CLI, and the `pixellab` MCP server, whose tools are the commands with `.` → `_` (`scene.place` is `mcp__pixellab__scene_place`). Use it to look at art and to edit it. `npm run art` (its `art build`) stays the compiler: it writes the SVGs and the thumbnails; `art preview` writes the review previews and `art sizes` measures bytes (next section).
+Pixel Lab for Mac (the owner's editor, from `~/Projects/jlawcordova-lab`, v0.7.0 or later) opens this document and edits it with the program it bundles, the same one `scripts/pixellab.mjs` pins here. Every action it has is one command, reachable three ways: the app, the `pixellab` CLI, and the `pixellab` MCP server, whose tools are the commands with `.` → `_` (`scene.place` is `mcp__pixellab__scene_place`). Use it to look at art and to edit it. `npm run art` (its `art build`) stays the compiler: it writes the SVGs and the thumbnails; `art preview` writes the review previews and `art sizes` measures bytes (next section).
 
 **Find it, in this order:**
 
@@ -224,16 +224,22 @@ Pixel Lab for Mac (the owner's editor, from `~/Projects/jlawcordova-lab`, v0.6.0
 
 The owner connects the MCP to the app's bundled program (`serve --mcp`), as the lab's README shows. Never run `claude mcp add`, or install the app, yourself.
 
-**The flow: make the change, then send it for approval over the MCP.** In the owner's checkout, every art change, small or large, goes this way:
+**The flow: look, edit over the MCP, check, report.** In the owner's checkout, every art change, small or large, goes this way:
 
 1. `document_info` names this site's document.
 2. Look at the art as it is with `scene_render` or `object_render`.
 3. Make the change with the MCP's edit tools (`object_paint`, `scene_move`, `scene_set`, …). Render it again, and run `check` on each doc you changed.
-4. `doc_save` each doc. It writes a **proposal**, not the source.
-5. Report each proposal's id, its doc and what it changes, and stop there. The owner approves or rejects it in Pixel Lab.
-6. After the owner approves, run `npm run art`, `npm test` and the rest of the checks the task needs. Until then they test the old sources.
+4. Report what you changed, doc by doc. The edits are already in the document, so run `npm run art`, `npm test` and the rest of the checks the task needs straight away.
 
-**Why not the CLI or a hand edit in the owner's checkout.** Pixel Lab reloads a doc when its file changes on disk only if that doc has no unsaved edits. When the owner has unsaved edits open, a write to that file leaves them looking at the old version: they don't see your change, and their next save in the app conflicts with it. A proposal waits in the app's Agent window. The owner applies it when they're ready: after saving their own edits, it lands on the version they're looking at. Main sessions brief subagents the same way: proposals in the owner's checkout. Never tell an agent to write sources there instead.
+There are no proposals since Pixel Lab v0.7.0 (the lab's autosave spec, R16): an MCP edit changes the document as you make it, and it saves itself. While Pixel Lab has the document open, the owner sees each edit on the stage as it happens. A doc with problems isn't saved until they're fixed, and `check` says what they are. The owner reviews in Pixel Lab's Versions panel and in `git diff` before committing. With the app open, a CLI edit in the owner's checkout goes through the app too, so it no longer leaves the owner looking at a stale copy, but the MCP is still the way to work there. Main sessions brief subagents the same way.
+
+**Taking a change back.** Every change is a version in the document's history, with its author. `doc_undo` takes back your last edit (not one the owner made since). `history_list`, `history_show` and `history_render` look back, and `history_undo <version>` takes back a whole version of yours, keeping what came after. The owner does the same in the Versions panel. Never undo or restore the owner's versions.
+
+**The rules that stay:** report every change you made, never commit, push or publish unless told (Publish to the site is the owner's), and never `--force` past problems or a conflict.
+
+**Categories.** Every object has a category, a path of names such as Nature › Trees, which Pixel Lab's Library shows as tabs (an outermost name) and headings (the names below it). An object without one lands in Others, and `scripts/pixel-art-categories.test.mjs` fails. When you make an object, set its category straight after `object_new`: `object_category <name> --to "Nature/Trees"` (`npm run pixellab -- object category <name> --to "Nature/Trees"` in a worktree). Pick an existing category where one fits: `object_list --category <path>` lists one, and `object_list` shows them all. The site's eight outermost categories are Terrain, Nature, Buildings, Transport, Industry, Roles, Achievements and Thumbnails. A post's thumbnail objects go under Thumbnails › <post>, and an achievement icon under Achievements › Icons. A category never changes how an object renders or what Publish writes.
+
+**Libraries and palette files.** A document can share objects as an object library (`.pixellib`) and colors as a palette file (`.pixelpal`), by copying (`library export`, `library import`, `palette export`; the lab's [`docs/libraries.md`](https://github.com/jlawcordova/jlawcordova-lab/blob/v0.7.0/docs/libraries.md) at the pinned tag). `npm run explainer-export` writes the explainer library as `.explainer-export/explainer.pixellib`, git-ignored. Don't import a library into the site's document, or add palette colors, unless a task asks for it.
 
 **Which tool for what:**
 
@@ -243,21 +249,18 @@ The owner connects the MCP to the app's bundled program (`serve --mcp`), as the 
 | Find your way around | `scene_list`, `scene_items` (every item in depth order, back to front, with its path, such as `5.2`, its id, level, depth override and placement point), `scene_show`, `object_list`, `object_show`, `object_pick`, `palette_get` |
 | Validate | `check <name>` (the engine's problems for that doc and what it uses, or its one-line summary, and warnings: `out_of_order`, `copies`, `off_grid`) |
 | Fix what draws in front | `scene_set --level` (a pixel item), `object_footprint`, `scene_set --depth`; `scene_sort` for a file out of order ([Depth order](#depth-order)) |
-| Change art (the default) | MCP edits, then `doc_save`, which writes a **proposal** for the owner to approve (the flow above) |
+| Change art (the default) | MCP edits, which apply to the document as you make them (the flow above) |
+| Sort the Library | `object_category <names> --to <path>`, `object_list --category <path>` |
 | Change art in a worktree, or what the MCP can't express once the owner says so | the CLI's edit commands, or whole rows in the `.json` source, in canonical form (below) |
 | Compile and test | `npm run art`, `npm run pixellab -- check`, `npm test` |
 | Review images and bytes | `art_preview`, `art_sizes` (MCP), not PNG files opened from disk |
 
-**Edits through the MCP are proposals.** Each MCP session holds open docs as working copies with undo (`doc_undo`, `doc_redo`, `doc_status`). Renders and `check` see the unsaved edits. Nothing touches the site until `doc_save`, which validates the doc and writes a proposal for the owner instead of the source. Pixel Lab shows it in its Agent window (⌥⌘A), ghosted over the stage with a diff, and the owner approves or rejects it there (or with `pixellab proposal apply <id>`). `proposal_list` lists proposals and `proposal_render` draws one as it would land.
-- Proposals are how art changes in the owner's checkout, whether or not the task mentions them.
-- A proposal records the file it was made against. If the file changed before the owner applies it, Pixel Lab refuses it (`baseMatches` is false in `proposal_list`): make it again from the file as it is now.
-- Never apply, reject or force a proposal, yours or anyone's, by any route. That's the owner's call. Don't `--force` a save past problems or a conflict either.
-- Report each proposal's id, its doc and what it changes. Until it's approved the sources haven't changed, so `npm run art` and `npm test` say nothing about it. After approval, run them (Pixel Lab's Publish, ⌘B, is `npm run art`).
+**Edits through the MCP apply as you make them.** Each MCP session holds open docs as working copies with undo (`doc_undo`, `doc_redo`, `doc_status`), and saves them itself soon after each edit (`doc_flush` saves now). Renders and `check` see every edit.
 
 **Edits through the CLI write the working tree.** Use them in a worktree, which the MCP server doesn't edit. In the owner's checkout, use them only for what the MCP can't express (below), and only once the owner says so. Each edit is one-shot: load, edit, validate with the engine, serialize canonically and write atomically. It refuses a doc with problems or a file that changed on disk while it ran, and prints what changed and `wrote <file>`. `--dry-run` prints the diff instead. The commands and params match the MCP tools (`npm run pixellab -- object paint pine 3,4 4,4 --color grass-2` is `object_paint`). The `doc` commands (undo, save) exist only in the MCP session.
 
 **Draw maps in bulk, touch them up with commands.** Painting pixel by pixel is slow for a whole map.
-- **In the owner's checkout:** generate the map with a script, then send it through the MCP. Size the object with `object_new` or `object_resize`, then make one `object_paint` call per color with every pixel of that color, and one `object_erase` for the pixels that go. Save it as one proposal.
+- **In the owner's checkout:** generate the map with a script, then send it through the MCP. Size the object with `object_new` or `object_resize`, then make one `object_paint` call per color with every pixel of that color, and one `object_erase` for the pixels that go.
 - **In a worktree:** write the whole rows in the source, or send a whole map at once with `object map set <name> <rows>`. A hand edit must stay in canonical form; `check` warns if it isn't.
 
 Then use `object_paint`, `object_fill` and `object_erase` for fixes and feedback, and the scene commands for placing and arranging:
@@ -277,15 +280,15 @@ In the owner's checkout, say which edit it is and ask before writing it. With th
 2. Write the source.
 3. Tell them it's on disk.
 
-Send the rest of the change as a proposal as usual.
+Make the rest of the change over the MCP as usual.
 
-**The owner's hand edits land on disk.** Pixel Lab's own saves write the working tree directly, so there's no export step: the file on disk is the new baseline, and `git diff` shows what they changed. Pixel Lab reloads a file when it changes on disk only if that doc has no unsaved edits. When the owner says Pixel Lab doesn't show a change that is on disk, that's why: the doc has unsaved edits, and `doc_save` from the app will conflict. Don't tell them to force it. Keep a copy of what's on disk, and ask whether to resend your change as a proposal against what they save. Pixel Lab has no links: hand the owner the names of the scenes and objects to open (its sidebar lists the scenes, then the Library of objects; double-click an object for Object mode).
+**The owner's hand edits land on disk.** Pixel Lab's own saves write the working tree directly, so there's no export step: the file on disk is the new baseline, and `git diff` shows what they changed. Pixel Lab reloads a file when it changes on disk only if that doc has no unsaved edits. When the owner says Pixel Lab doesn't show a change that is on disk, that's why: the doc has unsaved edits. Don't tell them to force it. Keep a copy of what's on disk, and ask whether to make your change again over the MCP once they've saved. Pixel Lab has no links: hand the owner the names of the scenes and objects to open (its sidebar lists the scenes, then the Library of objects; double-click an object for Object mode).
 
 ## The `npm run art` path
 
-This path needs no editor and no browser, and it's the one that compiles, previews and measures, so every change ends here. In the owner's checkout it starts after the owner approves your proposals: steps 1–3 happen over the MCP (`object_new`, the edit tools, `check`), and you run step 5 once the proposals land. In a worktree you take every step yourself.
+This path needs no editor and no browser, and it's the one that compiles, previews and measures, so every change ends here. In the owner's checkout, steps 1–3 happen over the MCP (`object_new`, `object_category`, the edit tools, `check`), and step 5 follows straight after. In a worktree you take every step yourself.
 
-1. **Start from a valid file.** `npm run pixellab -- object new <name> --width 16 --height 16` (a sprite with an empty map), `object new <name> --kind block` (a block), `object new <name> --extends character` (an outfit) or `scene new <name>`, or open an existing source. Choose the smallest object that does the job, and prefer placing objects in a scene over drawing large maps. `new` refuses to overwrite a file.
+1. **Start from a valid file.** `npm run pixellab -- object new <name> --width 16 --height 16` (a sprite with an empty map), `object new <name> --kind block` (a block), `object new <name> --extends character` (an outfit) or `scene new <name>`, or open an existing source. Give a new object its category at once with `object category <name> --to <path>` (Categories, above). Choose the smallest object that does the job, and prefer placing objects in a scene over drawing large maps. `new` refuses to overwrite a file.
 2. **Edit whole rows**, and keep every row the same width. For a block, change `size` and `faces` instead. Add each color you use to `keys`, from the world palette.
 3. **Check it:** `npm run pixellab -- check <name>`. It prints every problem with its file, layer, frame, row and column, and the rule broken, or a one-line summary (size, colors against the cap, layers, frames). Fix each problem where it points.
 4. **Look at it with the MCP, not by opening PNG files.** `object_render` and `scene_render` hand you the image directly, with other frames (`frame`), times (`time`), scales (up to 16×), themes and `show` paths; `art_preview` (also `palette`) gives the review PNG on the document's card color and `art_sizes` the bytes. Don't write PNGs with the CLI and open them with Read to check art. If the MCP isn't usable, say so rather than falling back to PNG files. The picture, not the text, decides whether the art is right: an object stands on one tile outline, a scene shows its viewBox at frame 0.
@@ -311,7 +314,7 @@ They place the island's objects at the island's positions, with the island's lev
 
 ## The app (where the owner looks)
 
-There is no browser editor any more: the web lab at `/lab/pixel-art/` was retired when the engine moved to Pixel Lab. The owner opens the document in the Mac app, which shows every source in the working tree (it reloads a clean doc when its file changes), places and paints, plays a scene's motion on its timeline (⌥⌘P), reviews proposals in the Agent window, and publishes with ⌘B. Hand the owner the names of the objects and scenes to open there (the sidebar lists them), a review PNG of each, and any proposal ids. A scene's keys are set over the MCP: `move` with `scene_move --time <ms>` or `scene_key_set --move`, and `show` and `pose` with `scene_key_set`. `scene_render --time <ms>` or `npm run pixellab -- scene render <scene> --time <ms> --out <png>` shows any moment of it.
+There is no browser editor any more: the web lab at `/lab/pixel-art/` was retired when the engine moved to Pixel Lab. The owner opens the document in the Mac app, which shows every source in the working tree (it reloads a clean doc when its file changes), places and paints, plays a scene's motion on its timeline (⌥⌘P), shows agents' edits as they land and every change in its Versions panel, sorts the Library by category, and publishes with ⌘B. Hand the owner the names of the objects and scenes to open there (the sidebar lists them) and a review PNG of each. A scene's keys are set over the MCP: `move` with `scene_move --time <ms>` or `scene_key_set --move`, and `show` and `pose` with `scene_key_set`. `scene_render --time <ms>` or `npm run pixellab -- scene render <scene> --time <ms> --out <png>` shows any moment of it.
 
 - **Blocks:** a block shows as the engine draws it. The app paints its top (`surface`) and its faces (`sides`); a saved block carries only that block, so apply the same change to its variants (such as the island's edge pieces) yourself.
 
@@ -492,7 +495,8 @@ The achievement icons are solid objects built like the clouds and the bridge, on
 - [ ] World colors only (outfit colors only in an outfit); within the caps; light from the island's side.
 - [ ] The preview PNGs (1× and 4× at least) are attached to the PR. For the Range, each class you touched at 1× and 3×, from a scratch copy of `range-sprite` that keeps the shadow and only that class's group, and a new floor set at 6×.
 - [ ] `npm test` shows `# fail 0`.
-- [ ] In the owner's checkout, every art change went to the owner as a Pixel Lab proposal (or, for what the MCP can't express, was written with their OK). Each is approved and in the working tree, or listed in your report by id as still waiting. You applied none yourself, and `npm run art` and `npm test` ran after the approvals.
+- [ ] In the owner's checkout, every art change was made over the MCP (or, for what the MCP can't express, written with their OK), and your report lists each change by doc. You committed, pushed and published nothing unless told.
+- [ ] Every object you made has a category (`npm test` checks it), in an existing category where one fits.
 - [ ] The art is generic and public-safe (`CLAUDE.md`): no names, logos or likenesses.
 - [ ] If you changed how art is made (formats, commands, rules), this skill is updated in the same PR.
 - [ ] If you changed how art moves (an entrance, a loop), the `pixel-art-motion` skill's checks pass and it's updated in the same PR.

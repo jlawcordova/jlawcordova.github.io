@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Achievements",
+    "Frames"
+  ],
   "kind": "sprite",
   "extends": "frame-plain",
   "keys": {
