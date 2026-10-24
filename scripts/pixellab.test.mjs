@@ -23,7 +23,7 @@ const temp = async () => {
 /** A tarball holding one `pixellab` script, and its SHA-256. */
 async function fakeTarball() {
   const dir = await temp();
-  await writeFile(join(dir, 'pixellab'), '#!/bin/sh\necho "pixellab 0.6.0"\n');
+  await writeFile(join(dir, 'pixellab'), `#!/bin/sh\necho "pixellab ${VERSION.slice(1)}"\n`);
   await chmod(join(dir, 'pixellab'), 0o755);
   const file = join(dir, 'fake.tar.gz');
   assert.equal(spawnSync('tar', ['-czf', file, '-C', dir, 'pixellab']).status, 0);
@@ -43,7 +43,7 @@ function fakeFetch(files) {
   return { fetch, asked };
 }
 
-const check = (path) => existsSync(path) && spawnSync(path, ['--version'], { encoding: 'utf8' }).stdout.trim() === 'pixellab 0.6.0';
+const check = (path) => existsSync(path) && spawnSync(path, ['--version'], { encoding: 'utf8' }).stdout.trim() === `pixellab ${VERSION.slice(1)}`;
 const quiet = () => {};
 
 describe('the pinned Pixel Lab program', () => {
@@ -99,7 +99,7 @@ describe('the pinned Pixel Lab program', () => {
   it('R10: skips the download when the program is already there', async () => {
     const root = await temp();
     await mkdir(join(root, '.pixellab-bin', VERSION), { recursive: true });
-    await writeFile(programPath(root), '#!/bin/sh\necho "pixellab 0.6.0"\n');
+    await writeFile(programPath(root), `#!/bin/sh\necho "pixellab ${VERSION.slice(1)}"\n`);
     await chmod(programPath(root), 0o755);
     const { fetch, asked } = fakeFetch({});
     assert.equal(await ensureProgram({ root, fetch, platform: 'linux', arch: 'x64', check, log: quiet }), programPath(root));
