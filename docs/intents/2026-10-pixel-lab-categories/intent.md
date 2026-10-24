@@ -1,5 +1,5 @@
 # Intent: The site's art in Pixel Lab categories
-Author: J. Law. Cordova (site owner). Status: draft.
+Author: J. Law. Cordova (site owner). Status: accepted.
 
 Depends on Pixel Lab's object libraries change in the lab repo (`jlawcordova-lab`, `docs/intents/2026-10-object-libraries/`), merged on 2026-10-24 and not released yet. That change's spec gives a category for every object in both of the site's documents (Appendices A and B), and leaves applying them to this repo (its Areas of concern 1).
 
