@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Glue",
+    "Markers"
+  ],
   "kind": "sprite",
   "anchor": [13, 26],
   "keys": {

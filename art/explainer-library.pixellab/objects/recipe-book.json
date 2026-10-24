@@ -1,4 +1,7 @@
 {
+  "category": [
+    "Kitchen"
+  ],
   "kind": "sprite",
   "anchor": [9, 20],
   "keys": {

@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Thumbnails",
+    "REST"
+  ],
   "kind": "sprite",
   "anchor": [9, 21],
   "keys": {

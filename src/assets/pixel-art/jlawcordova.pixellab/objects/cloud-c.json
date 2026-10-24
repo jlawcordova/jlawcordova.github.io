@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Nature",
+    "Sky"
+  ],
   "kind": "sprite",
   "anchor": [0, 0],
   "keys": {

@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Glue",
+    "Arrows"
+  ],
   "kind": "sprite",
   "anchor": [9, 5],
   "keys": {

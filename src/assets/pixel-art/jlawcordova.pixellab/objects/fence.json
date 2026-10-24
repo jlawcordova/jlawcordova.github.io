@@ -1,4 +1,7 @@
 {
+  "category": [
+    "Buildings"
+  ],
   "kind": "sprite",
   "anchor": [3, 11],
   "keys": {

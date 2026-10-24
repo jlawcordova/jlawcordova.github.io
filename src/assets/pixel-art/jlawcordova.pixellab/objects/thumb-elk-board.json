@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Thumbnails",
+    "ELK"
+  ],
   "kind": "sprite",
   "anchor": [6, 34],
   "keys": {

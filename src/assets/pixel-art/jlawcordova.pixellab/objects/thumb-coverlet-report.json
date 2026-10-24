@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Thumbnails",
+    "Coverlet"
+  ],
   "kind": "sprite",
   "anchor": [26, 49],
   "keys": {

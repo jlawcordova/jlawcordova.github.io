@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Office",
+    "Devices"
+  ],
   "kind": "sprite",
   "anchor": [9, 37],
   "footprint": [2, 1],

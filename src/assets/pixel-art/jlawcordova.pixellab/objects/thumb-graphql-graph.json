@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Thumbnails",
+    "GraphQL"
+  ],
   "kind": "sprite",
   "anchor": [0, 0],
   "keys": {

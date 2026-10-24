@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Industry",
+    "Mine"
+  ],
   "kind": "sprite",
   "extends": "ore",
   "keys": {

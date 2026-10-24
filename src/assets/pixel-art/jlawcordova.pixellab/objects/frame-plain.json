@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Achievements",
+    "Frames"
+  ],
   "kind": "sprite",
   "anchor": [10, 19],
   "keys": {

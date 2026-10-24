@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Glue",
+    "Bubbles"
+  ],
   "kind": "sprite",
   "extends": "bubble-speech",
   "keys": {

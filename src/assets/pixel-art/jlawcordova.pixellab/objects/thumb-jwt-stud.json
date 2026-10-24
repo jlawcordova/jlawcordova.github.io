@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Thumbnails",
+    "JWT"
+  ],
   "kind": "sprite",
   "anchor": [4, 3],
   "keys": {

@@ -1,4 +1,7 @@
 {
+  "category": [
+    "AI"
+  ],
   "kind": "sprite",
   "anchor": [16, 26],
   "keys": {

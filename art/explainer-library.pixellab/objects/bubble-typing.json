@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Glue",
+    "Bubbles"
+  ],
   "kind": "sprite",
   "anchor": [-2, 39],
   "keys": {

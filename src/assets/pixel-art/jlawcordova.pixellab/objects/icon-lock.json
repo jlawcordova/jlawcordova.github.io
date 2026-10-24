@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Achievements",
+    "Icons"
+  ],
   "kind": "sprite",
   "anchor": [8, 15],
   "keys": {

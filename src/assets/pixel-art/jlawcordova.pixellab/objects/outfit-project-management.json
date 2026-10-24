@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Roles",
+    "Project management"
+  ],
   "kind": "sprite",
   "extends": "character",
   "keys": {

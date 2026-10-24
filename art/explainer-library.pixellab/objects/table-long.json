@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Kitchen",
+    "Tables"
+  ],
   "kind": "sprite",
   "anchor": [14, 15],
   "footprint": [2, 1],

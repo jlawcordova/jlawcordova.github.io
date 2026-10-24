@@ -1,4 +1,8 @@
 {
+  "category": [
+    "Glue",
+    "Wires"
+  ],
   "kind": "sprite",
   "anchor": [16, 8],
   "keys": {
