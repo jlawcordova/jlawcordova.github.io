@@ -15,7 +15,7 @@ npm run fetch-accomplishments  # refresh src/data/accomplishments.json from AT P
 npm run art      # publish the pixel-art document to its SVGs and the blog's thumbnails with Pixel Lab's program (see Pixel art below)
 npm run diagrams    # render the blog's diagrams (scripts/diagrams/) to the PNGs the posts embed, with the environment's Playwright
 npm test         # build the art, then the scripts' tests (Node built-ins; no network once the program is downloaded)
-npm run explainer-export  # the explainer library as transparent PNGs, into .explainer-export/ (see Explainer library below)
+npm run explainer-export  # the explainer library as transparent PNGs and explainer.pixellib, into .explainer-export/ (see Explainer library below)
 npm run e2e      # browser checks against the built dist/ (run npm run build first)
 npm run e2e -- scripts/e2e/accomplishments.e2e.mjs  # one suite only
 ```
@@ -98,9 +98,9 @@ npm run pixellab -- object action <object> <layer> <name> --duration <ms> --keys
 npm run pixellab -- help                                  # every command: scene place, object paint, …
 ```
 
-**Pixel Lab**, the Mac app, opens the document and draws it with the same engine: it places objects, paints them, plays a scene's motion, and **Publish** (⌘B) is `npm run art`. It must be v0.6.0 or later to open the document. Agents work through its MCP server (`mcp__pixellab__*`), whose saves are proposals the owner approves in the app, or through the CLI above. The loop is edit → `npm run art` → commit the sources (the outputs are git-ignored).
+**Pixel Lab**, the Mac app, opens the document and draws it with the same engine: it places objects, paints them, plays a scene's motion, and **Publish** (⌘B) is `npm run art`. It must be v0.7.0 or later to open the document. Its Library sorts the objects into categories, shown as tabs (Terrain, Nature, Buildings, Transport, Industry, Roles, Achievements and Thumbnails), and every object has one. Agents work through its MCP server (`mcp__pixellab__*`), whose edits apply to the document as they're made, or through the CLI above. The loop is edit → `npm run art` → commit the sources (the outputs are git-ignored).
 
-**Pixel Lab for Mac**, the owner's native editor (kept in a separate repository), edits the same sources with the program it bundles, and saves straight to them. Agents reach it through its `pixellab` CLI and MCP server: they look at renders, arrange scenes and paint objects with the same commands, and their MCP saves become proposals the owner approves in the app. The `pixel-art` skill (`.claude/skills/pixel-art/SKILL.md`) says when to use which.
+**Pixel Lab for Mac**, the owner's native editor (kept in a separate repository), edits the same sources with the program it bundles, and saves straight to them. Agents reach it through its `pixellab` CLI and MCP server: they look at renders, arrange scenes and paint objects with the same commands, and their MCP edits land in the document as they make them, each a version the owner can review and take back in the app's Versions panel. The `pixel-art` skill (`.claude/skills/pixel-art/SKILL.md`) says when to use which.
 
 Sources are kept in one canonical JSON form, and `npm run pixellab -- check` warns about any source that isn't in it.
 
@@ -115,7 +115,9 @@ npm run explainer-export                                           # every objec
 npm run explainer-export -- --scale 4 --out ~/Desktop/explainer    # another scale or folder
 ```
 
-Open it in Pixel Lab with File › Open Document…. Its five contact sheets (`sheet-kitchen`, `sheet-office`, `sheet-cloud`, `sheet-ai`, `sheet-glue`) show every asset in place.
+Open it in Pixel Lab with File › Open Document…. Its five contact sheets (`sheet-kitchen`, `sheet-office`, `sheet-cloud`, `sheet-ai`, `sheet-glue`) show every asset in place. Its Library sorts the objects into seven categories (Kitchen, Office, Cloud, AI, Glue, People and Animals).
+
+`npm run explainer-export` also writes `.explainer-export/explainer.pixellib`, the whole library as a Pixel Lab object library with every category, which another document can import (File › Import Library…, or `pixellab library import`). It's made on demand and never committed. Libraries and palette files are described in the lab's [`docs/libraries.md`](https://github.com/jlawcordova/jlawcordova-lab/blob/v0.7.0/docs/libraries.md).
 
 ## Deploy
 
