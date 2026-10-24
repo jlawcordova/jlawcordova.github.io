@@ -1922,46 +1922,16 @@
         "item": "signal-far",
         "keys": [
           { "t": 0 },
-          { "t": 13575, "pose": "crossing-signal-left" },
-          { "t": 14075, "pose": "crossing-signal-right" },
-          { "t": 14575, "pose": "crossing-signal-left" },
-          { "t": 15075, "pose": "crossing-signal-right" },
-          { "t": 15575, "pose": "crossing-signal-left" },
-          { "t": 16075, "pose": "crossing-signal-right" },
-          { "t": 16575, "pose": "crossing-signal-left" },
-          { "t": 17075, "pose": "crossing-signal-right" },
-          { "t": 17575, "pose": "crossing-signal-left" },
-          { "t": 18075, "pose": "crossing-signal-right" },
-          { "t": 18575, "pose": "crossing-signal-left" },
-          { "t": 19075, "pose": "crossing-signal-right" },
-          { "t": 19575, "pose": "crossing-signal-left" },
-          { "t": 20075, "pose": "crossing-signal-right" },
-          { "t": 20575, "pose": "crossing-signal-left" },
-          { "t": 21075, "pose": "crossing-signal-right" },
-          { "t": 21325, "pose": "crossing-signal" }
+          { "t": 13575, "state": "flash" },
+          { "t": 21325, "state": "rest" }
         ]
       },
       {
         "item": "signal-near",
         "keys": [
           { "t": 0 },
-          { "t": 13575, "pose": "crossing-signal-left" },
-          { "t": 14075, "pose": "crossing-signal-right" },
-          { "t": 14575, "pose": "crossing-signal-left" },
-          { "t": 15075, "pose": "crossing-signal-right" },
-          { "t": 15575, "pose": "crossing-signal-left" },
-          { "t": 16075, "pose": "crossing-signal-right" },
-          { "t": 16575, "pose": "crossing-signal-left" },
-          { "t": 17075, "pose": "crossing-signal-right" },
-          { "t": 17575, "pose": "crossing-signal-left" },
-          { "t": 18075, "pose": "crossing-signal-right" },
-          { "t": 18575, "pose": "crossing-signal-left" },
-          { "t": 19075, "pose": "crossing-signal-right" },
-          { "t": 19575, "pose": "crossing-signal-left" },
-          { "t": 20075, "pose": "crossing-signal-right" },
-          { "t": 20575, "pose": "crossing-signal-left" },
-          { "t": 21075, "pose": "crossing-signal-right" },
-          { "t": 21325, "pose": "crossing-signal" }
+          { "t": 13575, "state": "flash" },
+          { "t": 21325, "state": "rest" }
         ]
       },
       {
