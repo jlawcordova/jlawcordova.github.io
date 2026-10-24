@@ -12,6 +12,7 @@ Implements [spec.md](spec.md) R1–R12, with every Area of concern taken with it
   - pose objects nothing uses any more are deleted (R7).
 - `src/assets/pixel-art/jlawcordova.pixellab/scenes/hero-island.json`: pose keys become state keys, and the signals' runs fold into `flash` (R5, R6).
 - `scripts/range-change.test.mjs`: "A's hop" reads the `hop` state (R10).
+- `.claude/skills/pixel-art/cost.md`: the trucks' frames are drawn per placement (R11).
 - `CLAUDE.md`, `README.md`, `.claude/skills/pixel-art/SKILL.md`, `.claude/skills/pixel-art/rules.md` and `.claude/skills/pixel-art-motion/SKILL.md`: states (R11).
 
 Not changed: `src/components/home/Range.astro`, `src/styles/`, `scripts/e2e/range.e2e.mjs`, the explainer library.
@@ -20,7 +21,7 @@ Not changed: `src/components/home/Range.astro`, `src/styles/`, `scripts/e2e/rang
 One slice, straight to a PR into `main`. The main session does every step in one sitting on this session's branch, `claude/gallant-curie-wa7i88`, so there's no main-session branch. The session's instructions name that branch, in place of `feat/pixel-lab-states`. Part 1 has to be proved before Part 2 starts, but the two are one runner's work in one sitting, and the commits keep them apart for review.
 
 ```
-main ── claude/gallant-curie-wa7i88 (steps 1–6, one commit each; step 4 one per family) ── PR (owner merges) ──▶ main
+main ── claude/gallant-curie-wa7i88 (steps 1–6, one commit each; step 4 one per family, with step 5 in it) ── PR (owner merges) ──▶ main
 ```
 
 1. **The intent, spec and plan.**
@@ -42,6 +43,7 @@ main ── claude/gallant-curie-wa7i88 (steps 1–6, one commit each; step 4 on
 5. **The deletions (R7).**
    - Confirm each remaining pose object is unused: `grep` the document's scenes and objects, `src/`, `scripts/` and `.claude/`.
    - Run each base again with `--delete-unused --dry-run`, then for real, all in one commit.
+   - **As built:** `from-poses` refuses a base that already has states, so a delete-only second pass can't run. The usage check ran on step 4's first, unpushed commits, kept as a local backup ref. Then the branch went back to step 3's commit, and step 4 ran again with `--delete-unused` on each family: the same six commands, a `--dry-run` each, and one commit per family holding its deletions. The tree matches the first pass, less the 10 deleted pose objects.
 6. **The docs (R11).**
 7. **The proof (R8, R9, R12):**
    - the "after" renders and their comparison;
@@ -75,7 +77,7 @@ main ── claude/gallant-curie-wa7i88 (steps 1–6, one commit each; step 4 on
 - Step 2: `cmp` of 6 SVGs and 13 PNGs against v0.7.0, with no difference. `check` shows `no problems` and the same 26 warnings.
 - `npm run art` after each step: every file `lossless`, and no over-budget warning.
 - `npm run pixellab -- check` after each step: no problems, and no warning outside the baseline.
-- The render comparison: `hero-island` at 56 times and `range-sprite` at 4, identical before and after Part 2.
+- The render comparison: `hero-island` at 56 times and `range-sprite` at 4, identical before and after Part 2. Also the hop, at 12 times, and the close-ups and `thumb-elk` at 6 times each (spec D5, as built).
 - `art sizes hero-island` and `art sizes range-sprite`, before and after.
 - `npm test`: `# fail 0`.
 - `npm run build`: `- 0 errors`, `- 0 warnings`, `- 0 hints`, `[build] Complete!`.

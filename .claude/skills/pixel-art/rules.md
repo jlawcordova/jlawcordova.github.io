@@ -20,13 +20,13 @@ These were pinned by `scripts/pixel-art-island.test.mjs`, which left the site wi
 | Clouds | R7: `cream`, `path-2` and `path-3` only, never `path-1` (spec C4). Each keeps its ambient loop (the drift). |
 | Trees | R3: pinned positions; each trunk foot on grass, not river, road or track. R7: wherever a shown truck crosses a tree in the loop, the one further forward (larger col + row) draws later. |
 | Office | `house` anchor `[21, 41]` at `[-59, 59]`; it covers tile `[0, 3]` except `-34,31` and `-34,32` (checked before the next pin, so a worktree can confirm the mask while it fails); a world color at x −35, y 30–32. |
-| Crane | The same world colors at both ends of the mast's top row and of the jib's anchor row. The jib's anchor sits one pixel above the mast's top-left pixel; the jib paints the pixel above the hook's rope (`crane-hook` column 9, row 0); mast + jib > 64 px; the jib's motion poses are `crane-jib-side` and `crane-jib-back`, the hook's `crane-hook-low` and `crane-hook-drop`. Each column of `boxes` stands on grass. R7: `flag` and `crane-box` keep their loops and frame counts, in world colors. |
+| Crane | The same world colors at both ends of the mast's top row and of the jib's anchor row. The jib's anchor sits one pixel above the mast's top-left pixel; the jib paints the pixel above the hook's rope (`crane-hook` column 9, row 0); mast + jib > 64 px; the jib's motion states are `side` and `back`, the hook's `low` and `drop` (once poses, now states of `crane-jib` and `crane-hook`). Each column of `boxes` stands on grass. R7: `flag` and `crane-box` keep their loops and frame counts, in world colors. |
 | Bridge | The river bridge at [2, 3] paints over the ground. `library-demo` places `bridge`. |
 | Trucks | Four `truck-open` items (flat, or tipped) share the line. At every 50 ms of the loop a shown truck's road point keeps x + 2y at 80 (road level). In depth order, back to front: `gate-far`, `signal-far`, `truck-far`, the train cars, `signal-near`, `gate-near`, with the other trucks before `signal-near`. No truck is on the crossing with the train, and while a car is on it both gates are down and both signals lit; at rest they're up and dark. `truck-green` still `extends: 'truck'` with no map of its own. |
 
 ## Rules on the Range
 
-These were pinned by the Range art tests that left the site with Pixel Lab v0.6.0 (spec R18). They're still the art's rules: keep them and check them by render. `scripts/range-change.test.mjs` still checks the hop: one `character` layer per class, with a `hop` action in whole pixels.
+These were pinned by the Range art tests that left the site with Pixel Lab v0.6.0 (spec R18). They're still the art's rules: keep them and check them by render. `scripts/range-change.test.mjs` still checks the hop: one `character` layer per class, and the character's one-shot `hop` state, in whole pixels, handing back to `idle`.
 
 | Group | Pins |
 | --- | --- |

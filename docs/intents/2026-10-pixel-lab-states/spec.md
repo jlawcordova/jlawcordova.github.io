@@ -69,8 +69,8 @@ This spec turns the [intent](intent.md) into requirements and a design. For Pixe
     - no scene places or poses them;
     - no object extends them;
     - no page code, script or test names them.
-  - Then a second `from-poses <base> --delete-unused` per family deletes them. With no pose keys left it converts nothing, and only deletes, so R5's render check still guards it.
-  - `truck-open-tipped` is kept if `truck-open-tipped-green` still extends it, and the result says so. `truck-open-green` and `truck-open-tipped-green` are library objects, not poses, so they stay.
+  - Then each family's `from-poses <base>` runs with `--delete-unused`, which deletes them in the same version as the conversion, under R5's render check. (As built: the command refuses a base that already has states, so a second, delete-only pass isn't possible. The usage check ran on a first, unpushed conversion of all six, and each family was then converted again with `--delete-unused`. The result is the same files, less the deletions.)
+  - `truck-open-tipped` is kept if `truck-open-tipped-green` still extends it. (As built: the conversion writes `truck-open-tipped-green` out whole, so nothing extends `truck-open-tipped` any more, and it's deleted.) `truck-open-green` and `truck-open-tipped-green` are library objects, not poses, so they stay, written out whole with the same renders.
 - **R8. The art stays the same.**
   - The commands' render checks are the guarantee. On top of them, the plan compares `scene render` PNGs of `hero-island` and `range-sprite` before and after Part 2 at the same set of times.
   - `npm run art`: every file `lossless`.
@@ -133,16 +133,16 @@ This spec turns the [intent](intent.md) into requirements and a design. For Pixe
 - **Families with `extends`.** `crossing-signal-left` and `-right` extend `crossing-signal`, and `truck-open-tipped` and `truck-open-green` extend `truck-open`. The command writes objects that extended the base out whole, so they keep their drawing (`docs/cli.md`).
 - **State names.** These come from the command (D8): `rest` for the base's own drawing, and each pose named without the base's prefix (`drop`, `low`, `back`, `side`, `tipped`, `down`, `down-far`). The folded signal state is `flash`. `left` and `right` stay as states, since `flash` plays their frames.
 - **Close-ups and thumbnails.** These place the bases without keys, so they start in `rest`, which is the base's own drawing. The command renders every scene that shows the family, these included.
-- **Deletion (R7).** It happens after all six conversions:
-  1. `object list --json` and a `grep` of the document, `src/` and `scripts/` show what still names each pose object.
-  2. `from-poses <base> --delete-unused --dry-run` lists what it would delete.
-  3. Run it for real.
+- **Deletion (R7).** As built:
+  1. All six families are converted without `--delete-unused`, and not pushed.
+  2. A `grep` of the document's scenes and objects, `src/` and `scripts/` shows that nothing names any pose object.
+  3. The branch goes back to the character commit, and each family runs again with `--delete-unused`: first `--dry-run`, then for real.
 
-  The deletions go in one commit.
+  Each family's deletions go in that family's commit.
 
 ### D5. The proof (R8, R9)
 - **Sizes.** Save `art sizes hero-island` and `art sizes range-sprite` after the pin (step 2) and again after step 4.
-- **Renders.** After the pin, render `hero-island` with `scene render hero-island --time <t> --out …` at every 500 ms from 0 to 27,500, offset by 50 ms so no sample sits on a key. Render `range-sprite` at 0, 250, 500 and 750 ms. Repeat after Part 2, and compare the PNGs byte for byte. That's a sample on top of the commands' own 100 ms check.
+- **Renders.** After the pin, render `hero-island` with `scene render hero-island --time <t> --out …` at every 500 ms from 0 to 27,500, offset by 50 ms so no sample sits on a key. Render `range-sprite` at 0, 250, 500 and 750 ms. Repeat after Part 2, and compare the PNGs byte for byte. The hop is compared with `object render character`: `--play hop@<t>` on the pin commit, and `--state hop --time <t>` after, at 12 times through it. This compares the opaque pixels in the viewBox's coordinates, since `scene render --play` takes actions only. The close-ups and `thumb-elk`, which place the bases, are rendered at 6 times each against a worktree of the character commit. That's a sample on top of the commands' own 100 ms check.
 - **The page.** `npm run e2e` runs the hop check in Chromium on the built page. Screenshots of the home page's hero and Range at 1440 and 390 px, with no horizontal scroll.
 
 ## Areas of concern
