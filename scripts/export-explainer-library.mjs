@@ -1,12 +1,15 @@
 // Exports the explainer asset library (art/explainer-library.pixellab/) for
 // videos and infographics (explainer library spec R8): a transparent PNG of
 // every object, one per loop frame, and each contact sheet on the preview
-// card color, rendered by Pixel Lab's program (scripts/pixellab.mjs).
+// card color, rendered by Pixel Lab's program (scripts/pixellab.mjs). It also
+// writes explainer.pixellib, the whole library as a Pixel Lab object library
+// that another document can import (Pixel Lab categories spec R8).
 //
 //   npm run explainer-export                  # 8×, into .explainer-export/
 //   npm run explainer-export -- --scale 4 --out <dir>
 //
 // A still object is <name>.png; a looped one is <name>-f<n>.png per frame.
+// explainer.pixellib holds every object, the base `character` included.
 // The base `character` is left out: the people are its outfits.
 
 import { execFile } from 'node:child_process';
@@ -70,6 +73,18 @@ export async function exportLibrary(options) {
   return files.sort();
 }
 
+/**
+ * Writes `<out>/explainer.pixellib` with every object and its category, replacing
+ * an earlier export, and returns its path and object count.
+ * @param {{ doc?: string, out: string }} options
+ */
+export async function exportObjectLibrary({ doc = DOC, out }) {
+  await mkdir(out, { recursive: true });
+  const file = join(out, 'explainer.pixellib');
+  const result = JSON.parse(await pixellab(['library', 'export', file, '--replace', '--json'], doc));
+  return { file, objects: result.objects?.length ?? 0 };
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2);
   const flag = (name, fallback) => {
@@ -84,4 +99,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   }
   const files = await exportLibrary({ out, scale });
   console.log(`wrote ${files.length} PNGs at ${scale}× to ${out}`);
+  const library = await exportObjectLibrary({ out });
+  console.log(`wrote ${library.file} (${library.objects} objects)`);
 }
