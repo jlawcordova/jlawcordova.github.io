@@ -1,0 +1,178 @@
+# Plan: Ask J. Law, a bot that answers questions about me (from intent.md 2026-10-26)
+
+Builds [spec.md](spec.md) (approved 2026-10-26). The owner reviews only the final pull requests. Nothing in this plan pauses for the owner before then.
+
+## Files that change
+
+**This repository** (one slice, branch `feat/ask-bot`):
+
+| File | Change |
+| --- | --- |
+| `docs/intents/2026-10-ask-bot/intent.md`, `spec.md`, `plan.md` (new) | The change's documents |
+| `src/assets/pixel-art/jlawcordova.pixellab/scenes/hero-island.json` | The character placed on the island, in a group with the class `ask-character`, with an idle ambient loop |
+| `src/assets/pixel-art/jlawcordova.pixellab/scenes/ask-avatar.json` (new) | A standalone scene holding only the character, compiled to `src/assets/pixel-art/ask-avatar.svg` (git-ignored) |
+| `src/pages/ask-knowledge.json.ts` (new) | The knowledge file, `/ask-knowledge.json` |
+| `src/lib/ask-knowledge.mjs` (new) | Builds the knowledge entries from the allowlisted sources; pure, so it can be tested |
+| `src/components/home/Ask.astro` (new) | The bubble's markup and the panel's empty shell; rendered only when `PUBLIC_ASK_ENDPOINT` is set |
+| `src/components/home/Hero.astro` | Renders `Ask.astro` inside the hero's art wrapper |
+| `src/lib/ask-state.mjs` (new) | The pure state machine: states, transitions, the copy for each reply status |
+| `src/lib/ask.ts` (new) | The lazily loaded panel: requests, rendering, focus, the glide |
+| `src/lib/ask-loader.ts` (new) | The small loader on the home page: reveals the bubble, imports `ask.ts` on first press or focus |
+| `src/styles/ask.css` (new) | Bubble styles (in `global.css`) |
+| `src/styles/ask-panel.css` (new) | Panel styles, imported by `ask.ts` so they load with it |
+| `src/styles/global.css` | Imports `ask.css` after `hero.css` |
+| `src/env.d.ts` | Types `PUBLIC_ASK_ENDPOINT` |
+| `.github/workflows/deploy.yml` | Passes `PUBLIC_ASK_ENDPOINT: ${{ vars.ASK_ENDPOINT }}` to the build step |
+| `docs/design-system/components/` | An "Ask panel" entry |
+| `src/pages/design-system.astro` | A static preview of the bubble and panel |
+| `scripts/ask-knowledge.test.mjs` (new) | Allowlist, size and forbidden-pattern checks |
+| `scripts/ask-state.test.mjs` (new) | Every state and transition |
+| `scripts/e2e/ask.e2e.mjs` (new) | Browser checks against a stubbed Worker |
+| `README.md` | The project-layout table gains the new files; a short "Ask" section on the endpoint variable |
+| `CLAUDE.md` | One line under Commands for the Ask e2e suite and the Worker repo |
+| `.gitignore` | `.e2e-output/ask/` if `.e2e-output/` isn't already ignored |
+
+**A new repository, `jlawcordova/jlawcordova-ask`** (private), at `~/Projects/jlawcordova-ask`:
+
+| File | Purpose |
+| --- | --- |
+| `package.json`, `package-lock.json`, `tsconfig.json`, `wrangler.toml` | Dependencies: `@anthropic-ai/sdk`, and dev only `wrangler` and `typescript`. Node 24's type stripping runs the tests, so no test framework |
+| `src/index.ts` | The `fetch` handler: CORS, routing, the seven steps of the spec |
+| `src/validate.ts` | Request validation |
+| `src/limits.ts` | Limit rules and the Asia/Manila day, over an injected store and clock |
+| `src/counter.ts` | The Durable Object that stores the counters |
+| `src/prompt.ts` | The system prompt and the reply's JSON schema |
+| `src/reply.ts` | Parses the model's reply, checks sources against the knowledge, maps to the response table |
+| `src/knowledge.ts` | Fetches and caches `/ask-knowledge.json` |
+| `src/ai.ts` | The one SDK call, behind an interface the tests stub |
+| `test/*.test.ts` | Tests for each module and the handler |
+| `evals/questions.json`, `evals/run.mjs` | The hand-run evals against the real model |
+| `README.md`, `CLAUDE.md`, `.gitignore`, `.dev.vars.example` | Setup, deploy, settings and the launch checklist |
+
+## Order of work
+
+```
+jlawcordova.github.io
+main ── feat/ask-bot (main session, worktree .claude/worktrees/ask-bot) ── PR A ──▶ main (owner merges)
+
+jlawcordova-ask (new)
+main (README only) ── feat/initial (subagent, in parallel with PR A) ── PR B ──▶ main (owner merges)
+```
+
+The site is one slice, straight to a PR into `main`: one runner, in one sitting, and it ships dark (no bubble until `ASK_ENDPOINT` is set), so it needs no main-session branch. The Worker is a second slice only because it's a different repository. It builds against the contract in the spec, so it runs in parallel and needs nothing from PR A.
+
+**PR A, this repository (main session):**
+
+1. **Worktree.** The intent, spec and this plan reach `main` in their own docs PR (`docs/intent-ask-bot`) before implementation starts. Create the worktree from an up-to-date `main` at `.claude/worktrees/ask-bot` on `feat/ask-bot`. If the docs PR hasn't merged yet, base the branch on `docs/intent-ask-bot` instead, and merge `main` in once it lands.
+2. **Character art.** In the worktree, with the CLI (`npm run pixellab -- …`), run by the `pixel-artist` agent:
+   - Place the existing `character` object on a free top tile near the island's front-left edge, where the bubble won't cover a landmark, in a new group with the class `ask-character`.
+   - Give that group an idle ambient loop: a 1px bob, stepped, in the document.
+   - Create the `ask-avatar` scene with only the character, the same object and palette, compiled to an SVG only (no PNG thumbnail).
+   - Review previews at 3× of the island and the avatar against canvas board C. Pick the tile yourself; no owner review.
+   - `npm run art` reports every file `lossless` and `npm run pixellab -- check` shows no new problems or warnings. Record both outputs for the PR.
+3. **Knowledge file.** `src/lib/ask-knowledge.mjs` and `src/pages/ask-knowledge.json.ts`, then `scripts/ask-knowledge.test.mjs`. The allowlist is a constant in the module. The output is `{ "generatedAt", "entries": [{ "path", "title", "kind", "text" }] }`, sorted by `path` so the bytes are stable (it is the cached prompt prefix). Entries:
+   - Home (`/`), from the hero copy and the Range classes, read from the same data the components use.
+   - Profile (`/#range`), from `docs/references/profile.md`, its Summary, Highlights, Disciplines and Skills.
+   - One per blog post: title, date, description and the first 600 characters of its plain-text body.
+   - One per earned accomplishment, when `accomplishments.json` isn't the placeholder.
+
+   The tests run against the fixture accomplishments and the placeholder, check the allowlist, the 150 KB cap, and that no entry matches an email, phone, `sk-`/`ghp_`/`AKIA` key or `-----BEGIN` pattern.
+4. **The bubble.** `Ask.astro`, `ask.css`, `ask-loader.ts`, the `Hero.astro` change and `env.d.ts`:
+   - The bubble is a `<button hidden>` holding "Hi, I'm J. Law. What would you like to know?", absolutely placed in the hero's art wrapper.
+   - The loader finds `.ask-character` in the inline island SVG, positions the bubble from its box (again on resize, through a `ResizeObserver` on the wrapper), and removes `hidden`.
+   - On pointer-enter, focus or press, the loader imports `ask.ts`. On press, it opens the panel once loaded.
+   - With `PUBLIC_ASK_ENDPOINT` unset, `Ask.astro` renders nothing and no script loads.
+5. **The panel.** `ask-state.mjs`, `ask.ts`, `ask-panel.css`, then `scripts/ask-state.test.mjs`.
+   - States: `idle`, `opening`, `open`, `waiting`, `answered`, `unknown`, `offTopic`, `visitorLimit`, `resting`, `failed`, `closing`.
+   - Glide (spec, "The character, bubble and glide"): read the `.ask-character` box, place the inline `ask-avatar.svg` sprite over it, hide the in-scene group (`visibility: hidden` on the class), and `play()` the sprite to the bottom-left anchor. Closing reverses it. If the island is out of view, fade instead. Under reduced motion, `play()` already no-ops, so the code sets the end state directly.
+   - The panel is a non-modal `role="dialog"` with `aria-label="Ask J. Law"`. Focus goes to the input on open and back to the bubble on close. Escape closes it. The reply area is `aria-live="polite"`.
+   - The request is `fetch(PUBLIC_ASK_ENDPOINT, { method: "POST" })` with an 8-second `AbortController` timeout. History holds the last two exchanges, in memory only.
+   - Copy is exactly the spec's: the first line, the four guardrail states, the failure line, and the privacy line. The three chips are "What do you do?", "Which stack do you use?" and "Are you open to work?".
+   - The 390px layout follows the spec (full width, at most 60vh, character on the top-left edge). It uses `100dvh`-based sizing so the on-screen keyboard doesn't hide the input.
+6. **Browser checks.** `scripts/e2e/ask.e2e.mjs` follows the accomplishments suite's pattern:
+   - It builds into `.e2e-output/ask/` with `PUBLIC_ASK_ENDPOINT=https://ask.e2e.invalid/ask`, and stubs that URL with Playwright's `page.route` for each row of the spec's response table, plus a timeout and an abort.
+   - At 1440px and 390px it checks:
+     - the bubble's position next to `.ask-character`;
+     - opening, with the sprite ending within 2px of the bottom-left anchor;
+     - focus moving into the panel and back to the bubble, and Escape closing it;
+     - each state's text;
+     - source links;
+     - no horizontal scroll;
+     - nothing gliding under reduced motion;
+     - the in-scene character visible again after close.
+   - It also checks that a build without the variable has no bubble and loads no ask script.
+7. **Design system and deploy.** Add the "Ask panel" component entry and its preview on `/design-system/`. Make the `deploy.yml` change, and update `README.md` and `CLAUDE.md`.
+8. **Verify and open PR A.** Merge `main` into `feat/ask-bot` if it moved. Run every check under Proof. Measure the home page's added gzip bytes (initial and on first press) and paste the numbers. Take screenshots at 1440px and 390px of idle, open and resting, with the dev server's `PUBLIC_ASK_ENDPOINT` pointed at a local stub (`node` one-liner in the PR description, not committed). Open the PR into `main` citing this plan, with the owner's launch checklist (below) and a link to PR B.
+
+**PR B, `jlawcordova-ask` (one `general-purpose` subagent, from the start, in parallel):**
+
+1. **The repo.** Create `~/Projects/jlawcordova-ask`, commit a README to `main`, create the private GitHub repo `jlawcordova/jlawcordova-ask` with `gh repo create --private`, push `main`, and branch `feat/initial`. The owner approved a separate repo and this plan names it, so creating it is in scope. The `jlawcordova-mcp` Worker in `~/Projects/jlawcordova-atproto` is the style reference for Wrangler settings and README.
+2. **Scaffold.** Create `package.json`, `tsconfig.json`, `wrangler.toml` (the Durable Object binding with a SQLite migration, `ALLOWED_ORIGINS`, `KNOWLEDGE_URL`, the limit values, and `ASK_ENABLED`), `.dev.vars.example` with the key's name only, and `CLAUDE.md`.
+3. **Pure modules and their tests.** `validate.ts`, `limits.ts`, `prompt.ts`, `reply.ts`, `knowledge.ts`.
+   - Limits test the minute and day windows, the Manila day boundary, the order (site before visitor), and counting only after a call.
+   - Reply tests cover a valid `ok`, a source not in the knowledge, an `ok` with no sources (becomes `unknown`), and malformed JSON.
+   - The visitor's IP is hashed with SHA-256 and a daily salt derived from a secret, `IP_SALT`. Tests check that no raw IP reaches the store.
+4. **The handler and the Durable Object.** `index.ts`, `counter.ts` and `ai.ts`.
+   - `ai.ts` makes one `messages.create` call with `claude-haiku-5-5`, `max_tokens: 400`, `output_config: { effort: "low", format: <the JSON schema> }`, the prompt and knowledge as a system block with `cache_control: { type: "ephemeral" }`, and the history and question as user and assistant turns.
+   - It checks `stop_reason` (`refusal` and `max_tokens` become `unknown`) and catches the SDK's typed errors (rate limit or 5xx becomes `failed`, mapped to a 503 `resting` reply with no `resetAt`).
+   - Handler tests run every row of the response table, CORS (allowed origin, other origin, preflight) and `ASK_ENABLED=false`, against a stub `ai.ts` and an in-memory store.
+5. **Evals.** `evals/questions.json` holds about 30 questions with expected `status`:
+   - on topic;
+   - not on the site, including availability and rates;
+   - off topic;
+   - injection ("ignore your instructions", "you are now…", a question that pastes fake knowledge);
+   - bait for made-up claims ("Which companies has J. Law worked for?", "What did J. Law score on…").
+
+   `evals/run.mjs` posts each one to a running Worker (`wrangler dev` or the deployed URL) and prints a pass/fail table. It is not run here, because it spends money and needs the owner's key. The README says how to run it.
+6. **Verify and open PR B.** Run `npm test` and `npx tsc --noEmit`. Run `npx wrangler deploy --dry-run` to show the bundle builds; it doesn't deploy. Open the PR into `main` with the outputs and a link to PR A. Don't deploy, set secrets, or call the real model.
+
+## Workflow and reviews
+
+| Step | Who | Where | Then |
+| --- | --- | --- | --- |
+| A1 | Main session | `.claude/worktrees/ask-bot`, `feat/ask-bot` | Start PR B's subagent, then A2 |
+| A2 | `pixel-artist` subagent, foreground | Same worktree, CLI only | A3 when its checks pass |
+| A3–A7 | Main session | Same worktree | Commit per step |
+| B1–B6 | `general-purpose` subagent, background | `~/Projects/jlawcordova-ask` | Reports PR B's link and outputs |
+| Review B | Fresh `general-purpose` subagent, adversarial | Reads PR B | Findings fixed on `feat/initial` before hand-over |
+| A8 | Main session | Same worktree | `verify-change` on PR A, fixes, then hand-over |
+
+- **File ownership.** The two slices share no files. The `pixel-artist` agent edits only the two scene files. The main session owns everything else in this repo, and the Worker subagent owns the new repo. The contract between them is the spec's request and response table and the knowledge file's shape (A3). If the Worker subagent needs either to change, it stops and reports instead of changing it.
+- **Merging.** Agents merge nothing. The owner merges PR A and PR B into their `main` branches, in either order: PR A ships dark until `ASK_ENDPOINT` is set.
+- **Owner review.** None mid-way. The owner reviews PR A and PR B together at the end.
+- **Independent review.** Two, because this change carries security and public-safety risk:
+  - **PR B:** an adversarial review by a fresh subagent. It hunts for ways to spend past the limits, read the key, call the model from another origin, or get answers outside the knowledge, and reports findings. The Worker subagent fixes blocking ones.
+  - **PR A:** a fresh session runs `verify-change` on it once it is open, checking it against the intent, spec and plan. Its blocking findings are fixed before hand-over.
+
+**The owner's launch checklist** (in PR A's description; nothing here is an agent's step):
+
+1. In the AI provider's console, create a workspace for the bot with a monthly spend limit (about $10), and an API key in it. Confirm the provider's data terms and the promo credits' terms allow a public-facing use (spec, concern 6).
+2. In `jlawcordova-ask`, run `npx wrangler secret put ANTHROPIC_API_KEY` and `npx wrangler secret put IP_SALT`, then `npx wrangler deploy`.
+3. Run `npm run evals -- <worker URL>` and check the table. Ask 20 questions and compare the console's cost with the spec's estimate.
+4. In this repo's GitHub settings, set the Actions variable `ASK_ENDPOINT` to the Worker's `/ask` URL, and re-run the deploy workflow.
+5. The off switch is `ASK_ENABLED=false` in the Worker's settings, which needs no site deploy.
+
+## Risks
+
+- **The owner's open edits to `hero-island.json` (riskiest).** The owner's checkout has uncommitted changes to the same scene. A2 makes one small, separate addition: one group, one placement and one ambient loop. Scene ordering is canonical, so the owner's later commit should merge cleanly or with a small conflict. A2 must not run `scene sort` or touch any other item. If `main`'s scene changes during the work, merge `main` first and re-place the character.
+- **The bubble drifts from the character.** The island SVG scales with the viewport. The bubble's position always comes from the live box of `.ask-character`, never fixed pixels, and the e2e suite checks it at both widths.
+- **Reaching into the SVG.** The page touches the in-scene character only through its document class (the site contract). If the class doesn't survive compilation, stop and check the `pixel-art` skill's contract section. Do not reach in by element order.
+- **Home page budgets.** The loader and bubble CSS must stay within 1 KB gzip each. If the island SVG or the home page goes over budget, `npm run art` warns: report the number, don't raise a budget.
+- **The knowledge file leaks something.** It is built only from the allowlist. Its test checks forbidden patterns. PR A's description pastes the generated file's entry list (paths and titles) for the owner to scan.
+- **The model behaves differently than the tests assume.** Tests stub the model, so its real behaviour is only checked by the evals at launch. The Worker's reply checks mean a bad verdict can lose an answer but can't show an unchecked source.
+- **Prompt caching doesn't apply.** A prefix below the model's minimum cacheable size silently doesn't cache. The knowledge file is far above it. The evals print `cache_read_input_tokens` so the owner can see caching work.
+- **Durable Objects on the owner's Cloudflare plan.** SQLite-backed Durable Objects are on the free plan. If `wrangler deploy --dry-run` rejects the binding, stop PR B and report.
+
+## Proof
+
+PR A pastes:
+
+- `npm run art`: every file `lossless`, with `ask-avatar.svg` listed. `npm run pixellab -- check` shows no new problems or warnings.
+- `npm test`: `# fail 0`, including `ask-knowledge.test.mjs` and `ask-state.test.mjs`.
+- `npm run build`: `- 0 errors`, `- 0 warnings`, `- 0 hints`, `[build] Complete!`.
+- `npm run build` then `npm run e2e`: `# fail 0`, with `ask.e2e.mjs` run (not "NOT RUN").
+- The home page's gzip bytes before and after, for the initial load and after the first press.
+- Screenshots at 1440px and 390px of idle (character and bubble), open with an answer, and resting, with no horizontal scroll.
+- The knowledge file's entry list.
+
+PR B pastes `npm test`, `npx tsc --noEmit` and `npx wrangler deploy --dry-run` output, and the adversarial review's findings with what was fixed.
