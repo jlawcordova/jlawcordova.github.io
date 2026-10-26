@@ -10,8 +10,10 @@ Builds [spec.md](spec.md) (approved 2026-10-26). The owner reviews only the fina
 | File | Change |
 | --- | --- |
 | `docs/intents/2026-10-ask-bot/intent.md`, `spec.md`, `plan.md` (new) | The change's documents |
-| `src/assets/pixel-art/jlawcordova.pixellab/scenes/hero-island.json` | The character placed on the island, in a group with the class `ask-character`, with an idle ambient loop |
-| `src/assets/pixel-art/jlawcordova.pixellab/scenes/ask-avatar.json` (new) | A standalone scene holding only the character, compiled to `src/assets/pixel-art/ask-avatar.svg` (git-ignored) |
+| `src/assets/pixel-art/jlawcordova.pixellab/objects/ask-character.json` (new) | The owner as the character: an outfit of `character` in a black shirt and blue jeans, with the right arm taken off below the sleeve. It keeps the base's `idle` bob and `hop` |
+| `src/assets/pixel-art/jlawcordova.pixellab/objects/ask-character-arm.json` (new) | The bare right arm, its own sprite so it can have frames and states: `wave` (the start: a 3 s loop that bobs with the body and waves for its second half), `hop` (raised, with the body's hop keys, then `wave`) and `rest` |
+| `src/assets/pixel-art/jlawcordova.pixellab/scenes/hero-island.json` | The two placed on tile (1, 6), in front of the office, in a group with the class `ask-character` inside their own `enter` group |
+| `src/assets/pixel-art/jlawcordova.pixellab/scenes/ask-avatar.json` (new) | A standalone scene holding only the character, with the arm in `rest`, compiled to `src/assets/pixel-art/ask-avatar.svg` (git-ignored) |
 | `src/pages/ask-knowledge.json.ts` (new) | The knowledge file, `/ask-knowledge.json` |
 | `src/lib/ask-knowledge.mjs` (new) | Builds the knowledge entries from the allowlisted sources; pure, so it can be tested |
 | `src/components/home/Ask.astro` (new) | The bubble's markup and the panel's empty shell; rendered only when `PUBLIC_ASK_ENDPOINT` is set |
@@ -67,9 +69,9 @@ One runner does all of it: the main session, in one context, from the first comm
 
 1. **Worktree.** The intent, spec and this plan reach `main` in their own docs PR (`docs/intent-ask-bot`) before implementation starts. Create the worktree from an up-to-date `main` at `.claude/worktrees/ask-bot` on `feat/ask-bot`. If the docs PR hasn't merged yet, base the branch on `docs/intent-ask-bot` instead, and merge `main` in once it lands.
 2. **Character art.** In the worktree, the main session loads the `pixel-art` skill and works with the CLI (`npm run pixellab -- …`). The MCP server is bound to the owner's checkout, so it isn't used here:
-   - Place the existing `character` object on a free top tile near the island's front-left edge, where the bubble won't cover a landmark, in a new group with the class `ask-character`.
-   - Give that group an idle ambient loop: a 1px bob, stepped, in the document.
-   - Create the `ask-avatar` scene with only the character, the same object and palette, compiled to an SVG only (no PNG thumbnail).
+   - *Changed at the owner's request during A2 (2026-10-26):* the character stands in front of the office (the house), wears a black shirt and blue jeans, waves while it waits, and jumps when the bubble is pressed, before the panel opens. Outfit colors are only allowed on objects that extend `character`, and those can't have states of their own, so the figure is two objects: `ask-character`, an outfit with the base's `idle` and `hop`, and `ask-character-arm`, the bare arm in world skin tones with `wave`, `hop` and `rest`. Both stand on tile (1, 6) in a `<g class="ask-character">` inside one `enter` group, so one `data-play="hop"` on that group jumps the whole figure. The base `character` and the Range are unchanged.
+   - The wave is the arm's start state, which bobs with the body's `idle` (1 px, stepped) and waves for the second half of each 3 s loop. It replaces the planned ambient bob, which would have doubled the base's own.
+   - Create the `ask-avatar` scene with only the two objects, the arm in `rest`, compiled to an SVG only (no PNG thumbnail).
    - Review previews at 3× of the island and the avatar against canvas board C. Pick the tile yourself; no owner review.
    - `npm run art` reports every file `lossless` and `npm run pixellab -- check` shows no new problems or warnings. Record both outputs for the PR.
 3. **Knowledge file.** `src/lib/ask-knowledge.mjs` and `src/pages/ask-knowledge.json.ts`, then `scripts/ask-knowledge.test.mjs`. The allowlist is a constant in the module. The output is `{ "generatedAt", "entries": [{ "path", "title", "kind", "text" }] }`, sorted by `path` so the bytes are stable (it is the cached prompt prefix). Entries:
@@ -81,12 +83,12 @@ One runner does all of it: the main session, in one context, from the first comm
    The tests run against the fixture accomplishments and the placeholder, check the allowlist, the 150 KB cap, and that no entry matches an email, phone, `sk-`/`ghp_`/`AKIA` key or `-----BEGIN` pattern.
 4. **The bubble.** `Ask.astro`, `ask.css`, `ask-loader.ts`, the `Hero.astro` change and `env.d.ts`:
    - The bubble is a `<button hidden>` holding "Hi, I'm J. Law. What would you like to know?", absolutely placed in the hero's art wrapper.
-   - The loader finds `.ask-character` in the inline island SVG, positions the bubble from its box (again on resize, through a `ResizeObserver` on the wrapper), and removes `hidden`.
+   - The loader finds `.ask-character` in the inline island SVG, positions the bubble from the character's foot (its `enter` group's `data-x` and `data-y`, mapped through the SVG's `viewBox` and box; again on resize, through a `ResizeObserver` on the wrapper), and removes `hidden`. The foot, not the group's box: the box changes as the arm waves and the frames hidden in the SVG still count in it.
    - On pointer-enter, focus or press, the loader imports `ask.ts`. On press, it opens the panel once loaded.
    - With `PUBLIC_ASK_ENDPOINT` unset, `Ask.astro` renders nothing and no script loads.
 5. **The panel.** `ask-state.mjs`, `ask.ts`, `ask-panel.css`, then `scripts/ask-state.test.mjs`.
    - States: `idle`, `opening`, `open`, `waiting`, `answered`, `unknown`, `offTopic`, `visitorLimit`, `resting`, `failed`, `closing`.
-   - Glide (spec, "The character, bubble and glide"): read the `.ask-character` box, place the inline `ask-avatar.svg` sprite over it, hide the in-scene group (`visibility: hidden` on the class), and `play()` the sprite to the bottom-left anchor. Closing reverses it. If the island is out of view, fade instead. Under reduced motion, `play()` already no-ops, so the code sets the end state directly.
+   - Glide (spec, "The character, bubble and glide"): on press, play the character's `hop` (`data-play="hop"` on the `ask-character` group) and open on its `animationend`, or at once under reduced motion, where no `animationend` fires. Then map the character's foot to the page, place the inline `ask-avatar.svg` sprite with its anchor on it, hide the in-scene group (`visibility: hidden` on the class), and `play()` the sprite to the bottom-left anchor. Closing reverses it. If the island is out of view, fade instead. Under reduced motion, `play()` already no-ops, so the code sets the end state directly.
    - The panel is a non-modal `role="dialog"` with `aria-label="Ask J. Law"`. Focus goes to the input on open and back to the bubble on close. Escape closes it. The reply area is `aria-live="polite"`.
    - The request is `fetch(PUBLIC_ASK_ENDPOINT, { method: "POST" })` with an 8-second `AbortController` timeout. History holds the last two exchanges, in memory only.
    - Copy is exactly the spec's: the first line, the four guardrail states, the failure line, and the privacy line. The three chips are "What do you do?", "Which stack do you use?" and "Are you open to work?".
@@ -185,7 +187,7 @@ Constraints: never merge or push to main in either repo; never deploy the Worker
 ## Risks
 
 - **The owner's open edits to `hero-island.json` (riskiest).** The owner's checkout has uncommitted changes to the same scene. A2 makes one small, separate addition: one group, one placement and one ambient loop. Scene ordering is canonical, so the owner's later commit should merge cleanly or with a small conflict. A2 must not run `scene sort` or touch any other item. If `main`'s scene changes during the work, merge `main` first and re-place the character.
-- **The bubble drifts from the character.** The island SVG scales with the viewport. The bubble's position always comes from the live box of `.ask-character`, never fixed pixels, and the e2e suite checks it at both widths.
+- **The bubble drifts from the character.** The island SVG scales with the viewport. The bubble's position always comes from the character's foot mapped through the live SVG box, never fixed pixels, and the e2e suite checks it at both widths.
 - **Reaching into the SVG.** The page touches the in-scene character only through its document class (the site contract). If the class doesn't survive compilation, stop and check the `pixel-art` skill's contract section. Do not reach in by element order.
 - **Home page budgets.** The loader and bubble CSS must stay within 1 KB gzip each. If the island SVG or the home page goes over budget, `npm run art` warns: report the number, don't raise a budget.
 - **The knowledge file leaks something.** It is built only from the allowlist. Its test checks forbidden patterns. PR A's description pastes the generated file's entry list (paths and titles) for the owner to scan.
@@ -197,7 +199,7 @@ Constraints: never merge or push to main in either repo; never deploy the Worker
 
 PR A pastes:
 
-- `npm run art`: every file `lossless`, with `ask-avatar.svg` listed. `npm run pixellab -- check` shows no new problems or warnings.
+- `npm run art`: every file `lossless`, with `ask-avatar.svg` listed, and `art sizes hero-island` for what the character adds (+11.5 KB raw, +1.1 KB gzip with the wave: over the spec's 5 KB raw, within it gzipped, and within the island's 750 KB / 150 KB budget). `npm run pixellab -- check` shows no new problems or warnings.
 - `npm test`: `# fail 0`, including `ask-knowledge.test.mjs` and `ask-state.test.mjs`.
 - `npm run build`: `- 0 errors`, `- 0 warnings`, `- 0 hints`, `[build] Complete!`.
 - `npm run build` then `npm run e2e`: `# fail 0`, with `ask.e2e.mjs` run (not "NOT RUN").
