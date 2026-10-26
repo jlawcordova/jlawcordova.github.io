@@ -27,7 +27,8 @@ Builds [spec.md](spec.md) (approved 2026-10-26). The owner reviews only the fina
 | `src/pages/design-system.astro` | A static preview of the bubble and panel |
 | `scripts/ask-knowledge.test.mjs` (new) | Allowlist, size and forbidden-pattern checks |
 | `scripts/ask-state.test.mjs` (new) | Every state and transition |
-| `scripts/e2e/ask.e2e.mjs` (new) | Browser checks against a stubbed Worker |
+| `scripts/e2e/ask.e2e.mjs` (new) | Browser checks against a stubbed Worker; with `ASK_SCREENSHOTS=<dir>` set, it also saves the behaviour screenshots |
+| `docs/intents/2026-10-ask-bot/snapshots/*.png` (new) | The behaviour screenshots PR A embeds, committed as earlier changes did |
 | `README.md` | The project-layout table gains the new files; a short "Ask" section on the endpoint variable |
 | `CLAUDE.md` | One line under Commands for the Ask e2e suite and the Worker repo |
 | `.gitignore` | `.e2e-output/ask/` if `.e2e-output/` isn't already ignored |
@@ -102,11 +103,23 @@ One runner does all of it: the main session, in one context, from the first comm
      - the in-scene character visible again after close.
    - It also checks that a build without the variable has no bubble and loads no ask script.
 7. **Design system and deploy.** Add the "Ask panel" component entry and its preview on `/design-system/`. Make the `deploy.yml` change, and update `README.md` and `CLAUDE.md`.
-8. **Verify and open PR A.** This comes after PR B's steps. Merge `main` into `feat/ask-bot` if it moved. Run every check under Proof. Measure the home page's added gzip bytes (initial and on first press) and paste the numbers. Take screenshots at 1440px and 390px of idle, open and resting, with the dev server's `PUBLIC_ASK_ENDPOINT` pointed at a local stub (`node` one-liner in the PR description, not committed). Open the PR into `main` citing this plan, with the owner's launch checklist (below) and a link to PR B.
+8. **Verify and open PR A.** This comes after PR B's steps. Merge `main` into `feat/ask-bot` if it moved. Run every check under Proof. Measure the home page's added gzip bytes (initial and on first press) and paste the numbers. Run `ASK_SCREENSHOTS=docs/intents/2026-10-ask-bot/snapshots npm run e2e -- scripts/e2e/ask.e2e.mjs` to save the behaviour sequence below against the stubbed Worker, look at each image, and commit them. Open the PR into `main` citing this plan, with the owner's launch checklist (below), a link to PR B, and a "Behaviour" section that embeds every screenshot in order with a one-line caption. Each image is embedded by its blob URL on `feat/ask-bot` with `?raw=true`.
+
+   The sequence, at 1440px unless noted:
+   1. `01-idle.png`: the hero with the character on the island and its bubble.
+   2. `02-bubble-focus.png`: the bubble with the focus ring (keyboard).
+   3. `03-glide-mid.png`: mid-glide, about 300 ms after the press.
+   4. `04-open.png`: the panel open at the bottom left, with the first line and the chips.
+   5. `05-waiting.png`: the thinking state.
+   6. `06-answered.png`: an answer with its source link.
+   7. `07-unknown.png`, `08-off-topic.png`, `09-visitor-limit.png`, `10-resting.png`, `11-failed.png`: each guardrail state.
+   8. `12-closed.png`: after Close, the character back on the island.
+   9. `13-reduced-motion.png`: open under reduced motion, with no mid-glide frame.
+   10. `14-390-idle.png`, `15-390-open.png`, `16-390-answered.png`: the phone layout.
 
 **PR B, `jlawcordova-ask` (main session, after A1–A7):**
 
-1. **The repo.** Create `~/Projects/jlawcordova-ask`, commit a README to `main`, create the private GitHub repo `jlawcordova/jlawcordova-ask` with `gh repo create --private`, push `main`, and branch `feat/initial`. The owner approved a separate repo and this plan names it, so creating it is in scope. The `jlawcordova-mcp` Worker in `~/Projects/jlawcordova-atproto` is the style reference for Wrangler settings and README.
+1. **The repo.** Create the private GitHub repo with `gh repo create jlawcordova/jlawcordova-ask --private --add-readme`, so GitHub writes the first commit on `main` and no agent pushes to it. Clone it to `~/Projects/jlawcordova-ask` and branch `feat/initial`. Everything else reaches `main` only through PR B, which the owner reviews and merges. The owner approved creating the repo on their behalf (2026-10-26). The `jlawcordova-mcp` Worker in `~/Projects/jlawcordova-atproto` is the style reference for Wrangler settings and README.
 2. **Scaffold.** Create `package.json`, `tsconfig.json`, `wrangler.toml` (the Durable Object binding with a SQLite migration, `ALLOWED_ORIGINS`, `KNOWLEDGE_URL`, the limit values, and `ASK_ENABLED`), `.dev.vars.example` with the key's name only, and `CLAUDE.md`.
 3. **Pure modules and their tests.** `validate.ts`, `limits.ts`, `prompt.ts`, `reply.ts`, `knowledge.ts`.
    - Limits test the minute and day windows, the Manila day boundary, the order (site before visitor), and counting only after a call.
@@ -149,6 +162,17 @@ One runner does all of it: the main session, in one context, from the first comm
   - **It returns** a compact list of findings, each with a severity, the file and a one-line reproduction. It edits nothing.
   - The main session checks each finding against the code itself before fixing it. There is no `verify-change` run: the main session's checks in each PR and this review are the verification.
 
+**Running it with `/goal`.** The implementing session runs this plan as a goal, in auto mode, so it works through every step without a prompt per turn, and a separate evaluator decides when it is done. The evaluator only reads the conversation, so each check's output must be printed in the transcript, not only in the PR. Start it with:
+
+```text
+/goal Implement docs/intents/2026-10-ask-bot/plan.md as written, in one main session; the only subagent is the plan's adversarial review. Done when all of these are shown in this conversation:
+(1) PR A from feat/ask-bot into main in jlawcordova/jlawcordova.github.io and PR B from feat/initial into main in jlawcordova/jlawcordova-ask are both open, and their URLs are printed;
+(2) the output of npm run art (every file lossless), npm run pixellab -- check (no new problems), npm test (# fail 0), npm run build (0 errors, 0 warnings, 0 hints, Complete!) and npm run e2e (# fail 0, ask.e2e.mjs run) from the worktree, and npm test, npx tsc --noEmit and npx wrangler deploy --dry-run from jlawcordova-ask, each passing;
+(3) PR A's description has a Behaviour section embedding all 16 screenshots from the plan's step A8, committed under docs/intents/2026-10-ask-bot/snapshots/;
+(4) the adversarial review's findings are listed, and each blocking one is fixed and pushed.
+Constraints: never merge or push to main in either repo; never deploy the Worker, set secrets or call the real model; never edit the owner's checkout outside .claude/worktrees/ask-bot; update plan.md in the same commit when the work departs from it. Stop as impossible if a step is blocked by something the plan names as a stop (for example Durable Objects rejected, or the site contract not exposing the character's class), and report why. Or stop after 150 turns.
+```
+
 **The owner's launch checklist** (in PR A's description; nothing here is an agent's step):
 
 1. In the AI provider's console, create a workspace for the bot with a monthly spend limit (about $10), and an API key in it. Confirm the provider's data terms and the promo credits' terms allow a public-facing use (spec, concern 6).
@@ -177,7 +201,7 @@ PR A pastes:
 - `npm run build`: `- 0 errors`, `- 0 warnings`, `- 0 hints`, `[build] Complete!`.
 - `npm run build` then `npm run e2e`: `# fail 0`, with `ask.e2e.mjs` run (not "NOT RUN").
 - The home page's gzip bytes before and after, for the initial load and after the first press.
-- Screenshots at 1440px and 390px of idle (character and bubble), open with an answer, and resting, with no horizontal scroll.
+- The behaviour screenshots (A8's sequence), embedded in the PR's "Behaviour" section, with no horizontal scroll at either width.
 - The knowledge file's entry list.
 
 PR B pastes `npm test`, `npx tsc --noEmit` and `npx wrangler deploy --dry-run` output, and the adversarial review's findings with what was fixed.
