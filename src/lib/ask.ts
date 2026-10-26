@@ -66,11 +66,14 @@ function build(root: HTMLElement, bubble: HTMLButtonElement): Panel {
   };
   const inView = ({ y, s }: { y: number; s: number }) => y > 0 && y + VIEW.y * s < innerHeight;
 
-  /** The avatar's place on the panel's top-left edge: its shoes on the border. */
+  /**
+   * The avatar's place on the panel's top-left edge: its shoes on the border.
+   * From the panel's layout box (a fixed element's offsets are the
+   * viewport's), so the panel's own entrance slide doesn't move it.
+   */
   const placeAvatar = () => {
-    const box = dialog.getBoundingClientRect();
-    avatar.style.left = `${box.left + 16}px`;
-    avatar.style.top = `${box.top - 3 + VIEW.y * SCALE}px`;
+    avatar.style.left = `${dialog.offsetLeft + 16}px`;
+    avatar.style.top = `${dialog.offsetTop - 3 + VIEW.y * SCALE}px`;
   };
   const avatarFoot = () => {
     const box = avatar.getBoundingClientRect();

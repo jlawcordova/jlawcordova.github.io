@@ -113,7 +113,7 @@ One runner does all of it: the main session, in one context, from the first comm
    The sequence, at 1440px unless noted:
    1. `01-idle.png`: the hero with the character on the island and its bubble.
    2. `02-bubble-focus.png`: the bubble with the focus ring (keyboard).
-   3. `03-glide-mid.png`: mid-glide, about 300 ms after the press.
+   3. `03-glide-mid.png`: mid-glide, about 250 ms into the glide, which starts after the 480 ms jump (the press now jumps first, A2).
    4. `04-open.png`: the panel open at the bottom left, with the first line and the chips.
    5. `05-waiting.png`: the thinking state.
    6. `06-answered.png`: an answer with its source link.
