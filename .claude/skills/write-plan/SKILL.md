@@ -59,11 +59,13 @@ Plan a subagent only for one of these reasons, and name the reason in Workflow:
 
 - **Context bloat:** a read-only sweep whose results the rest of the work doesn't need, only its conclusion, such as a search across many files or reading a long log or another repo's history. The subagent reads and reports; the main session decides and edits.
 - **Fresh eyes on purpose:** an adversarial review, a `verify-change` run, or the `pixel-artist` agent's critique of art, where not sharing the implementer's context is the point.
-- **Truly independent work in parallel:** parts that share no files, no tokens, classes or data attributes, and no output (neither reads what the other makes), each large enough that running them one after the other costs a long wait. This is rare here: a page and its art usually share the hooks page code selects, so one runner builds both. Don't split by area (pages for one agent, art for another) because the work lives in different places. Parts that are tightly coupled, where one uses what the other makes, they touch the same files or they're tested together, stay with one runner.
+- **Truly independent work in parallel:** parts that share no files, no tokens, classes or data attributes, and no output (neither reads what the other makes), each large enough that running them one after the other costs a long wait. This is rare here: a page and its art usually share the hooks page code selects, so one runner builds both. Don't split by area (pages for one agent, art for another) because the work lives in different places, and a second repository isn't a reason either: when a change spans two repos, such as the site and a Worker it calls, the main session builds one after the other, so each side is built against what the other really does. Parts that are tightly coupled, where one uses what the other makes, they touch the same files or they're tested together, stay with one runner.
 
 When a subagent runs:
 
 - **Call it like a tool.** The main session keeps the conversation with the owner, the branch and the merges. It gives the subagent a self-contained brief (the files, the plan's section by path, what done looks like) and checks what comes back itself: the diff, the renders and the test output, not only the summary.
+- **Split by context, not by kind of problem.** Give a subagent work that needs little from the rest of the change, and ask for a compact result: a list of findings, a conclusion, a diff. A subagent that needs most of the main session's context to do its job is a sign the step belongs in the main session.
+- **Measure before adding one.** A subagent is a cost (a cold start, a brief, a summary that loses detail) that must buy something the main session can't do as well. If a past change ran fine in one context, plan the next one that way.
 - **If one context turns out to be enough,** do the rest in the main session and note it under the plan's departures.
 
 ## Workflow and reviews
