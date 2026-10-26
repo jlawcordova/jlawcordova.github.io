@@ -1,5 +1,5 @@
 # Intent: Ask J. Law, a bot that answers questions about me
-Author: J. Law. Cordova (site owner). Status: accepted.
+Author: J. Law. Cordova (site owner). Status: accepted (2026-10-26).
 
 ## Problem
 Visitors who want to know whether I'm the right person for something have to read the home page, the blog and the achievements and piece it together. Most won't. I also want a working example of an AI feature built with proper guardrails on my own site, because how it is kept safe and cheap says more about how I build than the chat itself.

@@ -1,5 +1,5 @@
 # Spec: Ask J. Law, a bot that answers questions about me (from intent.md 2026-10-26)
-Status: approved.
+Status: approved (2026-10-26).
 
 This turns [intent.md](intent.md) into buildable detail. The intent says what and why; this says how. If they disagree, the intent wins and this spec gets fixed. The owner chose the "character on the island" direction on the design canvas (board C); the hero-input and floating-button boards were not chosen and are not specified here.
 

@@ -1,4 +1,5 @@
 # Plan: Ask J. Law, a bot that answers questions about me (from intent.md 2026-10-26)
+Status: approved (2026-10-26).
 
 Builds [spec.md](spec.md) (approved 2026-10-26). The owner reviews only the final pull requests. Nothing in this plan pauses for the owner before then.
 
