@@ -5,6 +5,8 @@
 // publishes. Plain .mjs so the Node tests can build it from the same sources;
 // src/pages/ask-knowledge.json.ts feeds it for the site.
 
+import { readAccomplishments } from './accomplishment-list.mjs';
+
 /** Every source the knowledge file may read. The test checks the file against it. */
 export const ALLOWLIST = Object.freeze([
   'src/data/home.ts',
@@ -134,27 +136,22 @@ export function postEntry(post) {
 }
 
 /**
- * One entry per earned (done) accomplishment, citing the /achievements/ page
- * it's listed on. None while the data is the "unavailable" placeholder.
+ * One entry per earned (done) accomplishment, read the way the pages read
+ * them (accomplishment-list.mjs), so each cites the /achievements/ page it's
+ * listed on, by that page's title. None while the data is the
+ * "unavailable" placeholder.
  * @param {unknown} data src/data/accomplishments.json
  * @param {number} perPage
  * @returns {Entry[]}
  */
 export function achievementEntries(data, perPage) {
-  const raw = /** @type {{ status?: unknown, items?: unknown }} */ (data ?? {});
-  if (raw.status !== 'ok' || !Array.isArray(raw.items)) return [];
-  /** @type {any[]} */
-  const done = raw.items.filter(
-    (item) => item?.done === true && typeof item.title === 'string' && typeof item.description === 'string',
-  );
-  return done.map((item, i) => {
+  return readAccomplishments(data).done.map((item, i) => {
     const page = Math.floor(i / perPage) + 1;
-    const when = typeof item.startDate === 'string' ? ` (${item.startDate})` : '';
     return {
       path: page === 1 ? '/achievements/' : `/achievements/page${page}/`,
-      title: item.title,
+      title: page === 1 ? 'Achievements' : `Achievements, page ${page}`,
       kind: 'achievement',
-      text: `Achievement${when}: ${plainText(item.description)}`,
+      text: `Achievement (${item.startDate}): ${plainText(item.title)}. ${plainText(item.description)}`,
     };
   });
 }

@@ -15,6 +15,7 @@ import {
   plainText,
   problems,
 } from '../src/lib/ask-knowledge.mjs';
+import { readAccomplishments } from '../src/lib/accomplishment-list.mjs';
 import { heroCopy, rangeClasses, rangeCopy } from '../src/data/home.ts';
 import { site } from '../src/site.ts';
 
@@ -71,18 +72,40 @@ describe('the knowledge file', () => {
     assert.ok(entries.every((e) => e.path.startsWith('/') && e.title && e.text));
   });
 
-  it('adds only the earned achievements, citing the page each is listed on', async () => {
+  it('adds only the earned achievements, citing the page each is listed on by its title', async () => {
     const data = await fixture('accomplishments.json');
-    const done = data.items.filter((item) => item.done);
+    // Read the way the pages read them, so an entry's page is the page it's on.
+    const { done } = readAccomplishments(data);
     const achievements = (await build(data)).entries.filter((e) => e.kind === 'achievement');
     assert.equal(achievements.length, done.length);
     const pages = Math.ceil(done.length / site.accomplishmentsPerPage);
     assert.ok(pages > 1, 'the fixture spans more than one page');
     const expected = Array.from({ length: pages }, (_, i) => (i ? `/achievements/page${i + 1}/` : '/achievements/'));
     assert.deepEqual(achievements.map((e) => e.path), done.map((_, i) => expected[Math.floor(i / site.accomplishmentsPerPage)]));
+    assert.deepEqual(
+      achievements.map((e) => e.title),
+      done.map((_, i) => (i < site.accomplishmentsPerPage ? 'Achievements' : `Achievements, page ${Math.floor(i / site.accomplishmentsPerPage) + 1}`)),
+    );
+    for (const item of done) assert.ok(achievements.some((e) => e.text.includes(item.title)), `"${item.title}" is in an entry`);
     for (const item of data.items.filter((i) => !i.done)) {
-      assert.ok(!achievements.some((e) => e.title === item.title), `locked "${item.title}" is left out`);
+      assert.ok(!achievements.some((e) => e.text.includes(item.title)), `locked "${item.title}" is left out`);
     }
+  });
+
+  it('gives each path one title, so a cited source is always named right', async () => {
+    const { entries } = await build(await fixture('accomplishments.json'));
+    const titles = new Map();
+    for (const { path, title } of entries) {
+      assert.equal(titles.get(path) ?? title, title, path);
+      titles.set(path, title);
+    }
+  });
+
+  it('skips a done record the pages would not show', async () => {
+    const data = await fixture('accomplishments.json');
+    const broken = { ...data, items: [{ ...data.items.find((i) => i.done), rkey: '', title: 'Hidden one' }, ...data.items] };
+    const texts = (await build(broken)).entries.map((e) => e.text).join('\n');
+    assert.ok(!texts.includes('Hidden one'));
   });
 
   it('is sorted by path, so its bytes are stable', async () => {
@@ -136,6 +159,7 @@ describe('the knowledge file', () => {
       assert.ok(ALLOWLIST.includes(sources[spec]), `${sources[spec]} isn't in ALLOWLIST`);
     }
     assert.match(page, /contact: site\.author\.linkedin/);
+    assert.match(page, /problems\(json\)[\s\S]*throw new Error/, 'the endpoint fails the build on the deployed data too');
     assert.equal((page.match(/site\.author\.\w+/g) ?? []).join(), 'site.author.linkedin', 'only the LinkedIn link');
   });
 });

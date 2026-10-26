@@ -24,10 +24,19 @@ if (root && island && foot && bubble) {
     bubble.style.top = `${y - box.top - bubble.offsetHeight - 12}px`;
     bubble.style.setProperty('--tail', `${x - left}px`);
   };
-  bubble.hidden = false;
-  place();
-  new ResizeObserver(place).observe(island);
-  bubble.addEventListener('pointerenter', load, { once: true });
-  bubble.addEventListener('focus', load, { once: true });
-  bubble.addEventListener('click', async () => (await load()).open(root, bubble));
+  // Shown once the character has landed in the island's build-up (at once
+  // under reduced motion, where nothing animates), so it never points at
+  // empty ground.
+  requestAnimationFrame(async () => {
+    await Promise.all(foot.getAnimations().map((a) => a.finished.catch(() => {})));
+    bubble.hidden = false;
+    place();
+    new ResizeObserver(place).observe(island);
+  });
+  // If the panel can't load (offline, or a deploy replaced its chunk), the
+  // bubble goes rather than stay a dead button.
+  const tryLoad = () => load().catch(() => ((bubble.hidden = true), undefined));
+  bubble.addEventListener('pointerenter', tryLoad, { once: true });
+  bubble.addEventListener('focus', tryLoad, { once: true });
+  bubble.addEventListener('click', async () => (await tryLoad())?.open(root, bubble));
 }

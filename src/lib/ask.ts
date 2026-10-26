@@ -50,7 +50,9 @@ function build(root: HTMLElement, bubble: HTMLButtonElement): Panel {
   const buttons = [...dialog.querySelectorAll<HTMLButtonElement>('.ask-chip, .ask-panel__submit')];
 
   let state = 'idle';
-  let history: { q: string; a: string }[] = [];
+  let history: { q: string; a: string; sig?: string }[] = [];
+  /** Questions sent and not yet answered: one at most, even across a close and reopen. */
+  let pending = 0;
   let resetTimer = 0;
 
   /** Where the island's character stands on screen, and the island's scale. */
@@ -104,8 +106,8 @@ function build(root: HTMLElement, bubble: HTMLButtonElement): Panel {
     });
 
   const setBusy = () => {
-    for (const button of buttons) button.disabled = !canAsk(state);
-    dialog.setAttribute('aria-busy', String(state === 'waiting'));
+    for (const button of buttons) button.disabled = !canAsk(state) || pending > 0;
+    dialog.setAttribute('aria-busy', String(pending > 0));
   };
 
   const add = (kind: 'you' | 'bot', text: string) => {
@@ -121,25 +123,26 @@ function build(root: HTMLElement, bubble: HTMLButtonElement): Panel {
     const said = message(shown, reply);
     if (!said) return;
     const item = add('bot', said.text);
-    for (const source of reply.sources ?? []) {
-      const link = document.createElement('a');
-      link.href = source.path;
-      link.textContent = `Source: ${source.title}`;
-      item.append(' ', link);
-    }
-    if (said.contact && contact) {
-      const link = document.createElement('a');
-      link.href = contact;
-      link.textContent = 'Get in touch';
-      item.append(' ', link);
-    }
+    // Links sit on their own row, each a 44px tap target.
+    const links = document.createElement('span');
+    links.className = 'ask-msg__links';
+    const link = (href: string, text: string) => {
+      const a = document.createElement('a');
+      a.href = href;
+      a.textContent = text;
+      links.append(a);
+    };
+    for (const source of reply.sources ?? []) link(source.path, `Source: ${source.title}`);
+    if (said.contact && contact) link(contact, 'Get in touch');
+    if (links.childElementCount) item.append(links);
     log.scrollTop = log.scrollHeight;
   };
 
   const ask = async (text: string) => {
     const q = question(text);
-    if (!q || !canAsk(state)) return;
+    if (!q || !canAsk(state) || pending > 0) return;
     state = next(state, { type: 'ask' });
+    pending++;
     add('you', q);
     input.value = '';
     const waiting = add('bot', '');
@@ -166,10 +169,11 @@ function build(root: HTMLElement, bubble: HTMLButtonElement): Panel {
     }
 
     waiting.remove();
+    pending--;
     // A reply after the panel closed still goes in the conversation, for when it opens again.
     const shown = next('waiting', reply.status === 'failed' ? { type: 'fail' } : { type: 'reply', status: reply.status });
     if (state === 'waiting') state = shown;
-    if (reply.answer) history = remember(history, q, reply.answer);
+    if (reply.answer) history = remember(history, q, reply.answer, reply.sig);
     say(reply, shown);
     setBusy();
     clearTimeout(resetTimer);

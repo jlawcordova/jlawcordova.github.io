@@ -110,6 +110,7 @@ export const isSitePath = (path) => typeof path === 'string' && /^\/(?![/\\])[^\
  * @property {string} [answer]
  * @property {{ title: string, path: string }[]} [sources]
  * @property {string} [resetAt] ISO time the limit resets.
+ * @property {string} [sig] The Worker's signature of the exchange, sent back with it in the history.
  */
 
 /**
@@ -128,7 +129,10 @@ export function readReply(httpStatus, body) {
       .filter((s) => s && text(s.title) && isSitePath(s.path))
       .slice(0, 3)
       .map((s) => ({ title: String(s.title), path: String(s.path) }));
-    return { status, answer: raw.answer.trim(), sources: status === 'ok' ? sources : [] };
+    /** @type {Reply} */
+    const reply = { status, answer: raw.answer.trim(), sources: status === 'ok' ? sources : [] };
+    if (typeof raw.sig === 'string' && /^[0-9a-f]{64}$/.test(raw.sig)) reply.sig = raw.sig;
+    return reply;
   }
   if ((status === 'visitor_limit' && httpStatus === 429) || (status === 'resting' && httpStatus === 503)) {
     const resetAt = text(raw.resetAt) && !Number.isNaN(Date.parse(raw.resetAt)) ? raw.resetAt : undefined;
@@ -193,9 +197,11 @@ export function question(value) {
 }
 
 /**
- * The conversation sent with the next question: the last two exchanges.
- * @param {{ q: string, a: string }[]} history
+ * The conversation sent with the next question: the last two exchanges, each
+ * with the Worker's signature, without which the Worker ignores it.
+ * @param {{ q: string, a: string, sig?: string }[]} history
  * @param {string} q
  * @param {string} a
+ * @param {string} [sig]
  */
-export const remember = (history, q, a) => [...history, { q, a }].slice(-HISTORY_LENGTH);
+export const remember = (history, q, a, sig) => [...history, sig ? { q, a, sig } : { q, a }].slice(-HISTORY_LENGTH);

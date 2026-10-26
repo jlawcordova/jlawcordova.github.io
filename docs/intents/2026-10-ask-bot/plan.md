@@ -134,7 +134,7 @@ One runner does all of it: the main session, in one context, from the first comm
    - The visitor's IP is hashed with SHA-256 and a daily salt derived from a secret, `IP_SALT`. Tests check that no raw IP reaches the store.
 4. **The handler and the Durable Object.** `index.ts`, `counter.ts` and `ai.ts`.
    - `ai.ts` makes one `messages.create` call with `claude-haiku-5-5`, `max_tokens: 400`, `thinking: { type: "disabled" }` (Haiku 5.5 thinks by default, which would spend the 400 tokens; disabled is allowed at `low` effort), `output_config: { effort: "low", format: <the JSON schema> }`, the prompt and knowledge as a system block with `cache_control: { type: "ephemeral" }`, and the history and question as user and assistant turns.
-   - It checks `stop_reason` (`refusal` and `max_tokens` become `unknown`) and catches the SDK's typed errors (rate limit or 5xx becomes `failed`, mapped to a 503 `resting` reply with no `resetAt`).
+   - It checks `stop_reason` (`refusal` and `max_tokens` become `unknown`) and catches the SDK's typed errors (rate limit or 5xx becomes `failed`, mapped to a 503 `resting` reply with no `resetAt`). *Changed after the adversarial review:* an unavailable AI service or knowledge file is a 502 `{ status: "failed" }` with the reservation given back, so an outage can't use up the limits or leave the panel resting with no reset; the panel shows its "try again" failure.
    - Handler tests run every row of the response table, CORS (allowed origin, other origin, preflight) and `ASK_ENABLED=false`, against a stub `ai.ts` and an in-memory store.
 5. **Evals.** `evals/questions.json` holds about 30 questions with expected `status`:
    - on topic;
@@ -179,6 +179,8 @@ One runner does all of it: the main session, in one context, from the first comm
 (4) the adversarial review's findings are listed, and each blocking one is fixed and pushed.
 Constraints: never merge or push to main in either repo; never deploy the Worker, set secrets or call the real model; never edit the owner's checkout outside .claude/worktrees/ask-bot; update plan.md in the same commit when the work departs from it. Stop as impossible if a step is blocked by something the plan names as a stop (for example Durable Objects rejected, or the site contract not exposing the character's class), and report why. Or stop after 150 turns.
 ```
+
+**After the adversarial review (2026-10-26).** Its findings and what changed are in both PRs. Beyond the item above, the Worker signs each answer (an HMAC keyed from `IP_SALT`) and drops history sent back without a valid signature, always answers off-topic with one fixed line and caps `unknown` at 400 characters, treats an IPv6 visitor as their /64, keeps the minute limit as a sliding window, turns invocation logs off, and times out the knowledge fetch (1.5 s) and the model (5.5 s) inside the site's 8 s. The site sends the signatures back, allows one question in flight across a close and reopen, puts links on 44px rows, shows the bubble once the character has landed and hides it if the panel can't load, reads achievements as the pages do and cites them by page title, and `ask-knowledge.json.ts` throws when its checks fail, so the deploy build checks the real accomplishments.
 
 **The owner's launch checklist** (in PR A's description; nothing here is an agent's step):
 

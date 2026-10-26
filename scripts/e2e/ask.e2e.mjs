@@ -52,6 +52,7 @@ const REPLIES = {
         { title: 'Somewhere else', path: 'https://example.com/' },
         { title: 'Script', path: 'javascript:alert(1)' },
       ],
+      sig: 'a'.repeat(64),
     },
   },
   unknown: {
@@ -65,6 +66,7 @@ const REPLIES = {
   visitorLimit: { status: 429, body: { status: 'visitor_limit', resetAt: RESET_AT } },
   resting: { status: 503, body: { status: 'resting', resetAt: RESET_AT } },
   invalid: { status: 400, body: { status: 'invalid' } },
+  failed: { status: 502, body: { status: 'failed' } },
 };
 
 /** @type {import('playwright').Browser} */
@@ -341,6 +343,7 @@ for (const [label, viewport] of /** @type {const} */ ([
       await page.waitForFunction(() => document.querySelectorAll('.ask-msg--you').length === 4);
       await page.waitForFunction(() => !document.querySelector('.ask-msg--waiting'));
       assert.deepEqual(asked[0], { question: 'What do you do?', history: [] });
+      assert.equal(asked[1].history[0].sig, 'a'.repeat(64), 'the Worker\'s signature goes back with the exchange');
       assert.equal(asked[3].question, 'What do you do?');
       assert.deepEqual(
         asked[3].history.map((h) => h.q),
@@ -348,6 +351,9 @@ for (const [label, viewport] of /** @type {const} */ ([
         'only the last two exchanges go along (R11)',
       );
       assert.equal(await page.locator('.ask-panel__input').getAttribute('maxlength'), '200');
+      for (const height of await page.locator('.ask-msg a').evaluateAll((as) => as.map((a) => a.getBoundingClientRect().height))) {
+        assert.ok(height >= 44, `links are 44px tap targets (${height})`);
+      }
       await noHorizontalScroll(page, 'answered');
       await page.close();
     });
@@ -361,6 +367,7 @@ describe('each reply the Worker can give', () => {
     ['visitor limit', 'visitorLimit', 'visitorLimit', () => limitTime('visitorLimit'), true],
     ['site limit or switched off', 'resting', 'resting', () => limitTime('resting'), true],
     ['bad input', 'invalid', 'failed', () => COPY.failed, true],
+    ['the AI service unavailable (502)', 'failed', 'failed', () => COPY.failed, true],
     ['a network failure', 'abort', 'failed', () => COPY.failed, true],
   ]);
   for (const [name, reply, state, text, contact] of cases) {
@@ -397,6 +404,36 @@ describe('each reply the Worker can give', () => {
     assert.equal(await page.evaluate(() => document.activeElement?.className), 'ask-panel__input', 'focus waits in the box');
     await page.locator('.ask-msg--waiting').waitFor({ state: 'detached' });
     assert.ok(!(await page.locator('.ask-panel__submit').isDisabled()));
+    await page.close();
+  });
+});
+
+describe('one question at a time', () => {
+  test('closing and reopening while waiting does not let a second question through', async () => {
+    // The reply takes 6 s (inside the panel's 8 s), longer than closing and reopening.
+    const { page, asked } = await home({ replies: ['ok', 'ok'], delay: 6000 });
+    await openPanel(page);
+    await page.locator('.ask-chip').first().click();
+    await page.locator('.ask-msg--waiting').waitFor();
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(800);
+    await page.locator('.ask-bubble').click();
+    await page.locator('.ask-panel').waitFor({ state: 'visible' });
+    await page.waitForTimeout(OPEN_MS);
+    assert.ok(await page.locator('.ask-panel__submit').isDisabled(), 'Ask stays off while the first is out');
+    assert.equal(await page.locator('.ask-msg--waiting').count(), 1, 'still waiting on the first');
+    await page.locator('.ask-msg--waiting').waitFor({ state: 'detached', timeout: 8000 });
+    assert.equal(asked.length, 1);
+    assert.ok(!(await page.locator('.ask-panel__submit').isDisabled()));
+    await page.close();
+  });
+
+  test('if the panel cannot load, the bubble goes instead of staying a dead button', async () => {
+    const { page } = await home();
+    await page.route(/\/_astro\/ask\.[^/]*\.js$/, (route) => route.abort());
+    await page.locator('.ask-bubble').click();
+    await page.locator('.ask-bubble').waitFor({ state: 'hidden', timeout: 5000 });
+    assert.equal(await page.locator('.ask-panel').count(), 0);
     await page.close();
   });
 });

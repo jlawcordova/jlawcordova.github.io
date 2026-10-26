@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import profile from '../../docs/references/profile.md?raw';
 import accomplishments from '../data/accomplishments.json';
 import { heroCopy, rangeClasses, rangeCopy } from '../data/home';
-import { buildKnowledge } from '../lib/ask-knowledge.mjs';
+import { buildKnowledge, problems } from '../lib/ask-knowledge.mjs';
 import { getPosts } from '../lib/posts';
 import { site } from '../site';
 
@@ -25,7 +25,12 @@ export const GET: APIRoute = async () => {
     perPage: site.accomplishmentsPerPage,
     generatedAt: new Date().toISOString(),
   });
-  return new Response(`${JSON.stringify(knowledge, null, 2)}\n`, {
+  const json = `${JSON.stringify(knowledge, null, 2)}\n`;
+  // Checked here too, so the deploy build fails on the real accomplishments,
+  // which CI fetches after npm test has run on the placeholder.
+  const found = problems(json);
+  if (found.length) throw new Error(`ask-knowledge.json: ${found.join('; ')}`);
+  return new Response(json, {
     headers: { 'content-type': 'application/json; charset=utf-8' },
   });
 };

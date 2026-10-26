@@ -159,6 +159,7 @@ describe('reading the Worker’s reply', () => {
       [200, 'ok'],
       [429, { status: 'resting' }],
       [502, {}],
+      [502, { status: 'failed' }],
     ]) {
       assert.deepEqual(readReply(http, body), { status: 'failed' }, JSON.stringify([http, body]));
     }
@@ -236,6 +237,13 @@ describe('questions and history', () => {
     assert.equal(question('   '), null);
     assert.equal(question('x'.repeat(MAX_QUESTION)), 'x'.repeat(MAX_QUESTION));
     assert.equal(question('x'.repeat(MAX_QUESTION + 1)), null);
+  });
+
+  it('keeps the Worker\'s signature with each exchange', () => {
+    const sig = 'a'.repeat(64);
+    assert.deepEqual(remember([], 'q', 'a', sig), [{ q: 'q', a: 'a', sig }]);
+    assert.equal(readReply(200, { status: 'ok', answer: 'a', sources: [{ title: 'Home', path: '/' }], sig }).sig, sig);
+    assert.equal(readReply(200, { status: 'ok', answer: 'a', sources: [], sig: 'not hex' }).sig, undefined);
   });
 
   it('remembers only the last two exchanges', () => {
