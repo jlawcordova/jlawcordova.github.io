@@ -1,16 +1,14 @@
 ---
 import HeroIsland from './HeroIsland.astro';
+import { heroCopy } from '../../data/home';
 import { site } from '../../site';
 ---
 
 <section id="top" class="hero isogrid">
   <div class="hero__inner">
     <div class="hero__copy">
-      <h1 class="hero__title">I take software from estimate <span class="accent">to production.</span></h1>
-      <p class="hero__lede">
-        Senior developer and tech lead in Davao City. I lead full-stack teams, design data platforms on Microsoft Fabric, and
-        run releases with sign-offs and rollback.
-      </p>
+      <h1 class="hero__title">{heroCopy.title} <span class="accent">{heroCopy.accent}</span></h1>
+      <p class="hero__lede">{heroCopy.lede}</p>
       <div class="hero__actions">
         <a class="btn btn--primary" href="#range">Press start</a>
         <a class="btn btn--ghost" href={site.author.linkedin}>Get in touch</a>
