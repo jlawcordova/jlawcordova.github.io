@@ -157,6 +157,7 @@ Built from the site:
 - **Pagination**.
 - **AchievementRow**: a framed icon, a fun title, a short line, a date, and an opened panel with the plain title, tags and links. With it, the tally of earned and locked achievements, and the Latest chip.
 - **AchievementToast**: "Achievement unlocked!" for the newest earned achievement, once a visit, on the home page.
+- **AskPanel**: the bot that answers questions about the owner, opened from a speech bubble over the hero island's character.
 - **CodeBlock** and **Prose**: the reading column.
 
 Intentional additions, for the content model above:

@@ -1,0 +1,32 @@
+<!-- The bubble and the panel in place rather than fixed: on the site the bubble sits over the island's character, and the panel at the bottom left with the character standing on its top-left edge. -->
+<div style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start">
+  <button type="button" class="ask-bubble" style="position:relative;--tail:200px">Hi, I'm J. Law. What would you like to know?</button>
+  <section class="ask-panel" role="dialog" aria-label="Ask J. Law" style="position:relative;left:auto;bottom:auto;max-height:none">
+    <header class="ask-panel__head">
+      <div class="ask-panel__heading">
+        <h2 class="ask-panel__title">Ask J. Law</h2>
+        <p class="ask-panel__label">AI avatar. Answers come from this site's public content.</p>
+      </div>
+      <button type="button" class="btn btn--ghost ask-panel__close">Close</button>
+    </header>
+    <ol class="ask-panel__log" aria-live="off">
+      <li class="ask-msg ask-msg--bot">I'm an AI avatar of J. Law. I answer from what's published on this site, and I can be wrong.</li>
+      <li class="ask-msg ask-msg--you">What do you do?</li>
+      <li class="ask-msg ask-msg--bot">I lead full-stack teams, design data platforms on Microsoft Fabric, and run releases with sign-offs and rollback.<span class="ask-msg__links"><a href="/">Source: Home</a></span></li>
+      <li class="ask-msg ask-msg--you">Are you open to work?</li>
+      <li class="ask-msg ask-msg--bot">My site doesn't say whether I'm taking on new work. The best way to ask is to get in touch.<span class="ask-msg__links"><a href="https://www.linkedin.com/in/jlawcordova">Get in touch</a></span></li>
+      <li class="ask-msg ask-msg--bot ask-msg--waiting" aria-label="Thinking"><span></span><span></span><span></span></li>
+    </ol>
+    <div class="ask-panel__chips">
+      <button type="button" class="ask-chip" disabled>What do you do?</button>
+      <button type="button" class="ask-chip" disabled>Which stack do you use?</button>
+      <button type="button" class="ask-chip" disabled>Are you open to work?</button>
+    </div>
+    <form class="ask-panel__form" onsubmit="return false">
+      <label class="visually-hidden" for="ds-ask-question">Your question</label>
+      <input id="ds-ask-question" class="ask-panel__input" maxlength="200" autocomplete="off" />
+      <button type="submit" class="btn btn--primary ask-panel__submit" disabled>Ask</button>
+    </form>
+    <p class="ask-panel__privacy">Questions go to an AI service. Don't include personal details.</p>
+  </section>
+</div>

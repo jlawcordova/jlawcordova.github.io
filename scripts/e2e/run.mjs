@@ -64,7 +64,10 @@ async function main() {
     // Without NODE_TEST_CONTEXT: inherited from a parent `node --test`, it makes
     // this run skip every file and exit 0, a silent pass.
     const { NODE_TEST_CONTEXT, ...env } = process.env;
-    const tests = spawn(process.execPath, ['--test', ...patterns], {
+    // One file at a time: accomplishments.e2e.mjs and ask.e2e.mjs each build
+    // the site, and two builds at once would share .astro/ and the swapped
+    // src/data/accomplishments.json.
+    const tests = spawn(process.execPath, ['--test', '--test-concurrency=1', ...patterns], {
       cwd: ROOT,
       stdio: 'inherit',
       env: { ...env, E2E_BASE_URL: baseUrl },

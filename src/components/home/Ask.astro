@@ -1,0 +1,43 @@
+---
+import { COPY } from '../../lib/ask-state.mjs';
+import { site } from '../../site';
+
+// The Ask bot (ask bot spec): the bubble over the island's character, and the
+// panel's shell, which src/lib/ask.ts moves to the body on the first press.
+// Hero.astro renders this only when PUBLIC_ASK_ENDPOINT is set, so pull
+// request previews and local dev have no bubble and load no Ask script (R15).
+const endpoint = import.meta.env.PUBLIC_ASK_ENDPOINT;
+---
+
+<div class="ask" data-endpoint={endpoint} data-contact={site.author.linkedin}>
+  <!-- Hidden until the loader has placed it by the character, so it's never a dead button. -->
+  <button type="button" class="ask-bubble" hidden>{COPY.bubble}</button>
+  <template class="ask-template">
+    <div class="ask-avatar" aria-hidden="true" hidden></div>
+    <section class="ask-panel" role="dialog" aria-label={COPY.title} hidden>
+      <header class="ask-panel__head">
+        <div class="ask-panel__heading">
+          <h2 class="ask-panel__title">{COPY.title}</h2>
+          <p class="ask-panel__label">{COPY.label}</p>
+        </div>
+        <button type="button" class="btn btn--ghost ask-panel__close">Close</button>
+      </header>
+      <ol class="ask-panel__log" aria-live="polite">
+        <li class="ask-msg ask-msg--bot">{COPY.first}</li>
+      </ol>
+      <div class="ask-panel__chips">
+        {COPY.chips.map((chip) => <button type="button" class="ask-chip">{chip}</button>)}
+      </div>
+      <form class="ask-panel__form">
+        <label class="visually-hidden" for="ask-question">Your question</label>
+        <input id="ask-question" class="ask-panel__input" name="question" maxlength="200" autocomplete="off" required />
+        <button type="submit" class="btn btn--primary ask-panel__submit">Ask</button>
+      </form>
+      <p class="ask-panel__privacy">{COPY.privacy}</p>
+    </section>
+  </template>
+</div>
+
+<script>
+  import '../../lib/ask-loader';
+</script>

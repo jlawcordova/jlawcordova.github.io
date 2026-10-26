@@ -52,8 +52,14 @@ jobs:
       # Never fails the build: on any error it writes an "unavailable" file.
       - name: Fetch accomplishments from AT Protocol
         run: node scripts/fetch-accomplishments.mjs
+      # The Ask bot's Worker (ask bot spec, "Loading and budgets"), from the
+      # repository's Actions variable ASK_ENDPOINT. Pull request builds go
+      # without it, and so does any build while the variable is unset: then
+      # the home page has no bubble and loads no Ask script.
       - name: Install, build, and upload site
         uses: withastro/action@v6
+        env:
+          PUBLIC_ASK_ENDPOINT: ${{ github.event_name != 'pull_request' && vars.ASK_ENDPOINT || '' }}
         with:
           node-version: 24
 

@@ -1374,6 +1374,18 @@
       ]
     },
     {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "-80", "data-y": "64" },
+      "items": [
+        {
+          "group": { "class": "ask-character" },
+          "items": [
+            { "object": "ask-character", "at": { "tile": [1, 6, 0] } },
+            { "object": "ask-character-arm", "at": { "tile": [1, 6, 0] } }
+          ]
+        }
+      ]
+    },
+    {
       "group": { "class": "enter", "data-enter": "object", "data-x": "-16", "data-y": "48" },
       "depth": "front",
       "items": [

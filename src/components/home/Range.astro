@@ -1,6 +1,6 @@
 ---
 import rangeSprite from '../../assets/pixel-art/range-sprite.svg?raw';
-import { rangeClasses } from '../../data/home';
+import { rangeClasses, rangeCopy } from '../../data/home';
 
 // Inline so the section's data-current can switch outfit variants in CSS.
 const sprite = rangeSprite.replace('<svg ', '<svg class="range__sprite-art pixel-art" ');
@@ -13,11 +13,8 @@ const [first] = rangeClasses;
   <div class="range__change" aria-hidden="true"></div>
   <div class="range__inner">
     <div class="range__copy">
-      <h2 id="range-title">Many hats. <span class="gold">One craftsman.</span></h2>
-      <p>
-        These are the disciplines I work in, from Figma designs to production releases. I set up AI workflows that plan,
-        build and check each change before it ships.
-      </p>
+      <h2 id="range-title">{rangeCopy.title} <span class="gold">{rangeCopy.accent}</span></h2>
+      <p>{rangeCopy.lede}</p>
     </div>
     <!-- A drawn object: it keeps its light colors in the dark theme (dark mode spec R8). -->
     <div class="range__console" data-theme="light">

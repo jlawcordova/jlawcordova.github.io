@@ -81,6 +81,8 @@ main > .hero:first-child {
 
 /* The inner wrapper carries the floaty loop; .hero__art takes the entrance. */
 .hero__float {
+  /* The Ask bubble (ask.css) is placed against it, so it floats with the island. */
+  position: relative;
   width: 100%;
   display: flex;
   justify-content: center;

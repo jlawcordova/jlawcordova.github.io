@@ -1,0 +1,244 @@
+/*
+ * The Ask panel (ask bot spec, "The panel"; R6, R16–R19): a square, flat
+ * box at the bottom left with the thick ink edge, and the character standing
+ * on its top-left edge. Imported by src/lib/ask.ts, so it loads with the
+ * panel and not with the home page. Every color is a token.
+ */
+.ask-panel {
+  position: fixed;
+  left: var(--gutter);
+  bottom: calc(var(--gutter) + var(--ask-keyboard, 0px));
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  width: min(400px, calc(100vw - 2 * var(--gutter)));
+  /* Room above for the character, which stands 93px tall on the edge. */
+  max-height: min(600px, calc(100dvh - var(--ask-keyboard, 0px) - var(--gutter) - 120px));
+  border: var(--border-thick);
+  background: var(--color-page);
+  color: var(--color-ink);
+}
+
+.ask-panel[hidden],
+.ask-avatar[hidden] {
+  display: none;
+}
+
+.ask-avatar {
+  position: fixed;
+  z-index: 41;
+  width: 57px;
+  height: 93px;
+  /* The foot, so the glide scales about where the character stands. */
+  transform-origin: 21px 87px;
+  pointer-events: none;
+}
+
+.ask-avatar svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ask-panel__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ask-panel__heading {
+  min-width: 0;
+}
+
+.ask-panel__title {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.3;
+}
+
+.ask-panel__label {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-ink-muted);
+}
+
+.ask-panel__close {
+  flex: none;
+  min-height: 44px;
+  padding: 0 12px;
+  font-size: 12px;
+}
+
+.ask-panel__log {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 14px;
+  overflow-y: auto;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ask-msg {
+  max-width: 92%;
+  padding: 10px 12px;
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.ask-msg--bot {
+  align-self: flex-start;
+  background: var(--color-card);
+}
+
+.ask-msg--you {
+  align-self: flex-end;
+  border: 1px solid var(--color-border-strong);
+}
+
+/* Source and "Get in touch" links: a row under the answer, each a 44px tap target. */
+.ask-msg__links {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 16px;
+  margin: 2px 0 -10px;
+}
+
+.ask-msg__links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 600;
+}
+
+/* Thinking: three dots that pulse in turn. Smooth, not stepped: only the pixel art steps (design system, Motion). */
+.ask-msg--waiting {
+  display: flex;
+  gap: 6px;
+  padding: 14px 12px;
+}
+
+.ask-msg--waiting span {
+  width: 6px;
+  height: 6px;
+  background: var(--color-ink-muted);
+  animation: ask-dot 0.9s ease-in-out infinite;
+}
+
+.ask-msg--waiting span:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.ask-msg--waiting span:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+@keyframes ask-dot {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.ask-panel__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 14px 12px;
+}
+
+.ask-chip {
+  min-height: 44px;
+  padding: 6px 12px;
+  border: 2px solid var(--color-ink);
+  border-radius: 0;
+  background: var(--color-surface-ghost);
+  color: var(--color-ink);
+  font: 500 14px/1.3 var(--font-text);
+  cursor: pointer;
+}
+
+.ask-chip:hover:not(:disabled) {
+  background: var(--color-card);
+}
+
+.ask-chip:disabled,
+.ask-panel__submit:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.ask-chip:focus-visible,
+.ask-panel__input:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px var(--color-page);
+}
+
+.ask-panel__form {
+  display: flex;
+  gap: 8px;
+  padding: 0 14px;
+}
+
+.ask-panel__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 12px;
+  border: var(--border-thick);
+  border-radius: 0;
+  background: var(--color-page);
+  color: var(--color-ink);
+  /* 16px, so a phone doesn't zoom in on focus. */
+  font: 16px/1.3 var(--font-text);
+}
+
+.ask-panel__submit {
+  flex: none;
+  min-height: 44px;
+  padding: 0 18px;
+}
+
+.ask-panel__privacy {
+  margin: 0;
+  padding: 10px 14px 14px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-ink-muted);
+}
+
+/* On a phone the panel takes the width, at most 60% of the screen (R19). */
+@media (max-width: 640px) {
+  .ask-panel {
+    left: 0;
+    right: 0;
+    bottom: var(--ask-keyboard, 0px);
+    width: auto;
+    max-height: calc(60dvh - var(--ask-keyboard, 0px) * 0.6);
+    border-width: 3px 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ask-msg--waiting span {
+    animation: none;
+  }
+}
+
+@media print {
+  .ask-panel,
+  .ask-avatar {
+    display: none;
+  }
+}

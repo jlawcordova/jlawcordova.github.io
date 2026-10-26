@@ -1,0 +1,22 @@
+{
+  "category": [
+    "Roles"
+  ],
+  "kind": "sprite",
+  "extends": "character",
+  "keys": {
+    "g": "slate-1",
+    "h": "slate-2",
+    "i": "slate-3",
+    "f": "navy-1",
+    "F": "slate-3"
+  },
+  "rows": {
+    "1": {
+      "23": "..............hhhhhhhhiiii......",
+      "24": "...............hhhhhhhiiii......",
+      "25": "................fhhhhhiiii......",
+      "26": "................ffFhhhii........"
+    }
+  }
+}

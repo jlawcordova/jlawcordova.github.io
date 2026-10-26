@@ -1,0 +1,12 @@
+{
+  "notes": [
+    "The Ask panel's character on its own: the island's ask-character, for the glide to the bottom left. The arm rests here, and the extra top row holds the idle bob."
+  ],
+  "output": "ask-avatar.svg",
+  "viewBox": [-7, -29, 19, 31],
+  "origin": [0, 0],
+  "items": [
+    { "object": "ask-character", "at": { "px": [0, 0] } },
+    { "object": "ask-character-arm", "state": "rest", "at": { "px": [0, 0] } }
+  ]
+}
