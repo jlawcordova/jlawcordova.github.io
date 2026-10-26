@@ -131,7 +131,7 @@ A spend limit on a dedicated workspace in the AI provider's console is the last 
 
 ### The panel
 
-Per canvas board C: a header (title, the label "AI avatar. Answers come from this site's public content.", a Close button), the conversation, three suggested questions as chips, the question box with an Ask button, and the line "Questions go to an AI service. Don't include personal details." The canvas's "[N] questions left today" line is dropped (R10). It is a non-modal `role="dialog"` named "Ask J. Law", so the page behind stays usable.
+Per canvas board C: a header (title, the label "This is an AI avatar. Questions go through an AI service, so please don't include personal information.", a Close button), the conversation, three suggested questions as small badges, and the question box with an Ask button. The label carries the privacy line, which first sat under the question box; the owner moved it there after launch, to give the conversation room on a phone. A swipe on the panel never scrolls the page behind it. The canvas's "[N] questions left today" line is dropped (R10). It is a non-modal `role="dialog"` named "Ask J. Law", so the page behind stays usable.
 
 - **First message.** Before any question the panel shows one line: "I'm an AI avatar of J. Law. I answer from what's published on this site, and I can be wrong." This resolves the label question below.
 - **While waiting.** The Ask button and chips are disabled and the reply area shows a stepped three-dot indicator (stepped, like the site's other loops; absent under reduced motion). Answers arrive whole, not streamed, because the Worker checks each reply before it is shown.

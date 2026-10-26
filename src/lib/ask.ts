@@ -241,6 +241,33 @@ function build(root: HTMLElement, bubble: HTMLButtonElement): Panel {
   // The panel grows up as the conversation does, and the character stays on its edge.
   new ResizeObserver(() => !dialog.hidden && placeAvatar()).observe(dialog);
 
+  // A swipe on the panel scrolls the conversation or the chips, never the page
+  // behind: iOS Safari hands it to the page at the conversation's ends, and
+  // from the panel's other parts. The page outside the panel still scrolls.
+  let touch = { x: 0, y: 0 };
+  dialog.addEventListener(
+    'touchstart',
+    (e) => {
+      touch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    },
+    { passive: true },
+  );
+  dialog.addEventListener(
+    'touchmove',
+    (e) => {
+      if (e.touches.length > 1) return;
+      const dx = e.touches[0].clientX - touch.x;
+      const dy = e.touches[0].clientY - touch.y;
+      touch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      if (Math.abs(dx) > Math.abs(dy)) return;
+      const inLog = log.contains(e.target as Node);
+      const atTop = log.scrollTop <= 0;
+      const atEnd = log.scrollTop + log.clientHeight >= log.scrollHeight - 1;
+      if (!inLog || (dy > 0 && atTop) || (dy < 0 && atEnd)) e.preventDefault();
+    },
+    { passive: false },
+  );
+
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     ask(input.value);
