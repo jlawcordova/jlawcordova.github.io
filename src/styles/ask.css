@@ -1,0 +1,46 @@
+/*
+ * The Ask bubble (ask bot spec, R1, R16, R17): a speech bubble over the hero
+ * island, pointing at the character. ask-loader.ts sets its place and the
+ * tail's x (--tail) from the character's foot. The panel's styles are in
+ * ask-panel.css, which loads with the panel.
+ */
+.ask {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ask-bubble {
+  position: absolute;
+  max-width: 236px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: var(--border-thick);
+  border-radius: 0;
+  background: var(--color-page);
+  color: var(--color-ink);
+  font: 500 15px/1.35 var(--font-text);
+  text-align: left;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.ask-bubble:hover {
+  background: var(--color-card);
+}
+
+/* The tail: a stepped wedge of ink down to the character's head. */
+.ask-bubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: clamp(9px, calc(var(--tail, 50%) - 9px), calc(100% - 21px));
+  width: 12px;
+  height: 12px;
+  background: var(--color-ink);
+  clip-path: polygon(0 0, 100% 0, 100% 34%, 67% 34%, 67% 67%, 34% 67%, 34% 100%, 0 100%);
+}
+
+.ask-bubble[hidden] {
+  display: none;
+}

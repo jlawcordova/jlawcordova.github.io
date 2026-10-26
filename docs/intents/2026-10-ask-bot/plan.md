@@ -17,12 +17,14 @@ Builds [spec.md](spec.md) (approved 2026-10-26). The owner reviews only the fina
 | `src/pages/ask-knowledge.json.ts` (new) | The knowledge file, `/ask-knowledge.json` |
 | `src/lib/ask-knowledge.mjs` (new) | Builds the knowledge entries from the allowlisted sources; pure, so it can be tested |
 | `src/components/home/Ask.astro` (new) | The bubble's markup and the panel's empty shell; rendered only when `PUBLIC_ASK_ENDPOINT` is set |
-| `src/components/home/Hero.astro` | Renders `Ask.astro` inside the hero's art wrapper |
+| `src/components/home/Hero.astro` | Renders `Ask.astro` inside the hero's art wrapper, only when `PUBLIC_ASK_ENDPOINT` is set; reads its copy from `home.ts` |
+| `src/data/home.ts`, `src/components/home/Range.astro` | The hero's and the Range's copy move into `home.ts`, so the page and the knowledge file read the same strings (A3) |
+| `src/styles/hero.css` | `.hero__float` is `position: relative`, so the bubble is placed against it and floats with the island |
 | `src/lib/ask-state.mjs` (new) | The pure state machine: states, transitions, the copy for each reply status |
 | `src/lib/ask.ts` (new) | The lazily loaded panel: requests, rendering, focus, the glide |
 | `src/lib/ask-loader.ts` (new) | The small loader on the home page: reveals the bubble, imports `ask.ts` on first press or focus |
 | `src/styles/ask.css` (new) | Bubble styles (in `global.css`) |
-| `src/styles/ask-panel.css` (new) | Panel styles, imported by `ask.ts` so they load with it |
+| `src/styles/ask-panel.css` (new) | Panel styles, imported by `ask.ts` with `?inline` and added as a `<style>`, so they load with it: a plain import is collected as page CSS and inlined into the home page |
 | `src/styles/global.css` | Imports `ask.css` after `hero.css` |
 | `src/env.d.ts` | Types `PUBLIC_ASK_ENDPOINT` |
 | `.github/workflows/deploy.yml` | Passes `PUBLIC_ASK_ENDPOINT: ${{ vars.ASK_ENDPOINT }}` to the build step |

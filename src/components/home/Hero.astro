@@ -1,4 +1,5 @@
 ---
+import Ask from './Ask.astro';
 import HeroIsland from './HeroIsland.astro';
 import { heroCopy } from '../../data/home';
 import { site } from '../../site';
@@ -18,6 +19,7 @@ import { site } from '../../site';
     <div class="hero__art">
       <div class="hero__float floaty">
         <HeroIsland />
+        {import.meta.env.PUBLIC_ASK_ENDPOINT && <Ask />}
       </div>
     </div>
   </div>
