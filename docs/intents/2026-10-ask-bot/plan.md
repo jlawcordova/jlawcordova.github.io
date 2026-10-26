@@ -43,7 +43,7 @@ Builds [spec.md](spec.md) (approved 2026-10-26). The owner reviews only the fina
 
 | File | Purpose |
 | --- | --- |
-| `package.json`, `package-lock.json`, `tsconfig.json`, `wrangler.toml`, `worker-configuration.d.ts` | Dependencies: `@anthropic-ai/sdk`, and dev only `wrangler` and `typescript`. Node's type stripping (22.18 and later) runs the tests, so no test framework. The Workers runtime types come from `wrangler types` (the generated, committed `worker-configuration.d.ts`), so there's no `@cloudflare/workers-types`; `tsc` checks `src/`, and the tests run untyped, since typing them would need `@types/node` |
+| `package.json`, `bun.lock`, `tsconfig.json`, `wrangler.toml`, `worker-configuration.d.ts` | Dependencies: `@anthropic-ai/sdk`, and dev only `wrangler` and `typescript`. *Changed at the owner's request after PR B opened:* built with Bun 1.4.2 (`packageManager`, `bun.lock`, `bun test`, `bun --bun wrangler`) like `jlawcordova-atproto`, in place of npm and Node's type stripping; the Worker's source is unchanged and still runs on Cloudflare's runtime, so Bun's runtime APIs don't apply. The Workers runtime types come from `wrangler types` (the generated, committed `worker-configuration.d.ts`), so there's no `@cloudflare/workers-types`; `tsc` checks `src/`, and the tests run untyped, since typing them would need `@types/node` |
 | `src/index.ts` | The Worker's entry: wires the settings, secrets and Durable Object to the handler, and exports the Durable Object |
 | `src/handler.ts` | The seven steps of the spec, with every dependency passed in, so the tests run in Node: `cloudflare:workers` loads only in `counter.ts` and `index.ts` |
 | `src/validate.ts` | Request validation |
@@ -56,6 +56,7 @@ Builds [spec.md](spec.md) (approved 2026-10-26). The owner reviews only the fina
 | `test/*.test.ts` | Tests for each module and the handler |
 | `evals/questions.json`, `evals/run.mjs` | The hand-run evals against the real model |
 | `README.md`, `CLAUDE.md`, `.gitignore`, `.dev.vars.example` | Setup, deploy, settings and the launch checklist |
+| `.github/workflows/deploy.yml` | *Added at the owner's request after PR B opened:* type-check, tests and a dry-run bundle on every pull request, and a deploy from `main` that uploads the Worker's secrets from the repo's GitHub secrets (`wrangler deploy --secrets-file`), after `jlawcordova-atproto`'s `deploy-mcp.yml`. Nothing deploys until `CLOUDFLARE_API_TOKEN` is set. The launch checklist's step 2 becomes: add the secrets in GitHub, then merge |
 
 ## Order of work
 
