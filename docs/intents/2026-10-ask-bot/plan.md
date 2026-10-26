@@ -56,15 +56,15 @@ jlawcordova.github.io
 main ── feat/ask-bot (main session, worktree .claude/worktrees/ask-bot) ── PR A ──▶ main (owner merges)
 
 jlawcordova-ask (new)
-main (README only) ── feat/initial (subagent, in parallel with PR A) ── PR B ──▶ main (owner merges)
+main (README only) ── feat/initial (main session, after PR A's steps) ── PR B ──▶ main (owner merges)
 ```
 
-The site is one slice, straight to a PR into `main`: one runner, in one sitting, and it ships dark (no bubble until `ASK_ENDPOINT` is set), so it needs no main-session branch. The Worker is a second slice only because it's a different repository. It builds against the contract in the spec, so it runs in parallel and needs nothing from PR A.
+One runner does all of it: the main session, in one context, from the first commit to both PRs (`write-plan`, "The main session runs the work"). The site is one slice, straight to a PR into `main`. It ships dark, with no bubble until `ASK_ENDPOINT` is set, so it needs no main-session branch. The Worker is a second PR only because it's a different repository, not a second runner. The two halves are tightly coupled through the request and response contract and the knowledge file's shape. Building the Worker right after the site, in the same context, lets each side use what the other actually does, not what a brief says it does.
 
 **PR A, this repository (main session):**
 
 1. **Worktree.** The intent, spec and this plan reach `main` in their own docs PR (`docs/intent-ask-bot`) before implementation starts. Create the worktree from an up-to-date `main` at `.claude/worktrees/ask-bot` on `feat/ask-bot`. If the docs PR hasn't merged yet, base the branch on `docs/intent-ask-bot` instead, and merge `main` in once it lands.
-2. **Character art.** In the worktree, with the CLI (`npm run pixellab -- …`), run by the `pixel-artist` agent:
+2. **Character art.** In the worktree, the main session loads the `pixel-art` skill and works with the CLI (`npm run pixellab -- …`). The MCP server is bound to the owner's checkout, so it isn't used here:
    - Place the existing `character` object on a free top tile near the island's front-left edge, where the bubble won't cover a landmark, in a new group with the class `ask-character`.
    - Give that group an idle ambient loop: a 1px bob, stepped, in the document.
    - Create the `ask-avatar` scene with only the character, the same object and palette, compiled to an SVG only (no PNG thumbnail).
@@ -102,9 +102,9 @@ The site is one slice, straight to a PR into `main`: one runner, in one sitting,
      - the in-scene character visible again after close.
    - It also checks that a build without the variable has no bubble and loads no ask script.
 7. **Design system and deploy.** Add the "Ask panel" component entry and its preview on `/design-system/`. Make the `deploy.yml` change, and update `README.md` and `CLAUDE.md`.
-8. **Verify and open PR A.** Merge `main` into `feat/ask-bot` if it moved. Run every check under Proof. Measure the home page's added gzip bytes (initial and on first press) and paste the numbers. Take screenshots at 1440px and 390px of idle, open and resting, with the dev server's `PUBLIC_ASK_ENDPOINT` pointed at a local stub (`node` one-liner in the PR description, not committed). Open the PR into `main` citing this plan, with the owner's launch checklist (below) and a link to PR B.
+8. **Verify and open PR A.** This comes after PR B's steps. Merge `main` into `feat/ask-bot` if it moved. Run every check under Proof. Measure the home page's added gzip bytes (initial and on first press) and paste the numbers. Take screenshots at 1440px and 390px of idle, open and resting, with the dev server's `PUBLIC_ASK_ENDPOINT` pointed at a local stub (`node` one-liner in the PR description, not committed). Open the PR into `main` citing this plan, with the owner's launch checklist (below) and a link to PR B.
 
-**PR B, `jlawcordova-ask` (one `general-purpose` subagent, from the start, in parallel):**
+**PR B, `jlawcordova-ask` (main session, after A1–A7):**
 
 1. **The repo.** Create `~/Projects/jlawcordova-ask`, commit a README to `main`, create the private GitHub repo `jlawcordova/jlawcordova-ask` with `gh repo create --private`, push `main`, and branch `feat/initial`. The owner approved a separate repo and this plan names it, so creating it is in scope. The `jlawcordova-mcp` Worker in `~/Projects/jlawcordova-atproto` is the style reference for Wrangler settings and README.
 2. **Scaffold.** Create `package.json`, `tsconfig.json`, `wrangler.toml` (the Durable Object binding with a SQLite migration, `ALLOWED_ORIGINS`, `KNOWLEDGE_URL`, the limit values, and `ASK_ENABLED`), `.dev.vars.example` with the key's name only, and `CLAUDE.md`.
@@ -130,19 +130,24 @@ The site is one slice, straight to a PR into `main`: one runner, in one sitting,
 
 | Step | Who | Where | Then |
 | --- | --- | --- | --- |
-| A1 | Main session | `.claude/worktrees/ask-bot`, `feat/ask-bot` | Start PR B's subagent, then A2 |
-| A2 | `pixel-artist` subagent, foreground | Same worktree, CLI only | A3 when its checks pass |
-| A3–A7 | Main session | Same worktree | Commit per step |
-| B1–B6 | `general-purpose` subagent, background | `~/Projects/jlawcordova-ask` | Reports PR B's link and outputs |
-| Review B | Fresh `general-purpose` subagent, adversarial | Reads PR B | Findings fixed on `feat/initial` before hand-over |
-| A8 | Main session | Same worktree | `verify-change` on PR A, fixes, then hand-over |
+| A1–A7 | Main session | `.claude/worktrees/ask-bot`, `feat/ask-bot` | Commit per step, then B1 |
+| B1–B6 | Main session | `~/Projects/jlawcordova-ask`, `feat/initial` | Commit per step; open PR B |
+| A8 | Main session | `.claude/worktrees/ask-bot` | Open PR A |
+| Review | One fresh `general-purpose` subagent, adversarial | Reads both PRs' diffs | Returns findings; the main session fixes the blocking ones on each branch and pushes |
+| Hand-over | Main session | Both PRs | Pastes the review's findings and fixes into both PR descriptions |
 
-- **File ownership.** The two slices share no files. The `pixel-artist` agent edits only the two scene files. The main session owns everything else in this repo, and the Worker subagent owns the new repo. The contract between them is the spec's request and response table and the knowledge file's shape (A3). If the Worker subagent needs either to change, it stops and reports instead of changing it.
+- **One runner.** The main session runs every step, one after another, in one context. Art uses the `pixel-art` skill, not the `pixel-artist` agent. The Worker is built after the site's steps, not in parallel, so there is no file ownership to split.
 - **Merging.** Agents merge nothing. The owner merges PR A and PR B into their `main` branches, in either order: PR A ships dark until `ASK_ENDPOINT` is set.
 - **Owner review.** None mid-way. The owner reviews PR A and PR B together at the end.
-- **Independent review.** Two, because this change carries security and public-safety risk:
-  - **PR B:** an adversarial review by a fresh subagent. It hunts for ways to spend past the limits, read the key, call the model from another origin, or get answers outside the knowledge, and reports findings. The Worker subagent fixes blocking ones.
-  - **PR A:** a fresh session runs `verify-change` on it once it is open, checking it against the intent, spec and plan. Its blocking findings are fixed before hand-over.
+- **Independent review.** One adversarial review by a fresh subagent, the only subagent in this plan. Its reason is "fresh eyes on purpose" (`write-plan`): not sharing the implementer's context is the point, and the change carries security and public-safety risk.
+  - **Brief:** the two PR URLs, the spec's path, and the task.
+  - **It hunts for ways to:**
+    - spend past the limits, or call the model from another origin;
+    - read the key, or put anything private into the knowledge file or the page;
+    - get answers from outside the knowledge, or get a source link the Worker didn't check;
+    - break the page when the Worker is down.
+  - **It returns** a compact list of findings, each with a severity, the file and a one-line reproduction. It edits nothing.
+  - The main session checks each finding against the code itself before fixing it. There is no `verify-change` run: the main session's checks in each PR and this review are the verification.
 
 **The owner's launch checklist** (in PR A's description; nothing here is an agent's step):
 
