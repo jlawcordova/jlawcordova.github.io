@@ -16,18 +16,18 @@ import { mkdir, rename, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export const VERSION = 'v0.7.0';
+export const VERSION = 'v0.8.0';
 export const RELEASE = `https://github.com/jlawcordova/jlawcordova-lab/releases/download/${VERSION}`;
 
 /** The release's tarballs, by `${platform}-${arch}`, with their SHA-256 from its SHA256SUMS. */
 export const ASSETS = {
   'darwin-arm64': {
     file: 'pixellab-darwin-arm64.tar.gz',
-    sha256: '16956eee72375cb76b6407826eb11886da1a29b4e399e5be49de56b7ebaea3a0',
+    sha256: 'a64e726406dd749d8414c590467d5f067e6962a6e2a8073b5a0880a582f03eb0',
   },
   'linux-x64': {
     file: 'pixellab-linux-x64.tar.gz',
-    sha256: 'fe124e880b52e2dfb08135d33c711f1d5eaffedb8155d519700eb4e9f254d877',
+    sha256: 'c550107fe2f896d6c1cc0df334536d24f3ac2fbe3b149a5000ecd22678fb795a',
   },
 };
 

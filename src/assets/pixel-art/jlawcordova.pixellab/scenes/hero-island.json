@@ -1397,8 +1397,8 @@
         "item": "truck-tip",
         "keys": [
           { "t": 0 },
-          { "t": 400, "pose": "truck-open-tipped" },
-          { "t": 2800, "pose": "truck-open" },
+          { "t": 400, "state": "tipped" },
+          { "t": 2800, "state": "rest" },
           { "t": 3200 },
           { "t": 8528, "move": [48, -24] },
           { "t": 8529, "show": false },
@@ -1430,13 +1430,13 @@
           { "t": 0 },
           { "t": 7200 },
           { "t": 10400, "move": [-32, -16] },
-          { "t": 10700, "pose": "mine-cart-tipped" },
-          { "t": 11900, "pose": "mine-cart" },
+          { "t": 10700, "state": "tipped" },
+          { "t": 11900, "state": "rest" },
           { "t": 13500, "move": [0, 0] },
           { "t": 21200 },
           { "t": 24400, "move": [-32, -16] },
-          { "t": 24700, "pose": "mine-cart-tipped" },
-          { "t": 25900, "pose": "mine-cart" },
+          { "t": 24700, "state": "tipped" },
+          { "t": 25900, "state": "rest" },
           { "t": 27500, "move": [0, 0] }
         ]
       },
@@ -1806,35 +1806,35 @@
         "item": "jib",
         "keys": [
           { "t": 0 },
-          { "t": 7700, "pose": "crane-jib-side" },
-          { "t": 8400, "pose": "crane-jib-back" },
-          { "t": 24600, "pose": "crane-jib-side" },
-          { "t": 25300, "pose": "crane-jib" }
+          { "t": 7700, "state": "side" },
+          { "t": 8400, "state": "back" },
+          { "t": 24600, "state": "side" },
+          { "t": 25300, "state": "rest" }
         ]
       },
       {
         "item": "hook",
         "keys": [
           { "t": 0 },
-          { "t": 5400, "pose": "crane-hook-drop" },
-          { "t": 5900, "pose": "crane-hook-low" },
-          { "t": 6500, "pose": "crane-hook-drop" },
-          { "t": 7000, "pose": "crane-hook" },
+          { "t": 5400, "state": "drop" },
+          { "t": 5900, "state": "low" },
+          { "t": 6500, "state": "drop" },
+          { "t": 7000, "state": "rest" },
           { "t": 7699 },
           { "t": 7700, "move": [48, 0] },
           { "t": 8399 },
           { "t": 8400, "move": [48, -24] },
-          { "t": 9100, "pose": "crane-hook-drop" },
-          { "t": 9700, "pose": "crane-hook" },
-          { "t": 23300, "pose": "crane-hook-drop" },
-          { "t": 23900, "pose": "crane-hook" },
+          { "t": 9100, "state": "drop" },
+          { "t": 9700, "state": "rest" },
+          { "t": 23300, "state": "drop" },
+          { "t": 23900, "state": "rest" },
           { "t": 24599 },
           { "t": 24600, "move": [48, 0] },
           { "t": 25299 },
           { "t": 25300, "move": [0, 0] },
-          { "t": 26000, "pose": "crane-hook-drop" },
-          { "t": 26500, "pose": "crane-hook-low" },
-          { "t": 27200, "pose": "crane-hook" }
+          { "t": 26000, "state": "drop" },
+          { "t": 26500, "state": "low" },
+          { "t": 27200, "state": "rest" }
         ]
       },
       {
@@ -1922,62 +1922,32 @@
         "item": "signal-far",
         "keys": [
           { "t": 0 },
-          { "t": 13575, "pose": "crossing-signal-left" },
-          { "t": 14075, "pose": "crossing-signal-right" },
-          { "t": 14575, "pose": "crossing-signal-left" },
-          { "t": 15075, "pose": "crossing-signal-right" },
-          { "t": 15575, "pose": "crossing-signal-left" },
-          { "t": 16075, "pose": "crossing-signal-right" },
-          { "t": 16575, "pose": "crossing-signal-left" },
-          { "t": 17075, "pose": "crossing-signal-right" },
-          { "t": 17575, "pose": "crossing-signal-left" },
-          { "t": 18075, "pose": "crossing-signal-right" },
-          { "t": 18575, "pose": "crossing-signal-left" },
-          { "t": 19075, "pose": "crossing-signal-right" },
-          { "t": 19575, "pose": "crossing-signal-left" },
-          { "t": 20075, "pose": "crossing-signal-right" },
-          { "t": 20575, "pose": "crossing-signal-left" },
-          { "t": 21075, "pose": "crossing-signal-right" },
-          { "t": 21325, "pose": "crossing-signal" }
+          { "t": 13575, "state": "flash" },
+          { "t": 21325, "state": "rest" }
         ]
       },
       {
         "item": "signal-near",
         "keys": [
           { "t": 0 },
-          { "t": 13575, "pose": "crossing-signal-left" },
-          { "t": 14075, "pose": "crossing-signal-right" },
-          { "t": 14575, "pose": "crossing-signal-left" },
-          { "t": 15075, "pose": "crossing-signal-right" },
-          { "t": 15575, "pose": "crossing-signal-left" },
-          { "t": 16075, "pose": "crossing-signal-right" },
-          { "t": 16575, "pose": "crossing-signal-left" },
-          { "t": 17075, "pose": "crossing-signal-right" },
-          { "t": 17575, "pose": "crossing-signal-left" },
-          { "t": 18075, "pose": "crossing-signal-right" },
-          { "t": 18575, "pose": "crossing-signal-left" },
-          { "t": 19075, "pose": "crossing-signal-right" },
-          { "t": 19575, "pose": "crossing-signal-left" },
-          { "t": 20075, "pose": "crossing-signal-right" },
-          { "t": 20575, "pose": "crossing-signal-left" },
-          { "t": 21075, "pose": "crossing-signal-right" },
-          { "t": 21325, "pose": "crossing-signal" }
+          { "t": 13575, "state": "flash" },
+          { "t": 21325, "state": "rest" }
         ]
       },
       {
         "item": "gate-far",
         "keys": [
           { "t": 0 },
-          { "t": 14375, "pose": "crossing-gate-down-far" },
-          { "t": 20825, "pose": "crossing-gate" }
+          { "t": 14375, "state": "down-far" },
+          { "t": 20825, "state": "rest" }
         ]
       },
       {
         "item": "gate-near",
         "keys": [
           { "t": 0 },
-          { "t": 14375, "pose": "crossing-gate-down" },
-          { "t": 20825, "pose": "crossing-gate" }
+          { "t": 14375, "state": "down" },
+          { "t": 20825, "state": "rest" }
         ]
       }
     ]

@@ -4,7 +4,7 @@
     "Mine"
   ],
   "kind": "sprite",
-  "anchor": [8, 12],
+  "anchor": [11, 13],
   "footprint": [2, 1],
   "keys": {
     "l": "wood-1",
@@ -17,23 +17,51 @@
   },
   "layers": [
     {
-      "map": [
-        ".....ll.........",
-        "...llDDll.......",
-        ".llDDDDDDll.....",
-        "mllDDDDDDDDll...",
-        "msmllDDDDDDDDll.",
-        "msmmmllDDDDDDlld",
-        "msmmmmmllDDlldSd",
-        "msmmmmmmmlldddSd",
-        "dsmmmmmmmsSdddSd",
-        ".SSmmmmmmsSdddSd",
-        ".SsSSmmmmsSdddSD",
-        ".SSSkSSmmsSddDD.",
-        "...Sk.SSSsSDDSk.",
-        "......SsSSD.....",
-        ".......SSk......"
+      "loop": "pf",
+      "prefix": "p",
+      "frames": [
+        [
+          "...................",
+          "........ll.........",
+          "......llDDll.......",
+          "....llDDDDDDll.....",
+          "...mllDDDDDDDDll...",
+          "...msmllDDDDDDDDll.",
+          "...msmmmllDDDDDDlld",
+          "...msmmmmmllDDlldSd",
+          "...msmmmmmmmlldddSd",
+          "...dsmmmmmmmsSdddSd",
+          "....SSmmmmmmsSdddSd",
+          "....SsSSmmmmsSdddSD",
+          "....SSSkSSmmsSddDD.",
+          "......Sk.SSSsSDDSk.",
+          ".........SsSSD.....",
+          "..........SSk......"
+        ],
+        [
+          "......llllllllS....",
+          "....lDDDDDDlddSd...",
+          "..llllllllSdddSd...",
+          "msmmmmmmsdSddddS...",
+          ".smmmmmmsmSddddSd..",
+          ".mmmmmmmmsdSddddS..",
+          "..smmmmmmsdSddddDD.",
+          "..smmmmmmmmdSdDD...",
+          "..msmmmmmmsdDD.....",
+          "...dddddddddSSkk...",
+          "....SSkk..SSk.SSkk.",
+          "....SsSSkk....SsSS.",
+          "....SSSkSSkk..SSSk.",
+          "......Sk.SSSk...Sk.",
+          ".........SsSS......",
+          "..........SSk......"
+        ]
       ]
     }
-  ]
+  ],
+  "start": "rest",
+  "states": {
+    "rest": { "frames": [0], "ms": 200 },
+    "tipped": { "frames": [1], "ms": 200 }
+  }
 }

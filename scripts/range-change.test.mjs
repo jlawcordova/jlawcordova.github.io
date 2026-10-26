@@ -1,6 +1,6 @@
 // Tests for the Range's class change (Range pop spec R2–R6): the battle bars'
 // order and frames, the slash, the countdown's interval, and the character's
-// hop in pixel-art.css, run against the compiled range-sprite.svg. Node
+// hop state, run against the compiled range-sprite.svg. Node
 // built-ins only.
 
 import assert from 'node:assert/strict';
@@ -89,16 +89,19 @@ describe("A's hop", () => {
     for (const group of groups) assert.equal([...group.matchAll(/class="character[ "]/g)].length, 1, 'one character per class');
     assert.match(svg, /\[data-play~="hop"\]/, 'the sprite plays hop through data-play');
 
+    // The hop is a one-shot state of the character (Pixel Lab v0.8.0), which
+    // data-play plays as it played the action it was made from.
     const character = JSON.parse(await read('src/assets/pixel-art/jlawcordova.pixellab/objects/character.json'));
-    const layer = character.layers.find((l) => l.class === 'character');
-    const hop = layer?.actions?.hop;
-    assert.ok(hop, "the character's layer has the hop action");
-    assert.equal(hop.keys[0].t, 0);
-    assert.ok(hop.keys.every(({ move: [x, y] }) => x === 0 && Number.isInteger(y)), 'up and down, by whole pixels');
-    const ys = hop.keys.map(({ move }) => move[1]);
+    const hop = character.states?.hop;
+    assert.ok(hop, 'the character has the hop state');
+    assert.equal(hop.loop, false, 'it plays once');
+    assert.equal(hop.then, character.start, 'then hands back to the state it starts in');
+    assert.equal(hop.move[0].t, 0);
+    assert.ok(hop.move.every(({ move: [x, y] }) => x === 0 && Number.isInteger(y)), 'up and down, by whole pixels');
+    const ys = hop.move.map(({ move }) => move[1]);
     assert.equal(ys[0], 0, 'it starts at rest');
     assert.ok(Math.min(...ys) <= -5, 'it rises');
-    assert.ok(Math.abs(ys.at(-1)) <= 1, 'it lands (and returns to rest when the action ends)');
+    assert.ok(Math.abs(ys.at(-1)) <= 1, 'it lands (and returns to rest when the state ends)');
 
     const range = await read('src/components/home/Range.astro');
     assert.match(range, /setAttribute\('data-play', 'hop'\)/, 'A plays it with data-play');

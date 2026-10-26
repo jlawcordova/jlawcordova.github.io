@@ -11,8 +11,8 @@ Part of the `pixel-art` skill ([SKILL.md](SKILL.md)). Read it before you add tex
   - `river`: 6 tiles × 5 frames;
   - `pine` and `tree-small`: 8 each;
   - `island-shadow`: 24;
-  - `truck-open`: 4 placements plus its poses, `ore`: 22 and `stone`: 11;
+  - `truck-open`: 4 placements, each drawing both of its frames (`rest` and `tipped`), `ore`: 22 and `stone`: 11;
   - each `enter` group compiles on its own, so runs don't merge across groups;
-  - every pose of a moving item is drawn once, in its own group.
+  - every frame of a sprite with states is drawn once per placement, so a state's extra frame costs its bytes times the placements (the four trucks' `tipped` frame added about 7.6 KB raw when the poses became states).
 - **New detail gzips at about 4.2:1.** The land sample measured +15.3 KB raw and +3.7 KB gzip.
 - **Measure in the first iteration,** with `npm run pixellab -- art sizes hero-island` (or `range-sprite`). It prints raw and gzip bytes per object and per color, against `HEAD`. Report your objects' bytes against the plan's estimate. If they run far over it, trim: fewer, deliberate clusters; horizontal adjacency; texture kept out of loop frames.
