@@ -27,9 +27,9 @@ Builds [spec.md](spec.md) (approved 2026-10-26). The owner reviews only the fina
 | `src/styles/ask-panel.css` (new) | Panel styles, imported by `ask.ts` with `?inline` and added as a `<style>`, so they load with it: a plain import is collected as page CSS and inlined into the home page |
 | `src/styles/global.css` | Imports `ask.css` after `hero.css` |
 | `src/env.d.ts` | Types `PUBLIC_ASK_ENDPOINT` |
-| `.github/workflows/deploy.yml` | Passes `PUBLIC_ASK_ENDPOINT: ${{ vars.ASK_ENDPOINT }}` to the build step |
-| `docs/design-system/components/` | An "Ask panel" entry |
-| `src/pages/design-system.astro` | A static preview of the bubble and panel |
+| `.github/workflows/deploy.yml` | Passes `PUBLIC_ASK_ENDPOINT` from `vars.ASK_ENDPOINT` to the build step, except on pull requests (`github.event_name != 'pull_request' && vars.ASK_ENDPOINT \|\| ''`), so previews stay without the bubble as the spec says |
+| `docs/design-system/components/AskPanel/` | An "Ask panel" entry (README and preview), listed in the design system's README |
+| `src/pages/design-system.astro` | A static preview of the bubble and panel; imports `ask-panel.css` for that page |
 | `scripts/ask-knowledge.test.mjs` (new) | Allowlist, size and forbidden-pattern checks |
 | `scripts/ask-state.test.mjs` (new) | Every state and transition |
 | `scripts/e2e/ask.e2e.mjs` (new) | Browser checks against a stubbed Worker; with `ASK_SCREENSHOTS=<dir>` set, it also saves the behaviour screenshots |

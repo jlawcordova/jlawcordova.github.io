@@ -4,10 +4,11 @@
 // docs/design-system/components/<Name>/preview.html with the site's own CSS,
 // so the previews show exactly what ships. design-system.css (the
 // DecisionBrief and Register styles, which aren't on the site) loads on this
-// page only.
+// page only, and so does ask-panel.css, which the site loads with the panel.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHead from '../components/PageHead.astro';
 import AchievementIcons from '../components/AchievementIcons.astro';
+import '../styles/ask-panel.css';
 import '../styles/design-system.css';
 
 const previews = import.meta.glob<string>('../../docs/design-system/components/*/preview.html', {
@@ -27,6 +28,7 @@ const ORDER = [
   'Pagination',
   'AchievementRow',
   'AchievementToast',
+  'AskPanel',
   'CodeBlock',
   'Prose',
   'DecisionBrief',
