@@ -24,7 +24,7 @@ Builds [spec.md](spec.md) (approved 2026-10-26). The owner reviews only the fina
 | `src/lib/ask.ts` (new) | The lazily loaded panel: requests, rendering, focus, the glide |
 | `src/lib/ask-loader.ts` (new) | The small loader on the home page: reveals the bubble, imports `ask.ts` on first press or focus |
 | `src/styles/ask.css` (new) | Bubble styles (in `global.css`) |
-| `src/styles/ask-panel.css` (new) | Panel styles, imported by `ask.ts` with `?inline` and added as a `<style>`, so they load with it: a plain import is collected as page CSS and inlined into the home page |
+| `src/styles/ask-panel.css` (new) | Panel styles, imported by `ask.ts` with `?inline` and added as a `<style>`, so they load with it: a plain import is collected as page CSS and inlined into the home page. The thinking dots pulse smoothly, not stepped as the spec's "While waiting" says: the design system's Motion rule, checked by `pixel-first-look.test.mjs` (R4, R10), keeps stepped easing for the pixel art only |
 | `src/styles/global.css` | Imports `ask.css` after `hero.css` |
 | `src/env.d.ts` | Types `PUBLIC_ASK_ENDPOINT` |
 | `.github/workflows/deploy.yml` | Passes `PUBLIC_ASK_ENDPOINT` from `vars.ASK_ENDPOINT` to the build step, except on pull requests (`github.event_name != 'pull_request' && vars.ASK_ENDPOINT \|\| ''`), so previews stay without the bubble as the spec says |
@@ -32,6 +32,7 @@ Builds [spec.md](spec.md) (approved 2026-10-26). The owner reviews only the fina
 | `src/pages/design-system.astro` | A static preview of the bubble and panel; imports `ask-panel.css` for that page |
 | `scripts/ask-knowledge.test.mjs` (new) | Allowlist, size and forbidden-pattern checks |
 | `scripts/ask-state.test.mjs` (new) | Every state and transition |
+| `scripts/e2e/run.mjs` | Runs the e2e files one at a time (`--test-concurrency=1`): `ask.e2e.mjs` builds the site like `accomplishments.e2e.mjs`, and two builds at once share `.astro/` and the fixture that suite swaps in |
 | `scripts/e2e/ask.e2e.mjs` (new) | Browser checks against a stubbed Worker; with `ASK_SCREENSHOTS=<dir>` set, it also saves the behaviour screenshots |
 | `docs/intents/2026-10-ask-bot/snapshots/*.png` (new) | The behaviour screenshots PR A embeds, committed as earlier changes did |
 | `README.md` | The project-layout table gains the new files; a short "Ask" section on the endpoint variable |
@@ -42,8 +43,9 @@ Builds [spec.md](spec.md) (approved 2026-10-26). The owner reviews only the fina
 
 | File | Purpose |
 | --- | --- |
-| `package.json`, `package-lock.json`, `tsconfig.json`, `wrangler.toml` | Dependencies: `@anthropic-ai/sdk`, and dev only `wrangler` and `typescript`. Node 24's type stripping runs the tests, so no test framework |
-| `src/index.ts` | The `fetch` handler: CORS, routing, the seven steps of the spec |
+| `package.json`, `package-lock.json`, `tsconfig.json`, `wrangler.toml`, `worker-configuration.d.ts` | Dependencies: `@anthropic-ai/sdk`, and dev only `wrangler` and `typescript`. Node's type stripping (22.18 and later) runs the tests, so no test framework. The Workers runtime types come from `wrangler types` (the generated, committed `worker-configuration.d.ts`), so there's no `@cloudflare/workers-types`; `tsc` checks `src/`, and the tests run untyped, since typing them would need `@types/node` |
+| `src/index.ts` | The Worker's entry: wires the settings, secrets and Durable Object to the handler, and exports the Durable Object |
+| `src/handler.ts` | The seven steps of the spec, with every dependency passed in, so the tests run in Node: `cloudflare:workers` loads only in `counter.ts` and `index.ts` |
 | `src/validate.ts` | Request validation |
 | `src/limits.ts` | Limit rules and the Asia/Manila day, over an injected store and clock |
 | `src/counter.ts` | The Durable Object that stores the counters |
@@ -124,14 +126,14 @@ One runner does all of it: the main session, in one context, from the first comm
 
 **PR B, `jlawcordova-ask` (main session, after A1–A7):**
 
-1. **The repo.** Create the private GitHub repo with `gh repo create jlawcordova/jlawcordova-ask --private --add-readme`, so GitHub writes the first commit on `main` and no agent pushes to it. Clone it to `~/Projects/jlawcordova-ask` and branch `feat/initial`. Everything else reaches `main` only through PR B, which the owner reviews and merges. The owner approved creating the repo on their behalf (2026-10-26). The `jlawcordova-mcp` Worker in `~/Projects/jlawcordova-atproto` is the style reference for Wrangler settings and README.
+1. **The repo.** Create the private GitHub repo with `gh repo create jlawcordova/jlawcordova-ask --private --add-readme`, so GitHub writes the first commit on `main` and no agent pushes to it. *As built (2026-10-26):* the session's GitHub access can't create repositories (403), so the owner creates it the same way (private, with a README) and gives the Claude GitHub App access; the Worker is built and checked locally on `feat/initial` meanwhile. Clone it to `~/Projects/jlawcordova-ask` and branch `feat/initial`. Everything else reaches `main` only through PR B, which the owner reviews and merges. The owner approved creating the repo on their behalf (2026-10-26). The `jlawcordova-mcp` Worker in `~/Projects/jlawcordova-atproto` is the style reference for Wrangler settings and README.
 2. **Scaffold.** Create `package.json`, `tsconfig.json`, `wrangler.toml` (the Durable Object binding with a SQLite migration, `ALLOWED_ORIGINS`, `KNOWLEDGE_URL`, the limit values, and `ASK_ENABLED`), `.dev.vars.example` with the key's name only, and `CLAUDE.md`.
 3. **Pure modules and their tests.** `validate.ts`, `limits.ts`, `prompt.ts`, `reply.ts`, `knowledge.ts`.
-   - Limits test the minute and day windows, the Manila day boundary, the order (site before visitor), and counting only after a call.
+   - Limits test the minute and day windows, the Manila day boundary, the order (site before visitor), and counting only after a call. *As built:* the check and the count are one reservation in the Durable Object, read and written synchronously in its SQLite storage, so concurrent requests can't pass the check together; it's given back when the model is never called (the knowledge can't be fetched), so only calls count.
    - Reply tests cover a valid `ok`, a source not in the knowledge, an `ok` with no sources (becomes `unknown`), and malformed JSON.
    - The visitor's IP is hashed with SHA-256 and a daily salt derived from a secret, `IP_SALT`. Tests check that no raw IP reaches the store.
 4. **The handler and the Durable Object.** `index.ts`, `counter.ts` and `ai.ts`.
-   - `ai.ts` makes one `messages.create` call with `claude-haiku-5-5`, `max_tokens: 400`, `output_config: { effort: "low", format: <the JSON schema> }`, the prompt and knowledge as a system block with `cache_control: { type: "ephemeral" }`, and the history and question as user and assistant turns.
+   - `ai.ts` makes one `messages.create` call with `claude-haiku-5-5`, `max_tokens: 400`, `thinking: { type: "disabled" }` (Haiku 5.5 thinks by default, which would spend the 400 tokens; disabled is allowed at `low` effort), `output_config: { effort: "low", format: <the JSON schema> }`, the prompt and knowledge as a system block with `cache_control: { type: "ephemeral" }`, and the history and question as user and assistant turns.
    - It checks `stop_reason` (`refusal` and `max_tokens` become `unknown`) and catches the SDK's typed errors (rate limit or 5xx becomes `failed`, mapped to a 503 `resting` reply with no `resetAt`).
    - Handler tests run every row of the response table, CORS (allowed origin, other origin, preflight) and `ASK_ENABLED=false`, against a stub `ai.ts` and an in-memory store.
 5. **Evals.** `evals/questions.json` holds about 30 questions with expected `status`:

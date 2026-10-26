@@ -109,7 +109,7 @@
   font-weight: 600;
 }
 
-/* Thinking: three dots that step in turn, like the art's own loops. */
+/* Thinking: three dots that pulse in turn. Smooth, not stepped: only the pixel art steps (design system, Motion). */
 .ask-msg--waiting {
   display: flex;
   gap: 6px;
@@ -120,7 +120,7 @@
   width: 6px;
   height: 6px;
   background: var(--color-ink-muted);
-  animation: ask-dot 0.9s steps(1, end) infinite;
+  animation: ask-dot 0.9s ease-in-out infinite;
 }
 
 .ask-msg--waiting span:nth-child(2) {
@@ -132,11 +132,12 @@
 }
 
 @keyframes ask-dot {
-  0% {
-    opacity: 1;
-  }
-  33% {
+  0%,
+  100% {
     opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
   }
 }
 
