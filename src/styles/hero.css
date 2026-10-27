@@ -138,16 +138,10 @@ main > .hero:first-child {
   }
 }
 
-/* A pop (one of the entrance lab's moves) grows each piece of the island from its own foot (island clock sweep spec R3). */
-.hero-island .enter {
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-}
-
 /* In the dark theme the island's dithered shadow takes the page color, a
    little darker than the band, so it settles into the ground instead of
    reading as a pale hatch (dark mode spec, Pixel art). The fill, not the
-   group's opacity, which the entrance animates. */
+   opacity, which the SVG's build-up animates. */
 html[data-theme="dark"] .hero-island [data-enter="shadow"] path {
   fill: var(--color-page);
 }
