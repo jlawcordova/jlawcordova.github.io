@@ -1,7 +1,9 @@
 // Browser checks that Motion never hides content (pixel-first look spec R10–R12,
 // C6). After a full scroll, everything that animates ends visible and at rest.
-// With JavaScript off, or with the Motion chunk blocked, the hero, the Range
-// console and the blog's post cards are visible from the start. Under reduced
+// With JavaScript off, or with the Motion chunk blocked, the hero's copy, the
+// Range console and setting and the blog's post cards are visible from the
+// start, and the hero island, which builds itself up from its SVG's CSS, ends
+// visible (entrance in SVG spec R15). Under reduced
 // motion nothing animates, and printing reveals anything still waiting to
 // scroll in. The accomplishment rows' own checks are in accomplishments.e2e.mjs,
 // which builds the data they need.
@@ -15,11 +17,17 @@ import { launch, loadPlaywright } from './browser.mjs';
 
 const BASE = process.env.E2E_BASE_URL ?? 'http://localhost:4321';
 
-/** What animates on each page, by selector. */
+/**
+ * What animates on each page, by selector. The build-ups play on a wrapper
+ * inside each piece (Pixel Lab's site contract, "The entrance"), so the
+ * pieces' children count too.
+ */
 const PAGES = {
-  '/': ['.hero__copy > *', '.hero__art', '.hero-island .enter', '.range__panel', '.range__sprite .enter'],
+  '/': ['.hero__copy > *', '.hero__art', '.hero-island [data-enter]', '.hero-island [data-enter] > *', '.range__panel', '.range__sprite [data-enter]', '.range__sprite [data-enter] > *'],
   '/blog/': ['.post-list > li'],
 };
+/** What CSS alone plays from the page's HTML, with or without script: the hero island's build-up. */
+const CSS_ONLY = { '/': ['.hero-island [data-enter] > *'], '/blog/': [] };
 
 /** @type {import('playwright').Browser} */
 let browser;
@@ -81,13 +89,16 @@ for (const width of [390, 1440]) {
 }
 
 for (const [path, selectors] of Object.entries(PAGES)) {
-  test(`R11: on ${path} with JavaScript off, everything is visible at load`, async () => {
+  const scripted = selectors.filter((s) => !CSS_ONLY[path].includes(s));
+
+  test(`R11: on ${path} with JavaScript off, everything is visible at load, or once the SVG's own build-up ends`, async () => {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 }, javaScriptEnabled: false });
     const page = await context.newPage();
     await page.goto(`${BASE}${path}`);
-    const all = await looks(page, selectors);
+    const all = await looks(page, scripted);
     assert.ok(all.length > 0, `${path} has elements to check`);
     assert.deepEqual(all.filter((l) => !atRest(l)), []);
+    await untilAtRest(page, selectors);
     await context.close();
   });
 
@@ -98,8 +109,9 @@ for (const [path, selectors] of Object.entries(PAGES)) {
     await page.route(/\/_astro\/motion\.[^/]*\.js$/, (route) => ((blocked += 1), route.abort()));
     await page.goto(`${BASE}${path}`);
     assert.ok(blocked > 0, 'the page asked for the Motion chunk');
-    assert.deepEqual((await looks(page, selectors)).filter((l) => !atRest(l)), [], 'at load');
+    assert.deepEqual((await looks(page, scripted)).filter((l) => !atRest(l)), [], 'at load');
     await scrollThrough(page);
+    await untilAtRest(page, selectors);
     assert.deepEqual((await looks(page, selectors)).filter((l) => !atRest(l)), [], 'after a scroll');
     const hidden = await page.evaluate(() => document.querySelectorAll('[style*="opacity: 0"]').length);
     assert.equal(hidden, 0, 'no element is left at opacity 0');

@@ -17,6 +17,11 @@
 // the pointer and focus still on the console, A makes only the character hop,
 // and A and B are ink keys with no labels.
 //
+// The settings (Range settings spec R4–R9, entrance in SVG spec R8–R10): each
+// class change rebuilds the new setting from the SVG (`enter` in its group's
+// data-play), a quick double press ends in place, nothing moves under reduced
+// motion, and A's hop shares data-play with the build-up without cutting it short.
+//
 // Run with `npm run e2e` after `npm run build`.
 
 import assert from 'node:assert/strict';
@@ -186,42 +191,97 @@ test('R7: the arrows wrap both ways', async () => {
   await page.close();
 });
 
-/** Every entrance group of the setting on show: its opacity and transform. */
+/**
+ * Every piece of the setting on show, and the wrapper the SVG moves inside it
+ * (its child, Pixel Lab's site contract, "The entrance"): opacity, transform,
+ * and how many animations run on it.
+ */
 const settingPieces = (page) =>
   page.evaluate(() =>
-    [...document.querySelectorAll('.range__sprite .enter')]
+    [...document.querySelectorAll('.range__sprite [data-enter], .range__sprite [data-enter] > *')]
       .filter((g) => getComputedStyle(/** @type {Element} */ (g.closest('[data-class]'))).display !== 'none')
-      .map((g) => ({ opacity: getComputedStyle(g).opacity, transform: getComputedStyle(g).transform })),
+      .map((g) => ({ opacity: getComputedStyle(g).opacity, transform: getComputedStyle(g).transform, animations: g.getAnimations().length })),
   );
 const pieceAtRest = ({ opacity, transform }) => opacity === '1' && (transform === 'none' || transform === 'matrix(1, 0, 0, 1, 0, 0)');
-
-test('Settings R4, R8: a switch builds the new setting, and a quick double press still ends with every piece in place', async () => {
-  const page = await openRange({ paused: true });
-  await next(page);
-  // The build starts at once: the floor rows start below their spots and transparent.
-  await page.waitForFunction(
+/** The data-play list on the class group on show. */
+const plays = (page) =>
+  page.evaluate(() => [...document.querySelectorAll('.range__sprite g[data-class]')].find((g) => getComputedStyle(g).display !== 'none')?.getAttribute('data-play') ?? null);
+/** Waits until every piece on show is at rest, with nothing running on it. */
+const settingAtRest = (page) =>
+  page.waitForFunction(
     () =>
-      [...document.querySelectorAll('.range__sprite .enter')].some(
-        (g) => getComputedStyle(/** @type {Element} */ (g.closest('[data-class]'))).display !== 'none' && Number(getComputedStyle(g).opacity) < 1,
-      ),
+      [...document.querySelectorAll('.range__sprite [data-enter], .range__sprite [data-enter] > *')]
+        .filter((g) => getComputedStyle(/** @type {Element} */ (g.closest('[data-class]'))).display !== 'none')
+        .every((g) => {
+          const s = getComputedStyle(g);
+          return s.opacity === '1' && (s.transform === 'none' || s.transform === 'matrix(1, 0, 0, 1, 0, 0)') && g.getAnimations().length === 0;
+        }),
     undefined,
-    { timeout: 1000 },
+    { timeout: 3000 },
   );
+
+test('Settings R4, R8, entrance in SVG R8, R10: a switch builds the new setting from the SVG, and a quick double press still ends with every piece in place', async () => {
+  const page = await openRange({ paused: true });
+  // The first setting built when the stage came into view.
+  assert.equal(await plays(page), 'enter');
+  await settingAtRest(page);
   await next(page);
-  await page.waitForTimeout(1600);
+  assert.equal(await plays(page), 'enter', 'the new class asks for its build-up');
+  // The build starts at once: the floor rows start below their spots and transparent.
+  const building = await settingPieces(page);
+  assert.ok(building.some((p) => p.animations > 0 && !pieceAtRest(p)), 'the setting is building up');
+  await next(page);
   const pieces = await settingPieces(page);
-  assert.ok(pieces.length >= 4, `${pieces.length} pieces on show`);
-  assert.deepEqual(pieces.filter((p) => !pieceAtRest(p)), [], 'every piece ends in place');
+  assert.ok(pieces.length >= 8, `${pieces.length} pieces and wrappers on show`);
+  assert.ok(pieces.some((p) => p.animations > 0), 'the next setting builds up too');
+  await settingAtRest(page);
   assert.deepEqual((await state(page)).shown, ['2'], 'only the current class shows');
+  const others = await page.evaluate(() => [...document.querySelectorAll('.range__sprite g[data-class]:not([data-class="2"])')].filter((g) => g.hasAttribute('data-play')).length);
+  assert.equal(others, 0, 'the hidden classes keep no data-play');
   await page.close();
 });
 
-test('Settings R6, R9: under reduced motion a switch shows the new setting at once, with nothing moving', async () => {
+test('Settings R6, R9, entrance in SVG R15: under reduced motion a switch shows the new setting at once, with nothing moving', async () => {
   const page = await openRange({ reducedMotion: 'reduce' });
   await next(page);
   const pieces = await settingPieces(page);
-  assert.ok(pieces.length >= 4);
-  assert.deepEqual(pieces.filter((p) => !pieceAtRest(p)), []);
+  assert.ok(pieces.length >= 8);
+  assert.deepEqual(pieces.filter((p) => !pieceAtRest(p) || p.animations > 0), []);
+  assert.equal(await page.evaluate(() => document.querySelector('.range__sprite-art').getAnimations({ subtree: true }).length), 0, 'nothing in the sprite animates');
+  await page.close();
+});
+
+test('Entrance in SVG R9: A during a build-up hops the character, and the build-up runs on to the end', async () => {
+  const page = await openRange({ paused: true });
+  await settingAtRest(page);
+  await next(page);
+  // The build-up's animations, by their wrapper, and how far each has run.
+  const before = await page.evaluate(() => {
+    const shown = [...document.querySelectorAll('.range__sprite g[data-class]')].find((g) => getComputedStyle(g).display !== 'none');
+    const wrappers = [...shown.querySelectorAll('[data-enter] > *')];
+    const running = wrappers.flatMap((w) => w.getAnimations());
+    Object.assign(window, { building: running });
+    return running.map((a) => Number(a.currentTime));
+  });
+  assert.ok(before.length >= 4, `${before.length} pieces building`);
+  await page.getByRole('button', { name: 'A: jump' }).click();
+  assert.equal(await plays(page), 'enter hop', 'A adds hop beside enter');
+  const after = await page.evaluate(() => {
+    const running = /** @type {Animation[]} */ (/** @type {any} */ (window).building);
+    const live = new Set(document.getAnimations());
+    return running.map((a) => ({ live: live.has(a) || a.playState === 'finished', time: Number(a.currentTime ?? Infinity), state: a.playState }));
+  });
+  after.forEach((a, i) => {
+    assert.ok(a.live, `animation ${i} wasn't cancelled (${a.state})`);
+    assert.ok(a.time >= before[i], `animation ${i} wasn't restarted (${before[i]} → ${a.time} ms)`);
+  });
+  const hopping = await page.evaluate(() => document.querySelector('.range__sprite-art').getAnimations({ subtree: true }).some((a) => /** @type {CSSAnimation} */ (a).animationName === 'range-sprite--hop'));
+  assert.ok(hopping, 'the character hops');
+  await settingAtRest(page);
+  await page.waitForFunction(() => {
+    const g = [...document.querySelectorAll('.range__sprite g[data-class]')].find((e) => getComputedStyle(e).display !== 'none');
+    return g?.getAttribute('data-play') === 'enter';
+  });
   await page.close();
 });
 
@@ -330,12 +390,7 @@ test('Console, Pop R6: A makes only the character hop, and leaves its setting an
   const page = await openRange({ paused: true });
   await settled(page);
   // Let the setting finish building first, so anything that moves is the hop.
-  await page.waitForFunction(() =>
-    [...document.querySelectorAll('.range__sprite .enter')].every((g) => {
-      const s = getComputedStyle(g);
-      return s.opacity === '1' && (s.transform === 'none' || s.transform === 'matrix(1, 0, 0, 1, 0, 0)');
-    }),
-  );
+  await settingAtRest(page);
   const before = await state(page);
   // Sample where the character's `character` group is drawn, in art pixels from
   // the sprite's top, and the sprite's and the floor's transforms, every frame:
@@ -364,7 +419,7 @@ test('Console, Pop R6: A makes only the character hop, and leaves its setting an
           seen.push({
             character: y(g),
             sprite: getComputedStyle(/** @type {Element} */ (document.querySelector('.range__sprite'))).transform,
-            ground: [...g.querySelectorAll('.enter[data-enter="ground"]')].map((e) => getComputedStyle(e).transform),
+            ground: [...g.querySelectorAll('[data-enter="ground"], [data-enter="ground"] > *')].map((e) => getComputedStyle(e).transform),
           });
           if (seen.length < 60) requestAnimationFrame(tick);
         };
@@ -389,10 +444,10 @@ test('Console, Pop R6: A makes only the character hop, and leaves its setting an
     frames.every((f) => f.ground.every((t) => t === 'none' || t === 'matrix(1, 0, 0, 1, 0, 0)')),
     "the setting's floor stays put",
   );
-  // It lands back where it started.
+  // It lands back where it started, and only hop leaves data-play.
   await page.waitForFunction(() => {
     const g = [...document.querySelectorAll('.range__sprite g[data-class]')].find((e) => getComputedStyle(e).display !== 'none');
-    return !g?.hasAttribute('data-play');
+    return g?.getAttribute('data-play') === 'enter';
   });
   await settled(page);
   const after = await state(page);

@@ -196,7 +196,12 @@ test('R7, R8: code blocks and the Range handheld look the same in both themes, a
       return [pre.backgroundColor, pre.color];
     });
     await page.goto(`${BASE}/`);
-    const shadow = await page.evaluate(() => getComputedStyle(document.querySelector('.hero-island [data-enter="shadow"] path')).fill);
+    // Read at rest: the build-up plays nothing under the suite's reduced motion.
+    const shadow = await page.evaluate(() => {
+      const piece = document.querySelector('.hero-island [data-enter="shadow"]');
+      const still = piece.getAnimations({ subtree: true }).length === 0 && [piece, ...piece.children].every((el) => getComputedStyle(el).opacity === '1');
+      return still ? getComputedStyle(piece.querySelector('path')).fill : 'still building';
+    });
     const handheld = await page.evaluate(() =>
       ['.range__console', '.range__bezel', '.range__stage', '.range__nameplate', '.range__arrow'].map((selector) => {
         const style = getComputedStyle(document.querySelector(selector));
