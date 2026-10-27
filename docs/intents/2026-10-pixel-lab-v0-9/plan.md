@@ -1,0 +1,64 @@
+# Plan: Pixel Lab v0.9.0, and the build-ups in the document (from intent.md 2026-10-27)
+
+Implements [spec.md](spec.md) R1–R11, with every Area of concern taken with its recommendation. The release is Pixel Lab v0.9.0, tagged on the lab's `8f995e1` (PR #72). The owner asked for the intent, spec, plan and build to be carried through to one final PR, which they review (2026-10-27).
+
+## Files that change
+- `docs/intents/2026-10-pixel-lab-v0-9/` (new): `intent.md`, `spec.md`, `plan.md`, and `recordings/` with the PR's Playwright recordings (R11).
+- `scripts/pixellab.mjs`: `VERSION` and both `ASSETS` hashes move to v0.9.0 (R1). The install error carries the program's own reason (R3).
+- `scripts/pixellab.test.mjs`: a test of that reason, with a fake program that fails as an old glibc does (R3).
+- `src/assets/pixel-art/jlawcordova.pixellab/scenes/hero-island.json` and `range-sprite.json`: an `entrance`, written by the CLI (R4, R5).
+- `scripts/entrance-timing.test.mjs` (new): R7.
+- `src/lib/island-entrance.mjs`: the comments above `TIMING` and `RANGE_TIMING` say the scenes hold the same numbers (R9).
+- `CLAUDE.md`, `README.md`, `.claude/skills/pixel-art/SKILL.md` and `.claude/skills/pixel-art-motion/SKILL.md`: R9. The links to the lab's docs at the pinned tag move to v0.9.0.
+
+Not changed: `.github/workflows/deploy.yml` (spec D2), `src/lib/play-entrance.ts`, `src/components/`, `scripts/e2e/`, the explainer library.
+
+## Order of work
+One slice, straight to a PR into `main` from `feat/pixel-lab-v0-9`, in a worktree (`.claude/worktrees/pixel-lab-v0-9`), since the owner's checkout has edits of its own. The main session does every step in one sitting, with one commit per step.
+
+```
+main ── feat/pixel-lab-v0-9 (steps 1–6, one commit each) ── PR (owner merges) ──▶ main
+```
+
+1. **The intent, spec and plan.**
+2. **The pin (R1, R2).**
+   - Hash every SVG and thumbnail with v0.8.0, and save `check`'s full output.
+   - Copy the two tarball lines from the release's `SHA256SUMS` into `ASSETS`, and set `VERSION`.
+   - Run `npm run art`, and diff the hashes and `check`'s output against v0.8.0's.
+3. **The install error (R3).** Add the program's reason to the error, and a test of it. Measure the glibc floor of both releases' Linux programs.
+4. **The entrances (R4–R7).**
+   - Run `scene entrance set` on both scenes, with `--timing` from `JSON.stringify` of the site's objects.
+   - Run `npm run art`, and diff the hashes and `check` again.
+   - Add `entrance-timing.test.mjs`. Prove it catches drift, by changing the hero's `lag` in the document and then restoring it.
+5. **The drift report (R8).** Run the lab's `scripts/entrance-parity.mjs` from the v0.9.0 tag against this worktree, with `--out` in the scratchpad, and diff it with the lab's committed fixture.
+6. **The docs (R9).**
+7. **Verify and record (R10, R11).**
+   - Run `npm run build`, `npm test` and `npm run e2e`.
+   - Record the built home page with Playwright's video: the hero's build-up, then the Range rebuilding over two class changes. Convert the video to GIFs with `ffmpeg` and commit them in `recordings/`.
+   - Open the PR, and read the CI run's log for the Linux program (spec Areas of concern 4).
+
+## Workflow and reviews
+- The main session runs every step. No subagents, since the art change is two CLI commands.
+- The only owner review is the final PR. No `verify-change` run: the outputs are byte-identical and the new test guards the one thing that could go wrong.
+- The owner merges into `main`.
+
+## Risks
+- **The `linux-x64` program won't run in CI.** Spec D2 measures its glibc floor at 2.39, which `ubuntu-latest` meets. The PR's CI run is the proof. If it fails, R3's message names the cause.
+- **The owner's Pixel Lab is older than v0.9.0.** It would refuse the document. This is flagged in the PR.
+- **The owner's checkout has edits to `hero-island.json`.** The merge is a one-line conflict at most. This is flagged in the PR.
+- **The recordings make the repo heavier.** Keep each GIF small: short, at a reduced width and frame rate.
+
+## Proof
+- The v0.8.0 and v0.9.0 hashes of all 20 published files, identical after step 2 and again after step 4.
+- `check`: no problems and the same 26 warnings, after each step.
+- `npm test`, `npm run build` and `npm run e2e` output, pasted in the PR.
+- `entrance-timing.test.mjs` fails when the document drifts, and passes when it's restored.
+- The parity report (spec Areas of concern 1).
+- The recordings, and the CI run.
+
+## As built
+- **The pin (step 2).** v0.9.0's tarballs matched the pinned hashes and `SHA256SUMS`. All 20 published files, 7 SVGs and 13 thumbnails, hashed the same as v0.8.0's, every one `lossless`. `check` showed no problems and the same 26 warnings, line for line.
+- **The glibc floor (step 3).** The highest symbol version in both v0.8.0's and v0.9.0's `linux-x64` programs is `GLIBC_2.39`, Ubuntu 24.04's. The install error now ends with the program's own first line of output, tested with a fake program that fails as the loader does.
+- **The entrances (step 4).** The hero island's entrance came out as `{}`, and the Range's as the 19 fields of `RANGE_TIMING` that differ from `TIMING`. The 20 files were byte-identical again, and `check` was unchanged. `entrance-timing.test.mjs` passes. With the hero's `lag` at 450 ms in the document, it fails with "hero-island 133 delay: the document has 1770 ms, the site 1820 ms", and it passes again once the file is restored.
+- **The drift report (step 5).** `entrance-parity.mjs` from the v0.9.0 tag, against this branch: the easings and all 11 Range cases match the lab's fixture. The 31 hero cases differ only in their pieces, because the hero island has 220 now, against 219 at the fixture's site revision `d31dbba` (the Ask bot's character, from PR #150). `island-entrance.mjs` and `play-entrance.ts` haven't changed since that revision, and `TIMING`, the moves per kind and the 2.32 s settle time are the same. Regenerating the fixture is a lab change (spec Areas of concern 1).
+- **Verify and record (step 7).** `npm run build`, `npm test` (179 pass) and `npm run e2e` (119 pass) all passed. The recordings came from a throwaway Playwright check run through `npm run e2e -- <file>`. It records the built home page at 1280×800, and asserts that all 220 hero pieces, and each Range setting's pieces after two Next presses, end at rest and fully shown. It passed (2 of 2), and its videos became `recordings/hero-island-build-up.gif` and `recordings/range-class-change.gif` (640 px wide, 15 fps).

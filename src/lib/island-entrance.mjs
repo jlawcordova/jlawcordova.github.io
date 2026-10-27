@@ -64,7 +64,11 @@ export const OBJECT_MOVES = /** @type {const} */ (['same', ...MOVES]);
  *   entrance lab can show and copy any one.
  */
 
-/** The owner's pick from the entrance lab (island edge sweep spec R3–R7). */
+/**
+ * The owner's pick from the entrance lab (island edge sweep spec R3–R7). The
+ * hero-island scene's `entrance` holds the same numbers in ms, for Pixel Lab
+ * (Pixel Lab v0.9.0 spec R4); scripts/entrance-timing.test.mjs keeps them equal.
+ */
 export const TIMING = /** @type {Timing} */ ({
   /** When the shadow starts, alongside the hero copy. */
   start: 0.2,
@@ -122,6 +126,7 @@ export const TIMING = /** @type {Timing} */ ({
  * Quicker than the island's, since it replays on every switch: its three floor
  * rows float up 0.08s apart, left to right, then its objects by x. Every field
  * is named here, so no island pick reaches the Range (island sweep drop spec R6).
+ * The range-sprite scene's `entrance` holds the same numbers (Pixel Lab v0.9.0 spec R5).
  * @type {Timing}
  */
 export const RANGE_TIMING = {
