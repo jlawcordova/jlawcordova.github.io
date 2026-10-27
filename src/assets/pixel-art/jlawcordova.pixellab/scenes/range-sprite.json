@@ -414,5 +414,26 @@
         }
       ]
     }
-  ]
+  ],
+  "entrance": {
+    "start": 0,
+    "groundDelay": 80,
+    "groundSpan": 160,
+    "cascade": 0,
+    "ground": "rows",
+    "objects": "ltr",
+    "with": false,
+    "objectLead": 100,
+    "objectSpan": 300,
+    "lag": 400,
+    "objectMove": "same",
+    "duration": 500,
+    "peak": 0.55,
+    "rise": 10,
+    "overshoot": 2,
+    "objectDuration": 500,
+    "objectPeak": 0.55,
+    "objectRise": 10,
+    "objectOvershoot": 2
+  }
 }
