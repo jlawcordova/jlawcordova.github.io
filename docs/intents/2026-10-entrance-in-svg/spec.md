@@ -40,7 +40,7 @@ The hero island's `<svg>` is inlined with `data-play="enter"`, so it builds up o
 ### Proof
 
 - **R14. A test guards the SVGs.** `npm test` fails unless:
-  - both scenes have an entrance, and every `data-enter` group in their SVGs is one of its pieces;
+  - both scenes have an entrance, and every `data-enter` group in their SVGs is one of its pieces, with its wrapper inside;
   - each SVG's style plays `enter` from `data-play`, only under `prefers-reduced-motion: no-preference`;
   - the hero island is inlined with `data-play="enter"`;
   - the hero island settles at 2320 ms and a Range setting at 1440 ms, the times the site's schedule gave, so a change to either build-up is a deliberate one.
@@ -92,7 +92,7 @@ Under reduced motion `build()` still sets the token, and the SVG plays nothing (
 
 `scripts/entrance-svg.test.mjs` runs `scene entrance show <scene> --json` through the pin script, as the explainer and category tests do, and reads the compiled SVGs:
 
-- the number of `data-enter` groups in each SVG equals the pieces `entrance show` lists (for the Range, as many as it lists for its settings);
+- every `data-enter` group in each SVG starts with its wrapper, a `<g>` without `data-enter`, and the groups number as many as the pieces `entrance show` lists (for the Range, which lists its first setting, the groups in `data-class="0"`);
 - the SVG's `<style>` has a `[data-play~="enter"]` rule, and every such rule sits inside `@media (prefers-reduced-motion:no-preference)`;
 - `HeroIsland.astro` writes `data-play="enter"` onto the `<svg>`;
 - `settledBy` is 2320 ms for `hero-island` and 1440 ms for `range-sprite`.
@@ -105,7 +105,7 @@ The pieces' wrappers are their children: `[data-enter] > *`. The checks read the
 - `range.e2e.mjs`: `settingPieces` reads the wrappers; the switch test sees the build-up start and end; reduced motion moves nothing; the hop test reads the wrappers for "the floor stays put" and waits for `hop` to leave `data-play`; a new test presses A during a build-up and checks that the build-up's animations run on, unrestarted, and end at rest, while the character hops.
 - `theme.e2e.mjs`: the dark shadow check reads the shadow's paths once the build-up has ended, so it's taken at rest.
 - `motion.e2e.mjs`: its selectors include the wrappers; with JavaScript off and with Motion blocked, the hero island still builds up from CSS, so those checks wait for it to end at rest instead of expecting it at rest at load, and the Range is at rest at load.
-- `ask.e2e.mjs`: waits for the island's build-up through the pieces' subtrees.
+- `ask.e2e.mjs`: waits for the island's build-up on the pieces' wrappers, and checks that the bubble shows only once the character's piece has landed (1370 ms in), and at once under reduced motion.
 
 ### D8. Recordings (R17)
 

@@ -14,6 +14,7 @@ Implements [spec.md](spec.md) R1–R17, with every Area of concern taken with it
 - `scripts/pixel-first-look.test.mjs`: the `src/components/lab/` exception goes (D5).
 - `scripts/entrance-svg.test.mjs` (new): R14.
 - `scripts/e2e/shell.e2e.mjs`, `range.e2e.mjs`, `theme.e2e.mjs`, `motion.e2e.mjs`, `ask.e2e.mjs`: R15.
+- `scripts/range-change.test.mjs`: its check of A's handler reads the token list (Departures 1).
 - `CLAUDE.md`, `README.md`, `docs/design-system/README.md`, `.claude/skills/pixel-art/SKILL.md`, `.claude/skills/pixel-art-motion/SKILL.md`: R13. The links to the lab's docs at the pinned tag move to v0.10.0.
 
 Not changed: the document's sources (its entrances came with the v0.9.0 change), `.github/workflows/deploy.yml`, `src/lib/motion.ts`, the explainer library.
@@ -58,3 +59,16 @@ main ── claude/fervent-volta-m5zjsy (steps 1–7, one commit each) ── PR
 - `check`: no problems and the same warnings as v0.9.0.
 - `npm run build`, `npm test` and `npm run e2e` output, pasted in the PR.
 - Screenshots at 1440px and 390px, and the two recordings.
+
+## As built
+- **The release (step 2).** The v0.10.0 tag was pushed at 13:33 UTC on 2026-10-27, and its release published `SHA256SUMS` with all four assets at 13:57; until then the download was a 404, and nothing was pinned. Both tarball lines came from that file, and `ensureProgram` checked the download against the pin and the file.
+- **The glibc floor (step 2).** The highest symbol version in v0.10.0's `linux-x64` program is `GLIBC_2.39`, the same as v0.9.0's.
+- **The art (step 2).** Of the 20 published files, the 18 other than the two scenes hashed the same as v0.9.0's, every one `lossless`. `hero-island.svg` went from 531.8 KB / 102.2 KB gzip to 546.6 KB / 103.2 KB (+14.8 KB / +1.0 KB; budget 750 KB / 150 KB), and `range-sprite.svg` from 151.0 KB / 30.0 KB to 155.3 KB / 30.3 KB (+4.3 KB / +0.3 KB; budget 200 KB / 50 KB). `check` showed no problems and the same 26 warnings, line for line.
+- **The SVGs.** Every `data-enter` group (220 on the hero, 55 across the Range's seven settings) holds one wrapper with its inline delay, and the play rules have the form `[data-pixellab="hero-island"] [data-play~="enter"] .…, [data-pixellab="hero-island"][data-play~="enter"] .…` inside `@media (prefers-reduced-motion:no-preference)`. `entrance show range-sprite` lists only the first setting's 8 pieces, so the SVG test compares those with `data-class="0"`.
+
+## Departures
+1. **`range-change.test.mjs` changed.** It matched the old A handler's text (`setAttribute('data-play', 'hop')`). It now matches `replay(group, 'hop')` and `drop(group, 'hop')`: the same behaviour, through the token list. It rode with the browser checks' commit.
+2. **The Ask suite gained a test.** Nothing checked that the bubble waits for the character, and D3 changes how it waits, so `ask.e2e.mjs` now checks the bubble shows after the character's 1370 ms landing, with the character in place, and at once under reduced motion.
+3. **Polling without JavaScript.** Playwright's `waitForFunction` can't poll in a page with JavaScript off, so the shell suite's `heroAtRest` polls from Node, as `motion.e2e.mjs` does.
+4. **A mutation check.** With the old A handler put back (it set `data-play="hop"`, dropping `enter`), the new mid-build test and the hop test both fail; with the new one they pass.
+
