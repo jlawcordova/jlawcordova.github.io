@@ -83,9 +83,7 @@ const [first] = rangeClasses;
 
 <script>
   import { rangeClasses } from '../../data/home';
-  import { RANGE_TIMING, schedule as buildSchedule } from '../../lib/island-entrance.mjs';
   import { play, reveal } from '../../lib/motion';
-  import { pieceOf, playEntrance } from '../../lib/play-entrance';
   import { BARS, barsFrame, barsOrder, INTERVAL, SLASH } from '../../lib/range-change.mjs';
 
   const section = document.querySelector<HTMLElement>('.range');
@@ -163,16 +161,30 @@ const [first] = rangeClasses;
         .catch(() => {});
     };
 
-    let building: ReturnType<typeof play>[] = [];
+    // A class group's data-play is a list (Pixel Lab's site contract): `enter`
+    // plays the setting's build-up and `hop` the character's hop, and each
+    // starts over on its own, so neither cuts the other short.
+    const plays = (group: Element) => (group.getAttribute('data-play') ?? '').split(/\s+/).filter(Boolean);
+    const setPlays = (group: Element, list: string[]) =>
+      list.length ? group.setAttribute('data-play', list.join(' ')) : group.removeAttribute('data-play');
+    const drop = (group: Element, token: string) => setPlays(group, plays(group).filter((t) => t !== token));
+    // Out, then back in once the browser has applied the removal, so it replays.
+    const replay = (group: Element, token: string) => {
+      drop(group, token);
+      group.getBoundingClientRect();
+      setPlays(group, [...plays(group), token]);
+    };
+    const current = () => art.querySelector(`g[data-class="${index}"]`);
 
-    // The current class's setting builds itself, as the hero island does (Range
-    // settings spec R4–R6): its floor rows float up left to right, then its
-    // objects and the character, by x. A running build completes first, so a
-    // quick double press never leaves a piece half-risen.
+    // The current class's setting builds itself up from the SVG, as the hero
+    // island does (Range settings spec R4–R6): its floor rows float up left to
+    // right, then its objects and the character, by x. Replaying puts every
+    // piece at rest first, so a quick double press never leaves one half-risen.
+    // The hidden classes drop their lists, which would play again on showing.
     const build = () => {
-      building.forEach((a) => a?.complete());
-      const groups = [...art.querySelectorAll<SVGGElement>(`g[data-class="${index}"] .enter`)];
-      building = playEntrance(groups, buildSchedule(groups.map(pieceOf), RANGE_TIMING));
+      const group = current();
+      art.querySelectorAll('g[data-class]').forEach((g) => g !== group && g.removeAttribute('data-play'));
+      if (group) replay(group, 'enter');
     };
 
     // User-triggered changes are announced; auto-advance isn't.
@@ -257,19 +269,18 @@ const [first] = rangeClasses;
     motion.addEventListener('change', () => ((playing = !motion.matches), schedule()));
     document.addEventListener('visibilitychange', schedule);
 
-    // A: only the character hops (R6), with the art's hop action, played
-    // through data-play (Pixel Lab's site contract). Its setting stays put,
-    // and the class stays. A press mid-hop starts it over.
+    // A: only the character hops (R6), with the art's hop state, played
+    // through data-play. Its setting stays put, or goes on building, and the
+    // class stays. A press mid-hop starts it over.
     $('.range__a').addEventListener('click', () => {
-      const group = art.querySelector(`g[data-class="${index}"]`);
+      const group = current();
       if (!group || motion.matches) return;
-      group.removeAttribute('data-play');
-      group.getBoundingClientRect();
-      group.setAttribute('data-play', 'hop');
+      replay(group, 'hop');
     });
     art.addEventListener('animationend', (e) => {
       if ((e as AnimationEvent).animationName !== 'range-sprite--hop') return;
-      (e.target as Element).closest('[data-play]')?.removeAttribute('data-play');
+      const group = (e.target as Element).closest('[data-play]');
+      if (group) drop(group, 'hop');
     });
 
     section.classList.add('is-ready');

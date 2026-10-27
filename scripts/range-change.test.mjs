@@ -104,7 +104,9 @@ describe("A's hop", () => {
     assert.ok(Math.abs(ys.at(-1)) <= 1, 'it lands (and returns to rest when the state ends)');
 
     const range = await read('src/components/home/Range.astro');
-    assert.match(range, /setAttribute\('data-play', 'hop'\)/, 'A plays it with data-play');
-    assert.match(range, /animationName !== 'range-sprite--hop'/, 'and clears it when the hop ends');
+    // data-play is a list the hop shares with the build-up (entrance in SVG spec R9).
+    assert.match(range, /replay\(group, 'hop'\)/, 'A plays it with data-play');
+    assert.match(range, /animationName !== 'range-sprite--hop'/, 'and when the hop ends');
+    assert.match(range, /drop\(group, 'hop'\)/, 'takes only hop out');
   });
 });

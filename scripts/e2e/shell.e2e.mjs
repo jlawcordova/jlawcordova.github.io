@@ -4,11 +4,10 @@
 // only when the menu is reached for; the nav is square with a 16px blur and no
 // shadow; Achievements shows only with the achievements section; the footer's
 // links are 44px targets and "↑ TOP" goes to the top; the hero's greeting is
-// gone, its island keeps the floaty loop, and its entrance (the copy and each
-// of the island's enter groups) ends visible or doesn't run under reduced
-// motion; nothing is rounded and nothing scrolls sideways. The entrance lab's
-// stage shows the island whole, standing on the stage's clipped bottom edge
-// (island edge sweep spec R2).
+// gone, its island keeps the floaty loop, and its entrance (the copy's stagger,
+// and the island's build-up from its own SVG, even without JavaScript) runs,
+// ends visible, or doesn't run under reduced motion; nothing is rounded and
+// nothing scrolls sideways.
 //
 // Run with `npm run e2e` after `npm run build`. Tests poll for end states and
 // never sleep for a fixed time.
@@ -331,66 +330,77 @@ test('R5, Hero: the greeting is gone and the island keeps its floaty loop on an 
   await close(page);
 });
 
-test('R10, R11: the hero entrance ends with everything fully visible in place, every island piece included', async () => {
+// The hero's copy, its two wrappers, and each island piece with the wrapper the
+// SVG plays its move on (the piece's child, Pixel Lab's site contract, "The
+// entrance").
+const HERO = '.hero__title, .hero__lede, .hero__actions, .hero__art, .hero-island [data-enter], .hero-island [data-enter] > *';
+
+/**
+ * Waits until the copy and every island piece are fully shown and untransformed.
+ * It polls from here, not with waitForFunction, which can't run in a page
+ * without JavaScript.
+ */
+async function heroAtRest(page, ms = 6000) {
+  const end = Date.now() + ms;
+  let moving = [];
+  while (Date.now() < end) {
+    moving = await page.evaluate(
+      (selector) =>
+        [...document.querySelectorAll(selector)]
+          .map((el) => getComputedStyle(el))
+          .filter((style) => style.opacity !== '1' || !(style.transform === 'none' || style.transform === 'matrix(1, 0, 0, 1, 0, 0)'))
+          .map((style) => `${style.opacity} ${style.transform}`),
+      HERO,
+    );
+    if (!moving.length) return;
+    await page.waitForTimeout(100);
+  }
+  assert.fail(`not at rest: ${moving.length} elements, such as ${moving[0]}`);
+}
+
+/** How many of the island pieces' wrappers are animating now. */
+const buildingPieces = (page) =>
+  page.evaluate(() => [...document.querySelectorAll('.hero-island [data-enter] > *')].filter((el) => el.getAnimations().length > 0).length);
+
+test('R10, R11, entrance in SVG R5: the island builds up from its SVG, and the entrance ends with everything fully visible in place', async () => {
   const page = await open('/', { width: WIDE });
-  // The island's enter groups build it up over about 2.3s (island edge sweep spec R7).
-  await page.waitForFunction(() =>
-    [...document.querySelectorAll('.hero__title, .hero__lede, .hero__actions, .hero__art, .hero-island .enter')].every((el) => {
-      const style = getComputedStyle(el);
-      return style.opacity === '1' && (style.transform === 'none' || style.transform === 'matrix(1, 0, 0, 1, 0, 0)');
-    }),
-  );
+  assert.equal(await page.locator('.hero-island').getAttribute('data-play'), 'enter', 'the page asks the SVG for its build-up');
+  // The island's pieces build it up over about 2.3s (island edge sweep spec R7).
+  assert.ok((await buildingPieces(page)) > 0, 'the pieces are building up');
+  await heroAtRest(page);
+  assert.equal(await buildingPieces(page), 0, 'and have settled');
   await close(page);
 });
 
-test('R11, R12: without JavaScript and under reduced motion the hero shows at once, with nothing animating', async () => {
-  for (const options of [{ javaScriptEnabled: false }, { reducedMotion: 'reduce' }]) {
-    const page = await open('/', { width: WIDE, ...options });
-    const els = await page.evaluate(() =>
-      [...document.querySelectorAll('.hero__title, .hero__lede, .hero__actions, .hero__art, .hero__float, .hero-island .enter')].map((el) => {
-        const style = getComputedStyle(el);
-        return { float: el.classList.contains('hero__float'), opacity: style.opacity, transform: style.transform, animations: el.getAnimations().length };
-      }),
-    );
-    // The copy, the two wrappers and the island's enter groups (island build entrance spec R9).
-    assert.ok(els.length > 5 + 20, `${els.length} elements`);
-    for (const el of els) {
-      assert.equal(el.opacity, '1', JSON.stringify(options));
-      // The floaty loop moves the inner wrapper whenever motion is allowed.
-      if (!el.float || options.reducedMotion) assert.ok(untransformed(el.transform), `${JSON.stringify(options)}: ${el.transform}`);
-      if (options.reducedMotion) assert.equal(el.animations, 0, 'no animation runs under reduced motion');
-    }
-    await close(page);
-  }
+test('R11, entrance in SVG R5: without JavaScript the copy shows at once, and the island still builds up and ends in place', async () => {
+  const page = await open('/', { width: WIDE, javaScriptEnabled: false });
+  const copy = await page.evaluate(() =>
+    [...document.querySelectorAll('.hero__title, .hero__lede, .hero__actions')].map((el) => [getComputedStyle(el).opacity, el.getAnimations().length]),
+  );
+  assert.deepEqual(copy, [['1', 0], ['1', 0], ['1', 0]], 'the copy, at once');
+  assert.ok((await buildingPieces(page)) > 0, 'the island builds up from CSS alone');
+  await heroAtRest(page);
+  await close(page);
 });
 
-// The island takes its width from custom properties that .hero sets, and the
-// lab's stage isn't inside .hero, so it sets its own; without them the island
-// measures 0 × 0 (#135).
-test('Island edge sweep R2: the entrance lab shows the whole island, standing on the stage’s clipped bottom edge', async () => {
-  for (const width of [NARROW, WIDE]) {
-    const page = await open('/lab/island-entrance/', { width, reducedMotion: 'reduce' });
-    const lab = await page.evaluate(() => {
-      const stage = /** @type {HTMLElement} */ (document.querySelector('.entrance-stage'));
-      const s = getComputedStyle(stage);
-      const box = stage.getBoundingClientRect();
-      const island = /** @type {SVGSVGElement} */ (stage.querySelector('.hero-island')).getBoundingClientRect();
-      return {
-        content: stage.clientWidth - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight),
-        top: box.top + parseFloat(s.borderTopWidth),
-        bottom: box.bottom - parseFloat(s.borderBottomWidth),
-        island: { width: island.width, height: island.height, top: island.top, bottom: island.bottom },
-        scrollWidth: document.documentElement.scrollWidth,
-      };
-    });
-    const { island } = lab;
-    assert.ok(Math.abs(island.width - Math.min(675, lab.content)) < 1, `${width}px: ${island.width}px wide, of ${lab.content}px`);
-    assert.ok(island.top > lab.top, `${width}px: its top is inside the stage`);
-    assert.ok(
-      island.bottom > lab.bottom && island.bottom - lab.bottom < island.height / 10,
-      `${width}px: it runs ${island.bottom - lab.bottom}px past the bottom edge`,
-    );
-    assert.ok(lab.scrollWidth <= width, `${width}px: no horizontal scroll (${lab.scrollWidth})`);
-    await close(page);
+test('R12, entrance in SVG R15: under reduced motion the hero shows at once, with nothing animating', async () => {
+  const page = await open('/', { width: WIDE, reducedMotion: 'reduce' });
+  const els = await page.evaluate(
+    (selector) =>
+      [...document.querySelectorAll(selector)].map((el) => {
+        const style = getComputedStyle(el);
+        return { opacity: style.opacity, transform: style.transform, animations: el.getAnimations().length };
+      }),
+    `${HERO}, .hero__float`,
+  );
+  // The copy, the two wrappers, and the island's pieces and their wrappers (island build entrance spec R9).
+  assert.ok(els.length > 5 + 2 * 200, `${els.length} elements`);
+  for (const el of els) {
+    assert.equal(el.opacity, '1');
+    assert.ok(untransformed(el.transform), el.transform);
+    assert.equal(el.animations, 0, 'no animation runs under reduced motion');
   }
+  assert.equal(await page.evaluate(() => document.querySelector('.hero-island').getAnimations({ subtree: true }).length), 0, 'nothing in the island animates');
+  await close(page);
 });
+

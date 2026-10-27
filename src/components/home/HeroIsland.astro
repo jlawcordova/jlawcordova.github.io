@@ -1,9 +1,11 @@
 ---
 import heroIsland from '../../assets/pixel-art/hero-island.svg?raw';
 
-// Inline, not <img>, so the entrance can reach its groups; the SVG plays its
-// own clouds, trucks and frame loops. Sizing comes from the class, not from the SVG.
-const svg = heroIsland.replace('<svg ', '<svg class="hero-island pixel-art" ');
+// Inline, not <img>, so the page's CSS and the Ask bot can reach its groups. The
+// SVG plays its own build-up, which data-play="enter" starts with the page and
+// no script (Pixel Lab's site contract, "The entrance"), and its own clouds,
+// trucks and frame loops. Sizing comes from the class, not from the SVG.
+const svg = heroIsland.replace('<svg ', '<svg class="hero-island pixel-art" data-play="enter" ');
 ---
 
 <Fragment set:html={svg} />

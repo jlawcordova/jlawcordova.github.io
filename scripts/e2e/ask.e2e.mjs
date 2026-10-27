@@ -162,11 +162,11 @@ async function home({ viewport = DESKTOP, reducedMotion = 'no-preference', repli
   return { page, asked };
 }
 
-/** Waits for the island's entrance to end. */
+/** Waits for the island's build-up to end: it plays on a wrapper inside each piece. */
 async function settle(page) {
   await page.waitForFunction(
     () =>
-      [...document.querySelectorAll('.hero-island .enter')].every((g) =>
+      [...document.querySelectorAll('.hero-island [data-enter] > *')].every((g) =>
         g.getAnimations().every((a) => a.playState === 'finished'),
       ),
     undefined,
@@ -512,6 +512,37 @@ describe("on a phone's touch screen", () => {
     }
     await noHorizontalScroll(page, 'open');
     await page.close();
+  });
+});
+
+describe("the island's build-up", () => {
+  // The character's piece starts 1070 ms in and lands 300 ms later (entrance
+  // show hero-island). The SVG plays it on a wrapper inside the piece, beside
+  // the character's endless idle bob (entrance in SVG spec R7).
+  test('the bubble shows once the character has landed, and at once under reduced motion', async () => {
+    for (const reducedMotion of ['no-preference', 'reduce']) {
+      const page = await browser.newPage({ viewport: DESKTOP, deviceScaleFactor: 1, reducedMotion });
+      await page.goto(`${sites.on.url}/`);
+      const shown = await page.waitForFunction(
+        () => {
+          const bubble = /** @type {HTMLElement | null} */ (document.querySelector('.ask-bubble'));
+          if (!bubble || bubble.hidden) return false;
+          const piece = /** @type {Element} */ (document.querySelector('.hero-island .ask-character')?.closest('[data-enter]'));
+          const moving = [...piece.children].filter((el) => {
+            const s = getComputedStyle(el);
+            return s.opacity !== '1' || !(s.transform === 'none' || s.transform === 'matrix(1, 0, 0, 1, 0, 0)');
+          }).length;
+          return { at: performance.now(), moving };
+        },
+        undefined,
+        { timeout: 10_000 },
+      );
+      const { at, moving } = await shown.jsonValue();
+      assert.equal(moving, 0, `${reducedMotion}: the character stands in its place when the bubble shows`);
+      if (reducedMotion === 'reduce') assert.ok(at < 1300, `under reduced motion it shows at once (${Math.round(at)} ms)`);
+      else assert.ok(at >= 1370, `it waits for the landing (${Math.round(at)} ms)`);
+      await page.close();
+    }
   });
 });
 

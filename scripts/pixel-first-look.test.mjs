@@ -122,7 +122,7 @@ describe('pixel-first look', () => {
     const stepped = ['src/styles/pixel-art.css'];
     const bad = [];
     for (const file of [...(await styledFiles()), ...(await filesIn('src', ['.ts']))]) {
-      if (stepped.includes(file) || file.startsWith('src/components/lab/')) continue;
+      if (stepped.includes(file)) continue;
       const text = stripComments(await read(file));
       if (/\bsteps\(|step-(?:start|end)\b/.test(text)) bad.push(file);
     }

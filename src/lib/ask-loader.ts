@@ -26,9 +26,12 @@ if (root && island && foot && bubble) {
   };
   // Shown once the character has landed in the island's build-up (at once
   // under reduced motion, where nothing animates), so it never points at
-  // empty ground.
+  // empty ground. The SVG plays the landing on a wrapper inside the piece,
+  // next to the character's endless idle loop, so this waits on the piece's
+  // finite animations.
   requestAnimationFrame(async () => {
-    await Promise.all(foot.getAnimations().map((a) => a.finished.catch(() => {})));
+    const landing = foot.getAnimations({ subtree: true }).filter((a) => a.effect?.getComputedTiming().endTime !== Infinity);
+    await Promise.all(landing.map((a) => a.finished.catch(() => {})));
     bubble.hidden = false;
     place();
     new ResizeObserver(place).observe(island);

@@ -26,19 +26,15 @@ import { site } from '../../site';
 </section>
 
 <script>
-  // The hero's entrance (pixel-first look spec, Hero): the copy staggers in,
-  // and the island builds itself from its enter groups (island sweep drop and
-  // island edge sweep specs). Each start state is set by the call that animates it, and nothing
-  // runs under reduced motion.
-  import { schedule, TIMING } from '../../lib/island-entrance.mjs';
+  // The hero's entrance (pixel-first look spec, Hero): the copy staggers in.
+  // The island builds itself up from its own SVG (data-play="enter" in
+  // HeroIsland.astro). The start state is set by the call that animates it,
+  // and nothing runs under reduced motion.
   import { easeOut, play, stagger } from '../../lib/motion';
-  import { pieceOf, playEntrance } from '../../lib/play-entrance';
 
   const hero = document.querySelector('.hero');
   if (hero) {
     const copy = [...hero.querySelectorAll('.hero__title, .hero__lede, .hero__actions')];
     play(copy, { opacity: [0, 1], y: [16, 0] }, { duration: 0.4, delay: stagger(0.08), ease: easeOut });
-    const groups = [...hero.querySelectorAll<SVGGElement>('.hero-island .enter')];
-    playEntrance(groups, schedule(groups.map(pieceOf), TIMING));
   }
 </script>
