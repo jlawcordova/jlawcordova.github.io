@@ -16,18 +16,18 @@ import { mkdir, rename, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export const VERSION = 'v0.9.0';
+export const VERSION = 'v0.10.0';
 export const RELEASE = `https://github.com/jlawcordova/jlawcordova-lab/releases/download/${VERSION}`;
 
 /** The release's tarballs, by `${platform}-${arch}`, with their SHA-256 from its SHA256SUMS. */
 export const ASSETS = {
   'darwin-arm64': {
     file: 'pixellab-darwin-arm64.tar.gz',
-    sha256: '925a78ba83d152d3a26d473408afae78a7b4cbe62876a6d96e70fbfbd2a82045',
+    sha256: 'cffeb55da66a1cf18756343ef6e8686a276776536b46c61123adf0cf83fa3aff',
   },
   'linux-x64': {
     file: 'pixellab-linux-x64.tar.gz',
-    sha256: '9f62633bac4d1bc1b5e5080f95b2c6ecbc88c3323af14a62c735d7d8df5ab230',
+    sha256: 'a988d1d8c8a1aa86e3a216534efef9f09888d2216b733533d593b23f62646647',
   },
 };
 
@@ -55,7 +55,7 @@ function isProgram(path) {
 /**
  * What the program at `path` says when `--version` fails, such as the loader's
  * "GLIBC_2.39 not found" on a Linux older than the one the release was built for
- * (Ubuntu 24.04's glibc 2.39 is the oldest that runs v0.9.0's linux-x64 program).
+ * (Ubuntu 24.04's glibc 2.39 is the oldest that runs v0.10.0's linux-x64 program).
  */
 function whyNot(path) {
   const run = spawnSync(path, ['--version'], { encoding: 'utf8' });
