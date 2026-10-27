@@ -2,8 +2,8 @@
 // step A6): the bubble by the island's character, the jump and the glide to
 // the bottom left, focus in and out, Escape, every reply the Worker can give
 // (stubbed), same-site source links only, no horizontal scroll at 1440px and
-// 390px, no glide or jump under reduced motion, and the island's character
-// back after closing. A build without PUBLIC_ASK_ENDPOINT has no bubble and
+// 390px, no glide or jump under reduced motion, the island's character back
+// after closing, and swipes on the panel that don't scroll the page behind. A build without PUBLIC_ASK_ENDPOINT has no bubble and
 // loads no Ask script.
 //
 // These checks need builds with and without the endpoint, not the dist/ the
@@ -135,8 +135,8 @@ function serve(dir) {
  * bubble shows. `replies` answers each question in turn; a reply of 'hang'
  * never answers, 'abort' fails the request, and `delay` holds each reply.
  */
-async function home({ viewport = DESKTOP, reducedMotion = 'no-preference', replies = [], delay = 0, variant = 'on' } = {}) {
-  const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion });
+async function home({ viewport = DESKTOP, reducedMotion = 'no-preference', replies = [], delay = 0, variant = 'on', touch = false } = {}) {
+  const page = await browser.newPage({ viewport, deviceScaleFactor: 1, reducedMotion, hasTouch: touch, isMobile: touch });
   const queue = [...replies];
   /** @type {any[]} */
   const asked = [];
@@ -175,7 +175,11 @@ async function settle(page) {
   await page.waitForTimeout(200);
 }
 
-/** The character's foot and head on screen, from its enter group (as ask-loader.ts reads it). */
+/**
+ * The character's foot and head on screen, from its enter group (as
+ * ask-loader.ts reads it), and the bubble's box, read together: the island
+ * floats in 3px steps, so two separate reads can land either side of one.
+ */
 const character = (page) =>
   page.evaluate(() => {
     const island = /** @type {SVGSVGElement} */ (document.querySelector('.hero-island'));
@@ -185,7 +189,9 @@ const character = (page) =>
     const s = art.width / vb.width;
     const x = art.left + (Number(foot.dataset.x) - vb.x) * s;
     const y = art.top + (Number(foot.dataset.y) - vb.y) * s;
-    return { x, y, head: y - 29 * s, s };
+    const r = /** @type {HTMLElement} */ (document.querySelector('.ask-bubble')).getBoundingClientRect();
+    const bubble = { left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height };
+    return { x, y, head: y - 29 * s, s, bubble };
   });
 
 const rect = (page, selector) =>
@@ -241,8 +247,8 @@ for (const [label, viewport] of /** @type {const} */ ([
       const bubble = page.locator('.ask-bubble');
       assert.equal(await bubble.textContent(), COPY.bubble);
       assert.equal(await bubble.evaluate((b) => b.tagName), 'BUTTON');
-      const box = await rect(page, '.ask-bubble');
       const at = await character(page);
+      const box = at.bubble;
       assert.ok(Math.abs(box.bottom + 12 - at.head) <= 2, `the bubble's foot is just above the head (${box.bottom} vs ${at.head})`);
       assert.ok(at.x >= box.left && at.x <= box.right + 24, 'the bubble is over the character');
       assert.ok(box.left >= 0 && box.right <= viewport.width, 'the bubble is on screen');
@@ -289,10 +295,11 @@ for (const [label, viewport] of /** @type {const} */ ([
         'the island character is hidden while it is on the panel',
       );
 
-      // R6: the AI label and the "can be wrong" line before any question; R10: no count.
+      // R6: the AI label, with the privacy line, and the "can be wrong" line before any question; R10: no count.
       assert.equal(await page.locator('.ask-panel__label').textContent(), COPY.label);
+      assert.match(COPY.label, /AI avatar.*AI service.*personal information/);
       assert.equal(await page.locator('.ask-msg--bot').first().textContent(), COPY.first);
-      assert.equal(await page.locator('.ask-panel__privacy').textContent(), COPY.privacy);
+      assert.equal(await page.locator('.ask-panel__privacy').count(), 0, 'no privacy line under the form');
       assert.deepEqual(await page.locator('.ask-chip').allTextContents(), [...COPY.chips]);
       assert.ok(!/left today|questions left/i.test(await dialog.textContent()), 'no count of questions left');
       for (const box of await page.locator('.ask-panel button, .ask-panel input').evaluateAll((els) =>
@@ -434,6 +441,76 @@ describe('one question at a time', () => {
     await page.locator('.ask-bubble').click();
     await page.locator('.ask-bubble').waitFor({ state: 'hidden', timeout: 5000 });
     assert.equal(await page.locator('.ask-panel').count(), 0);
+    await page.close();
+  });
+});
+
+describe("on a phone's touch screen", () => {
+  /** A one-finger swipe from (x, y) by dy, in steps, as the browser's own touch input. */
+  const swipe = async (page, x, y, dy) => {
+    const cdp = await page.context().newCDPSession(page);
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] });
+    for (let i = 1; i <= 10; i++) {
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y + (dy * i) / 10 }] });
+    }
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    await page.waitForTimeout(600);
+    await cdp.detach();
+  };
+  const scrolled = (page) => page.evaluate(() => scrollY);
+
+  test("a swipe on the panel doesn't scroll the page behind it, and the page outside it still scrolls", async () => {
+    const { page } = await home({ viewport: PHONE, touch: true });
+    await openPanel(page);
+    const panel = await rect(page, '.ask-panel');
+    const at = { x: Math.round(panel.left + panel.width / 2) };
+    for (const [part, selector] of [
+      ['the header', '.ask-panel__head'],
+      ['the conversation', '.ask-panel__log'],
+      ['the question box', '.ask-panel__form'],
+    ]) {
+      const box = await rect(page, selector);
+      const y = Math.round(box.top + Math.min(box.height / 2, 20));
+      await swipe(page, at.x, y, -160);
+      assert.equal(await scrolled(page), 0, `a swipe up on ${part}`);
+      await swipe(page, at.x, y, 160);
+      assert.equal(await scrolled(page), 0, `a swipe down on ${part}`);
+    }
+    // A long conversation still scrolls under the finger, and stops at its top.
+    await page.evaluate(() => {
+      const log = /** @type {HTMLElement} */ (document.querySelector('.ask-panel__log'));
+      for (let i = 0; i < 20; i++) log.insertAdjacentHTML('beforeend', '<li class="ask-msg ask-msg--you">A question</li>');
+      log.scrollTop = log.scrollHeight;
+    });
+    const log = await rect(page, '.ask-panel__log');
+    const end = await page.evaluate(() => document.querySelector('.ask-panel__log')?.scrollTop ?? 0);
+    await swipe(page, at.x, Math.round(log.top + 40), 160);
+    assert.ok((await page.evaluate(() => document.querySelector('.ask-panel__log')?.scrollTop ?? 0)) < end, 'the conversation scrolls');
+    for (let i = 0; i < 6; i++) await swipe(page, at.x, Math.round(log.top + 40), 300);
+    assert.equal(await scrolled(page), 0, 'scrolling past the top of the conversation');
+
+    await swipe(page, at.x, Math.round((await rect(page, '.ask-panel')).top - 60), -160);
+    assert.ok((await scrolled(page)) > 0, 'a swipe above the panel scrolls the page (it is non-modal)');
+    await page.close();
+  });
+
+  test('the suggested questions are small badges on one row, each a 44px tap target', async () => {
+    const { page } = await home({ viewport: PHONE, touch: true });
+    await openPanel(page);
+    const chips = await page.locator('.ask-chip').evaluateAll((els) =>
+      els.map((el) => {
+        const r = el.getBoundingClientRect();
+        const style = getComputedStyle(el);
+        return { top: r.top, height: r.height, badge: r.height - parseFloat(style.borderTopWidth) - parseFloat(style.borderBottomWidth), edge: style.borderTopColor };
+      }),
+    );
+    assert.equal(new Set(chips.map((c) => c.top)).size, 1, 'one row');
+    for (const chip of chips) {
+      assert.ok(chip.height >= 44, `44px tap target (${chip.height})`);
+      assert.ok(chip.badge <= 28, `a small badge (${chip.badge}px)`);
+      assert.equal(chip.edge, 'rgba(0, 0, 0, 0)', 'no visible border');
+    }
+    await noHorizontalScroll(page, 'open');
     await page.close();
   });
 });

@@ -32,9 +32,8 @@ export const TIMEOUT_MS = 8000;
 export const COPY = Object.freeze({
   bubble: "Hi, I'm J. Law. What would you like to know?",
   title: 'Ask J. Law',
-  label: "AI avatar. Answers come from this site's public content.",
+  label: "This is an AI avatar. Questions go through an AI service, so please don't include personal information.",
   first: "I'm an AI avatar of J. Law. I answer from what's published on this site, and I can be wrong.",
-  privacy: "Questions go to an AI service. Don't include personal details.",
   failed: "I couldn't reach the service. Try again, or get in touch.",
   chips: Object.freeze(['What do you do?', 'Which stack do you use?', 'Are you open to work?']),
 });
