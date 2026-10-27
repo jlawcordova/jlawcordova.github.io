@@ -52,6 +52,17 @@ function isProgram(path) {
   return run.status === 0 && run.stdout.trim() === `pixellab ${VERSION.slice(1)}`;
 }
 
+/**
+ * What the program at `path` says when `--version` fails, such as the loader's
+ * "GLIBC_2.39 not found" on a Linux older than the one the release was built for
+ * (Ubuntu 24.04's glibc 2.39 is the oldest that runs v0.9.0's linux-x64 program).
+ */
+function whyNot(path) {
+  const run = spawnSync(path, ['--version'], { encoding: 'utf8' });
+  if (run.error) return run.error.message;
+  return (run.stderr || run.stdout || '').trim().split('\n')[0];
+}
+
 /** The hash SHA256SUMS lists for `file`, if any. */
 export function listedHash(sums, file) {
   for (const line of sums.split('\n')) {
@@ -98,8 +109,9 @@ export async function ensureProgram({ root = ROOT, fetch = globalThis.fetch, pla
     await mkdir(join(dir, VERSION), { recursive: true });
     await rename(join(tmp, 'pixellab'), path);
     if (!check(path)) {
+      const why = whyNot(path);
       await rm(path, { force: true });
-      throw new Error(`pixellab: the extracted program doesn't report pixellab ${VERSION.slice(1)}`);
+      throw new Error(`pixellab: the extracted program doesn't report pixellab ${VERSION.slice(1)}${why ? `: ${why}` : ''}`);
     }
     log(`pixellab: installed ${VERSION} in ${join('.pixellab-bin', VERSION)}`);
     return path;

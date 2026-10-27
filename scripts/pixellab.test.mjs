@@ -20,10 +20,10 @@ const temp = async () => {
   return dir;
 };
 
-/** A tarball holding one `pixellab` script, and its SHA-256. */
-async function fakeTarball() {
+/** A tarball holding one `pixellab` script (by default one that reports this version), and its SHA-256. */
+async function fakeTarball(script = `#!/bin/sh\necho "pixellab ${VERSION.slice(1)}"\n`) {
   const dir = await temp();
-  await writeFile(join(dir, 'pixellab'), `#!/bin/sh\necho "pixellab ${VERSION.slice(1)}"\n`);
+  await writeFile(join(dir, 'pixellab'), script);
   await chmod(join(dir, 'pixellab'), 0o755);
   const file = join(dir, 'fake.tar.gz');
   assert.equal(spawnSync('tar', ['-czf', file, '-C', dir, 'pixellab']).status, 0);
@@ -95,6 +95,16 @@ describe('the pinned Pixel Lab program', () => {
       assert.deepEqual(await readdir(join(root, '.pixellab-bin')), [], 'the download is removed');
     });
   }
+
+  it("says why when the extracted program won't run, as on a Linux with an older glibc", async () => {
+    const root = await temp();
+    const loader = "pixellab: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.39' not found (required by pixellab)";
+    const { bytes, sha256 } = await fakeTarball(`#!/bin/sh\ncat >&2 <<'EOF'\n${loader}\nEOF\nexit 1\n`);
+    const assets = { 'linux-x64': { file: 'pixellab-linux-x64.tar.gz', sha256 } };
+    const { fetch } = fakeFetch({ 'pixellab-linux-x64.tar.gz': bytes, SHA256SUMS: `${sha256}  pixellab-linux-x64.tar.gz\n` });
+    await assert.rejects(ensureProgram({ root, fetch, platform: 'linux', arch: 'x64', assets, check, log: quiet }), /doesn't report pixellab .*GLIBC_2\.39' not found/);
+    assert.ok(!existsSync(programPath(root)));
+  });
 
   it('R10: skips the download when the program is already there', async () => {
     const root = await temp();
