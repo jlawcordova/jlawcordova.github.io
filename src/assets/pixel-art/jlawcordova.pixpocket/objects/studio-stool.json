@@ -1,0 +1,49 @@
+{
+  "notes": [
+    "A painter's stool: a square wooden seat on four slim legs, a paint rag left on it."
+  ],
+  "category": [
+    "Range",
+    "Studio"
+  ],
+  "kind": "sprite",
+  "anchor": [11, 19],
+  "keys": {
+    "a": "wood-1",
+    "b": "cream",
+    "c": "roof-1",
+    "d": "wood-2",
+    "e": "wood-3",
+    "f": "wood-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "........aaaaaa........",
+        "......aaaaaaaaaa......",
+        "....aaaaaabbbbaaaa....",
+        "..aaaaaabbbbccbbaaaa..",
+        "aaaaaaaabbbbccbbaaaaaa",
+        "aaaaaaaaaabbbbaaaaaaaa",
+        "ddaaaaaaaaaaaaaaaaaaee",
+        "ddddaaaaaaaaaaaaaaeeee",
+        "..ddddaaaaaaaaaaeeee..",
+        "..efddddaaaaaaeeeeef..",
+        "..ef..dddddeeeee..ef..",
+        "..ef....dddeee....ef..",
+        "..ef......ef......ef..",
+        "..efdd....ef....ddef..",
+        "..efdddd..ef..ddddef..",
+        "..efeeddddefddddffef..",
+        "..ef..eeddefddff..ef..",
+        "..ef....efefef....ef..",
+        "..ef......ef......ef..",
+        "..ef......ef......ef..",
+        "..........ef..........",
+        "..........ef..........",
+        "..........ef..........",
+        "..........ef.........."
+      ]
+    }
+  ]
+}

@@ -4,7 +4,7 @@
     "Laid out from SETTINGS in the jlawcordova-vlog studio's studio/generators/range/scene.py; the objects are copies from that studio (studio-import.json): change them there."
   ],
   "output": "range-sprite.svg",
-  "viewBox": [-68, -53, 136, 148],
+  "viewBox": [-68, -57, 136, 152],
   "layers": [
     { "id": "front-end", "name": "Front-end" },
     { "id": "back-end", "name": "Back-end" },
@@ -107,7 +107,7 @@
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "0", "data-y": "22" },
           "items": [
-            { "object": "hero-mage", "class": "character", "layer": "front-end", "state": "idle", "at": { "tile": [1, 1, 0] } }
+            { "object": "range-wizard", "class": "character", "layer": "front-end", "state": "idle", "at": { "tile": [1, 1, 0] } }
           ]
         },
         {
@@ -187,37 +187,31 @@
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "0", "data-y": "0" },
           "items": [
-            { "object": "server-rack", "layer": "back-end", "at": { "tile": [0, 0, 0] } }
+            { "object": "server-cabinet", "layer": "back-end", "state": "blink", "at": { "tile": [0, 0, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "22", "data-y": "11" },
           "items": [
-            { "object": "server-rack", "layer": "back-end", "at": { "tile": [1, 0, 0] } }
-          ]
-        },
-        {
-          "group": { "class": "enter", "data-enter": "object", "data-x": "-22", "data-y": "11" },
-          "items": [
-            { "object": "server-rack", "layer": "back-end", "at": { "tile": [0, 1, 0] } }
+            { "object": "server-cabinet", "layer": "back-end", "state": "blink", "at": { "tile": [1, 0, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "44", "data-y": "22" },
           "items": [
-            { "object": "server", "layer": "back-end", "at": { "tile": [2, 0, 0] } }
+            { "object": "server-cabinet", "layer": "back-end", "state": "blink", "at": { "tile": [2, 0, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "-44", "data-y": "22" },
           "items": [
-            { "object": "server", "layer": "back-end", "at": { "tile": [0, 2, 0] } }
+            { "object": "box-table", "layer": "back-end", "at": { "tile": [0, 2, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "0", "data-y": "22" },
           "items": [
-            { "object": "staff-developer", "class": "character", "layer": "back-end", "state": "idle", "at": { "tile": [1, 1, 0] } }
+            { "object": "range-developer", "class": "character", "layer": "back-end", "state": "idle", "at": { "tile": [1, 1, 0] } }
           ]
         }
       ]
@@ -229,63 +223,63 @@
           "group": { "class": "enter", "data-enter": "ground", "data-col": "0", "data-row": "0", "data-x": "0", "data-y": "0" },
           "depth": "back",
           "items": [
-            { "object": "block-wood", "layer": "ux-design", "depth": "back", "at": { "tile": [0, 0, 0] } }
+            { "object": "block-studio-floor", "layer": "ux-design", "depth": "back", "at": { "tile": [0, 0, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "ground", "data-col": "1", "data-row": "0", "data-x": "22", "data-y": "11" },
           "depth": "back",
           "items": [
-            { "object": "block-wood", "layer": "ux-design", "depth": "back", "at": { "tile": [1, 0, 0] } }
+            { "object": "block-studio-floor", "layer": "ux-design", "depth": "back", "at": { "tile": [1, 0, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "ground", "data-col": "2", "data-row": "0", "data-x": "44", "data-y": "22" },
           "depth": "back",
           "items": [
-            { "object": "block-wood", "layer": "ux-design", "depth": "back", "at": { "tile": [2, 0, 0] } }
+            { "object": "block-studio-floor", "layer": "ux-design", "depth": "back", "at": { "tile": [2, 0, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "ground", "data-col": "0", "data-row": "1", "data-x": "-22", "data-y": "11" },
           "depth": "back",
           "items": [
-            { "object": "block-wood", "layer": "ux-design", "depth": "back", "at": { "tile": [0, 1, 0] } }
+            { "object": "block-studio-floor", "layer": "ux-design", "depth": "back", "at": { "tile": [0, 1, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "ground", "data-col": "1", "data-row": "1", "data-x": "0", "data-y": "22" },
           "depth": "back",
           "items": [
-            { "object": "block-wood", "layer": "ux-design", "depth": "back", "at": { "tile": [1, 1, 0] } }
+            { "object": "block-studio-floor", "layer": "ux-design", "depth": "back", "at": { "tile": [1, 1, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "ground", "data-col": "2", "data-row": "1", "data-x": "22", "data-y": "33" },
           "depth": "back",
           "items": [
-            { "object": "block-wood", "layer": "ux-design", "depth": "back", "at": { "tile": [2, 1, 0] } }
+            { "object": "block-studio-floor", "layer": "ux-design", "depth": "back", "at": { "tile": [2, 1, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "ground", "data-col": "0", "data-row": "2", "data-x": "-44", "data-y": "22" },
           "depth": "back",
           "items": [
-            { "object": "block-wood", "layer": "ux-design", "depth": "back", "at": { "tile": [0, 2, 0] } }
+            { "object": "block-studio-floor", "layer": "ux-design", "depth": "back", "at": { "tile": [0, 2, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "ground", "data-col": "1", "data-row": "2", "data-x": "-22", "data-y": "33" },
           "depth": "back",
           "items": [
-            { "object": "block-wood", "layer": "ux-design", "depth": "back", "at": { "tile": [1, 2, 0] } }
+            { "object": "block-studio-floor", "layer": "ux-design", "depth": "back", "at": { "tile": [1, 2, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "ground", "data-col": "2", "data-row": "2", "data-x": "0", "data-y": "44" },
           "depth": "back",
           "items": [
-            { "object": "block-wood", "layer": "ux-design", "depth": "back", "at": { "tile": [2, 2, 0] } }
+            { "object": "block-studio-floor", "layer": "ux-design", "depth": "back", "at": { "tile": [2, 2, 0] } }
           ]
         },
         {
@@ -305,13 +299,7 @@
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "-22", "data-y": "11" },
           "items": [
-            { "object": "filing-cabinet", "layer": "ux-design", "at": { "tile": [0, 1, 0] } }
-          ]
-        },
-        {
-          "group": { "class": "enter", "data-enter": "object", "data-x": "44", "data-y": "22" },
-          "items": [
-            { "object": "easel", "layer": "ux-design", "at": { "tile": [2, 0, 0] } }
+            { "object": "flat-file-chest", "layer": "ux-design", "at": { "tile": [0, 1, 0] } }
           ]
         },
         {
@@ -323,13 +311,19 @@
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "22", "data-y": "11" },
           "items": [
-            { "object": "milking-stool", "layer": "ux-design", "at": { "tile": [1, 0, 0] } }
+            { "object": "studio-stool", "layer": "ux-design", "at": { "tile": [1, 0, 0] } }
+          ]
+        },
+        {
+          "group": { "class": "enter", "data-enter": "object", "data-x": "44", "data-y": "22" },
+          "items": [
+            { "object": "easel", "layer": "ux-design", "at": { "tile": [2, 0, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "0", "data-y": "22" },
           "items": [
-            { "object": "rider-artist", "class": "character", "layer": "ux-design", "state": "idle", "at": { "tile": [1, 1, 0] }, "holds": { "grip": "held-paintbrush" } }
+            { "object": "range-designer", "class": "character", "layer": "ux-design", "state": "idle", "at": { "tile": [1, 1, 0] } }
           ]
         }
       ]
@@ -427,7 +421,7 @@
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "0", "data-y": "22" },
           "items": [
-            { "object": "rider-builder", "class": "character", "layer": "cloud-devops", "state": "idle", "at": { "tile": [1, 1, 0] }, "holds": { "grip": "held-wrench" } }
+            { "object": "range-builder", "class": "character", "layer": "cloud-devops", "state": "idle", "at": { "tile": [1, 1, 0] } }
           ]
         }
       ]
@@ -501,7 +495,7 @@
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "22", "data-y": "11" },
           "items": [
-            { "object": "bookshelf", "layer": "data-engineering", "at": { "tile": [1, 0, 0] } }
+            { "object": "potion-shelf", "layer": "data-engineering", "at": { "tile": [1, 0, 0] } }
           ]
         },
         {
@@ -525,7 +519,7 @@
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "0", "data-y": "22" },
           "items": [
-            { "object": "hero-alchemist", "class": "character", "layer": "data-engineering", "state": "idle", "at": { "tile": [1, 1, 0] } }
+            { "object": "range-alchemist", "class": "character", "layer": "data-engineering", "state": "idle", "at": { "tile": [1, 1, 0] } }
           ]
         }
       ]
@@ -646,7 +640,7 @@
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "0", "data-y": "22" },
           "items": [
-            { "object": "hero-knight", "class": "character", "layer": "security-governance", "state": "idle", "at": { "tile": [1, 1, 0] } }
+            { "object": "range-knight", "class": "character", "layer": "security-governance", "state": "idle", "at": { "tile": [1, 1, 0] } }
           ]
         }
       ]
@@ -658,99 +652,93 @@
           "group": { "class": "enter", "data-enter": "ground", "data-col": "0", "data-row": "0", "data-x": "0", "data-y": "0" },
           "depth": "back",
           "items": [
-            { "object": "block-dining-carpet", "layer": "project-management", "depth": "back", "at": { "tile": [0, 0, 0] } }
+            { "object": "block-carpet-red", "layer": "project-management", "depth": "back", "at": { "tile": [0, 0, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "ground", "data-col": "1", "data-row": "0", "data-x": "22", "data-y": "11" },
           "depth": "back",
           "items": [
-            { "object": "block-dining-carpet", "layer": "project-management", "depth": "back", "at": { "tile": [1, 0, 0] } }
+            { "object": "block-carpet-red", "layer": "project-management", "depth": "back", "at": { "tile": [1, 0, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "ground", "data-col": "2", "data-row": "0", "data-x": "44", "data-y": "22" },
           "depth": "back",
           "items": [
-            { "object": "block-dining-carpet", "layer": "project-management", "depth": "back", "at": { "tile": [2, 0, 0] } }
+            { "object": "block-carpet-red", "layer": "project-management", "depth": "back", "at": { "tile": [2, 0, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "ground", "data-col": "0", "data-row": "1", "data-x": "-22", "data-y": "11" },
           "depth": "back",
           "items": [
-            { "object": "block-dining-carpet", "layer": "project-management", "depth": "back", "at": { "tile": [0, 1, 0] } }
+            { "object": "block-carpet-red", "layer": "project-management", "depth": "back", "at": { "tile": [0, 1, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "ground", "data-col": "1", "data-row": "1", "data-x": "0", "data-y": "22" },
           "depth": "back",
           "items": [
-            { "object": "block-dining-carpet", "layer": "project-management", "depth": "back", "at": { "tile": [1, 1, 0] } }
+            { "object": "block-carpet-red", "layer": "project-management", "depth": "back", "at": { "tile": [1, 1, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "ground", "data-col": "2", "data-row": "1", "data-x": "22", "data-y": "33" },
           "depth": "back",
           "items": [
-            { "object": "block-dining-carpet", "layer": "project-management", "depth": "back", "at": { "tile": [2, 1, 0] } }
+            { "object": "block-carpet-red", "layer": "project-management", "depth": "back", "at": { "tile": [2, 1, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "ground", "data-col": "0", "data-row": "2", "data-x": "-44", "data-y": "22" },
           "depth": "back",
           "items": [
-            { "object": "block-dining-carpet", "layer": "project-management", "depth": "back", "at": { "tile": [0, 2, 0] } }
+            { "object": "block-carpet-red", "layer": "project-management", "depth": "back", "at": { "tile": [0, 2, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "ground", "data-col": "1", "data-row": "2", "data-x": "-22", "data-y": "33" },
           "depth": "back",
           "items": [
-            { "object": "block-dining-carpet", "layer": "project-management", "depth": "back", "at": { "tile": [1, 2, 0] } }
+            { "object": "block-carpet-red", "layer": "project-management", "depth": "back", "at": { "tile": [1, 2, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "ground", "data-col": "2", "data-row": "2", "data-x": "0", "data-y": "44" },
           "depth": "back",
           "items": [
-            { "object": "block-dining-carpet", "layer": "project-management", "depth": "back", "at": { "tile": [2, 2, 0] } }
+            { "object": "block-carpet-red", "layer": "project-management", "depth": "back", "at": { "tile": [2, 2, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "22", "data-y": "11" },
           "items": [
-            { "object": "plant-tall", "layer": "project-management", "state": "sway", "at": { "tile": [1, 0, 0] } }
+            { "object": "plant-rubber", "layer": "project-management", "state": "sway", "at": { "tile": [1, 0, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "44", "data-y": "22" },
           "items": [
-            { "object": "board-kanban", "layer": "project-management", "at": { "tile": [2, 0, 0] } }
+            { "object": "sticky-board", "layer": "project-management", "at": { "tile": [2, 0, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "-22", "data-y": "11" },
           "items": [
-            { "object": "desk", "layer": "project-management", "at": { "tile": [0, 1, 0] } }
-          ]
-        },
-        {
-          "group": { "class": "enter", "data-enter": "object", "data-x": "-22", "data-y": "-11" },
-          "items": [
-            { "object": "laptop", "layer": "project-management", "state": "on", "at": { "tile": [0, 1, 1] } }
+            { "object": "chart-desk", "layer": "project-management", "at": { "tile": [0, 1, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "-44", "data-y": "22" },
           "items": [
-            { "object": "chair", "layer": "project-management", "state": "face-away-right", "at": { "tile": [0, 2, 0] } }
+            { "object": "swivel-chair", "layer": "project-management", "state": "face-away-right", "at": { "tile": [0, 2, 0] } }
           ]
         },
         {
           "group": { "class": "enter", "data-enter": "object", "data-x": "0", "data-y": "22" },
           "items": [
-            { "object": "staff-manager", "class": "character", "layer": "project-management", "state": "idle", "at": { "tile": [1, 1, 0] } }
+            { "object": "range-manager", "class": "character", "layer": "project-management", "state": "idle", "at": { "tile": [1, 1, 0] } }
           ]
         }
       ]

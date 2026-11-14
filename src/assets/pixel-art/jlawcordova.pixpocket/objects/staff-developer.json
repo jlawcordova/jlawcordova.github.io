@@ -49,15 +49,12 @@
     "offhand": null
   },
   "poses": {
-    "jump": { "arm-left": { "move": [0, 0, 10], "look": "up" }, "hand-left": { "move": [0, 0, 10] }, "arm-right": { "move": [0, 0, 10], "look": "up" }, "hand-right": { "move": [0, 0, 10] }, "leg-left": { "move": [0, 0, 2], "look": "tuck" }, "leg-right": { "move": [0, 0, 2], "look": "tuck" } },
     "type": { "torso": { "move": [0, 2, 9] }, "lap": { "move": [0, 0, -3] }, "leg-left": { "move": [0, 0, 9] }, "leg-right": { "move": [0, 0, 9] }, "foot-left": { "move": [-1, 7, 2], "look": "sit" }, "foot-right": { "move": [-1, 7, 2], "look": "sit" }, "arm-left": { "move": [0, 4, 2], "look": "flat" }, "hand-left": { "move": [0, 4, 2], "look": "flat" }, "arm-right": { "move": [0, 4, 2], "look": "flat" }, "hand-right": { "move": [0, 4, 2], "look": "flat" } },
     "type-left": { "torso": { "move": [0, 2, 9] }, "lap": { "move": [0, 0, -3] }, "leg-left": { "move": [0, 0, 9] }, "leg-right": { "move": [0, 0, 9] }, "foot-left": { "move": [-1, 7, 2], "look": "sit" }, "foot-right": { "move": [-1, 7, 2], "look": "sit" }, "arm-left": { "move": [0, 4, 4], "look": "flat" }, "hand-left": { "move": [0, 4, 2], "look": "flat" }, "arm-right": { "move": [0, 4, 2], "look": "flat" }, "hand-right": { "move": [0, 4, 2], "look": "flat" } },
     "type-right": { "torso": { "move": [0, 2, 9] }, "lap": { "move": [0, 0, -3] }, "leg-left": { "move": [0, 0, 9] }, "leg-right": { "move": [0, 0, 9] }, "foot-left": { "move": [-1, 7, 2], "look": "sit" }, "foot-right": { "move": [-1, 7, 2], "look": "sit" }, "arm-left": { "move": [0, 4, 2], "look": "flat" }, "hand-left": { "move": [0, 4, 2], "look": "flat" }, "arm-right": { "move": [0, 4, 4], "look": "flat" }, "hand-right": { "move": [0, 4, 2], "look": "flat" } }
   },
-  "start": "idle",
+  "start": "type",
   "states": {
-    "idle": { "poses": ["rest"], "ms": 1000, "move": [{ "t": 0, "move": [0, 0] }, { "t": 500, "move": [0, -1] }] },
-    "type": { "poses": ["type-right", "type-left", "type-right", "type-left", "type", "type", "type-left", "type-right", "type-left", "type-right", "type-left", "type", "type", "type"], "ms": 100 },
-    "jump": { "poses": ["jump", "rest", "rest", "rest", "jump"], "ms": 100, "loop": false, "then": "idle", "move": [{ "t": 0, "move": [0, 0] }, { "t": 44, "move": [0, -2] }, { "t": 88, "move": [0, -4] }, { "t": 131, "move": [0, -6] }, { "t": 175, "move": [0, -8] }, { "t": 262, "move": [0, -6] }, { "t": 306, "move": [0, -4] }, { "t": 350, "move": [0, -2] }, { "t": 393, "move": [0, 0] }] }
+    "type": { "poses": ["type-right", "type-left", "type-right", "type-left", "type", "type", "type-left", "type-right", "type-left", "type-right", "type-left", "type", "type", "type"], "ms": 100 }
   }
 }

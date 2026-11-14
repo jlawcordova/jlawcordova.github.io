@@ -1,0 +1,51 @@
+{
+  "notes": [
+    "A cardboard box taped shut, used as a coffee table, a red mug of coffee on it."
+  ],
+  "category": [
+    "Range",
+    "Server"
+  ],
+  "kind": "sprite",
+  "anchor": [13, 17],
+  "keys": {
+    "a": "wood-1",
+    "b": "soil-3",
+    "c": "path-1",
+    "d": "roof-1",
+    "e": "roof-2",
+    "f": "wood-2",
+    "g": "wood-3",
+    "h": "path-2"
+  },
+  "layers": [
+    {
+      "map": [
+        "............aa............",
+        "..........aabbaa..........",
+        "........aabbbbbbaa........",
+        "......aaaabbbbbbaacc......",
+        "....aaaaaaddbbeeccccaa....",
+        "..aaaaaaaadddeeeecaaaaaa..",
+        "aaaaaaaaaadddeeeeaaaaaaaaa",
+        "aaaaaaaaaadddeeeeaaaaaaaaa",
+        "ffaaaaaaccdddeeeaaaaaaaagg",
+        "ffffaaccccaadeaaaaaaaagggg",
+        "fffffhccaaaaaaaaaaaagggggg",
+        "fffffhhfaaaaaaaaaagggggggg",
+        "fffffhhfffaaaaaagggggggggg",
+        "ffffffhfffffaagggggggggggg",
+        "fffffffffffffggggggggggggg",
+        "fffffffffffffggggggggggggg",
+        "fffffffffffffggggggggggggg",
+        "fffffffffffffggggggggggggg",
+        "..fffffffffffggggggggggg..",
+        "....fffffffffggggggggg....",
+        "......fffffffggggggg......",
+        "........fffffggggg........",
+        "..........fffggg..........",
+        "............fg............"
+      ]
+    }
+  ]
+}

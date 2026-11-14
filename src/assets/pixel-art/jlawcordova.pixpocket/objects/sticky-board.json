@@ -1,0 +1,77 @@
+{
+  "notes": [
+    "A board of sticky notes on two feet, facing the lower left: a pale frame, three columns of yellow, red, teal and green notes."
+  ],
+  "category": [
+    "Range",
+    "Office"
+  ],
+  "kind": "sprite",
+  "anchor": [15, 41],
+  "keys": {
+    "a": "path-1",
+    "b": "path-2",
+    "c": "cream",
+    "d": "gold-1",
+    "e": "water-2",
+    "f": "roof-1",
+    "g": "path-3",
+    "h": "grass-1",
+    "i": "path-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "....aa......................",
+        "....aaaa....................",
+        "....bbaaaa..................",
+        "....ccbbaaaa................",
+        "....ccccbbaaaa..............",
+        "....ccccccbbaaaa............",
+        "....ccddccacbbaaaa..........",
+        "....ccddddacccbbaaaa........",
+        "....ccddddacccccbbaaaa......",
+        "....ccccddaceeccacbbaaaa....",
+        "....ccccccaceeeeacccbbaa....",
+        "....ccffccaceeeeacccccbg....",
+        "....ccffffaccceeacccccbg....",
+        "....ccffffacccccacccccbg....",
+        "....ccccffacddccachhccbg....",
+        "....ccccccacddddachhhhbg....",
+        "....ccccccacddddachhhhbg....",
+        "....ccccccacccddaccchhbg....",
+        "....ccccccacccccacccccbg....",
+        "....ccccccachhccacccccbg....",
+        "....bbccccachhhhacccccbg....",
+        "......bbccachhhhacccccbg....",
+        "......gibbaccchhacccccbg....",
+        "......gi..bbccccacccccbg....",
+        "......gi....bbccacccccbg....",
+        "......gi......bbacccccbg....",
+        "......gi........bbccccbg....",
+        "......gi..........bbccbg....",
+        "......gi............bbbg....",
+        "......gi..............bg....",
+        "......gi..............gi....",
+        "......gi..............gi....",
+        "......gi..bb..........gi....",
+        "......gibbbb..........gi....",
+        "......gibbii..........gi....",
+        "....bbgiiiii..........gi....",
+        "..bbbbiiii............gi....",
+        "bbbbiiii..............gi....",
+        "bbiiii................gi....",
+        "giii..................gi....",
+        "gi....................gi..bb",
+        "......................gibbbb",
+        "......................gibbii",
+        "....................bbgiiiii",
+        "..................bbbbiiii..",
+        "................bbbbiiii....",
+        "................bbiiii......",
+        "................giii........",
+        "................gi.........."
+      ]
+    }
+  ]
+}

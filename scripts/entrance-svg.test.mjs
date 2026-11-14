@@ -45,7 +45,7 @@ function rules(/** @type {string} */ css) {
 }
 
 for (const [scene, settledBy] of /** @type {const} */ ([
-  ['hero-island', 2296],
+  ['hero-island', 2301],
   ['range-sprite', 1440],
 ])) {
   describe(`${scene}.svg`, () => {

@@ -5,12 +5,12 @@
  */
 export const rangeClasses = [
   { name: 'Front-end', shadow: '#9378BC' },
-  { name: 'Back-end', shadow: '#3F939C' },
-  { name: 'UX Design', shadow: '#C25A6A' },
+  { name: 'Back-end', shadow: '#525A63' },
+  { name: 'UX Design', shadow: '#82AED6' },
   { name: 'Cloud & DevOps', shadow: '#D8B66A' },
   { name: 'Data Engineering', shadow: '#5F8C7E' },
   { name: 'Security & Governance', shadow: '#858F99' },
-  { name: 'Project Management', shadow: '#D88E52' },
+  { name: 'Project Management', shadow: '#5580B4' },
 ] as const;
 
 /**

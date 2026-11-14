@@ -1,0 +1,59 @@
+{
+  "notes": [
+    "A low flat-file chest in teal along the column: three wide drawers with gold pulls, a jar of brushes and two tubes of paint on it."
+  ],
+  "category": [
+    "Range",
+    "Studio"
+  ],
+  "kind": "sprite",
+  "anchor": [15, 21],
+  "keys": {
+    "a": "gold-1",
+    "b": "water-2",
+    "c": "roof-1",
+    "d": "wood-1",
+    "e": "grass-2",
+    "f": "wood-3",
+    "g": "roof-2",
+    "h": "wood-2",
+    "i": "gold-2",
+    "j": "water-3",
+    "k": "water-4"
+  },
+  "layers": [
+    {
+      "map": [
+        ".....................a........",
+        "............bb.....c.a........",
+        "..........bbccbb...c.de.......",
+        "........bbbbccccbb.d.de.......",
+        "......bbbbbbccccbbbdfdd.......",
+        "....bbbbaabbcccgbbfdfddf......",
+        "..bbbbbbaaaabbcgbbffffff......",
+        "bbbbbbbbaaaabbbbbbhhffffbb....",
+        "bbbbbbbbaaaibbbbbbhhhfffbbbb..",
+        "jjbbbbbbbbaibbbbbbhhhfffbbbbbb",
+        "jjjjbbbbbbbbbbbbbbhhhfffbbbbbb",
+        "jjjjjjbbbbbbbbbbbbhhhfffbbbbkk",
+        "jjjjjjjjbbbbbbbbbbbbhfbbbbkkkk",
+        "kkjjjjjjjjbbbbbbbbbbbbbbkkkkkk",
+        "jjkkjjjajjjjbbbbbbbbbbkkkkkkkk",
+        "jjjjkkjjajjjjjbbbbbbkkkkkkkkkk",
+        "jjjjjjkkjjjjjjjjbbkkkkkkkkkkkk",
+        "kkjjjjjjkkjjjjjjjkkkkkkkkkkkkk",
+        "jjkkjjjajjkkjjjjjkkkkkkkkkkkkk",
+        "jjjjkkjjajjjkkjjjkkkkkkkkkkkkk",
+        "jjjjjjkkjjjjjjkkjkkkkkkkkkkkkk",
+        "..jjjjjjkkjjjjjjkkkkkkkkkkkkkk",
+        "....jjjajjkkjjjjjkkkkkkkkkkkkk",
+        "......jjajjjkkjjjkkkkkkkkkkk..",
+        "........jjjjjjkkjkkkkkkkkk....",
+        "..........jjjjjjkkkkkkkk......",
+        "............jjjjjkkkkk........",
+        "..............jjjkkk..........",
+        "................jk............"
+      ]
+    }
+  ]
+}

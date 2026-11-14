@@ -1,6 +1,6 @@
 {
   "notes": [
-    "A black iron cauldron on three feet over embers, a teal brew in it, knee high.",
+    "A black iron cauldron on three feet over a bed of glowing embers, a teal brew in it, knee high.",
     "States: idle (bubbling: bubbles break on the brew and one rises), still."
   ],
   "category": [
@@ -15,8 +15,9 @@
     "c": "teal-2",
     "d": "ink",
     "e": "stone-4",
-    "f": "clay-2",
-    "g": "clay-1"
+    "f": "roof-2",
+    "g": "roof-1",
+    "h": "clay-1"
   },
   "layers": [
     {
@@ -46,9 +47,11 @@
           "bbbbeeeeeeeeeeeedddd",
           ".bbbeeeeeeeeeeeeddd.",
           "...beeeeeeeeeeeed...",
-          "...dbeeeeeeeeeedd...",
-          "...dd.eeeeeeee.dd...",
-          ".........fg........."
+          "..fdbeeeeeeeeeeddf..",
+          "..fddgeeeeeeeefddf..",
+          "...ffffffffffggff...",
+          "....ffffhhffffff....",
+          "......ffffffff......"
         ],
         [
           "....................",
@@ -73,9 +76,11 @@
           "bbbbeeeeeeeeeeeedddd",
           ".bbbeeeeeeeeeeeeddd.",
           "...beeeeeeeeeeeed...",
-          "...dbeeeeeeeeeedd...",
-          "...dd.eeeeeeee.dd...",
-          ".........gf........."
+          "..fdbeeeeeeeeeeddf..",
+          "..fddheeeeeeeefddf..",
+          "...ffffffffffhhff...",
+          "....ffffggffffff....",
+          "......ffffffff......"
         ],
         [
           ".........aa.........",
@@ -100,9 +105,11 @@
           "bbbbeeeeeeeeeeeedddd",
           ".bbbeeeeeeeeeeeeddd.",
           "...beeeeeeeeeeeed...",
-          "...dbeeeeeeeeeedd...",
-          "...dd.eeeeeeee.dd...",
-          ".........fg........."
+          "..fdbeeeeeeeeeeddf..",
+          "..fddgeeeeeeeefddf..",
+          "...ffffffffffggff...",
+          "....ffffhhffffff....",
+          "......ffffffff......"
         ],
         [
           "....................",
@@ -127,9 +134,11 @@
           "bbbbeeeeeeeeeeeedddd",
           ".bbbeeeeeeeeeeeeddd.",
           "...beeeeeeeeeeeed...",
-          "...dbeeeeeeeeeedd...",
-          "...dd.eeeeeeee.dd...",
-          ".........gf........."
+          "..fdbeeeeeeeeeeddf..",
+          "..fddheeeeeeeefddf..",
+          "...ffffffffffhhff...",
+          "....ffffggffffff....",
+          "......ffffffff......"
         ]
       ]
     }

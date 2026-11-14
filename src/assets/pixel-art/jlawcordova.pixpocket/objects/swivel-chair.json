@@ -1,0 +1,66 @@
+{
+  "notes": [
+    "A tan swivel chair on a dark star base.",
+    "States: idle (facing the lower left), face-right, face-away-left, face-away-right."
+  ],
+  "category": [
+    "Range",
+    "Office"
+  ],
+  "kind": "sprite",
+  "anchor": [11, 28],
+  "keys": {
+    "a": "path-2",
+    "b": "path-3",
+    "c": "path-4",
+    "d": "soil-3",
+    "e": "soil-4",
+    "f": "ink"
+  },
+  "layers": [
+    {
+      "loop": "pose",
+      "prefix": "p",
+      "frames": [
+        [
+          "......................",
+          "......................",
+          "......................",
+          "......................",
+          "......................",
+          "......................",
+          "aa....................",
+          "aaaa..................",
+          "bbaaaa................",
+          "bbbbaaaa..............",
+          "bbbbbbaaaa............",
+          "bbbbbbbbaa............",
+          "bbbbbbbbbc............",
+          "bbbbbbbbbcaaaa........",
+          "bbbbbbbbbcaaaaaa......",
+          "bbbbbbbbbcaaaaaaaa....",
+          "bbbbbbbbbcaaaaaaaaaa..",
+          "bbbbbbbbbcaaaaaaaaaa..",
+          "bbbbbbbbbcaaaaaaaacc..",
+          "bbbbbbbbbcaaaaaacccc..",
+          "..bbbbbbbcaaaacccccc..",
+          "....bbbbbcbccccccc....",
+          "....ddbbbcbcccccdd....",
+          "....ddddbcbcccdddd....",
+          "....eeddddefddddff....",
+          "....eeeeddefddffff....",
+          "......eeddefffff......",
+          "......ddddffffdd......",
+          "....ddddffffeedddd....",
+          "....ddffff..eeeedd....",
+          "....efff......eeef....",
+          "....ef..........ef...."
+        ]
+      ]
+    }
+  ],
+  "start": "face-away-right",
+  "states": {
+    "face-away-right": { "frames": [0], "ms": 1000 }
+  }
+}

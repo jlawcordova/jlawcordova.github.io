@@ -1,0 +1,107 @@
+{
+  "notes": [
+    "An office's deep red carpet, a checker of two reds, over teal panels between wooden trims on its sides.",
+    "A one-level floor block: lay it at level 0, where its top is, and stand things on it at level 0. Depth Back."
+  ],
+  "category": [
+    "Range",
+    "Floors"
+  ],
+  "kind": "block",
+  "size": [1, 1, 1],
+  "faces": {
+    "top": "roof-2",
+    "left": "water-3",
+    "right": "water-4"
+  },
+  "surface": {
+    "keys": {
+      "a": "roof-3",
+      "b": "roof-2",
+      "c": "roof-1"
+    },
+    "map": [
+      "....................abba....................",
+      "..................abbbbbba..................",
+      "................abbbbbbbbbba................",
+      "..............abbbbbbbbbbbbbba..............",
+      "............abbbbbbbbbbbbbbbbbba............",
+      "..........bbbbbbbbbbbccbbbbbbbbbbb..........",
+      "........baaaabbbbbbbbbbbbbbbbbbaaaab........",
+      "......baaaaaaaabbbbbbbbbbbbbbaaaaaaaab......",
+      "....baaaaaaaaaaaabbbbbbbbbbaaaaaaaaaaaab....",
+      "..baaaaaaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaab..",
+      "baaaaaaaaaaaaaaaaaaaabbaaaaaaaaaaaaaaaaaaaab",
+      "baaaaaaaaaaaaaaaaaaaabbaaaaaaaaaaaaaaaaaaaab",
+      "..baaaaaaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaab..",
+      "....baaaaaaaaaaaabbbbbbbbbbaaaaaaaaaaaab....",
+      "......baaaaaaaabbbbbbbbbbbbbbaaaaaaaab......",
+      "........baaaabbbbbbbbbbbbbbbbbbaaaab........",
+      "..........bbbbbbbbbbbccbbbbbbbbbbb..........",
+      "............abbbbbbbbbbbbbbbbbba............",
+      "..............abbbbbbbbbbbbbba..............",
+      "................abbbbbbbbbba................",
+      "..................abbbbbba..................",
+      "....................abba...................."
+    ]
+  },
+  "sides": {
+    "keys": {
+      "a": "wood-3",
+      "b": "soil-3",
+      "c": "water-2",
+      "d": "water-3",
+      "e": "wood-4",
+      "f": "soil-4",
+      "g": "water-4"
+    },
+    "left": [
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "bccccccccccbcccccccccc",
+      "bddddddddddbdddddddddd",
+      "bddddddddddbdddddddddd",
+      "bddddddddddbdddddddddd",
+      "bddddddddddbdddddddddd",
+      "bddddddddddbdddddddddd",
+      "bddddddddddbdddddddddd",
+      "bddddddddddbdddddddddd",
+      "bddddddddddbdddddddddd",
+      "bddddddddddbdddddddddd",
+      "bddddddddddbdddddddddd",
+      "bddddddddddbdddddddddd",
+      "bddddddddddbdddddddddd",
+      "bddddddddddbdddddddddd",
+      "bddddddddddbdddddddddd",
+      "bddddddddddbdddddddddd",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "right": [
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "fddddddddddfdddddddddd",
+      "fggggggggggfgggggggggg",
+      "fggggggggggfgggggggggg",
+      "fggggggggggfgggggggggg",
+      "fggggggggggfgggggggggg",
+      "fggggggggggfgggggggggg",
+      "fggggggggggfgggggggggg",
+      "fggggggggggfgggggggggg",
+      "fggggggggggfgggggggggg",
+      "fggggggggggfgggggggggg",
+      "fggggggggggfgggggggggg",
+      "fggggggggggfgggggggggg",
+      "fggggggggggfgggggggggg",
+      "fggggggggggfgggggggggg",
+      "fggggggggggfgggggggggg",
+      "fggggggggggfgggggggggg",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee"
+    ]
+  }
+}
