@@ -1,0 +1,61 @@
+{
+  "notes": [
+    "A berry bush: a mound of leafy clumps, bevelled, with red berries on their tops, knee high to a bear.",
+    "States: idle, rustle (something moves in it)."
+  ],
+  "category": [
+    "Fantasy",
+    "Trees"
+  ],
+  "kind": "sprite",
+  "anchor": [16, 23],
+  "keys": {
+    "a": "grass-1",
+    "b": "roof-1",
+    "c": "grass-3",
+    "d": "grass-2"
+  },
+  "layers": [
+    {
+      "loop": "pose",
+      "prefix": "p",
+      "frames": [
+        [
+          "...............aaaaaa.......",
+          ".............aaaabbaaaa.....",
+          "............aaaaaaaaaaac....",
+          "...........aaaaaaaaaaccca...",
+          ".........aaadaaaabbcccccaaa.",
+          "........aaaadddaaaacccccaaac",
+          "........aaaaddddccccccccaccc",
+          ".....aaaaaaaddddcccccccccccc",
+          "...aaaaaaaaaddddcccccccccccc",
+          ".aaaaaaaaaaaadddcccccccccccc",
+          "aaaaaaabbaaaaaadcccccaaaaccc",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaac",
+          "daaaaaaaaaacaaaaaaaaaaabbaac",
+          "dddaaaaaacccaaaaaaaaaaaaaccc",
+          "dddddaaaacccdaaaaaaaaaaccccc",
+          "ddddddcaaaaaaddaaaaaaccccccc",
+          "dddddaaaaaaaaaaddaaaaccccccc",
+          "ddddaaaaabbaaaaaadcccccccccc",
+          "ddddaaaaaaaaaaaaaccccccccccc",
+          "dddddaaaaaaaaaaccccccccccccc",
+          "dddddddaaaabbccccccccccccccc",
+          "dddddddddaaaaccccccccccccccc",
+          ".dddddddddcccccccccccccccccc",
+          "...dddddddcccccccccccccccccc",
+          "....ddddddcccccccccccccccccc",
+          "....ddddddcccccccccccccccccc",
+          ".....dddddccccccccccccccccc.",
+          ".......dddcccccccdccccccc...",
+          ".........dccccc..dccccc....."
+        ]
+      ]
+    }
+  ],
+  "start": "idle",
+  "states": {
+    "idle": { "frames": [0], "ms": 1000 }
+  }
+}

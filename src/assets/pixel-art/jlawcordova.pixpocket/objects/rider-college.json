@@ -49,10 +49,15 @@
     "offhand": null
   },
   "poses": {
-    "laugh": { "head": { "look": "laugh" } }
+    "step-left": { "leg-left": { "move": [0, 2, 0] } },
+    "step-right": { "leg-right": { "move": [0, 2, 0] } }
   },
-  "start": "laugh",
+  "start": "idle",
   "states": {
-    "laugh": { "poses": ["laugh"], "ms": 600, "move": [{ "t": 0, "move": [0, 0] }, { "t": 150, "move": [0, -1] }, { "t": 300, "move": [0, 0] }, { "t": 450, "move": [0, -1] }] }
+    "idle": { "poses": ["rest"], "ms": 1000, "move": [{ "t": 0, "move": [0, 0] }, { "t": 500, "move": [0, -1] }] },
+    "walk": { "poses": ["step-left", "step-right"], "ms": 100 },
+    "walk-right": { "poses": ["step-left", "step-right"], "ms": 100, "heading": "right" },
+    "walk-away-left": { "poses": ["step-left", "step-right"], "ms": 100, "heading": "away-left" },
+    "walk-away-right": { "poses": ["step-left", "step-right"], "ms": 100, "heading": "away-right" }
   }
 }

@@ -48,71 +48,12 @@
           "......................................",
           "......................................",
           "......................................"
-        ],
-        [
-          "......................................",
-          "......................................",
-          "......................................",
-          ".............aaaaaaaaaaaa.............",
-          ".........aaaaaaaaaaaaaaaaaaaa.........",
-          ".......aaaaaaaaaaaaaaaaaaaaaaaa.......",
-          ".....aaaaaaaaaaaaaaaaaaaaaaaaaaab.....",
-          "...aaaaaaaaaaaaaaaaaaaaaaaaaaaaabbb...",
-          "..aaaaaaaaaaabbbbbbbbbbbbaaaaaaaabbb..",
-          ".aaaaaaaaaaabbbaaaaaaaabbbaaaaaaaabbb.",
-          ".aaaaaaaaaabbaaaaaaaaaaaabbaaaaaaabbb.",
-          "aaaaaaaaaabbaaaaaaaaaaaaaabbbbbbbbbbbb",
-          "aaaaaaaaaabaaaaaaaaaaaaaaaabbbbbbbbbbb",
-          "aaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbc",
-          "aaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbc",
-          "aaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbc",
-          "aaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbc",
-          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbcc",
-          ".aaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbccc.",
-          ".baaaaaaaaaaaaaaaaaaaabbbbbbbbbbbcccc.",
-          "..bbaaaaaaaaaaaaaaaaaabbbbbbbbbccccc..",
-          "..bbbbbaaabaaaaabbbbbbbbbbbbbbbccccc..",
-          "...bbbbbbbbbbbbbbbbbbbbbbbbcccccccc...",
-          ".....bbbbbbbbbbbbbbbbbbbbcccccccc.....",
-          ".......bbbbbbbbbbbbbbbccccccccc.......",
-          ".........bbbbbbbbbccccccccccc.........",
-          ".............bbcccccccccc............."
-        ],
-        [
-          "......................................",
-          "......................................",
-          "............aaaaaaaaaaaaaa............",
-          ".........aaaaaaaaaaaaaaaaaaaa.........",
-          ".......aaaaaaaaaaaaaaaaaaaaaaaa.......",
-          "......aaaaaaaaabbbbbbbbaaaaaaaaa......",
-          ".....aaaaaaaabbbbbbbbbbbbaaaaaaaa.....",
-          "....aaaaaaaabbaaaaaaaaaabbaaaaaaab....",
-          "...aaaaaaaabbaaaaaaaaaaaabbabbbaabb...",
-          "..aaaaaaaaabaaaaaaaaaaaaaababbbbbbbb..",
-          "..aaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbb..",
-          "..aaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbb..",
-          "..aaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbb..",
-          "..aaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbc..",
-          "..aaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbcc..",
-          "..aaaaaaaaaaaaaaaaaaaaaaabbbbbbbbccc..",
-          "..aaaaaaaaaaaaaaaaaaabbbbbbbbbbbcccc..",
-          "...baaaaaaaaaaaaaaaaabbbbbbbbbbbccc...",
-          "...bbaaaaaaaaaaaabbbbbbbbbbbbbccccc...",
-          "....bbbbaabaaabbbbbbbbbbbbbbcccccc....",
-          ".....bbbbbbbbbbbbbbbbbbbbbbcccccc.....",
-          "......bbbbbbbbbbbbbbbbbbbccccccc......",
-          ".......bbbbbbbbbbbbbbcccccccccc.......",
-          ".........bbbbbbbbbccccccccccc.........",
-          "............cbbccccccccccc............",
-          "......................................",
-          "......................................"
         ]
       ]
     }
   ],
   "start": "idle",
   "states": {
-    "idle": { "frames": [0], "ms": 1000 },
-    "squash": { "frames": [1, 2], "ms": 120, "loop": false, "then": "idle" }
+    "idle": { "frames": [0], "ms": 1000 }
   }
 }

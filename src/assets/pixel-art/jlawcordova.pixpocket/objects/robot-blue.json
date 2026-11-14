@@ -38,12 +38,12 @@
     "offhand": null
   },
   "poses": {
-    "type": { "torso": { "move": [0, 2, 9] }, "lap": { "move": [0, 0, -3] }, "leg-left": { "move": [0, 0, 9] }, "leg-right": { "move": [0, 0, 9] }, "foot-left": { "move": [-1, 7, 2], "look": "sit" }, "foot-right": { "move": [-1, 7, 2], "look": "sit" }, "arm-left": { "move": [0, 4, 2], "look": "flat" }, "hand-left": { "move": [0, 4, 2], "look": "flat" }, "arm-right": { "move": [0, 4, 2], "look": "flat" }, "hand-right": { "move": [0, 4, 2], "look": "flat" } },
-    "type-left": { "torso": { "move": [0, 2, 9] }, "lap": { "move": [0, 0, -3] }, "leg-left": { "move": [0, 0, 9] }, "leg-right": { "move": [0, 0, 9] }, "foot-left": { "move": [-1, 7, 2], "look": "sit" }, "foot-right": { "move": [-1, 7, 2], "look": "sit" }, "arm-left": { "move": [0, 4, 4], "look": "flat" }, "hand-left": { "move": [0, 4, 2], "look": "flat" }, "arm-right": { "move": [0, 4, 2], "look": "flat" }, "hand-right": { "move": [0, 4, 2], "look": "flat" } },
-    "type-right": { "torso": { "move": [0, 2, 9] }, "lap": { "move": [0, 0, -3] }, "leg-left": { "move": [0, 0, 9] }, "leg-right": { "move": [0, 0, 9] }, "foot-left": { "move": [-1, 7, 2], "look": "sit" }, "foot-right": { "move": [-1, 7, 2], "look": "sit" }, "arm-left": { "move": [0, 4, 2], "look": "flat" }, "hand-left": { "move": [0, 4, 2], "look": "flat" }, "arm-right": { "move": [0, 4, 4], "look": "flat" }, "hand-right": { "move": [0, 4, 2], "look": "flat" } }
+    "operate": { "arm-left": { "move": [0, 4, 2], "look": "flat" }, "hand-left": { "move": [0, 4, 2], "look": "flat" }, "arm-right": { "move": [0, 4, 2], "look": "flat" }, "hand-right": { "move": [0, 4, 2], "look": "flat" } },
+    "operate-left": { "arm-left": { "move": [0, 4, 4], "look": "flat" }, "hand-left": { "move": [0, 4, 2], "look": "flat" }, "arm-right": { "move": [0, 4, 2], "look": "flat" }, "hand-right": { "move": [0, 4, 2], "look": "flat" } },
+    "operate-right": { "arm-left": { "move": [0, 4, 2], "look": "flat" }, "hand-left": { "move": [0, 4, 2], "look": "flat" }, "arm-right": { "move": [0, 4, 4], "look": "flat" }, "hand-right": { "move": [0, 4, 2], "look": "flat" } }
   },
-  "start": "type-away-right",
+  "start": "operate",
   "states": {
-    "type-away-right": { "poses": ["type-right", "type-left", "type-right", "type-left", "type", "type", "type-left", "type-right", "type-left", "type-right", "type-left", "type", "type", "type"], "ms": 100, "heading": "away-right" }
+    "operate": { "poses": ["operate-left", "operate", "operate-right", "operate", "operate", "operate"], "ms": 200 }
   }
 }

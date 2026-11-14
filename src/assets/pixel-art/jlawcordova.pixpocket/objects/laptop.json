@@ -110,7 +110,6 @@
   "start": "on",
   "states": {
     "on": { "frames": [0, 1], "ms": 500 },
-    "on-away-right": { "frames": [2, 2], "ms": 500 },
     "open-windows-away-right": { "frames": [2, 2, 2], "ms": 400, "loop": false }
   }
 }

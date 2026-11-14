@@ -1,0 +1,107 @@
+{
+  "notes": [
+    "Stepping stones set in the island's meadow, two to a tile: a run of them along a row or a column is a path.",
+    "A ground block, a tile wide and a level high: lay it at level 0 with depth Back."
+  ],
+  "category": [
+    "Island",
+    "Ground"
+  ],
+  "kind": "block",
+  "size": [1, 1, 1],
+  "faces": {
+    "top": "grass-2",
+    "left": "soil-2",
+    "right": "soil-3"
+  },
+  "surface": {
+    "keys": {
+      "a": "grass-2",
+      "b": "path-1",
+      "c": "path-2",
+      "d": "grass-1",
+      "e": "grass-3"
+    },
+    "map": [
+      "....................aaaa....................",
+      "..................aaaaaaaa..................",
+      "................aaaaaaaaaaaa................",
+      "..............aaaaaaabbbbaaaaa..............",
+      "............aaaaaaabbbbbbbbaaaaa............",
+      "..........aaaaaaabbbbbbbbbbbbaaaaa..........",
+      "........aaaaaaaaaccbbbbbbbbccaaaaaaa........",
+      "......aaaaaaaaaaaaaccbbbbccaaaaaaaaaaa......",
+      "....aaaaaaaaaaaaaaaaaccccaaaaaaaaaaaaaaa....",
+      "..aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa..",
+      "aaaaaaaaaddaaaaaaaaaaaaaaaaddaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "..aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa..",
+      "....aaaaaaaaaaaaaaabbbbaaaaaaaaaaaaaaaaa....",
+      "......aaaaaaaaaaabbbbbbbbeeaaaaaaaaaaa......",
+      "........aaaaaaabbbbbbbbbbbbaaaaaaaaa........",
+      "..........aaaaaccbbbbbbbbccaaaaaaa..........",
+      "............aaaaaccbbbbccaaaaaaa............",
+      "..............aaaaaccccaaaaaaa..............",
+      "................aaaddaaaaaaa................",
+      "..................aaaaaaaa..................",
+      "....................aaaa...................."
+    ]
+  },
+  "sides": {
+    "keys": {
+      "a": "grass-3",
+      "b": "soil-2",
+      "c": "path-3",
+      "d": "grass-4",
+      "e": "soil-3"
+    },
+    "left": [
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "baaabbbaaabbbaaabbbaaa",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbccbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbccbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "right": [
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "edddeeedddeeedddeeeddd",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeecceeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeecceeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee",
+      "eeeeeeeeeeeeeeeeeeeeee"
+    ]
+  }
+}

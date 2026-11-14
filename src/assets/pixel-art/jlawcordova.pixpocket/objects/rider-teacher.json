@@ -49,10 +49,13 @@
     "offhand": null
   },
   "poses": {
-    "laugh": { "head": { "look": "laugh" } }
+    "stir-1": { "arm-left": { "move": [0, 4, 2], "look": "flat" }, "hand-left": { "move": [0, 4, 2], "look": "flat" } },
+    "stir-2": { "arm-left": { "move": [2, 4, 2], "look": "flat" }, "hand-left": { "move": [0, 4, 2], "look": "flat" } },
+    "stir-3": { "arm-left": { "move": [2, 6, 2], "look": "flat" }, "hand-left": { "move": [0, 4, 2], "look": "flat" } },
+    "stir-4": { "arm-left": { "move": [0, 6, 2], "look": "flat" }, "hand-left": { "move": [0, 4, 2], "look": "flat" } }
   },
-  "start": "laugh",
+  "start": "stir",
   "states": {
-    "laugh": { "poses": ["laugh"], "ms": 600, "move": [{ "t": 0, "move": [0, 0] }, { "t": 150, "move": [0, -1] }, { "t": 300, "move": [0, 0] }, { "t": 450, "move": [0, -1] }] }
+    "stir": { "poses": ["stir-1", "stir-2", "stir-3", "stir-4"], "ms": 200 }
   }
 }
