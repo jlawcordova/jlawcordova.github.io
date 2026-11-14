@@ -1,0 +1,42 @@
+{
+  "notes": [
+    "A bowl of fruit.",
+    "Stands on a worktop or a table: a tile at level 1."
+  ],
+  "category": [
+    "Office",
+    "Pantry"
+  ],
+  "kind": "sprite",
+  "anchor": [10, 8],
+  "keys": {
+    "a": "wood-3",
+    "b": "gold-1",
+    "c": "wood-4",
+    "d": "grass-2",
+    "e": "roof-1",
+    "f": "grass-3",
+    "g": "roof-2",
+    "h": "roof-3",
+    "i": "wood-2"
+  },
+  "layers": [
+    {
+      "map": [
+        "......aaaaaaaa......",
+        "...bbbbbbccdddddd...",
+        ".aabbbbbbccddddddaa.",
+        "aaabbbbeeeeeeddffaaa",
+        "aacbbbbeeeeeeddffcaa",
+        "aacbbbbgggghhddffcaa",
+        "aaabbbbgggghhddffaaa",
+        "iaaacccgggghhcccaaaa",
+        "iiiaaacgggghhcaaaaaa",
+        "iiiiiiaaaaaaaaaaaaaa",
+        ".iiiiiiiiiaaaaaaaaa.",
+        "...iiiiiiiaaaaaaa...",
+        "......iiiiaaaa......"
+      ]
+    }
+  ]
+}

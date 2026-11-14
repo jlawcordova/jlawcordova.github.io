@@ -1,0 +1,17 @@
+{
+  "notes": [
+    "The task chair in white.",
+    "States: idle (facing the lower left), face-right, face-away-left and face-away-right; and backrest-away-left and backrest-away-right, only the backrest and its stem, laid over someone sitting with their back to us (in front of them in a group)."
+  ],
+  "category": [
+    "Office",
+    "Desks"
+  ],
+  "kind": "sprite",
+  "extends": "chair",
+  "keys": {
+    "a": "cream",
+    "b": "path-1",
+    "c": "path-2"
+  }
+}

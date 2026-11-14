@@ -81,32 +81,45 @@ describe('slash and countdown', () => {
   });
 });
 
-describe("A's hop", () => {
-  it('R6: every class has one character, and its hop moves it by whole pixels, rises and lands where it started', async () => {
+describe("A's jump", () => {
+  it('R6: every class has one character, and its jump plays once, rises by whole pixels and hands back to idle', async () => {
     const svg = await read('src/assets/pixel-art/range-sprite.svg');
     const groups = svg.split(/<g data-class="\d+">/).slice(1);
-    assert.ok(groups.length > 0);
+    assert.equal(groups.length, 7);
     for (const group of groups) assert.equal([...group.matchAll(/class="character[ "]/g)].length, 1, 'one character per class');
-    assert.match(svg, /\[data-play~="hop"\]/, 'the sprite plays hop through data-play');
+    assert.match(svg, /\[data-play~="jump"\]/, 'the sprite plays jump through data-play');
 
-    // The hop is a one-shot state of the character (Pixel Lab v0.8.0), which
-    // data-play plays as it played the action it was made from.
-    const character = JSON.parse(await read('src/assets/pixel-art/jlawcordova.pixellab/objects/character.json'));
-    const hop = character.states?.hop;
-    assert.ok(hop, 'the character has the hop state');
-    assert.equal(hop.loop, false, 'it plays once');
-    assert.equal(hop.then, character.start, 'then hands back to the state it starts in');
-    assert.equal(hop.move[0].t, 0);
-    assert.ok(hop.move.every(({ move: [x, y] }) => x === 0 && Number.isInteger(y)), 'up and down, by whole pixels');
-    const ys = hop.move.map(({ move }) => move[1]);
-    assert.equal(ys[0], 0, 'it starts at rest');
-    assert.ok(Math.min(...ys) <= -5, 'it rises');
-    assert.ok(Math.abs(ys.at(-1)) <= 1, 'it lands (and returns to rest when the state ends)');
+    // The jump is a one-shot state of each person (a figure from the studio's
+    // Cast), which data-play plays as it played the old character's hop.
+    const scene = JSON.parse(await read('src/assets/pixel-art/jlawcordova.pixpocket/scenes/range-sprite.json'));
+    const people = [];
+    const walk = (items) => {
+      for (const item of items) {
+        if (item.items) walk(item.items);
+        else if (item.class === 'character') people.push(item.object);
+      }
+    };
+    walk(scene.items);
+    assert.equal(people.length, 7, 'seven people');
+    assert.equal(new Set(people).size, 7, 'each class its own');
+    for (const name of people) {
+      const person = JSON.parse(await read(`src/assets/pixel-art/jlawcordova.pixpocket/objects/${name}.json`));
+      const jump = person.states?.jump;
+      assert.ok(jump, `${name} has the jump state`);
+      assert.equal(jump.loop, false, 'it plays once');
+      assert.equal(jump.then, person.start, 'then hands back to the state it starts in');
+      assert.equal(jump.move[0].t, 0);
+      assert.ok(jump.move.every(({ move: [x, y] }) => x === 0 && Number.isInteger(y)), 'up and down, by whole pixels');
+      const ys = jump.move.map(({ move }) => move[1]);
+      assert.equal(ys[0], 0, 'it starts at rest');
+      assert.ok(Math.min(...ys) <= -5, 'it rises');
+      assert.ok(Math.abs(ys.at(-1)) <= 1, 'it lands (and returns to rest when the state ends)');
+    }
 
     const range = await read('src/components/home/Range.astro');
-    // data-play is a list the hop shares with the build-up (entrance in SVG spec R9).
-    assert.match(range, /replay\(group, 'hop'\)/, 'A plays it with data-play');
-    assert.match(range, /animationName !== 'range-sprite--hop'/, 'and when the hop ends');
-    assert.match(range, /drop\(group, 'hop'\)/, 'takes only hop out');
+    // data-play is a list the jump shares with the build-up (entrance in SVG spec R9).
+    assert.match(range, /replay\(group, 'jump'\)/, 'A plays it with data-play');
+    assert.match(range, /animationName !== 'range-sprite--jump'/, 'and when the jump ends');
+    assert.match(range, /drop\(group, 'jump'\)/, 'takes only jump out');
   });
 });

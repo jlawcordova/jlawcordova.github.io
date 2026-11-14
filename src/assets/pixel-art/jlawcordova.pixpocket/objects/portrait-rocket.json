@@ -1,0 +1,57 @@
+{
+  "notes": [
+    "A framed poster of a rocket taking off into a starry sky.",
+    "Hangs on the wall behind its tile's back-right edge (a wall along the columns): place it on the floor tile in front of the wall, at depth Back."
+  ],
+  "category": [
+    "Office",
+    "Walls"
+  ],
+  "kind": "sprite",
+  "anchor": [-3, 59],
+  "keys": {
+    "a": "stone-2",
+    "b": "stone-3",
+    "c": "glass-4",
+    "d": "glass-1",
+    "e": "stone-4",
+    "f": "cream",
+    "g": "glass-2",
+    "h": "roof-1",
+    "i": "clay-1"
+  },
+  "layers": [
+    {
+      "map": [
+        "aa............",
+        "aaaa..........",
+        "bbaaaa........",
+        "bbbbaaaa......",
+        "bcbbbbaaaa....",
+        "bcccbbbbaaaa..",
+        "bcccccbbbbaaaa",
+        "bcdcccccbbbbaa",
+        "bcccccccccbbbe",
+        "bccccfffcdccbe",
+        "bccccfffccccce",
+        "bccccffffcccce",
+        "bccccfggfcccce",
+        "bccccfggfcdcce",
+        "bccccffffcccce",
+        "bccdhffffcccce",
+        "bccchffffcccce",
+        "bccchcfffhccce",
+        "bccccciifhccce",
+        "bccccciichccce",
+        "bbcccciiccccce",
+        "bbbbcccccccdce",
+        "..bbbbccccccce",
+        "....bbbbccccce",
+        "......bbbbccce",
+        "........bbbbce",
+        "..........bbbe",
+        "............be"
+      ]
+    }
+  ]
+}

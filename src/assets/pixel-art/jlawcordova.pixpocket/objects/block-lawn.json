@@ -1,0 +1,47 @@
+{
+  "notes": [
+    "A mown lawn, striped light and dark along the row.",
+    "A one-level ground block: lay it at level 0, where its top is, and stand things on it at level 0. Depth Back."
+  ],
+  "category": [
+    "Factory",
+    "Street"
+  ],
+  "kind": "block",
+  "size": [1, 1, 1],
+  "faces": {
+    "top": "grass-2",
+    "left": "soil-2",
+    "right": "soil-3"
+  },
+  "surface": {
+    "keys": {
+      "a": "grass-2",
+      "b": "grass-1"
+    },
+    "map": [
+      "....................abbb....................",
+      "..................abbbbbbb..................",
+      "................abbbbbbbbbbb................",
+      "..............abbbbbbbbbbbaaaa..............",
+      "............abbbbbbbbbbbaaaaaaaa............",
+      "..........abbbbbbbbbbbaaaaaaaaaaab..........",
+      "........abbbbbbbbbbbaaaaaaaaaaabbbbb........",
+      "......abbbbbbbbbbbaaaaaaaaaaabbbbbbbbb......",
+      "....abbbbbbbbbbbaaaaaaaaaaabbbbbbbbbbbaa....",
+      "..abbbbbbbbbbbaaaaaaaaaaabbbbbbbbbbbaaaaaa..",
+      "abbbbbbbbbbbaaaaaaaaaaabbbbbbbbbbbaaaaaaaaaa",
+      "bbbbbbbbbbaaaaaaaaaaabbbbbbbbbbbaaaaaaaaaaab",
+      "..bbbbbbaaaaaaaaaaabbbbbbbbbbbaaaaaaaaaaab..",
+      "....bbaaaaaaaaaaabbbbbbbbbbbaaaaaaaaaaab....",
+      "......aaaaaaaaabbbbbbbbbbbaaaaaaaaaaab......",
+      "........aaaaabbbbbbbbbbbaaaaaaaaaaab........",
+      "..........abbbbbbbbbbbaaaaaaaaaaab..........",
+      "............bbbbbbbbaaaaaaaaaaab............",
+      "..............bbbbaaaaaaaaaaab..............",
+      "................aaaaaaaaaaab................",
+      "..................aaaaaaab..................",
+      "....................aaab...................."
+    ]
+  }
+}

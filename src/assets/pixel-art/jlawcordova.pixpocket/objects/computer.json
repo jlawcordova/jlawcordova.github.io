@@ -1,0 +1,121 @@
+{
+  "notes": [
+    "A desktop computer: a silver monitor and a keyboard, facing the lower left.",
+    "States: on (the cursor blinks), off, turn-on, turn-off, and open-windows (then it holds), facing the lower left; each again with -right, -away-left and -away-right for the other headings (on-right, turn-on-away-left, …).",
+    "Stands on a desk (level 1)."
+  ],
+  "category": [
+    "Office",
+    "Devices"
+  ],
+  "kind": "sprite",
+  "anchor": [13, 19],
+  "keys": {
+    "a": "stone-1",
+    "b": "stone-2",
+    "c": "ink",
+    "d": "stone-3",
+    "e": "glass-2",
+    "f": "glass-3",
+    "g": "stone-4",
+    "h": "cream",
+    "i": "glass-4"
+  },
+  "layers": [
+    {
+      "loop": "pose",
+      "prefix": "p",
+      "frames": [
+        [
+          "......aa..................",
+          "......aaaa................",
+          "......bbaaaaaa............",
+          "......bebbaaaaaa..........",
+          "......bfffbbaaaaaa........",
+          "......bfffffbbaaaa........",
+          "......bfffffffbbaaaa......",
+          "......bfffffffffbbaa......",
+          "......bffffffffeefbd......",
+          "......bffffffeeffffd......",
+          "......bgfffeehfffffd......",
+          "......bbggeffhfffffd......",
+          "......bbbbggffhffffd......",
+          "........bbbbggfffffd......",
+          "..........bbbbggfffd......",
+          "........aaaabbbbggfdaa....",
+          "........aaaaaabbbbgdaa....",
+          "........bbaaaaaabbbddd....",
+          "..aa....bbbbaaaaaabddd....",
+          "aaaaaa....bbbbbddddd......",
+          "aaaaaaaa....bbbddd........",
+          "bbaaaaaaaa................",
+          "..bbaaaaaaaa..............",
+          "....bbaaaaaa..............",
+          "......bbaadd..............",
+          "........bd................"
+        ],
+        [
+          "......aa..................",
+          "......aaaa................",
+          "......bbaaaaaa............",
+          "......bebbaaaaaa..........",
+          "......bfffbbaaaaaa........",
+          "......bfffffbbaaaa........",
+          "......bfffffffbbaaaa......",
+          "......bfffffffffbbaa......",
+          "......bffffffffeefbd......",
+          "......bffffffeeffffd......",
+          "......bgfffeeffffffd......",
+          "......bbggeffffffffd......",
+          "......bbbbggfffffffd......",
+          "........bbbbggfffffd......",
+          "..........bbbbggfffd......",
+          "........aaaabbbbggfdaa....",
+          "........aaaaaabbbbgdaa....",
+          "........bbaaaaaabbbddd....",
+          "..aa....bbbbaaaaaabddd....",
+          "aaaaaa....bbbbbddddd......",
+          "aaaaaaaa....bbbddd........",
+          "bbaaaaaaaa................",
+          "..bbaaaaaaaa..............",
+          "....bbaaaaaa..............",
+          "......bbaadd..............",
+          "........bd................"
+        ],
+        [
+          "......aa..................",
+          "......aaaa................",
+          "......bbaaaa..............",
+          "......bbbbaaaa............",
+          "......bbaabbaaaa..........",
+          "......bbaaaabbaaaa........",
+          "......bbbbaaaabbaaaa......",
+          "......bbbbbbaabbbbaa......",
+          "......bbbbbbbdbbbbbd......",
+          "......bbbbbbbdbbbbbd......",
+          "......bbaabbbdbbbbbd......",
+          "......bbaabbbdbbbbbd......",
+          "......bbbdbbbdbbbbbd......",
+          "........bdbbbdbbbbbdaa....",
+          "........bdbbbdbbbbbdaaaa..",
+          "........bdaabbbbbbbdaaaaaa",
+          "......aabdaaaabbbbbdaaaaaa",
+          "....aaaabdaaaaaabbbdbbaadd",
+          "....aaaabdaaaaaaaabd..bd..",
+          "....bbaabdaaaaaadd........",
+          "....bbbbaaaaaadddd........",
+          "......bbbbbddddd..........",
+          "........bbbddd............",
+          "..........................",
+          "..........................",
+          ".........................."
+        ]
+      ]
+    }
+  ],
+  "start": "on",
+  "states": {
+    "on": { "frames": [0, 1], "ms": 500 },
+    "on-away-right": { "frames": [2, 2], "ms": 500 }
+  }
+}

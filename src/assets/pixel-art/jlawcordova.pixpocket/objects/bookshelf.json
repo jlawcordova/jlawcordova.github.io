@@ -1,0 +1,99 @@
+{
+  "notes": [
+    "An open bookshelf, a little over a person's height, facing the lower left: three shelves of books.",
+    "States: idle, face-right, face-away-left and face-away-right (turned, as the chairs are), and pull, pull-right, pull-away-left and pull-away-right (a book slides out, then it holds)."
+  ],
+  "category": [
+    "Office",
+    "Furniture"
+  ],
+  "kind": "sprite",
+  "anchor": [15, 50],
+  "keys": {
+    "a": "wood-1",
+    "b": "wood-2",
+    "c": "wood-3",
+    "d": "wood-4",
+    "e": "cream",
+    "f": "roof-3",
+    "g": "roof-2",
+    "h": "glass-2",
+    "i": "glass-3",
+    "j": "gold-3",
+    "k": "teal-2",
+    "l": "teal-3",
+    "m": "gold-2"
+  },
+  "layers": [
+    {
+      "loop": "pose",
+      "prefix": "p",
+      "frames": [
+        [
+          "............aa................",
+          "..........aaaaaa..............",
+          "........aaaaaaaaaa............",
+          "......aaaaaaaaaaaaaa..........",
+          "......aaaaaaaaaaaaaaaa........",
+          "......bbaaaaaaaaaaaaaaaa......",
+          "......bbbbaaaaaaaaaaaaaaaa....",
+          "......bcbbbbaaaaaaaaaaaaaaaa..",
+          "......bcccbbbbaaaaaaaaaaaaaaaa",
+          "......bcccccbbbbaaaaaaaaaaaaaa",
+          "......bccccccdbbbbaaaaaaaaaacc",
+          "......bccccceeeebbbbaaaaaacccc",
+          "......bccceeeeffddbbbbaacccccc",
+          "......bccceegfffddeebbbccccccc",
+          "......bccchigfffeeeeeebccccccc",
+          "......bccchigfffeeeejjbccccccc",
+          "......bccchigfffklmjjjbccccccc",
+          "......bccchigfffklmjeebccccccc",
+          "......bccchigfffklmjeebccccccc",
+          "......bccchigfffklmjhibccccccc",
+          "......bcaahigfffklmjhibccccccc",
+          "......bcaaaagfaaklmjhibccccccc",
+          "......bcbbaaaaaaklmjhibccccccc",
+          "......bcbbbbaaaaklmjhibccccccc",
+          "......bcccbbbbaaaamjhibccccccc",
+          "......bcccmjbbbbaaaahibccccccc",
+          "......bcccmjklbbbbaaaabccccccc",
+          "......bcccmjkleebbbbaabccccccc",
+          "......bcccmjklgfffbbbcbccccccc",
+          "......bcccmjklgfffddbcbccccccc",
+          "......bcccmjklgfffddhibccccccc",
+          "......bcccmjklgfffddhibccccccc",
+          "......bcaamjklgfffddhibccccccc",
+          "......bcaaaaklgfffaahibccccccc",
+          "......bcbbaaaagfaaaahibccccccc",
+          "......bcbbbbaaaaaaaahibccccccc",
+          "......bcccbbbbaaaaaahibccccccc",
+          "......bcccgfbbbbaaaahibccccccc",
+          "......bcccgfhibbbbaaaabccccccc",
+          "......bcccgfhimjbbbbaabccccccc",
+          "......bcccgfhimjeebbbcbccccccc",
+          "......bcccgfhimjklllbcbccccccc",
+          "......bcccgfhimjklllhibccccccc",
+          "......bcccgfhimjklllhibccccccc",
+          "......bcaagfhimjklllhibccccccc",
+          "......bcaaaahimjklllhibccccccc",
+          "......bcbbaaaamjklllhibccccccc",
+          "........bbbbaaaaklaahibccccccc",
+          "..........bbbbaaaaaahibccccccc",
+          "............bbbbaaaahibccccccc",
+          "..............bbbbaaaabccccccc",
+          "................bbbbaabccccccc",
+          "..................bbbcbccccc..",
+          "....................bcbccc....",
+          "......................bc......",
+          "..............................",
+          "..............................",
+          ".............................."
+        ]
+      ]
+    }
+  ],
+  "start": "idle",
+  "states": {
+    "idle": { "frames": [0], "ms": 1000 }
+  }
+}

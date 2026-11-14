@@ -1,0 +1,91 @@
+{
+  "notes": [
+    "A ginger cat.",
+    "Sitting, it faces the lower left; walking, it turns to the heading it walks.",
+    "States: idle (the tail laid down, swaying), jump and sleep; walk, walk-right, walk-away-left and walk-away-right (on its feet, the tail up, a step every 100 ms)."
+  ],
+  "category": [
+    "Office",
+    "Cats"
+  ],
+  "kind": "sprite",
+  "anchor": [13, 21],
+  "keys": {
+    "a": "clay-1",
+    "b": "clay-2",
+    "c": "roof-1",
+    "d": "clay-3",
+    "e": "ink",
+    "f": "clay-4"
+  },
+  "layers": [
+    {
+      "loop": "pose",
+      "prefix": "p",
+      "frames": [
+        [
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          ".........a................",
+          "........bb......aa........",
+          "........bcb..aaaaaaa......",
+          "......aaaaaaddaaaaaaaa....",
+          "....aaaaaaaadddaaaaaaaaa..",
+          "....aaaaaaaaaaaaaaaaaaaa..",
+          "....bbaaaaaaaaaaaaaaaadd..",
+          "....bbbbaaaaaaddaaaadddf..",
+          "....bbbbbbaadddfaaddfddf..",
+          "....eebbbbbdfddfddddfddf..",
+          "....bbbbbbbdfddfdfddfddd..",
+          "....bbcceebdfddddfdddd....",
+          "......bbbbbddddddfdd......",
+          "........bbbdddbbdd........",
+          "..........bd..............",
+          "..........................",
+          ".........................."
+        ],
+        [
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          ".........a................",
+          "........bb......aa........",
+          "........bcb..aaaaaaa......",
+          "......aaaaaaddaaaaaaaa....",
+          "....aaaaaaaadddaaaaaaaaa..",
+          "....aaaaaaaaaaaaaaaaaaaa..",
+          "....bbaaaaaaaaaaaaaaaadd..",
+          "....bbbbaaaaaaddaaaadddf..",
+          "....bbbbbbaadddfaaddfddf..",
+          "....eebbbbbdfddfddddfddf..",
+          "....bbbbbbbdfddfdfddfd....",
+          "....bbcceebdfddddfdd......",
+          "......bbbbbddddddf........",
+          "........bbbddd............",
+          "..........bd..............",
+          ".........................."
+        ]
+      ]
+    }
+  ],
+  "start": "sleep",
+  "states": {
+    "sleep": { "frames": [0, 1], "ms": 1400 }
+  }
+}

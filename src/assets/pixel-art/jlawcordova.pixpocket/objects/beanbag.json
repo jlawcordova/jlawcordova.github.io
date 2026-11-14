@@ -1,0 +1,118 @@
+{
+  "notes": [
+    "A beanbag in red: one round bag, a ball squashed flat. It's round, so it has no heading.",
+    "States: idle, and squash (someone flops in: it flattens, then back).",
+    "Its top is about a chair's seat: the people who sit (sit, sit-right, …) sit on it, in a group with the beanbag at depth Back."
+  ],
+  "category": [
+    "Office",
+    "Lounge"
+  ],
+  "kind": "sprite",
+  "anchor": [19, 18],
+  "keys": {
+    "a": "roof-1",
+    "b": "roof-2",
+    "c": "roof-3"
+  },
+  "layers": [
+    {
+      "loop": "pose",
+      "prefix": "p",
+      "frames": [
+        [
+          "..............aaaaaaaaaa..............",
+          "...........aaaaaaaaaaaaaaaa...........",
+          ".........aaaaaaaaaaaaaaaaaaaa.........",
+          "........aaaaaabbbbbbbbbbaaaaaa........",
+          ".......aaaaaabbbaaaaaabbbaaaaaa.......",
+          "......aaaaaabbaaaaaaaaaabbaaaaab......",
+          ".....aaaaaaabaaaaaaaaaaaababbbbbb.....",
+          "....aaaaaaaaaaaaaaaaaaaaaabbbbbbbb....",
+          "....aaaaaaaaaaaaaaaaaaaaabbbbbbbbb....",
+          "....aaaaaaaaaaaaaaaaaaaaabbbbbbbbb....",
+          "....aaaaaaaaaaaaaaaaaaaaabbbbbbbbb....",
+          "....aaaaaaaaaaaaaaaaaaaabbbbbbbbbc....",
+          "....aaaaaaaaaaaaaaaaaaabbbbbbbbbcc....",
+          "....aaaaaaaaaaaaaaaabbbbbbbbbbbbcc....",
+          "....aaaaaaaaaaaaaaaabbbbbbbbbbbccc....",
+          "....aaaaaaaaaaaaaabbbbbbbbbbbccccc....",
+          "....bbaaaaaaaaabbbbbbbbbbbbbbccccc....",
+          ".....bbababbabbbbbbbbbbbbbbcccccc.....",
+          "......bbbbbbbbbbbbbbbbbbbbcccccc......",
+          ".......bbbbbbbbbbbbbbbbbccccccc.......",
+          "........bbbbbbbbbbbbbccccccccc........",
+          ".........bbbbbbbbbccccccccccc.........",
+          "...........cbcbbccccccccccc...........",
+          "..............cccccccccc..............",
+          "......................................",
+          "......................................",
+          "......................................"
+        ],
+        [
+          "......................................",
+          "......................................",
+          "......................................",
+          ".............aaaaaaaaaaaa.............",
+          ".........aaaaaaaaaaaaaaaaaaaa.........",
+          ".......aaaaaaaaaaaaaaaaaaaaaaaa.......",
+          ".....aaaaaaaaaaaaaaaaaaaaaaaaaaab.....",
+          "...aaaaaaaaaaaaaaaaaaaaaaaaaaaaabbb...",
+          "..aaaaaaaaaaabbbbbbbbbbbbaaaaaaaabbb..",
+          ".aaaaaaaaaaabbbaaaaaaaabbbaaaaaaaabbb.",
+          ".aaaaaaaaaabbaaaaaaaaaaaabbaaaaaaabbb.",
+          "aaaaaaaaaabbaaaaaaaaaaaaaabbbbbbbbbbbb",
+          "aaaaaaaaaabaaaaaaaaaaaaaaaabbbbbbbbbbb",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbc",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbc",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbc",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbc",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbcc",
+          ".aaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbccc.",
+          ".baaaaaaaaaaaaaaaaaaaabbbbbbbbbbbcccc.",
+          "..bbaaaaaaaaaaaaaaaaaabbbbbbbbbccccc..",
+          "..bbbbbaaabaaaaabbbbbbbbbbbbbbbccccc..",
+          "...bbbbbbbbbbbbbbbbbbbbbbbbcccccccc...",
+          ".....bbbbbbbbbbbbbbbbbbbbcccccccc.....",
+          ".......bbbbbbbbbbbbbbbccccccccc.......",
+          ".........bbbbbbbbbccccccccccc.........",
+          ".............bbcccccccccc............."
+        ],
+        [
+          "......................................",
+          "......................................",
+          "............aaaaaaaaaaaaaa............",
+          ".........aaaaaaaaaaaaaaaaaaaa.........",
+          ".......aaaaaaaaaaaaaaaaaaaaaaaa.......",
+          "......aaaaaaaaabbbbbbbbaaaaaaaaa......",
+          ".....aaaaaaaabbbbbbbbbbbbaaaaaaaa.....",
+          "....aaaaaaaabbaaaaaaaaaabbaaaaaaab....",
+          "...aaaaaaaabbaaaaaaaaaaaabbabbbaabb...",
+          "..aaaaaaaaabaaaaaaaaaaaaaababbbbbbbb..",
+          "..aaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbb..",
+          "..aaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbb..",
+          "..aaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbb..",
+          "..aaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbc..",
+          "..aaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbcc..",
+          "..aaaaaaaaaaaaaaaaaaaaaaabbbbbbbbccc..",
+          "..aaaaaaaaaaaaaaaaaaabbbbbbbbbbbcccc..",
+          "...baaaaaaaaaaaaaaaaabbbbbbbbbbbccc...",
+          "...bbaaaaaaaaaaaabbbbbbbbbbbbbccccc...",
+          "....bbbbaabaaabbbbbbbbbbbbbbcccccc....",
+          ".....bbbbbbbbbbbbbbbbbbbbbbcccccc.....",
+          "......bbbbbbbbbbbbbbbbbbbccccccc......",
+          ".......bbbbbbbbbbbbbbcccccccccc.......",
+          ".........bbbbbbbbbccccccccccc.........",
+          "............cbbccccccccccc............",
+          "......................................",
+          "......................................"
+        ]
+      ]
+    }
+  ],
+  "start": "idle",
+  "states": {
+    "idle": { "frames": [0], "ms": 1000 },
+    "squash": { "frames": [1, 2], "ms": 120, "loop": false, "then": "idle" }
+  }
+}

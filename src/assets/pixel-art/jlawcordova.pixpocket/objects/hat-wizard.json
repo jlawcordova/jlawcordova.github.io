@@ -1,0 +1,17 @@
+{
+  "notes": [
+    "A wizard's pointed hat: a wide brim, a gold band and a crown of boxes stacked to a point. Worn in a head's hat socket. Plum; looks: blue, teal."
+  ],
+  "category": [
+    "Cast",
+    "Hair"
+  ],
+  "kind": "sprite",
+  "parts": [
+    { "id": "brim", "box": [14, 14, 2], "at": [-2, -2, 10], "faces": { "top": "plum-1", "sides": ["plum-2", "plum-3"] }, "looks": { "blue": { "faces": { "top": "glass-1", "sides": ["glass-2", "glass-3"] } }, "teal": { "faces": { "top": "teal-1", "sides": ["teal-2", "teal-3"] } } } },
+    { "id": "crown", "box": [8, 8, 4], "at": [1, 1, 12], "faces": { "top": "plum-1", "sides": { "keys": { "a": "plum-2", "b": "gold-2" }, "shade": { "a": "plum-3", "b": "gold-3" }, "map": ["aaaaaaaa", "aaaaaaaa", "bbbbbbbb", "bbbbbbbb"] } }, "looks": { "blue": { "faces": { "top": "glass-1", "sides": { "keys": { "a": "glass-2", "b": "gold-2" }, "shade": { "a": "glass-3", "b": "gold-3" }, "map": ["aaaaaaaa", "aaaaaaaa", "bbbbbbbb", "bbbbbbbb"] } } }, "teal": { "faces": { "top": "teal-1", "sides": { "keys": { "a": "teal-2", "b": "gold-2" }, "shade": { "a": "teal-3", "b": "gold-3" }, "map": ["aaaaaaaa", "aaaaaaaa", "bbbbbbbb", "bbbbbbbb"] } } } } },
+    { "id": "crown-2", "box": [6, 6, 4], "at": [2, 2, 16], "faces": { "top": "plum-1", "sides": ["plum-2", "plum-3"] }, "looks": { "blue": { "faces": { "top": "glass-1", "sides": ["glass-2", "glass-3"] } }, "teal": { "faces": { "top": "teal-1", "sides": ["teal-2", "teal-3"] } } } },
+    { "id": "crown-3", "box": [4, 4, 4], "at": [3, 3, 20], "faces": { "top": "plum-1", "sides": ["plum-2", "plum-3"] }, "looks": { "blue": { "faces": { "top": "glass-1", "sides": ["glass-2", "glass-3"] } }, "teal": { "faces": { "top": "teal-1", "sides": ["teal-2", "teal-3"] } } } },
+    { "id": "tip", "box": [2, 2, 3], "at": [4, 4, 24], "faces": { "top": "plum-1", "sides": ["plum-2", "plum-3"] }, "looks": { "blue": { "faces": { "top": "glass-1", "sides": ["glass-2", "glass-3"] } }, "teal": { "faces": { "top": "teal-1", "sides": ["teal-2", "teal-3"] } } } }
+  ]
+}

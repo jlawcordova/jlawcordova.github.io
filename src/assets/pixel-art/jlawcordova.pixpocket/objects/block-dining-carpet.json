@@ -1,0 +1,47 @@
+{
+  "notes": [
+    "Burgundy carpet with a small gold dot in each quarter of the tile.",
+    "A one-level floor block: lay it at level 0, where its top is, and stand things on it at level 0. Depth Back."
+  ],
+  "category": [
+    "Kitchen",
+    "Building"
+  ],
+  "kind": "block",
+  "size": [1, 1, 1],
+  "faces": {
+    "top": "roof-3",
+    "left": "roof-3",
+    "right": "roof-4"
+  },
+  "surface": {
+    "keys": {
+      "a": "roof-3",
+      "b": "gold-3"
+    },
+    "map": [
+      "....................aaaa....................",
+      "..................aaaaaaaa..................",
+      "................aaaaaaaaaaaa................",
+      "..............aaaaaaaaaaaaaaaa..............",
+      "............aaaaaaaaaaaaaaaaaaaa............",
+      "..........aaaaaaaaaabbbbaaaaaaaaaa..........",
+      "........aaaaaaaaaaaaaaaaaaaaaaaaaaaa........",
+      "......aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa......",
+      "....aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa....",
+      "..aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa..",
+      "aaaaaaaaaabbaaaaaaaaaaaaaaaaaaaabbaaaaaaaaaa",
+      "aaaaaaaaaabbaaaaaaaaaaaaaaaaaaaabbaaaaaaaaaa",
+      "..aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa..",
+      "....aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa....",
+      "......aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa......",
+      "........aaaaaaaaaaaaaaaaaaaaaaaaaaaa........",
+      "..........aaaaaaaaaabbbbaaaaaaaaaa..........",
+      "............aaaaaaaaaaaaaaaaaaaa............",
+      "..............aaaaaaaaaaaaaaaa..............",
+      "................aaaaaaaaaaaa................",
+      "..................aaaaaaaa..................",
+      "....................aaaa...................."
+    ]
+  }
+}

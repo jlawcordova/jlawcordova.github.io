@@ -1,0 +1,14 @@
+{
+  "notes": [
+    "A black briefcase hanging from the hand.",
+    "Held in a hand's grip socket, or the far hand's offhand."
+  ],
+  "category": [
+    "Cast",
+    "Held"
+  ],
+  "kind": "sprite",
+  "parts": [
+    { "id": "case", "box": [2, 6, 4], "at": [0, 0, -4], "faces": { "top": "stone-3", "sides": ["stone-4", "ink"] } }
+  ]
+}

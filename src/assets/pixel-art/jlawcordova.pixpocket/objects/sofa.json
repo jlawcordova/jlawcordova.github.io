@@ -1,0 +1,83 @@
+{
+  "notes": [
+    "A sofa in clay, two seats wide, facing the lower left.",
+    "Two tiles along the column: place it on the back one.",
+    "States: idle, face-away-right, and backrest-away-right (only the back, laid over whoever sits in it).",
+    "Its seat is a chair's height: the people who sit (sit, sit-right, …) sit on it, at the same heading on its tile, the sofa and the person in a group with the sofa at depth Back. With their back to us, add the sofa again in backrest-away-right at depth Front."
+  ],
+  "category": [
+    "Office",
+    "Lounge"
+  ],
+  "kind": "sprite",
+  "anchor": [18, 27],
+  "footprint": [2, 1],
+  "keys": {
+    "a": "clay-2",
+    "b": "clay-1",
+    "c": "clay-3",
+    "d": "clay-4",
+    "e": "wood-4"
+  },
+  "layers": [
+    {
+      "loop": "pose",
+      "prefix": "p",
+      "frames": [
+        [
+          "...................aaaaaa.................................",
+          "..................baaaaaaaa...............................",
+          ".............aaaaabbbaaaaaaaa.............................",
+          "...........aaaaaaaabbbbaaaaaaaa...........................",
+          ".........aaaaaaaacaaabbbbaaaaaaaa.........................",
+          ".......aaaaaaaacccaaaaabbbbaaaaaaaa.......................",
+          ".....aaaaaaaaccccdaaaaaaabbbbaaaaaac......................",
+          "...aaaaaaaaccccdddaaaaaaaaabbbbaaccc......................",
+          ".aaaaaaaaccccdddddaaaaaaaaaaabbbbccaaaaaa.................",
+          "baaaaaaccccdddddddaaaaaaaaaaaaccccbaaaaaaaa...............",
+          "bbbaaccccdddddddddaaaaaaaaaaaaccccbbbaaaaaaaa.............",
+          "abbbbccdddddddddddaaaaaaaaaaaaccccabbbbaaaaaaaa...........",
+          "aaccccddddddddddddaaaaaaaaaaaaccccaaabbbbaaaaaaaa.........",
+          "aaccccdddddddaaaaaaaaaaaaaaaaaccccaaaaabbbbaaaaaaaa.......",
+          "aaccccdddddaaaaaaaaaaaaaaaaaaaccccaaaaaaabbbbaaaaaac......",
+          "aaccccdddaaaaaaaaaaaaaaaaaaaaaccccaaaaaaaaabbbbaaccc......",
+          "aaccccdaaaaaaaaaaaaaaaaaaaaaaaccccaaaaaaaaaaabbbbccd......",
+          "aaccccbaaaaaaaaaaaaaaaaaaaaaaaccccaaaaaaaaaaaaccccdd......",
+          "aaccccbbbaaaaaaaaaaaaaaaaaaaaaccccaaaaaaaaaaaaccccdd......",
+          "aaccccabbbbaaaaaaaaaaaaaaaaaacccccaaaaaaaaaaaaccccdd......",
+          "aaccccaaabbbbaaaaaaaaaaaaaacccccccaaaaaaaaaaaaccccdd......",
+          "aacccbaaaaabbbbaaaaaaaaaaccccaaaaaaaaaaaaaaaaaccccdaaaaaa.",
+          "aacccbaaaaaaabbbbaaaaaaccccaaaaaaaaaaaaaaaaaaacccaaaaaaaac",
+          "aacccaaaaaaaaaabbbbaaccccaaaaaaaaaaaaaaaaaaaaacaaaaaaaaccc",
+          "aacccaaaaaaaaaaaabbbbccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaccccd",
+          ".acccaaaaaaaaaaaaaccccbaaaaaaaaaaaaaaaaaaaaaaaaaaaaccccddd",
+          "...eeaaaaaaaaaaaaaccccbbbaaaaaaaaaaaaaaaaaaaaaaaaccccddddd",
+          ".....aaaaaaaaaaaaaccccabbbbaaaaaaaaaaaaaaaaaaaaccccddddddd",
+          ".......aaaaaaaaaaaccccaaabbbbaaaaaaaaabaaaaaaccccddddddddd",
+          ".........aaaaaaaaaabbbaaaaabbbbaaaaaaabbbaaccccddddddddddd",
+          "...........aaaaaaaaaabaaaaaaabbbbaaaaaabbbbccddddddddddddd",
+          ".............aaaaaaaaaaaaaaaaaabbbbaacaaccccdddddddddddddd",
+          "...............aaaaaaaaaaaaaaaaaabbbbcaaccccdddddddddddddd",
+          ".................aaaaaaaaaaaaaaaaaccccaaccccdddddddddddddd",
+          "...................aaaaaaaaaaaaaaaccccaaccccdddddddddddddd",
+          ".....................aaaaaaaaaaaaaccccaaccccdddddddddddddd",
+          ".......................aaaaaaaaaaaccccaaccccdddddddddddddd",
+          ".........................aaaaaaaaacbbcaaccccdddddddddddddd",
+          "...........................aaaaaaaccccaaccccddddddddddddd.",
+          ".............................aaaaaccccaaccccddddddddddd...",
+          "...............................aaaccccaaccccddddddddd.....",
+          ".................................accccaaccccddddddd.......",
+          "...................................cc.aaccccddddd.........",
+          "......................................aaccccddd...........",
+          ".......................................accccd.............",
+          ".........................................ee...............",
+          ".........................................................."
+        ]
+      ]
+    }
+  ],
+  "start": "idle",
+  "states": {
+    "idle": { "frames": [0], "ms": 1000 }
+  }
+}

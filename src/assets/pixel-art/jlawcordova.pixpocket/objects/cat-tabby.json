@@ -1,0 +1,120 @@
+{
+  "notes": [
+    "A tabby.",
+    "Sitting, it faces the lower left; walking, it turns to the heading it walks.",
+    "States: idle (the tail laid down, swaying), jump and sleep; walk, walk-right, walk-away-left and walk-away-right (on its feet, the tail up, a step every 100 ms)."
+  ],
+  "category": [
+    "Office",
+    "Cats"
+  ],
+  "kind": "sprite",
+  "anchor": [13, 21],
+  "keys": {
+    "a": "wood-1",
+    "b": "wood-2",
+    "c": "roof-1",
+    "d": "wood-3",
+    "e": "ink",
+    "f": "wood-4"
+  },
+  "layers": [
+    {
+      "loop": "pose",
+      "prefix": "p",
+      "frames": [
+        [
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          ".........a................",
+          "........bb................",
+          "........bcb..a............",
+          "......aaaaaadd............",
+          "....aaaaaaaaddd...........",
+          "....aaaaaaaaaaaa..........",
+          "....bbaaaaaaaaaa..........",
+          "....bbbbaaaaaadd..........",
+          "....ebbbbbaadddfaa........",
+          "....ebbbbbbdfddfaaaa......",
+          "....bbbbbebdfddfaaaa......",
+          "....bbccbebdfdddaadd......",
+          "....bbbbbbbddddddddf......",
+          "......bbbbbdddddfddf......",
+          "......bbbbbdddbdfddf......",
+          "......bbbbbdbbbdfddd......",
+          "......bbbbbdbbbddddd......",
+          "......bbdbbdbbbdddddbb....",
+          "......bbdbbdbbbddd..ddbb..",
+          "........dbbd..bd......ddba",
+          "..........bd............dd",
+          "..........................",
+          ".........................."
+        ],
+        [
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          ".........a................",
+          "........bb................",
+          "........bcb..a............",
+          "......aaaaaadd............",
+          "....aaaaaaaaddd...........",
+          "....aaaaaaaaaaaa..........",
+          "....bbaaaaaaaaaa..........",
+          "....bbbbaaaaaadd..........",
+          "....ebbbbbaadddfaa........",
+          "....ebbbbbbdfddfaaaa......",
+          "....bbbbbebdfddfaaaa......",
+          "....bbccbebdfdddaadd......",
+          "....bbbbbbbddddddddf......",
+          "......bbbbbdddddfddf......",
+          "......bbbbbdddbdfddf......",
+          "......bbbbbdbbbdfddd......",
+          "......bbbbbdbbbddddd......",
+          "......bbdbbdbbbdddddbb....",
+          "......bbdbbdbbbddd..ddbbba",
+          "........dbbd..bd......dddd",
+          "..........bd..............",
+          "..........................",
+          ".........................."
+        ],
+        [
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          ".........a................",
+          "........bb................",
+          "........bcb..a............",
+          "......aaaaaadd............",
+          "....aaaaaaaaddd...........",
+          "....aaaaaaaaaaaa..........",
+          "....bbaaaaaaaaaa..........",
+          "....bbbbaaaaaadd..........",
+          "....ebbbbbaadddfaa........",
+          "....ebbbbbbdfddfaaaa......",
+          "....bbbbbebdfddfaaaa......",
+          "....bbccbebdfdddaadd......",
+          "....bbbbbbbddddddddf......",
+          "......bbbbbdddddfddf......",
+          "......bbbbbdddbdfddf......",
+          "......bbbbbdbbbdfddd......",
+          "......bbbbbdbbbddddd......",
+          "......bbdbbdbbbdddddbb...a",
+          "......bbdbbdbbbddd..ddbbbd",
+          "........dbbd..bd......ddd.",
+          "..........bd..............",
+          "..........................",
+          ".........................."
+        ]
+      ]
+    }
+  ],
+  "start": "idle",
+  "states": {
+    "idle": { "frames": [0, 0, 1, 2, 2, 1], "ms": 500 }
+  }
+}

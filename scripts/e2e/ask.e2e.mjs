@@ -36,7 +36,7 @@ const ENDPOINT = 'https://ask.e2e.invalid/ask';
 const SHOTS = process.env.ASK_SCREENSHOTS ? resolve(ROOT, process.env.ASK_SCREENSHOTS) : '';
 const DESKTOP = { width: 1440, height: 900 };
 const PHONE = { width: 390, height: 844 };
-/** The jump (the hop state, 480 ms) and the glide (0.5 s), with slack. */
+/** The jump (the jump state, 500 ms) and the glide (0.5 s), with slack. */
 const OPEN_MS = 1400;
 const RESET_AT = new Date(Date.now() + 3 * 3600_000).toISOString();
 
@@ -191,7 +191,7 @@ const character = (page) =>
     const y = art.top + (Number(foot.dataset.y) - vb.y) * s;
     const r = /** @type {HTMLElement} */ (document.querySelector('.ask-bubble')).getBoundingClientRect();
     const bubble = { left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height };
-    return { x, y, head: y - 29 * s, s, bubble };
+    return { x, y, head: y - 36 * s, s, bubble };
   });
 
 const rect = (page, selector) =>
@@ -263,14 +263,14 @@ for (const [label, viewport] of /** @type {const} */ ([
         () =>
           new Promise((done) => {
             const figure = document.querySelector('.ask-character');
-            new MutationObserver(() => figure?.getAttribute('data-play') === 'hop' && done(true)).observe(figure, {
+            new MutationObserver(() => figure?.getAttribute('data-play') === 'jump' && done(true)).observe(figure, {
               attributes: true,
             });
             setTimeout(() => done(false), 3000);
           }),
       );
       await page.locator('.ask-bubble').click();
-      assert.equal(await playing, true, 'the character jumps (data-play="hop")');
+      assert.equal(await playing, true, 'the character jumps (data-play="jump")');
       await page.locator('.ask-panel').waitFor({ state: 'visible' });
       await page.waitForTimeout(OPEN_MS);
 
@@ -286,8 +286,8 @@ for (const [label, viewport] of /** @type {const} */ ([
       if (viewport.width <= 640) assert.ok(panel.height <= viewport.height * 0.6 + 1, 'at most 60% of the screen (R19)');
 
       const avatar = await rect(page, '.ask-avatar');
-      assert.ok(Math.abs(avatar.left + 21 - (panel.left + 37)) <= 2, `the character stands at the panel's left (${avatar.left})`);
-      assert.ok(Math.abs(avatar.top + 87 - (panel.top - 3)) <= 2, `the character stands on the panel's top edge (${avatar.top})`);
+      assert.ok(Math.abs(avatar.left + 36 - (panel.left + 52)) <= 2, `the character stands at the panel's left (${avatar.left})`);
+      assert.ok(Math.abs(avatar.top + 126 - (panel.top - 12)) <= 2, `the character stands on the panel's top edge (${avatar.top})`);
       assert.equal(await page.locator('.ask-avatar').getAttribute('aria-hidden'), 'true', 'the moving character is decorative');
       assert.equal(
         await page.evaluate(() => getComputedStyle(document.querySelector('.ask-character')).visibility),
@@ -462,6 +462,9 @@ describe("on a phone's touch screen", () => {
   test("a swipe on the panel doesn't scroll the page behind it, and the page outside it still scrolls", async () => {
     const { page } = await home({ viewport: PHONE, touch: true });
     await openPanel(page);
+    // Where the page stands once the panel is open: on a phone the character
+    // is a little under the fold, so pressing the bubble scrolls it into view.
+    const start = await scrolled(page);
     const panel = await rect(page, '.ask-panel');
     const at = { x: Math.round(panel.left + panel.width / 2) };
     for (const [part, selector] of [
@@ -472,9 +475,9 @@ describe("on a phone's touch screen", () => {
       const box = await rect(page, selector);
       const y = Math.round(box.top + Math.min(box.height / 2, 20));
       await swipe(page, at.x, y, -160);
-      assert.equal(await scrolled(page), 0, `a swipe up on ${part}`);
+      assert.equal(await scrolled(page), start, `a swipe up on ${part}`);
       await swipe(page, at.x, y, 160);
-      assert.equal(await scrolled(page), 0, `a swipe down on ${part}`);
+      assert.equal(await scrolled(page), start, `a swipe down on ${part}`);
     }
     // A long conversation still scrolls under the finger, and stops at its top.
     await page.evaluate(() => {
@@ -487,10 +490,10 @@ describe("on a phone's touch screen", () => {
     await swipe(page, at.x, Math.round(log.top + 40), 160);
     assert.ok((await page.evaluate(() => document.querySelector('.ask-panel__log')?.scrollTop ?? 0)) < end, 'the conversation scrolls');
     for (let i = 0; i < 6; i++) await swipe(page, at.x, Math.round(log.top + 40), 300);
-    assert.equal(await scrolled(page), 0, 'scrolling past the top of the conversation');
+    assert.equal(await scrolled(page), start, 'scrolling past the top of the conversation');
 
     await swipe(page, at.x, Math.round((await rect(page, '.ask-panel')).top - 60), -160);
-    assert.ok((await scrolled(page)) > 0, 'a swipe above the panel scrolls the page (it is non-modal)');
+    assert.ok((await scrolled(page)) > start, 'a swipe above the panel scrolls the page (it is non-modal)');
     await page.close();
   });
 
@@ -562,7 +565,7 @@ describe('under reduced motion', () => {
     assert.equal(await page.evaluate(() => document.querySelector('.ask-avatar').getAnimations().length), 0, 'no glide');
     const panel = await rect(page, '.ask-panel');
     const avatar = await rect(page, '.ask-avatar');
-    assert.ok(Math.abs(avatar.top + 87 - (panel.top - 3)) <= 2, 'already on the panel');
+    assert.ok(Math.abs(avatar.top + 126 - (panel.top - 12)) <= 2, 'already on the panel');
     const moving = await page.evaluate(() =>
       [...document.querySelectorAll('.ask-avatar svg g')].filter((g) => getComputedStyle(g).animationName !== 'none').length,
     );

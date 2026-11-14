@@ -1,0 +1,114 @@
+{
+  "notes": [
+    "A cluster of four red candles of different heights, standing on the floor.",
+    "States: idle (lit, the flames flickering), out."
+  ],
+  "category": [
+    "Range",
+    "Tower"
+  ],
+  "kind": "sprite",
+  "anchor": [5, 19],
+  "keys": {
+    "a": "clay-2",
+    "b": "clay-1",
+    "c": "gold-1",
+    "d": "roof-1",
+    "e": "roof-2",
+    "f": "roof-3",
+    "g": "ink"
+  },
+  "layers": [
+    {
+      "loop": "pose",
+      "prefix": "p",
+      "frames": [
+        [
+          "..aa..........",
+          "..bb..........",
+          ".acba.........",
+          "ddccdd........",
+          "dddddd........",
+          "eeddff........",
+          "eeefff........",
+          "eeefff....a...",
+          "eeefff....ba..",
+          "eeefff..aacba.",
+          "eeefff..bbccdd",
+          "eeefff.acbaddd",
+          "eeeaffddccddff",
+          "eeabffddddddff",
+          "eabcafeeddffff",
+          "ddccddeeefffff",
+          "ddddddeeefffff",
+          "eeddffeeefffff",
+          "eeefffeeefffff",
+          "eeefffeeefffff",
+          "eeefffeeefff..",
+          "eeefffeeefff..",
+          "eeefffeeefff..",
+          "..ef..eeefff..",
+          "........ef...."
+        ],
+        [
+          "..a...........",
+          "..ba..........",
+          ".acba.........",
+          "ddccdd........",
+          "dddddd........",
+          "eeddff........",
+          "eeefff........",
+          "eeefff.....a..",
+          "eeefff....ab..",
+          "eeefff..aabca.",
+          "eeefff..baccdd",
+          "eeefff.acbaddd",
+          "eeaaffddccddff",
+          "eebbffddddddff",
+          "eacbafeeddffff",
+          "ddccddeeefffff",
+          "ddddddeeefffff",
+          "eeddffeeefffff",
+          "eeefffeeefffff",
+          "eeefffeeefffff",
+          "eeefffeeefff..",
+          "eeefffeeefff..",
+          "eeefffeeefff..",
+          "..ef..eeefff..",
+          "........ef...."
+        ],
+        [
+          "...a..........",
+          "..ab..........",
+          ".abca.........",
+          "ddccdd........",
+          "dddddd........",
+          "eeddff........",
+          "eeefff........",
+          "eeefff....aa..",
+          "eeefff....bb..",
+          "eeefff...acba.",
+          "eeefff..abccdd",
+          "eeefff.abcaddd",
+          "eeafffddccddff",
+          "eebaffddddddff",
+          "eacbafeeddffff",
+          "ddccddeeefffff",
+          "ddddddeeefffff",
+          "eeddffeeefffff",
+          "eeefffeeefffff",
+          "eeefffeeefffff",
+          "eeefffeeefff..",
+          "eeefffeeefff..",
+          "eeefffeeefff..",
+          "..ef..eeefff..",
+          "........ef...."
+        ]
+      ]
+    }
+  ],
+  "start": "idle",
+  "states": {
+    "idle": { "frames": [0, 1, 2, 1], "ms": 200 }
+  }
+}

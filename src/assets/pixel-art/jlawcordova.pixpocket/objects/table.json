@@ -1,0 +1,58 @@
+{
+  "notes": [
+    "A small round cafe table on one stem."
+  ],
+  "category": [
+    "Office",
+    "Pantry"
+  ],
+  "kind": "sprite",
+  "anchor": [14, 29],
+  "keys": {
+    "a": "wood-1",
+    "b": "wood-2",
+    "c": "wood-3",
+    "d": "stone-1",
+    "e": "stone-2",
+    "f": "stone-3",
+    "g": "stone-4"
+  },
+  "layers": [
+    {
+      "map": [
+        ".........aaaaaaaaaa.........",
+        ".....aaaaaaaaaaaaaaaaaa.....",
+        "...aaaaaaaaaaaaaaaaaaaaaa...",
+        "..aaaaaaaaaaaaaaaaaaaaaaaa..",
+        ".aaaaaaaaaaaaaaaaaaaaaaaaaa.",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "baaaaaaaaaaaaaaaaaaaaaaaaaac",
+        "bbaaaaaaaaaaaaaaaaaaaaaaaacc",
+        ".bbaaaaaaaaaaaaaaaaaaaaaacc.",
+        "..bbbaaaaaaaaaaaaaaaaaaccc..",
+        "...bbbbbbaaaaaaaaaacccccc...",
+        ".....bbbbbbbbbccccccccc.....",
+        ".........bbbbbccccc.........",
+        "............deef............",
+        "............deef............",
+        "............deef............",
+        "............deef............",
+        "............deef............",
+        "............deef............",
+        "............deef............",
+        "............deef............",
+        "............deef............",
+        ".........fffdeeffff.........",
+        "........ffffdeefffff........",
+        ".......fffffdeeffffff.......",
+        ".......ffffffffffffff.......",
+        ".......gffffffffffffg.......",
+        "........gffffffffffg........",
+        ".........gggggggggg........."
+      ]
+    }
+  ]
+}

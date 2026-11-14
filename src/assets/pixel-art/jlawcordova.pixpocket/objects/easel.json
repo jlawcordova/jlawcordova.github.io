@@ -1,0 +1,74 @@
+{
+  "notes": [
+    "An easel facing the lower left, a canvas on it with a painting begun in red, teal and yellow. About a person tall.",
+    "The painter stands on the tile to its lower left."
+  ],
+  "category": [
+    "Range",
+    "Studio"
+  ],
+  "kind": "sprite",
+  "anchor": [13, 39],
+  "keys": {
+    "a": "wood-1",
+    "b": "wood-2",
+    "c": "path-1",
+    "d": "wood-3",
+    "e": "wood-4",
+    "f": "cream",
+    "g": "roof-1",
+    "h": "path-2",
+    "i": "teal-2",
+    "j": "gold-1"
+  },
+  "layers": [
+    {
+      "map": [
+        "....aa..............",
+        "....aa............bb",
+        "..ccbd............bb",
+        "..cccc............de",
+        "..ffcccc..........de",
+        "..ffffcccc........de",
+        "..ffffffcccc....aade",
+        "..fgggffffcccc..aade",
+        "..fggggfffffccccbdde",
+        "..fgggggffffffccccde",
+        "..ffggggffffffffccde",
+        "..ffggggfffffffffhde",
+        "..ffffgffiiifffffhde",
+        "..fffffffiiiiifffhde",
+        "..ffffffffiiiifffhde",
+        "..ffffffffiiiiiffhde",
+        "..fffjjjffffiiiffhde",
+        "..ffffjjjjfffffffhde",
+        "..ffffjjjjfffffffhde",
+        "..ffffffjjjffffffhde",
+        "aafffffffffffffffhde",
+        "aafffffffffffffffhde",
+        "bbaafffffffffffffhde",
+        "bbbbaafffffffffffhde",
+        "..bbbbaafffffffffhde",
+        "....bbbbaafffffffhde",
+        "....bdbbbbaafffffhde",
+        "....bd..bbbbaafffhaa",
+        "....bd....bbbbaafhaa",
+        "....bd......bbbbaadd",
+        "....bd........bbbddd",
+        "....bd..........bdde",
+        "....bd..........bdde",
+        "....bd..........bdde",
+        "....bd..........bdde",
+        "....bd..........bdde",
+        "....bd..........bdde",
+        "....bd..........bd..",
+        "................bd..",
+        "................bd..",
+        "................bd..",
+        "................bd..",
+        "................bd..",
+        "................bd.."
+      ]
+    }
+  ]
+}

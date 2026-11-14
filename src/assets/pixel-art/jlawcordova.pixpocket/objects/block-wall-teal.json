@@ -1,0 +1,17 @@
+{
+  "notes": [
+    "A wall block painted teal.",
+    "A wall block, one level high: stack them on a floor block (levels 1, 2, 3) into a wall a tile thick, and give them depth Back."
+  ],
+  "category": [
+    "Office",
+    "Walls"
+  ],
+  "kind": "block",
+  "size": [1, 1, 1],
+  "faces": {
+    "top": "cream",
+    "left": "teal-2",
+    "right": "teal-3"
+  }
+}

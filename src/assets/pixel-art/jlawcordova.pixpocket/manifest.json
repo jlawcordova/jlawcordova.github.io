@@ -1,0 +1,24 @@
+{
+  "format": 3,
+  "name": "jlawcordova",
+  "publish": {
+    "dir": "..",
+    "budgets": {
+      "hero-island.svg": {
+        "raw": 1000000,
+        "gzip": 153600
+      },
+      "range-sprite.svg": {
+        "raw": 400000,
+        "gzip": 70000
+      }
+    }
+  },
+  "preview": {
+    "card": "#E9DCC6",
+    "grid": "rgba(90, 62, 43, 0.06)"
+  },
+  "theme": {
+    "darkPage": "#1C1712"
+  }
+}

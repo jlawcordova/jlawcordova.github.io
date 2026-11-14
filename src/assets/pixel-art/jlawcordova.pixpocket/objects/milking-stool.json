@@ -1,0 +1,37 @@
+{
+  "notes": [
+    "A milking stool: a round wooden seat at a chair's height on three legs. Sit someone on it (sit), in a group with it, beside a cow; type is milking."
+  ],
+  "category": [
+    "Farm",
+    "Things"
+  ],
+  "kind": "sprite",
+  "anchor": [6, 12],
+  "keys": {
+    "a": "wood-1",
+    "b": "wood-2",
+    "c": "wood-3"
+  },
+  "layers": [
+    {
+      "map": [
+        "...aaaaaa...",
+        ".aaaaaaaaaa.",
+        "aaaaaaaaaaaa",
+        "aaaaaaaaaaaa",
+        "baaaaaaaaaac",
+        "bbbaaaaaaccc",
+        ".bbbbbccccc.",
+        ".bcbbbcccbc.",
+        ".bcbc....bc.",
+        ".bcbc....bc.",
+        ".bcbc....bc.",
+        ".bc......bc.",
+        ".bc......bc.",
+        ".bc......bc.",
+        ".bc........."
+      ]
+    }
+  ]
+}

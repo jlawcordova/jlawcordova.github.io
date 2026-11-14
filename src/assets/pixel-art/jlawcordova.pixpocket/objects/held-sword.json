@@ -1,0 +1,17 @@
+{
+  "notes": [
+    "A sword held upright beside the hand: a leather grip, a gold crossguard and a steel blade.",
+    "Held in a hand's grip socket, or the far hand's offhand."
+  ],
+  "category": [
+    "Cast",
+    "Held"
+  ],
+  "kind": "sprite",
+  "handle": [-3, -1, 0],
+  "parts": [
+    { "id": "grip", "box": [2, 2, 3], "at": [0, 0, 0], "faces": { "top": "soil-3", "sides": ["soil-3", "soil-4"] } },
+    { "id": "guard", "box": [2, 6, 2], "at": [0, -2, 3], "faces": { "top": "gold-2", "sides": ["gold-2", "gold-3"] } },
+    { "id": "blade", "box": [2, 2, 12], "at": [0, 0, 5], "faces": { "top": "cream", "sides": ["stone-1", "stone-2"] } }
+  ]
+}

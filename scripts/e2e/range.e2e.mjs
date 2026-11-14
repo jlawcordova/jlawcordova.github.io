@@ -265,7 +265,7 @@ test('Entrance in SVG R9: A during a build-up hops the character, and the build-
   });
   assert.ok(before.length >= 4, `${before.length} pieces building`);
   await page.getByRole('button', { name: 'A: jump' }).click();
-  assert.equal(await plays(page), 'enter hop', 'A adds hop beside enter');
+  assert.equal(await plays(page), 'enter jump', 'A adds jump beside enter');
   const after = await page.evaluate(() => {
     const running = /** @type {Animation[]} */ (/** @type {any} */ (window).building);
     const live = new Set(document.getAnimations());
@@ -275,7 +275,7 @@ test('Entrance in SVG R9: A during a build-up hops the character, and the build-
     assert.ok(a.live, `animation ${i} wasn't cancelled (${a.state})`);
     assert.ok(a.time >= before[i], `animation ${i} wasn't restarted (${before[i]} → ${a.time} ms)`);
   });
-  const hopping = await page.evaluate(() => document.querySelector('.range__sprite-art').getAnimations({ subtree: true }).some((a) => /** @type {CSSAnimation} */ (a).animationName === 'range-sprite--hop'));
+  const hopping = await page.evaluate(() => document.querySelector('.range__sprite-art').getAnimations({ subtree: true }).some((a) => /** @type {CSSAnimation} */ (a).animationName === 'range-sprite--jump'));
   assert.ok(hopping, 'the character hops');
   await settingAtRest(page);
   await page.waitForFunction(() => {

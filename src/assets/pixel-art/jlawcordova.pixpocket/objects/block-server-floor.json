@@ -1,0 +1,105 @@
+{
+  "notes": [
+    "A server room's raised floor: pale panels, one of them a vent, over a strip of teal vent grilles on its sides.",
+    "A one-level floor block: lay it at level 0, where its top is, and stand things on it at level 0. Depth Back."
+  ],
+  "category": [
+    "Range",
+    "Floors"
+  ],
+  "kind": "block",
+  "size": [1, 1, 1],
+  "faces": {
+    "top": "path-1",
+    "left": "path-2",
+    "right": "path-3"
+  },
+  "surface": {
+    "keys": {
+      "a": "path-1",
+      "b": "path-2",
+      "c": "stone-2"
+    },
+    "map": [
+      "....................abba....................",
+      "..................abbaabba..................",
+      "................abbaaaaaabba................",
+      "..............abbaaaaaaaaaabba..............",
+      "............abbaaaaaaaaaaaaaabba............",
+      "..........bbbaaaaaaaaaaaaaaaaaabbb..........",
+      "........abbbbaaaaaaaaaaaaaaaaaabbbba........",
+      "......abbaaaabbaaaaaaaaaaaaaabbaaaabba......",
+      "....abbaaaaaaaabbaaaaaaaaaabbaaccaaaabba....",
+      "..abbaaaaaaaaaaaabbaaaaaabbaaccaaccaaaabba..",
+      "abbaaaaaaaaaaaaaaaabbaabbaaccaaccaaccaaaabba",
+      "baaaaaaaaaaaaaaaaaaaabbaaaaaaccaaccaaccaaaab",
+      "..baaaaaaaaaaaaaaaabbaabbaaaaaaccaaccaaaab..",
+      "....baaaaaaaaaaaabbaaaaaabbaaaaaaccaaaab....",
+      "......baaaaaaaabbaaaaaaaaaabbaaaaaaaab......",
+      "........baaaabbaaaaaaaaaaaaaabbaaaab........",
+      "..........bbbaaaaaaaaaaaaaaaaaabbb..........",
+      "............baaaaaaaaaaaaaaaaaab............",
+      "..............baaaaaaaaaaaaaab..............",
+      "................baaaaaaaaaab................",
+      "..................baaaaaab..................",
+      "....................baab...................."
+    ]
+  },
+  "sides": {
+    "keys": {
+      "a": "path-2",
+      "b": "water-3",
+      "c": "water-4",
+      "d": "path-3",
+      "e": "ink"
+    },
+    "left": [
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "abbbbbbbbbaabbbbbbbbba",
+      "abbbbbbbbbaabbbbbbbbba",
+      "acccccccccaaccccccccca",
+      "abbbbbbbbbaabbbbbbbbba",
+      "acccccccccaaccccccccca",
+      "abbbbbbbbbaabbbbbbbbba",
+      "abbbbbbbbbaabbbbbbbbba",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "right": [
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dcccccccccddcccccccccd",
+      "dcccccccccddcccccccccd",
+      "deeeeeeeeeddeeeeeeeeed",
+      "dcccccccccddcccccccccd",
+      "deeeeeeeeeddeeeeeeeeed",
+      "dcccccccccddcccccccccd",
+      "dcccccccccddcccccccccd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd"
+    ]
+  }
+}

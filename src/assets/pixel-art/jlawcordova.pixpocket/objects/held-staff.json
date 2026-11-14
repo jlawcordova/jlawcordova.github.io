@@ -1,0 +1,16 @@
+{
+  "notes": [
+    "A wizard's staff standing beside the hand, a teal crystal on top. Casting, magic sparkles round the crystal.",
+    "Held in a hand's grip socket, or the far hand's offhand."
+  ],
+  "category": [
+    "Cast",
+    "Held"
+  ],
+  "kind": "sprite",
+  "handle": [-3, -1, 5],
+  "parts": [
+    { "id": "shaft", "box": [2, 2, 28], "at": [0, 0, 0], "faces": { "top": "wood-1", "sides": ["wood-1", "wood-2"] } },
+    { "id": "crystal", "box": [4, 4, 4], "at": [-1, -1, 28], "faces": { "top": "teal-1", "sides": ["teal-1", "teal-2"] } }
+  ]
+}

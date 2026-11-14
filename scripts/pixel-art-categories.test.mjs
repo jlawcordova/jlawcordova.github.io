@@ -1,21 +1,21 @@
-// Every object in the site's Pixel Lab document has a category (Pixel Lab
+// Every object in the site's Pixpocket document has a category (Pixel Lab
 // categories spec R7, D3), so its Library opens in tabs and nothing lands in
 // Others. Which category is the art's call, so this checks only that there is
-// one. Node built-ins, and Pixel Lab's program for its JSON.
+// one. Reads the document's files; a sprite that extends another has its own.
 
 import assert from 'node:assert/strict';
+import { readdir, readFile } from 'node:fs/promises';
 import test from 'node:test';
-import { fileURLToPath } from 'node:url';
 
-import { pixellab } from './pixellab.mjs';
-
-const DOC = fileURLToPath(new URL('../src/assets/pixel-art/jlawcordova.pixellab', import.meta.url));
+const OBJECTS = new URL('../src/assets/pixel-art/jlawcordova.pixpocket/objects/', import.meta.url);
 
 test("R7: every object in the site's document has a category", async () => {
-  const { status, stdout, stderr } = await pixellab(['object', 'list', '--document', DOC, '--json']);
-  assert.equal(status, 0, stderr);
-  const { objects } = JSON.parse(stdout);
-  assert.ok(objects.length > 0, 'the document lists its objects');
-  const without = objects.filter((o) => !o.category?.length).map((o) => o.name);
-  assert.deepEqual(without, [], 'give these a category with `npm run pixellab -- object category <name> --to <path>`');
+  const files = (await readdir(OBJECTS)).filter((f) => f.endsWith('.json'));
+  assert.ok(files.length > 0, 'the document has objects');
+  const without = [];
+  for (const file of files) {
+    const object = JSON.parse(await readFile(new URL(file, OBJECTS), 'utf8'));
+    if (!object.category?.length) without.push(file.slice(0, -5));
+  }
+  assert.deepEqual(without, [], 'give these a category with `npm run pixpocket -- object category <name> --to <path>`');
 });

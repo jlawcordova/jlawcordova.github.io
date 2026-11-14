@@ -1,0 +1,71 @@
+{
+  "notes": [
+    "An alchemist's workbench along the column: a round flask of red, a tall plum bottle and a squat green one on a wooden table."
+  ],
+  "category": [
+    "Range",
+    "Lab"
+  ],
+  "kind": "sprite",
+  "anchor": [15, 31],
+  "keys": {
+    "a": "glass-1",
+    "b": "glass-2",
+    "c": "wood-1",
+    "d": "plum-1",
+    "e": "wood-2",
+    "f": "wood-3",
+    "g": "roof-1",
+    "h": "roof-2",
+    "i": "plum-2",
+    "j": "plum-3",
+    "k": "grass-1",
+    "l": "grass-2",
+    "m": "grass-3",
+    "n": "wood-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "..........ab..................",
+        "..........ab..................",
+        "..........ab..................",
+        "..........ab..................",
+        ".........aaaa.................",
+        ".......aaaaaaaa...............",
+        ".......aaaaaaaa.....cc........",
+        "......aaaaaaaaab....cc........",
+        "......aaaaaaaaab..ddefdd......",
+        "......ggggggghhh..ddefdd......",
+        "......ggggggghhh..iiddjj......",
+        "......cgggggghhc..iiijjj......",
+        "....cccgggggghhccciiijjj......",
+        "..cccccccggggccccciiijjj......",
+        "cccccccccccccccccciiijjj......",
+        "cccccccccccccckkefkkijjj......",
+        "eecccccccccccckkefkkijjjcc....",
+        "eeeeccccccccccllkkmmijjjcccc..",
+        "..eeeecccccccclllmmmijjjcccccc",
+        "..fneeeecccccclllmmmijcccccccc",
+        "..fn..eeeecccclllmmmccccccccff",
+        "..fn....eeeecclllmmmccccccffff",
+        "..fn......eeeelllmmmccccffff..",
+        "..fn......fneeeelmccccfffffn..",
+        "..fn......fn..eeeeccffff..fn..",
+        "..fn......fn....eeefff....fn..",
+        "..fn..............ef......fn..",
+        "..fn..............fn......fn..",
+        "..fn..............fn......fn..",
+        "..fn..............fn......fn..",
+        "..................fn......fn..",
+        "..................fn......fn..",
+        "..................fn......fn..",
+        "..................fn......fn..",
+        "..................fn..........",
+        "..................fn..........",
+        "..................fn..........",
+        "..................fn.........."
+      ]
+    }
+  ]
+}

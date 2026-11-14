@@ -1,0 +1,47 @@
+{
+  "notes": [
+    "White oak planks, pale wood, four boards to a tile.",
+    "A one-level floor block: lay it at level 0, where its top is, and stand things on it at level 0."
+  ],
+  "category": [
+    "Office",
+    "Floors"
+  ],
+  "kind": "block",
+  "size": [1, 1, 1],
+  "faces": {
+    "top": "cream",
+    "left": "path-1",
+    "right": "path-2"
+  },
+  "surface": {
+    "keys": {
+      "a": "cream",
+      "b": "path-1"
+    },
+    "map": [
+      "....................abba....................",
+      "..................abbaabba..................",
+      "................abbaaaaaabba................",
+      "..............aabbaaaaaaaaabba..............",
+      "............aaaaaabbaaaaaaaaabba............",
+      "..........baaaaaaaaabbaaaaaaaaabba..........",
+      "........aaabbaaaaaaaaabbaaaaaaaaabba........",
+      "......aaaaaaabbaaaaaaaaabbaaaaaaaaabba......",
+      "....bbaaaaaaaaabbaaaaaaaaabbaaaaaaaaabba....",
+      "..aaaabbaaaaaaaaabbaaaaaabbabbaaaaaaaaabba..",
+      "aaaaaaaabbaaaaaaaaabbaabbaaaaabbaaaaaaaaabba",
+      "baaaaaaaaabbaaaaaaaaabbaaaaaaaaabbaaaaaaaaab",
+      "..baaaaabbaabbaaaaaaaaabbaaaaaaaaabbaaaaab..",
+      "....babbaaaaaabbaaaaaaaaabbaaaaaaaaabbab....",
+      "......baaaaaaaaabbaaaaaaaabbbaaaaaaaaa......",
+      "........baaaaaaaaabbaaaabbaaabbaaaaa........",
+      "..........baaaaaaaaabbbbaaaaaaabba..........",
+      "............baaaaaaaaabbaaaaaaaa............",
+      "..............baaaaaaaaabbaaaa..............",
+      "................baaaaaaaaabb................",
+      "..................baaaaaaa..................",
+      "....................baaa...................."
+    ]
+  }
+}

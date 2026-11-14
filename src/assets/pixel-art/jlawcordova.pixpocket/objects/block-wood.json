@@ -1,0 +1,47 @@
+{
+  "notes": [
+    "Plank floor, warm wood, four boards to a tile.",
+    "A one-level floor block: lay it at level 0, where its top is, and stand things on it at level 0."
+  ],
+  "category": [
+    "Office",
+    "Floors"
+  ],
+  "kind": "block",
+  "size": [1, 1, 1],
+  "faces": {
+    "top": "wood-1",
+    "left": "wood-2",
+    "right": "wood-3"
+  },
+  "surface": {
+    "keys": {
+      "a": "wood-1",
+      "b": "wood-2"
+    },
+    "map": [
+      "....................abba....................",
+      "..................abbaabba..................",
+      "................abbaaaaaabba................",
+      "..............aabbaaaaaaaaabba..............",
+      "............aaaaaabbaaaaaaaaabba............",
+      "..........baaaaaaaaabbaaaaaaaaabba..........",
+      "........aaabbaaaaaaaaabbaaaaaaaaabba........",
+      "......aaaaaaabbaaaaaaaaabbaaaaaaaaabba......",
+      "....bbaaaaaaaaabbaaaaaaaaabbaaaaaaaaabba....",
+      "..aaaabbaaaaaaaaabbaaaaaabbabbaaaaaaaaabba..",
+      "aaaaaaaabbaaaaaaaaabbaabbaaaaabbaaaaaaaaabba",
+      "baaaaaaaaabbaaaaaaaaabbaaaaaaaaabbaaaaaaaaab",
+      "..baaaaabbaabbaaaaaaaaabbaaaaaaaaabbaaaaab..",
+      "....babbaaaaaabbaaaaaaaaabbaaaaaaaaabbab....",
+      "......baaaaaaaaabbaaaaaaaabbbaaaaaaaaa......",
+      "........baaaaaaaaabbaaaabbaaabbaaaaa........",
+      "..........baaaaaaaaabbbbaaaaaaabba..........",
+      "............baaaaaaaaabbaaaaaaaa............",
+      "..............baaaaaaaaabbaaaa..............",
+      "................baaaaaaaaabb................",
+      "..................baaaaaaa..................",
+      "....................baaa...................."
+    ]
+  }
+}

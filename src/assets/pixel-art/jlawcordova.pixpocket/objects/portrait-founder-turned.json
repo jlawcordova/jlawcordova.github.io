@@ -1,0 +1,55 @@
+{
+  "notes": [
+    "A framed portrait of the founder: a chibi head and shoulders on mustard.",
+    "Hangs on the wall behind its tile's back-left edge (a wall along the rows): place it on the floor tile in front of the wall, at depth Back."
+  ],
+  "category": [
+    "Office",
+    "Walls"
+  ],
+  "kind": "sprite",
+  "anchor": [17, 59],
+  "keys": {
+    "a": "wood-1",
+    "b": "wood-3",
+    "c": "gold-2",
+    "d": "soil-4",
+    "e": "wood-2",
+    "f": "ink",
+    "g": "stone-3"
+  },
+  "layers": [
+    {
+      "map": [
+        "............aa",
+        "..........aaaa",
+        "........aaaabb",
+        "......aaaabbbb",
+        "....aaaabbbbcb",
+        "..aaaabbbbcccb",
+        "aaaabbbbcccccb",
+        "aabbbbccccdccb",
+        "ebbbccccdddccb",
+        "ebccccdddddccb",
+        "ecccddddddaccb",
+        "eccdddddaaaccb",
+        "eccdddaaaaaccb",
+        "eccdaaaafaaccb",
+        "eccaaaaaaaaccb",
+        "eccaafaaaaaccb",
+        "eccaaaaaaacccb",
+        "eccaaaaaccggcb",
+        "eccaaaccggggcb",
+        "eccaccggggggcb",
+        "ecccggggggggbb",
+        "ecggggggggbbbb",
+        "ecggggggbbbb..",
+        "ecggggbbbb....",
+        "ecggbbbb......",
+        "ecbbbb........",
+        "ebbb..........",
+        "eb............"
+      ]
+    }
+  ]
+}

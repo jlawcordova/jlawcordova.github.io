@@ -1,0 +1,53 @@
+{
+  "notes": [
+    "Three big books stacked askew on the floor, red, teal and plum, a gold clasp on the top one."
+  ],
+  "category": [
+    "Range",
+    "Lab"
+  ],
+  "kind": "sprite",
+  "anchor": [13, 16],
+  "keys": {
+    "a": "plum-1",
+    "b": "gold-1",
+    "c": "plum-2",
+    "d": "plum-3",
+    "e": "cream",
+    "f": "teal-2",
+    "g": "roof-1",
+    "h": "teal-4",
+    "i": "teal-3",
+    "j": "roof-2",
+    "k": "roof-3"
+  },
+  "layers": [
+    {
+      "map": [
+        "..........aa............",
+        "........aaaaaa..........",
+        "......aaaaaaaaaa........",
+        "....aaaaaaaaaaaaaa......",
+        "..aaaaaaaabbaaaaaaaa....",
+        "..aaaaaaabbbbaaaaaaa....",
+        "..ccaaaaaabbaaaaaadd....",
+        "..eeccaaaaaaaaaaddddff..",
+        "..eeeeccaaaaaaddddddffff",
+        "..cceeeeccaaddddddddffff",
+        "..ggcceeeecdddddddffffhh",
+        "ggggeecceeedddddffffhhhh",
+        "ggggiieeccedddffffhhhhhh",
+        "jjggggiieecdiiffhhhhhhhh",
+        "eejjggggiieeeeihhhhhhhkk",
+        "eeeejjggggiieeehhhhhkkkk",
+        "jjeeeejjggggiiehhhkkkkkk",
+        "..jjeeeejjggggihkkkkkkkk",
+        "....jjeeeejjggkkkkkkkk..",
+        "......jjeeeejkkkkkkk....",
+        "........jjeeekkkkk......",
+        "..........jjekkk........",
+        "............jk.........."
+      ]
+    }
+  ]
+}

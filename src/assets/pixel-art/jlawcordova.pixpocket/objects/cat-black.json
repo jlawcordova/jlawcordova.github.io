@@ -1,0 +1,118 @@
+{
+  "notes": [
+    "A black cat.",
+    "Sitting, it faces the lower left; walking, it turns to the heading it walks.",
+    "States: idle (the tail laid down, swaying), jump and sleep; walk, walk-right, walk-away-left and walk-away-right (on its feet, the tail up, a step every 100 ms)."
+  ],
+  "category": [
+    "Office",
+    "Cats"
+  ],
+  "kind": "sprite",
+  "anchor": [13, 21],
+  "keys": {
+    "a": "stone-4",
+    "b": "ink",
+    "c": "gold-1",
+    "d": "roof-2"
+  },
+  "layers": [
+    {
+      "loop": "pose",
+      "prefix": "p",
+      "frames": [
+        [
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          ".........a................",
+          "........aa................",
+          "........aaa..a............",
+          "......aaaaaabb............",
+          "....aaaaaaaabbb...........",
+          "....aaaaaaaaaaaa..........",
+          "....bbaaaaaaaaaa..........",
+          "....bbbbaaaaaabb..........",
+          "....cbbbbbaabbbbaa........",
+          "....cbbbbbbbbbbbaaaa......",
+          "....bbbbbcbbbbbbaaaa......",
+          "....bbddbcbbbbbbaabb......",
+          "....bbbbbbbbbbbbbbbb......",
+          "......bbbbbbbbbbbbbb......",
+          "......bbbbbbbbbbbbbb......",
+          "......bbbbbbbbbbbbbb......",
+          "......bbbbbbbbbbbbbb......",
+          "......bbbbbbbbbbbbbbaa....",
+          "......bbbbbbbbbbbb..bbaa..",
+          "........bbbb..bb......bbaa",
+          "..........bb............bb",
+          "..........................",
+          ".........................."
+        ],
+        [
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          ".........a................",
+          "........aa................",
+          "........aaa..a............",
+          "......aaaaaabb............",
+          "....aaaaaaaabbb...........",
+          "....aaaaaaaaaaaa..........",
+          "....bbaaaaaaaaaa..........",
+          "....bbbbaaaaaabb..........",
+          "....cbbbbbaabbbbaa........",
+          "....cbbbbbbbbbbbaaaa......",
+          "....bbbbbcbbbbbbaaaa......",
+          "....bbddbcbbbbbbaabb......",
+          "....bbbbbbbbbbbbbbbb......",
+          "......bbbbbbbbbbbbbb......",
+          "......bbbbbbbbbbbbbb......",
+          "......bbbbbbbbbbbbbb......",
+          "......bbbbbbbbbbbbbb......",
+          "......bbbbbbbbbbbbbbaa....",
+          "......bbbbbbbbbbbb..bbaaaa",
+          "........bbbb..bb......bbbb",
+          "..........bb..............",
+          "..........................",
+          ".........................."
+        ],
+        [
+          "..........................",
+          "..........................",
+          "..........................",
+          "..........................",
+          ".........a................",
+          "........aa................",
+          "........aaa..a............",
+          "......aaaaaabb............",
+          "....aaaaaaaabbb...........",
+          "....aaaaaaaaaaaa..........",
+          "....bbaaaaaaaaaa..........",
+          "....bbbbaaaaaabb..........",
+          "....cbbbbbaabbbbaa........",
+          "....cbbbbbbbbbbbaaaa......",
+          "....bbbbbcbbbbbbaaaa......",
+          "....bbddbcbbbbbbaabb......",
+          "....bbbbbbbbbbbbbbbb......",
+          "......bbbbbbbbbbbbbb......",
+          "......bbbbbbbbbbbbbb......",
+          "......bbbbbbbbbbbbbb......",
+          "......bbbbbbbbbbbbbb......",
+          "......bbbbbbbbbbbbbbaa...a",
+          "......bbbbbbbbbbbb..bbaaab",
+          "........bbbb..bb......bbb.",
+          "..........bb..............",
+          "..........................",
+          ".........................."
+        ]
+      ]
+    }
+  ],
+  "start": "idle",
+  "states": {
+    "idle": { "frames": [0, 0, 1, 2, 2, 1], "ms": 500 }
+  }
+}

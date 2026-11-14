@@ -1,0 +1,34 @@
+{
+  "notes": [
+    "Paint spilled on the floor: a red puddle and drops of teal and yellow. Flat: lay it on a floor tile, depth Back."
+  ],
+  "category": [
+    "Range",
+    "Studio"
+  ],
+  "kind": "sprite",
+  "anchor": [12, 4],
+  "keys": {
+    "a": "roof-1",
+    "b": "teal-2",
+    "c": "gold-1"
+  },
+  "layers": [
+    {
+      "map": [
+        ".........aaaaaa...........",
+        "....bb.aaaaaaaaaa.........",
+        "......aaaaaaaaaaaa........",
+        "......aaaaaaaaaaaa......aa",
+        ".......aaaaaaaaaa.........",
+        "cccc.....aaaaaa...........",
+        "cccc.........bbbbbb.......",
+        ".............bbbbbb.......",
+        "..........................",
+        "..........................",
+        "..........................",
+        "............aa............"
+      ]
+    }
+  ]
+}

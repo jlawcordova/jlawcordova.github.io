@@ -1,0 +1,72 @@
+{
+  "notes": [
+    "A steel filing cabinet with three drawers, facing the lower left.",
+    "States: idle, face-right, face-away-left and face-away-right (turned, as the chairs are), and open, open-right, open-away-left and open-away-right (the top drawer slides out, full of folders, then it holds)."
+  ],
+  "category": [
+    "Office",
+    "Furniture"
+  ],
+  "kind": "sprite",
+  "anchor": [15, 33],
+  "keys": {
+    "a": "stone-1",
+    "b": "stone-2",
+    "c": "stone-3",
+    "d": "stone-4",
+    "e": "gold-1",
+    "f": "cream"
+  },
+  "layers": [
+    {
+      "loop": "pose",
+      "prefix": "p",
+      "frames": [
+        [
+          "..............aa..............",
+          "............aaaaaa............",
+          "..........aaaaaaaaaa..........",
+          "........aaaaaaaaaaaaaa........",
+          "......aaaaaaaaaaaaaaaaaa......",
+          "......aaaaaaaaaaaaaaaaaa......",
+          "......bbaaaaaaaaaaaaaacc......",
+          "......bbbbaaaaaaaaaacccc......",
+          "......bbbbbbaaaaaacccccc......",
+          "......bbbbbbbbaacccccccc......",
+          "......bbbabbbbbccccccccc......",
+          "......bbbbabbbbccccccccc......",
+          "......bbbbbbbbbccccccccc......",
+          "......bbbbbbbbbccccccccc......",
+          "......bbbbbbbbbccccccccc......",
+          "......ccbbbbbbbccccccccc......",
+          "......bbccbbbbbccccccccc......",
+          "......bbbbccbbbccccccccc......",
+          "......bbbbbbccbccccccccc......",
+          "......bbbabbbbcccccccccc......",
+          "......bbbbabbbbccccccccc......",
+          "......bbbbbbbbbccccccccc......",
+          "......bbbbbbbbbccccccccc......",
+          "......bbbbbbbbbccccccccc......",
+          "......ccbbbbbbbccccccccc......",
+          "......bbccbbbbbccccccccc......",
+          "......bbbbccbbbccccccccc......",
+          "......bbbbbbccbccccccccc......",
+          "......bbbabbbbcccccccccc......",
+          "......bbbbabbbbccccccccc......",
+          "......bbbbbbbbbccccccccc......",
+          "......bbbbbbbbbccccccccc......",
+          "......bbbbbbbbbccccccccc......",
+          "......bbbbbbbbbccccccccc......",
+          "........bbbbbbbccccccc........",
+          "..........bbbbbccccc..........",
+          "............bbbccc............",
+          "..............bc.............."
+        ]
+      ]
+    }
+  ],
+  "start": "idle",
+  "states": {
+    "idle": { "frames": [0], "ms": 1000 }
+  }
+}

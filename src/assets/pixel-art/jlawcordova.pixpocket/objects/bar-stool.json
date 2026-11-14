@@ -1,0 +1,47 @@
+{
+  "notes": [
+    "A bar stool with a teal seat."
+  ],
+  "category": [
+    "Office",
+    "Pantry"
+  ],
+  "kind": "sprite",
+  "anchor": [6, 20],
+  "keys": {
+    "a": "teal-2",
+    "b": "teal-3",
+    "c": "teal-4",
+    "d": "stone-2",
+    "e": "stone-3",
+    "f": "stone-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "...aaaaaa...",
+        ".aaaaaaaaaa.",
+        "aaaaaaaaaaaa",
+        "aaaaaaaaaaaa",
+        "baaaaaaaaaac",
+        "bbbaaaaaaccc",
+        ".bbbbbccccc.",
+        "...bbbccc...",
+        ".....de.....",
+        ".....de.....",
+        ".....de.....",
+        ".....de.....",
+        ".....de.....",
+        ".....de.....",
+        "...eeeeee...",
+        ".....de.....",
+        ".....de.....",
+        "...eedeee...",
+        "..eeedeeee..",
+        "..eeeeeeee..",
+        "..feeeeeef..",
+        "...ffffff..."
+      ]
+    }
+  ]
+}

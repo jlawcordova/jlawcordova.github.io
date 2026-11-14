@@ -1,0 +1,105 @@
+{
+  "notes": [
+    "A wizard's tower top: a checker of pale teal and cream flagstones with a gold stud, over teal walls trimmed with gold, an arrow slit in each face.",
+    "A one-level floor block: lay it at level 0, where its top is, and stand things on it at level 0. Depth Back."
+  ],
+  "category": [
+    "Range",
+    "Floors"
+  ],
+  "kind": "block",
+  "size": [1, 1, 1],
+  "faces": {
+    "top": "cream",
+    "left": "water-3",
+    "right": "water-4"
+  },
+  "surface": {
+    "keys": {
+      "a": "water-1",
+      "b": "cream",
+      "c": "gold-2"
+    },
+    "map": [
+      "....................abba....................",
+      "..................abbbbbba..................",
+      "................abbbbbbbbbba................",
+      "..............abbbbbbbbbbbbbba..............",
+      "............abbbbbbbbbbbbbbbbbba............",
+      "..........bbbbbbbbbbbbbbbbbbbbbbbb..........",
+      "........baaaabbbbbbbbbbbbbbbbbbaaaab........",
+      "......baaaaaaaabbbbbbbbbbbbbbaaaaaaaab......",
+      "....baaaaaaaaaaaabbbbbbbbbbaaaaaaaaaaaab....",
+      "..baaaaaaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaab..",
+      "baaaaaaaaaaaaaaaaaaaaccaaaaaaaaaaaaaaaaaaaab",
+      "baaaaaaaaaaaaaaaaaaaaccaaaaaaaaaaaaaaaaaaaab",
+      "..baaaaaaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaab..",
+      "....baaaaaaaaaaaabbbbbbbbbbaaaaaaaaaaaab....",
+      "......baaaaaaaabbbbbbbbbbbbbbaaaaaaaab......",
+      "........baaaabbbbbbbbbbbbbbbbbbaaaab........",
+      "..........bbbbbbbbbbbbbbbbbbbbbbbb..........",
+      "............abbbbbbbbbbbbbbbbbba............",
+      "..............abbbbbbbbbbbbbba..............",
+      "................abbbbbbbbbba................",
+      "..................abbbbbba..................",
+      "....................abba...................."
+    ]
+  },
+  "sides": {
+    "keys": {
+      "a": "gold-2",
+      "b": "water-3",
+      "c": "water-4",
+      "d": "gold-3",
+      "e": "ink"
+    },
+    "left": [
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbccbbbbbbbbbb",
+      "bbbbbbbbbccccbbbbbbbbb",
+      "bbbbbbbbbccccbbbbbbbbb",
+      "bbbbbbbbbccccbbbbbbbbb",
+      "bbbbbbbbbccccbbbbbbbbb",
+      "bbbbbbbbbccccbbbbbbbbb",
+      "bbbbbbbbbccccbbbbbbbbb",
+      "bbbbbbbbbccccbbbbbbbbb",
+      "bbbbbbbbbccccbbbbbbbbb",
+      "bbbbbbbbbaaaabbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "bbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "right": [
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccceecccccccccc",
+      "ccccccccceeeeccccccccc",
+      "ccccccccceeeeccccccccc",
+      "ccccccccceeeeccccccccc",
+      "ccccccccceeeeccccccccc",
+      "ccccccccceeeeccccccccc",
+      "ccccccccceeeeccccccccc",
+      "ccccccccceeeeccccccccc",
+      "ccccccccceeeeccccccccc",
+      "cccccccccddddccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc"
+    ]
+  }
+}
