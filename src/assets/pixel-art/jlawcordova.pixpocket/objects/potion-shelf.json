@@ -1,0 +1,76 @@
+{
+  "notes": [
+    "A shelf of books and bottles, a person tall, facing the lower left: a dark wooden case, three shelves of books in red, teal, gold and green and pale teal bottles."
+  ],
+  "category": [
+    "Range",
+    "Lab"
+  ],
+  "kind": "sprite",
+  "anchor": [13, 40],
+  "keys": {
+    "a": "wood-2",
+    "b": "wood-3",
+    "c": "soil-4",
+    "d": "roof-2",
+    "e": "wood-4",
+    "f": "grass-3",
+    "g": "water-3",
+    "h": "gold-3",
+    "i": "water-1",
+    "j": "water-2"
+  },
+  "layers": [
+    {
+      "map": [
+        "......aa................",
+        "....aaaaaa..............",
+        "..aaaaaaaaaa............",
+        "aaaaaaaaaaaaaa..........",
+        "aaaaaaaaaaaaaaaa........",
+        "bbaaaaaaaaaaaaaaaa......",
+        "bbbbaaaaaaaaaaaaaaaa....",
+        "bcbbbbaaaaaaaaaaaaaaaa..",
+        "bcccbbbbaaaaaaaaaaaaaaaa",
+        "bdccccbbbbaaaaaaaaaaaaaa",
+        "bddcccccbbbbaaaaaaaaaaee",
+        "bddfggccccbbbbaaaaaaeeee",
+        "bddfggccccccbbbbaaeeeeee",
+        "bddfggcdccccccbbbeeeeeee",
+        "bddfgghddccccccbbeeeeeee",
+        "bddfgghddccccccbbeeeeeee",
+        "badfgghddccchccbbeeeeeee",
+        "bcaagghddcciiccbbeeeeeee",
+        "bcccaahddccijjcbbeeeeeee",
+        "bcccccaadccijjcbbeeeeeee",
+        "bchcccccaacijjcbbeeeeeee",
+        "biicccccccaajjcbbeeeeeee",
+        "bijjcgcdccccaacbbeeeeeee",
+        "bijjcggddcccccabbeeeeeee",
+        "bijjcggddhcccccbbeeeeeee",
+        "bijjcggddhhccccbbeeeeeee",
+        "bajjcggddhhccccbbeeeeeee",
+        "bcaacggddhhcchcbbeeeeeee",
+        "bcccaagddhhccicbbeeeeeee",
+        "bhcdccaadhhcijcbbeeeeeee",
+        "bhhddcccaahcijjbbeeeeeee",
+        "bhhddgccccaaijjbbeeeeeee",
+        "bhhddggcccccaajbbeeeeeee",
+        "bhhddggfccccccabbeeeeeee",
+        "bhhddggfcccccccbbeeeeeee",
+        "bhhddggfccchcccbbeeeeeee",
+        "bhhddggfcccicccbbeeeeeee",
+        "bbhddggfccijcccbbeeeeeee",
+        "bbbbdggfccijjccbbeeeeeee",
+        "..bbbbgfccijjccbbeeeeeee",
+        "....bbbbccijjccbbeeeeeee",
+        "......bbbbijjccbbeeeeeee",
+        "........bbbbjccbbeeeeeee",
+        "..........bbbbcbbeeeeeee",
+        "............bbbbbeeeee..",
+        "..............bbbeee....",
+        "................be......"
+      ]
+    }
+  ]
+}

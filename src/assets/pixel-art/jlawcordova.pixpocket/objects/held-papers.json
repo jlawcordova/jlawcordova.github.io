@@ -1,0 +1,15 @@
+{
+  "notes": [
+    "A few sheets of paper held up against the outside of the hand, lines of writing on them.",
+    "Held in a hand's grip socket, or the far hand's offhand."
+  ],
+  "category": [
+    "Cast",
+    "Held"
+  ],
+  "kind": "sprite",
+  "handle": [0, 0, 2],
+  "parts": [
+    { "id": "papers", "box": [1, 5, 7], "at": [3, 1, 0], "faces": { "top": "cream", "front": ["cream", "path-1"], "back": ["cream", "path-1"], "left": { "keys": { "a": "cream", "b": "glass-2" }, "shade": { "a": "path-1", "b": "glass-2" }, "map": ["aaaaa", "aaaaa", "abbba", "aaaaa", "abbba", "aaaaa", "aaaaa"] }, "right": { "keys": { "a": "cream", "b": "glass-2" }, "shade": { "a": "path-1", "b": "glass-2" }, "map": ["aaaaa", "aaaaa", "abbba", "aaaaa", "abbba", "aaaaa", "aaaaa"] } } }
+  ]
+}

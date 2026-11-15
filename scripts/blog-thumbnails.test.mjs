@@ -1,41 +1,31 @@
-// Checks for the blog's pixel-art thumbnails: each post's featured image is the
-// PNG its preview-only thumb-<key> scene declares, which `npm run art` writes to
-// static/public/thumbnails/<key>.png (Pixel Lab v0.6.0 spec R4, R19).
+// Checks for the blog's pixel-art thumbnails: each post's featured image is a
+// PNG in static/public/thumbnails/, 1200×630, and no two posts share one. The
+// thirteen there were drawn on the old 32×16 grid and published by Pixel Lab
+// v0.10.0, the last program that could draw them; they're kept as published.
 
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 import test from 'node:test';
 
 const POSTS = new URL('../src/content/posts/', import.meta.url);
-const SCENES = new URL('../src/assets/pixel-art/jlawcordova.pixellab/scenes/', import.meta.url);
+const THUMBNAILS = new URL('../static/public/thumbnails/', import.meta.url);
 
-const scenes = new Map(
-  await Promise.all(
-    (await readdir(SCENES))
-      .filter((f) => f.startsWith('thumb-') && f.endsWith('.json'))
-      .map(async (f) => [f.slice(0, -5), JSON.parse(await readFile(new URL(f, SCENES), 'utf8'))]),
-  ),
-);
-
-test('every post has exactly one thumbnail, and its featured image is that thumbnail', async () => {
+test('every post has exactly one thumbnail: a 1200×630 PNG that is there', async () => {
   const posts = (await readdir(POSTS)).filter((f) => f.endsWith('.md'));
+  const files = (await readdir(THUMBNAILS)).filter((f) => f.endsWith('.png'));
   const used = [];
   for (const post of posts) {
     const text = await readFile(new URL(post, POSTS), 'utf8');
     const key = /^featured-image: \/public\/thumbnails\/([a-z0-9-]+)\.png$/m.exec(text)?.[1];
     assert.ok(key, `${post}'s featured image is a /public/thumbnails/<key>.png`);
-    assert.ok(scenes.has(`thumb-${key}`), `${post}: there's a thumb-${key} scene`);
+    assert.ok(files.includes(`${key}.png`), `${post}: ${key}.png is in static/public/thumbnails/`);
     used.push(key);
   }
   assert.equal(new Set(used).size, used.length, 'no two posts share a thumbnail');
-  assert.deepEqual(used.map((key) => `thumb-${key}`).sort(), [...scenes.keys()].sort(), 'every thumb scene is a post\'s');
-});
-
-test('every thumb-<key> scene is preview-only and declares <key>.png at 5×', async () => {
-  const manifest = JSON.parse(await readFile(new URL('../manifest.json', SCENES), 'utf8'));
-  assert.equal(manifest.publish.images, '../../../../static/public/thumbnails');
-  for (const [name, scene] of scenes) {
-    assert.equal(scene.output, undefined, `${name} writes no SVG`);
-    assert.deepEqual(scene.image, { file: `${name.slice('thumb-'.length)}.png`, scale: 5 }, `${name}'s image`);
+  assert.deepEqual(used.map((key) => `${key}.png`).sort(), files.sort(), "every thumbnail is a post's");
+  for (const file of files) {
+    const png = await readFile(new URL(file, THUMBNAILS));
+    assert.equal(png.toString('latin1', 1, 4), 'PNG', `${file} is a PNG`);
+    assert.deepEqual([png.readUInt32BE(16), png.readUInt32BE(20)], [1200, 630], `${file} is 1200×630`);
   }
 });

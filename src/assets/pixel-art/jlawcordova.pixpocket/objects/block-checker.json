@@ -1,0 +1,47 @@
+{
+  "notes": [
+    "Big tiles in a cream and sky-blue checker, four to a tile.",
+    "A one-level floor block: lay it at level 0, where its top is, and stand things on it at level 0."
+  ],
+  "category": [
+    "Office",
+    "Floors"
+  ],
+  "kind": "block",
+  "size": [1, 1, 1],
+  "faces": {
+    "top": "cream",
+    "left": "glass-2",
+    "right": "glass-3"
+  },
+  "surface": {
+    "keys": {
+      "a": "glass-1",
+      "b": "cream"
+    },
+    "map": [
+      "....................abba....................",
+      "..................abbbbbba..................",
+      "................abbbbbbbbbba................",
+      "..............abbbbbbbbbbbbbba..............",
+      "............abbbbbbbbbbbbbbbbbba............",
+      "..........bbbbbbbbbbbbbbbbbbbbbbbb..........",
+      "........baaaabbbbbbbbbbbbbbbbbbaaaab........",
+      "......baaaaaaaabbbbbbbbbbbbbbaaaaaaaab......",
+      "....baaaaaaaaaaaabbbbbbbbbbaaaaaaaaaaaab....",
+      "..baaaaaaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaab..",
+      "baaaaaaaaaaaaaaaaaaaabbaaaaaaaaaaaaaaaaaaaab",
+      "baaaaaaaaaaaaaaaaaaaabbaaaaaaaaaaaaaaaaaaaab",
+      "..baaaaaaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaab..",
+      "....baaaaaaaaaaaabbbbbbbbbbaaaaaaaaaaaab....",
+      "......baaaaaaaabbbbbbbbbbbbbbaaaaaaaab......",
+      "........baaaabbbbbbbbbbbbbbbbbbaaaab........",
+      "..........bbbbbbbbbbbbbbbbbbbbbbbb..........",
+      "............abbbbbbbbbbbbbbbbbba............",
+      "..............abbbbbbbbbbbbbba..............",
+      "................abbbbbbbbbba................",
+      "..................abbbbbba..................",
+      "....................abba...................."
+    ]
+  }
+}

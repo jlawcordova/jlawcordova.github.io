@@ -111,22 +111,22 @@ When implementing, follow it as written:
 ## Example
 
 ```markdown
-# Plan: pixel-art outfit for security work (from intent.md 2026-10-01)
+# Plan: a Range setting for security work (from intent.md 2026-10-01)
 
 ## Files that change
-src/assets/pixel-art/jlawcordova.pixellab/scenes/range-sprite.json,
+src/assets/pixel-art/jlawcordova.pixpocket/scenes/range-sprite.json (and the SVG it publishes),
 src/data/home.ts, src/styles/range.css
 
 ## Order of work
 One slice, straight to a PR into main: it's three small steps the main session does in one
 sitting, so there's no main-session branch.
-1. Add the sixth outfit object, place it in a new group in the sprite scene, and run npm run art.
+1. Place the sixth setting (its floor, props and person, from the studio) in a new group in the sprite scene, export the studio's objects and run npm run art.
 2. Add the class to rangeClasses.
 3. Add its data-current rule and check the pager at 390px.
 
 ## Workflow and reviews
 The main session runs all three steps in order on feat/security-outfit. Owner review: after
-step 1, the outfit's previews at 1× and 4×, since it sets the look; steps 2 and 3 follow once
+step 1, the setting's previews at 1× and 4×, since it sets the look; steps 2 and 3 follow once
 it's approved. Independent review: none. The art, test and build checks cover it.
 
 ## Risks

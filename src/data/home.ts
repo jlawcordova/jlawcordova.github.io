@@ -1,16 +1,16 @@
 /**
  * Range carousel classes, in order. Entry i matches the sprite variant
  * <g data-class="i"> in src/assets/pixel-art/range-sprite.svg. `shadow` is
- * the nameplate's hard shadow: the outfit's main color in the mock.
+ * the nameplate's hard shadow: the main color of what the class's person wears.
  */
 export const rangeClasses = [
-  { name: 'Front-end', shadow: '#8A6AA6' },
-  { name: 'Back-end', shadow: '#474E5B' },
-  { name: 'UX Design', shadow: '#8FB0C9' },
+  { name: 'Front-end', shadow: '#9378BC' },
+  { name: 'Back-end', shadow: '#525A63' },
+  { name: 'UX Design', shadow: '#82AED6' },
   { name: 'Cloud & DevOps', shadow: '#D8B66A' },
   { name: 'Data Engineering', shadow: '#5F8C7E' },
   { name: 'Security & Governance', shadow: '#858F99' },
-  { name: 'Project Management', shadow: '#5B6F8E' },
+  { name: 'Project Management', shadow: '#5580B4' },
 ] as const;
 
 /**

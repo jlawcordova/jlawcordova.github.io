@@ -1,0 +1,111 @@
+{
+  "notes": [
+    "A desk: a rounded wooden top on steel legs, with a drawer pedestal on its right.",
+    "One tile, facing the lower left: whoever works at it sits on the tile in front. Desks side by side join into a run. Things on it stand at level 1.",
+    "States: idle, face-right, face-away-left and face-away-right (as the chairs face), and open, open-right, open-away-left and open-away-right (the top drawer pulled out)."
+  ],
+  "category": [
+    "Office",
+    "Desks"
+  ],
+  "kind": "sprite",
+  "anchor": [17, 29],
+  "keys": {
+    "a": "wood-1",
+    "b": "wood-2",
+    "c": "stone-2",
+    "d": "stone-3",
+    "e": "wood-3",
+    "f": "stone-1",
+    "g": "wood-4"
+  },
+  "layers": [
+    {
+      "loop": "pose",
+      "prefix": "p",
+      "frames": [
+        [
+          "..........aaaaaa..................",
+          "........aaaaaaaaaa................",
+          "......aaaaaaaaaaaaaa..............",
+          "....aaaaaaaaaaaaaaaaaa............",
+          "...aaaaaaaaaaaaaaaaaaaaa..........",
+          "...aaaaaaaaaaaaaaaaaaaaaaa........",
+          "...baaaaaaaaaaaaaaaaaaaaaaaa......",
+          "...bbbaaaaaaaaaaaaaaaaaaaaaaaa....",
+          "...bbbbbaaaaaaaaaaaaaaaaaaaaaaa...",
+          "....bbbbbbaaaaaaaaaaaaaaaaaaaaa...",
+          "....cdbbbbbbaaaaaaaaaaaaaaaaaae...",
+          "....cd..bbbbbbaaaaaaaaaaaaaaeee...",
+          "....cd....bbbbbbaaaaaaaaaaeeeee...",
+          "....cd......bbbbbbaaaaaaeeeeee....",
+          "....cd......cdbbbbbbbeeeeeeeee....",
+          "....cd......cdeebbbbbeeeeeeeee....",
+          "....cd......cd..bbbbbeeeeeeeee....",
+          "....cd......cd..bfbbbeeeeeeeee....",
+          "....cd......cd..bbfbbeeeeeeeee....",
+          "....cd......cd..bbbbbeeeeeeeee....",
+          "....cd......cd..bbbbbeeeeeeeee....",
+          "....cd......cd..bbbbbeeeeeeeee....",
+          "....cd......cd..bbbbbeeeeeeeee....",
+          "....cd......cd..eebbbeeeeeeeee....",
+          "....cd..........bbeebeeeeeeeee....",
+          "....cd..........bbbbeeeeeeeeee....",
+          "....cd..........bfbbbeeeeeeeee....",
+          "....cd..........bbfbbeeeeeeeee....",
+          "................bbbbbeeeeeeeee....",
+          "................bbbbbeeeeeeeee....",
+          "................bbbbbeeeeeeeee....",
+          "................bbbbbeeeeeeeee....",
+          "................eebbbeeeeeee......",
+          "................bbeebeeeee........",
+          "..................bbeeee..........",
+          "....................be............"
+        ],
+        [
+          "..........aaaaaa..................",
+          "........aaaaaaaaaa................",
+          "......aaaaaaaaaaaaaa..............",
+          "....aaaaaaaaaaaaaaaaaa............",
+          "...aaaaaaaaaaaaaaaaaaaaa..........",
+          "...aaaaaaaaaaaaaaaaaaaaaaa........",
+          "...baaaaaaaaaaaaaaaaaaaaaaaa......",
+          "...bbbaaaaaaaaaaaaaaaaaaaaaaaa....",
+          "...bbbbbaaaaaaaaaaaaaaaaaaaaaaa...",
+          "....bbbbbbaaaaaaaaaaaaaaaaaaaaa...",
+          "....bbbbbbbbaaaaaaaaaaaaaaaaaae...",
+          "....bbbbbbbbbbaaaaaaaaaaaaaaeee...",
+          "....bbbbbebbbbbbaaaaaaaaaaeeeee...",
+          "....bbbbbeeebbbbbbaaaaaaeeeeee....",
+          "....bbbbbeeeeebbbbbbbeeeeeeecd....",
+          "....bbbbbeeeeeeebbbbbeeeee..cd....",
+          "....bbbbbeeeeeeeeebbbeee....cd....",
+          "....bbbbbeeeeeeeeeegcd......cd....",
+          "....bbbbbeeeeeeeeeegcd......cd....",
+          "....bbbbbeeeeeeeeeegcd......cd....",
+          "....bbbbbeeeeeeeeeegcd......cd....",
+          "....bbbbbeeeeeeeeeegcd......cd....",
+          "....bbbbbeeeeeeeeeegcd......cd....",
+          "....bbbbbeeeeeeeeeegcd......cd....",
+          "....bbbbbeeeeeeeeeegcd......cd....",
+          "....bbbbbeeeeeeeeeegcd......cd....",
+          "....bbbbbeeeeeee....cd......cd....",
+          "....bbbbbeeeee......cd......cd....",
+          "......bbbeee........cd......cd....",
+          "........be..........cd......cd....",
+          "....................cd......cd....",
+          "....................cd......cd....",
+          "....................cd............",
+          "....................cd............",
+          "....................cd............",
+          "....................cd............"
+        ]
+      ]
+    }
+  ],
+  "start": "idle",
+  "states": {
+    "idle": { "frames": [0], "ms": 1000 },
+    "face-away-right": { "frames": [1], "ms": 1000 }
+  }
+}

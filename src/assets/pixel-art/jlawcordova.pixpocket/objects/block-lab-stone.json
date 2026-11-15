@@ -1,0 +1,102 @@
+{
+  "notes": [
+    "An alchemist's lab floor: pale stone blocks in staggered courses, on its top and its sides.",
+    "A one-level floor block: lay it at level 0, where its top is, and stand things on it at level 0. Depth Back."
+  ],
+  "category": [
+    "Range",
+    "Floors"
+  ],
+  "kind": "block",
+  "size": [1, 1, 1],
+  "faces": {
+    "top": "path-1",
+    "left": "path-2",
+    "right": "path-3"
+  },
+  "surface": {
+    "keys": {
+      "a": "path-1",
+      "b": "path-2"
+    },
+    "map": [
+      "....................abba....................",
+      "..................abbaabba..................",
+      "................abbaaaaaabba................",
+      "..............abbaaaaaaaaaabba..............",
+      "............abbaaaaaaaaaaaaaabba............",
+      "..........bbbaaaaaaaaaaaaaaaaaabbb..........",
+      "........aaabbaaaaaaaaaaaaaaaaaaaabba........",
+      "......aaaaaaabbaaaaaaaaaaaaaaaaaaaabba......",
+      "....aaaaaaaaaaabbaaaaaaaaaaaaaaaaaaaabba....",
+      "..aaaaaaaaaaaaaaabbaaaaaaaaaaaaaaaaaaaabba..",
+      "aaaaaaaaaaaaaaaaaaabbaaaaaaaaaaaaaaaaaaaabba",
+      "baaaaaaaaaaaaaaaaaaaabbaaaaaaaaaaaaaaaaaaaab",
+      "..baaaaaaaaaaaaaaaabbaabbaaaaaaaaaaaaaaaab..",
+      "....baaaaaaaaaaaabbaaaaaabbaaaaaaaaaaaab....",
+      "......baaaaaaaabbaaaaaaaaaabbaaaaaaaab......",
+      "........baaaabbaaaaaaaaaaaaaabbaaaab........",
+      "..........bbbaaaaaaaaaaaaaaaaaabbb..........",
+      "............baaaaaaaaaaaaaaaaaaa............",
+      "..............baaaaaaaaaaaaaaa..............",
+      "................baaaaaaaaaaa................",
+      "..................baaaaaaa..................",
+      "....................baaa...................."
+    ]
+  },
+  "sides": {
+    "keys": {
+      "a": "path-3",
+      "b": "path-2",
+      "c": "path-4"
+    },
+    "left": [
+      "abbbbbbbbbbbbbbbbbbbbb",
+      "abbbbbbbbbbbbbbbbbbbbb",
+      "abbbbbbbbbbbbbbbbbbbbb",
+      "abbbbbbbbbbbbbbbbbbbbb",
+      "abbbbbbbbbbbbbbbbbbbbb",
+      "abbbbbbbbbbbbbbbbbbbbb",
+      "abbbbbbbbbbbbbbbbbbbbb",
+      "abbbbbbbbbbbbbbbbbbbbb",
+      "abbbbbbbbbbbbbbbbbbbbb",
+      "abbbbbbbbbbbbbbbbbbbbb",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "bbbbbbbbbbbabbbbbbbbbb",
+      "bbbbbbbbbbbabbbbbbbbbb",
+      "bbbbbbbbbbbabbbbbbbbbb",
+      "bbbbbbbbbbbabbbbbbbbbb",
+      "bbbbbbbbbbbabbbbbbbbbb",
+      "bbbbbbbbbbbabbbbbbbbbb",
+      "bbbbbbbbbbbabbbbbbbbbb",
+      "bbbbbbbbbbbabbbbbbbbbb",
+      "bbbbbbbbbbbabbbbbbbbbb",
+      "bbbbbbbbbbbabbbbbbbbbb",
+      "aaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "right": [
+      "caaaaaaaaaaaaaaaaaaaaa",
+      "caaaaaaaaaaaaaaaaaaaaa",
+      "caaaaaaaaaaaaaaaaaaaaa",
+      "caaaaaaaaaaaaaaaaaaaaa",
+      "caaaaaaaaaaaaaaaaaaaaa",
+      "caaaaaaaaaaaaaaaaaaaaa",
+      "caaaaaaaaaaaaaaaaaaaaa",
+      "caaaaaaaaaaaaaaaaaaaaa",
+      "caaaaaaaaaaaaaaaaaaaaa",
+      "caaaaaaaaaaaaaaaaaaaaa",
+      "cccccccccccccccccccccc",
+      "aaaaaaaaaaacaaaaaaaaaa",
+      "aaaaaaaaaaacaaaaaaaaaa",
+      "aaaaaaaaaaacaaaaaaaaaa",
+      "aaaaaaaaaaacaaaaaaaaaa",
+      "aaaaaaaaaaacaaaaaaaaaa",
+      "aaaaaaaaaaacaaaaaaaaaa",
+      "aaaaaaaaaaacaaaaaaaaaa",
+      "aaaaaaaaaaacaaaaaaaaaa",
+      "aaaaaaaaaaacaaaaaaaaaa",
+      "aaaaaaaaaaacaaaaaaaaaa",
+      "cccccccccccccccccccccc"
+    ]
+  }
+}

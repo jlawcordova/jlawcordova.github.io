@@ -1,0 +1,16 @@
+{
+  "notes": [
+    "The fridge in teal."
+  ],
+  "category": [
+    "Office",
+    "Pantry"
+  ],
+  "kind": "sprite",
+  "extends": "fridge",
+  "keys": {
+    "a": "teal-1",
+    "b": "teal-2",
+    "c": "teal-3"
+  }
+}

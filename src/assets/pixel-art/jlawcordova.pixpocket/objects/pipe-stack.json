@@ -1,0 +1,55 @@
+{
+  "notes": [
+    "Three teal pipes stacked two and one along the column, their open ends to the lower right."
+  ],
+  "category": [
+    "Range",
+    "Site"
+  ],
+  "kind": "sprite",
+  "anchor": [19, 24],
+  "keys": {
+    "a": "water-2",
+    "b": "water-3",
+    "c": "water-1",
+    "d": "water-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "............aaaa......................",
+        "..........aaaaaaaa....................",
+        "........aaaaaaaaaaaa..................",
+        "........aaaaaaaaaaaaaa................",
+        ".......aaaaaaaaaaaaaaaaa..............",
+        "......aaaaaaaaaaaaaaaaaaaa............",
+        "......aaaaaaaaaaaaaaaaaaaaaa..........",
+        "......bbaaaaaaaaaaaaaaaaaaaaaa........",
+        "......bbbbaaaaaaaaaaaaaaaaaaaaaa......",
+        "......bbbbbbaaaaaaaaaaaaaaaaaaccc.....",
+        "......bbbbbbbbaaaaaaaaaaaaaacccccc....",
+        "......adbbbbbbbbaaaaaaaaaaccccdccc....",
+        "....aaaaadbbbbbbbbaaaaaaaaccddddcc....",
+        "..aaaaaaaaadbbbbbbbbaaaaaccdddddcc....",
+        "..aaaaaaaaaaadbbbbbbbbaaccddddddccaa..",
+        ".aaaaaaaaaaaaaadbbbbbbbbccddddddccccc.",
+        "aaaaaaaaaaaaaaaaadbbbbbbccdddddccccccc",
+        "aaaaaaaaaaaaaaaaaaadbbbbccddddccccdccc",
+        "bbaaaaaaaaaaaaaaaaaaadbbcccdccccddddcc",
+        "bbbbaaaaaaaaaaaaaaaaaaadcccccccdddddcc",
+        "bbbbbbaaaaaaaaaaaaaaaaaaccccccddddddcc",
+        "bbbbbbbbaaaaaaaaaaaaaaccccccccddddddcc",
+        ".dbbbbbbbbaaaaaaaaaaccccdcccccdddddcc.",
+        "...dbbbbbbbbaaaaaaaaccddddccccddddcc..",
+        ".....dbbbbbbbbaaaaaccdddddcccccdcccc..",
+        ".......dbbbbbbbbaaccddddddcccccccc....",
+        ".........dbbbbbbbbccddddddcc.ccc......",
+        "...........dbbbbbbccdddddcc...........",
+        ".............dbbbbccddddcc............",
+        "...............dbbcccdcccc............",
+        ".................dcccccc..............",
+        "...................ccc................"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "notes": [
+    "A wizard's staff standing beside the hand, a gold knob on top. Casting, magic sparkles round the knob.",
+    "Held in a hand's grip socket, or the far hand's offhand."
+  ],
+  "category": [
+    "Cast",
+    "Held"
+  ],
+  "kind": "sprite",
+  "handle": [-3, -1, 5],
+  "parts": [
+    { "id": "shaft", "box": [2, 2, 28], "at": [0, 0, 0], "faces": { "top": "wood-1", "sides": ["wood-1", "wood-2"] } },
+    { "id": "knob", "box": [4, 4, 4], "at": [-1, -1, 28], "faces": { "top": "gold-1", "sides": ["gold-2", "gold-3"] } }
+  ]
+}

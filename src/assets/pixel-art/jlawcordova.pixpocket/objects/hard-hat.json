@@ -1,0 +1,14 @@
+{
+  "notes": [
+    "A hard hat: a shell over the top, a crown and a peak. Worn in a head's hat socket. Gold; looks: white, clay, blue."
+  ],
+  "category": [
+    "Cast",
+    "Hair"
+  ],
+  "kind": "sprite",
+  "parts": [
+    { "id": "brim", "box": [12, 14, 1], "at": [-1, -1, 10], "faces": { "top": "gold-2", "sides": ["gold-2", "gold-3"] }, "looks": { "white": { "faces": { "top": "cream", "sides": ["cream", "path-2"] } }, "clay": { "faces": { "top": "clay-2", "sides": ["clay-2", "clay-3"] } }, "blue": { "faces": { "top": "glass-2", "sides": ["glass-2", "glass-3"] } } } },
+    { "id": "crown", "box": [10, 10, 4], "at": [0, 0, 11], "faces": { "top": { "keys": { "a": "gold-2", "b": "gold-3" }, "map": ["aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa"] }, "sides": ["gold-2", "gold-3"] }, "looks": { "white": { "faces": { "top": { "keys": { "a": "cream", "b": "path-2" }, "map": ["aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa"] }, "sides": ["cream", "path-2"] } }, "clay": { "faces": { "top": { "keys": { "a": "clay-2", "b": "clay-3" }, "map": ["aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa"] }, "sides": ["clay-2", "clay-3"] } }, "blue": { "faces": { "top": { "keys": { "a": "glass-2", "b": "glass-3" }, "map": ["aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa", "aaaabbaaaa"] }, "sides": ["glass-2", "glass-3"] } } } }
+  ]
+}

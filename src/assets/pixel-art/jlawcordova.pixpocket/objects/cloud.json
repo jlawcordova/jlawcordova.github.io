@@ -1,0 +1,101 @@
+{
+  "notes": [
+    "A regular cloud: a white cumulus, puffs flat underneath and rounded on top, billowing into one.",
+    "It floats two levels over its tile: place it on the ground's level, or higher to fly higher. Round, so no headings.",
+    "States: idle, drift (it bobs a pixel, slowly)."
+  ],
+  "category": [
+    "Agents",
+    "Clouds"
+  ],
+  "kind": "sprite",
+  "anchor": [20, 67],
+  "keys": {
+    "a": "cream",
+    "b": "stone-1",
+    "c": "glass-1",
+    "d": "glass-2"
+  },
+  "layers": [
+    {
+      "loop": "pose",
+      "prefix": "p",
+      "frames": [
+        [
+          "........................................",
+          "...............aaaabbbbbb...............",
+          "............aaaaaaaaaabbbbbb............",
+          "..........aaaaaaaaaaaaaabbbbbb..........",
+          ".........aaaaaaaaaaaaaaaabbbbbb.........",
+          "........aaaaaaaaaaaaaaaaaabbbbbc........",
+          "........aaaaaaaaaaaaaaaaaabbbbbb........",
+          ".......aaaaaaaaaaaaaaaaaaabbbbbbbbb.....",
+          ".......aaaaaaaaaaaaaaaaaaabbbbbbbbbbb...",
+          ".......aaaaaaaaaaaaaaaaaaabbbbbccaabbb..",
+          "...aaaaaaaaaaaaaaaaaaaaaaabbbbbccaabbbb.",
+          "..aaaaaaaaaaaaaaaaaaaaaaabbbbbcccaabbbbc",
+          ".aaaaaaaaaaaaaaaaaaaaaabbbbbbbcccaabbbbc",
+          "aaaaaaaaaaaaaaaaaaaaaabbbbaaaaaaaabbbbbc",
+          "aaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaabbbbcc",
+          "aaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaabbbcc",
+          "aaaaaaaaaaaaaaaaaaaaaaaaabbaaaaaaaabbbbc",
+          "aaaaaaaaaaaaaaaaaaaaaaaaabbbaaaaaaabbbbc",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbaaaaaabbbbc",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbaaaabbbbcc",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbcaabbbbbcc",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbcbbbbbcccc",
+          "bbaaaaaaaaaaaaaaaaaaaaaaabbbbccbbbcccccd",
+          "bbbbbbbaaaaaaaaaaaaaaaaabbbbccccccccccdd",
+          ".ccccccbbbbbbbaaaaaaabbbbbbcccccccccddd.",
+          "..ccccccbbbbbbbbbbbbbbbbbccccccddddddd..",
+          "....dcccccccccbbbbbbbcccccccddddddddd...",
+          ".....ccccddddddcccccccccccddddddddd.....",
+          "......cccbbdddddcccccdddddddbbbccc......",
+          ".......ccccbbbbbbddddddddddbbcccc.......",
+          "........cccccccbbbbbbbbbbccccccc........",
+          "...........cccccccccccccccccc...........",
+          "..............cccccccccccc.............."
+        ],
+        [
+          "...............aaaabbbbbb...............",
+          "............aaaaaaaaaabbbbbb............",
+          "..........aaaaaaaaaaaaaabbbbbb..........",
+          ".........aaaaaaaaaaaaaaaabbbbbb.........",
+          "........aaaaaaaaaaaaaaaaaabbbbbc........",
+          "........aaaaaaaaaaaaaaaaaabbbbbb........",
+          ".......aaaaaaaaaaaaaaaaaaabbbbbbbbb.....",
+          ".......aaaaaaaaaaaaaaaaaaabbbbbbbbbbb...",
+          ".......aaaaaaaaaaaaaaaaaaabbbbbccaabbb..",
+          "...aaaaaaaaaaaaaaaaaaaaaaabbbbbccaabbbb.",
+          "..aaaaaaaaaaaaaaaaaaaaaaabbbbbcccaabbbbc",
+          ".aaaaaaaaaaaaaaaaaaaaaabbbbbbbcccaabbbbc",
+          "aaaaaaaaaaaaaaaaaaaaaabbbbaaaaaaaabbbbbc",
+          "aaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaabbbbcc",
+          "aaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaabbbcc",
+          "aaaaaaaaaaaaaaaaaaaaaaaaabbaaaaaaaabbbbc",
+          "aaaaaaaaaaaaaaaaaaaaaaaaabbbaaaaaaabbbbc",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbaaaaaabbbbc",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbaaaabbbbcc",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbcaabbbbbcc",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbcbbbbbcccc",
+          "bbaaaaaaaaaaaaaaaaaaaaaaabbbbccbbbcccccd",
+          "bbbbbbbaaaaaaaaaaaaaaaaabbbbccccccccccdd",
+          ".ccccccbbbbbbbaaaaaaabbbbbbcccccccccddd.",
+          "..ccccccbbbbbbbbbbbbbbbbbccccccddddddd..",
+          "....dcccccccccbbbbbbbcccccccddddddddd...",
+          ".....ccccddddddcccccccccccddddddddd.....",
+          "......cccbbdddddcccccdddddddbbbccc......",
+          ".......ccccbbbbbbddddddddddbbcccc.......",
+          "........cccccccbbbbbbbbbbccccccc........",
+          "...........cccccccccccccccccc...........",
+          "..............cccccccccccc..............",
+          "........................................"
+        ]
+      ]
+    }
+  ],
+  "start": "drift",
+  "states": {
+    "drift": { "frames": [0, 1, 1, 0], "ms": 1000 }
+  }
+}

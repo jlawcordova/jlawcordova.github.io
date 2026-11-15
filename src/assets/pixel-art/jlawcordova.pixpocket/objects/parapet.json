@@ -1,0 +1,53 @@
+{
+  "notes": [
+    "A tile of crenellated parapet along the tile's back-right edge: a low stone wall with one wide merlon. A run of them joins.",
+    "Depth Back, so what stands on its tile draws over it."
+  ],
+  "category": [
+    "Range",
+    "Rampart"
+  ],
+  "kind": "sprite",
+  "anchor": [5, 27],
+  "keys": {
+    "a": "path-3",
+    "b": "path-4",
+    "c": "soil-3"
+  },
+  "layers": [
+    {
+      "map": [
+        "........aa................",
+        "......aaaaaa..............",
+        "....aaaaaaaaaa............",
+        "....aaaaaaaaaaaa..........",
+        "....bbaaaaaaaaaaaa........",
+        "....bbbbaaaaaaaaaaaa......",
+        "....bbbbbbaaaaaaaaaa......",
+        "..aabbbbbbbbaaaaaacc......",
+        "aaaabbbbbbbbbbaacccc......",
+        "aaaabbbbbbbbbbbccccc......",
+        "bbaabbbbbbbbbbbccccc......",
+        "bbbbbbbbbbbbbbbccccc......",
+        "bbbbbbbbbbbbbbbccccc......",
+        "bbbbbbbbbbbbbbbccccc......",
+        "bbbbbbbbbbbbbbbcccccaa....",
+        "bbbbbbbbbbbbbbbcccaaaaaa..",
+        "bbbbbbbbbbbbbbbcaaaaaaaaaa",
+        "bbbbbbbbbbbbbbbbaaaaaaaaaa",
+        "bbbbbbbbbbbbbbbbbbaaaaaacc",
+        "bbbbbbbbbbbbbbbbbbbbaacccc",
+        "..bbbbbbbbbbbbbbbbbbbccccc",
+        "....bbbbbbbbbbbbbbbbbccccc",
+        "......bbbbbbbbbbbbbbbccccc",
+        "........bbbbbbbbbbbbbccccc",
+        "..........bbbbbbbbbbbccccc",
+        "............bbbbbbbbbccccc",
+        "..............bbbbbbbccccc",
+        "................bbbbbccccc",
+        "..................bbbccc..",
+        "....................bc...."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "notes": [
+    "A hijab framing the face, its drape round the neck onto the shoulders. Worn in a head's hat socket. Plum; looks: red, teal, gold, cream, black."
+  ],
+  "category": [
+    "Cast",
+    "Hair"
+  ],
+  "kind": "sprite",
+  "parts": [
+    { "id": "scarf", "box": [10, 10, 10], "at": [0, 0, 0], "order": 3, "faces": { "top": "plum-1", "front": { "keys": { "a": "plum-2" }, "shade": { "a": "plum-3" }, "map": ["aaaaaaaaaa", "aaaaaaaaaa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aaaaaaaaaa"] }, "back": ["plum-2", "plum-3"], "left": ["plum-2", "plum-3"], "right": ["plum-2", "plum-3"] }, "looks": { "red": { "faces": { "top": "roof-1", "front": { "keys": { "a": "roof-2" }, "shade": { "a": "roof-3" }, "map": ["aaaaaaaaaa", "aaaaaaaaaa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aaaaaaaaaa"] }, "back": ["roof-2", "roof-3"], "left": ["roof-2", "roof-3"], "right": ["roof-2", "roof-3"] } }, "teal": { "faces": { "top": "teal-1", "front": { "keys": { "a": "teal-2" }, "shade": { "a": "teal-3" }, "map": ["aaaaaaaaaa", "aaaaaaaaaa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aaaaaaaaaa"] }, "back": ["teal-2", "teal-3"], "left": ["teal-2", "teal-3"], "right": ["teal-2", "teal-3"] } }, "gold": { "faces": { "top": "gold-1", "front": { "keys": { "a": "gold-2" }, "shade": { "a": "gold-3" }, "map": ["aaaaaaaaaa", "aaaaaaaaaa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aaaaaaaaaa"] }, "back": ["gold-2", "gold-3"], "left": ["gold-2", "gold-3"], "right": ["gold-2", "gold-3"] } }, "cream": { "faces": { "top": "cream", "front": { "keys": { "a": "path-1" }, "shade": { "a": "path-2" }, "map": ["aaaaaaaaaa", "aaaaaaaaaa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aaaaaaaaaa"] }, "back": ["path-1", "path-2"], "left": ["path-1", "path-2"], "right": ["path-1", "path-2"] } }, "black": { "faces": { "top": "stone-3", "front": { "keys": { "a": "stone-4" }, "shade": { "a": "ink" }, "map": ["aaaaaaaaaa", "aaaaaaaaaa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aa......aa", "aaaaaaaaaa"] }, "back": ["stone-4", "ink"], "left": ["stone-4", "ink"], "right": ["stone-4", "ink"] } } } },
+    { "id": "drape", "box": [12, 12, 2], "at": [-1, -1, -2], "order": 3, "faces": { "top": "plum-1", "sides": ["plum-2", "plum-3"] }, "looks": { "red": { "faces": { "top": "roof-1", "sides": ["roof-2", "roof-3"] } }, "teal": { "faces": { "top": "teal-1", "sides": ["teal-2", "teal-3"] } }, "gold": { "faces": { "top": "gold-1", "sides": ["gold-2", "gold-3"] } }, "cream": { "faces": { "top": "cream", "sides": ["path-1", "path-2"] } }, "black": { "faces": { "top": "stone-3", "sides": ["stone-4", "ink"] } } } }
+  ]
+}

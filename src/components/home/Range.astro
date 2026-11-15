@@ -161,8 +161,8 @@ const [first] = rangeClasses;
         .catch(() => {});
     };
 
-    // A class group's data-play is a list (Pixel Lab's site contract): `enter`
-    // plays the setting's build-up and `hop` the character's hop, and each
+    // A class group's data-play is a list (Pixpocket's site contract): `enter`
+    // plays the setting's build-up and `jump` the character's jump, and each
     // starts over on its own, so neither cuts the other short.
     const plays = (group: Element) => (group.getAttribute('data-play') ?? '').split(/\s+/).filter(Boolean);
     const setPlays = (group: Element, list: string[]) =>
@@ -269,18 +269,18 @@ const [first] = rangeClasses;
     motion.addEventListener('change', () => ((playing = !motion.matches), schedule()));
     document.addEventListener('visibilitychange', schedule);
 
-    // A: only the character hops (R6), with the art's hop state, played
+    // A: only the character jumps (R6), with the art's jump state, played
     // through data-play. Its setting stays put, or goes on building, and the
-    // class stays. A press mid-hop starts it over.
+    // class stays. A press mid-jump starts it over.
     $('.range__a').addEventListener('click', () => {
       const group = current();
       if (!group || motion.matches) return;
-      replay(group, 'hop');
+      replay(group, 'jump');
     });
     art.addEventListener('animationend', (e) => {
-      if ((e as AnimationEvent).animationName !== 'range-sprite--hop') return;
+      if ((e as AnimationEvent).animationName !== 'range-sprite--jump') return;
       const group = (e.target as Element).closest('[data-play]');
-      if (group) drop(group, 'hop');
+      if (group) drop(group, 'jump');
     });
 
     section.classList.add('is-ready');

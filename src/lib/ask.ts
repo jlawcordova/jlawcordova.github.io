@@ -9,8 +9,8 @@ import { easeOut, play, reduced } from './motion';
 
 /** The avatar's size on the panel: CSS pixels per art pixel. */
 const SCALE = 3;
-/** The avatar's viewBox (src/assets/pixel-art/jlawcordova.pixellab/scenes/ask-avatar.json): the foot is at 0, 0. */
-const VIEW = { x: -7, y: -29, width: 19, height: 31 };
+/** The avatar's viewBox (src/assets/pixel-art/jlawcordova.pixpocket/scenes/ask-avatar.json): the foot is at 0, 0. */
+const VIEW = { x: -12, y: -42, width: 24, height: 47 };
 const GLIDE = { duration: 0.5, ease: easeOut };
 
 interface Panel {
@@ -75,7 +75,7 @@ function build(root: HTMLElement, bubble: HTMLButtonElement): Panel {
    */
   const placeAvatar = () => {
     avatar.style.left = `${dialog.offsetLeft + 16}px`;
-    avatar.style.top = `${dialog.offsetTop - 3 + VIEW.y * SCALE}px`;
+    avatar.style.top = `${dialog.offsetTop + 3 - VIEW.height * SCALE}px`;
   };
   const avatarFoot = () => {
     const box = avatar.getBoundingClientRect();
@@ -88,11 +88,11 @@ function build(root: HTMLElement, bubble: HTMLButtonElement): Panel {
     return { x: to.x - from.x, y: to.y - from.y, scale: to.s / SCALE, shown: inView(to) };
   };
 
-  /** The character's jump (its hop state), played through data-play; nothing under reduced motion. */
+  /** The character's jump (its jump state), played through data-play; nothing under reduced motion. */
   const jump = () =>
     new Promise<void>((resolve) => {
       if (reduced()) return resolve();
-      const name = `${island.dataset.pixellab}--hop`;
+      const name = `${island.dataset.pixpocket}--jump`;
       const done = () => {
         clearTimeout(timer);
         figure.removeEventListener('animationend', end);
@@ -102,7 +102,7 @@ function build(root: HTMLElement, bubble: HTMLButtonElement): Panel {
       const end = (e: AnimationEvent) => e.animationName === name && done();
       const timer = setTimeout(done, 800);
       figure.addEventListener('animationend', end);
-      figure.setAttribute('data-play', 'hop');
+      figure.setAttribute('data-play', 'jump');
     });
 
   const setBusy = () => {

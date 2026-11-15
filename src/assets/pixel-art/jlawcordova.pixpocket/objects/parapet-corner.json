@@ -1,0 +1,59 @@
+{
+  "notes": [
+    "The parapet's back corner: both walls and a square turret where they meet. A parapet goes on along the column, a parapet-turned along the row.",
+    "Depth Back, so what stands on its tile draws over it."
+  ],
+  "category": [
+    "Range",
+    "Rampart"
+  ],
+  "kind": "sprite",
+  "anchor": [21, 33],
+  "keys": {
+    "a": "path-3",
+    "b": "path-4",
+    "c": "soil-3"
+  },
+  "layers": [
+    {
+      "map": [
+        "....................aa....................",
+        "..................aaaaaa..................",
+        "................aaaaaaaaaa................",
+        "..............aaaaaaaaaaaaaa..............",
+        "..............aaaaaaaaaaaaaa..............",
+        "..............bbaaaaaaaaaacc..............",
+        "..............bbbbaaaaaacccc..............",
+        "..............bbbbbbaacccccc..............",
+        "..............bbbbbbbccccccc..............",
+        "..............bbbbbbbccccccc..............",
+        "........aa....bbbbbbbccccccc....aa........",
+        "......aaaaaa..bbbbbbbccccccc..aaaaaa......",
+        "....aaaaaaaaaabbbbbbbcccccccaaaaaaaaaa....",
+        "....aaaaaaaaaabbbbbbbcccccccaaaaaaaaaa....",
+        "....bbaaaaaaccbbbbbbbcccccccbbaaaaaacc....",
+        "....bbbbaaccccbbbbbbbcccccccbbbbaacccc....",
+        "....bbbbbcccccbbbbbbbcccccccbbbbbccccc....",
+        "....bbbbbcccccbbbbbbbcccccccbbbbbccccc....",
+        "....bbbbbcccccbbbbbbbcccccccbbbbbccccc....",
+        "....bbbbbcccccbbbbbbbcccccccbbbbbccccc....",
+        "....bbbbbcccccbbbbbbbcccccccbbbbbccccc....",
+        "..aabbbbbcccccbbbbbbbcccccccbbbbbcccccaa..",
+        "aaaaaabbbcccccbbbbbbbcccccccbbbbbcccaaaaaa",
+        "aaaaaaaabcccccbbbbbbbcccccccbbbbbcaaaaaaaa",
+        "bbaaaaaaccccccbbbbbbbcccccccbbbbbbaaaaaacc",
+        "bbbbaaccccccccbbbbbbbcccccccbbbbbbbbaacccc",
+        "bbbbbcccccccccbbbbbbbcccccccbbbbbbbbbccccc",
+        "bbbbbcccccccccccbbbbbcccccbbbbbbbbbbbccccc",
+        "bbbbbcccccccccccccbbbcccbbbbbbbbbbbbbccccc",
+        "bbbbbccccccccccccc..bc..bbbbbbbbbbbbbccccc",
+        "bbbbbccccccccccc..........bbbbbbbbbbbccccc",
+        "bbbbbccccccccc..............bbbbbbbbbccccc",
+        "bbbbbccccccc..................bbbbbbbccccc",
+        "bbbbbccccc......................bbbbbccccc",
+        "..bbbccc..........................bbbccc..",
+        "....bc..............................bc...."
+      ]
+    }
+  ]
+}

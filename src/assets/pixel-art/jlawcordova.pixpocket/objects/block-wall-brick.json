@@ -1,0 +1,73 @@
+{
+  "notes": [
+    "A brick wall block: bricks on light mortar, four courses a level.",
+    "A wall block, one level high: stack them on a floor block (levels 1, 2, 3) into a wall a tile thick, and give them depth Back."
+  ],
+  "category": [
+    "Office",
+    "Walls"
+  ],
+  "kind": "block",
+  "size": [1, 1, 1],
+  "faces": {
+    "top": "brick-1",
+    "left": "brick-2",
+    "right": "brick-3"
+  },
+  "sides": {
+    "keys": {
+      "a": "brick-2",
+      "b": "path-3",
+      "c": "brick-3",
+      "d": "path-4"
+    },
+    "left": [
+      "aaaaaaaaaabaaaaaaaaaab",
+      "aaaaaaaaaabaaaaaaaaaab",
+      "aaaaaaaaaabaaaaaaaaaab",
+      "aaaaaaaaaabaaaaaaaaaab",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "aaaabaaaaaaaaaabaaaaaa",
+      "aaaabaaaaaaaaaabaaaaaa",
+      "aaaabaaaaaaaaaabaaaaaa",
+      "aaaabaaaaaaaaaabaaaaaa",
+      "aaaabaaaaaaaaaabaaaaaa",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "aaaaaaaaaabaaaaaaaaaab",
+      "aaaaaaaaaabaaaaaaaaaab",
+      "aaaaaaaaaabaaaaaaaaaab",
+      "aaaaaaaaaabaaaaaaaaaab",
+      "bbbbbbbbbbbbbbbbbbbbbb",
+      "aaaabaaaaaaaaaabaaaaaa",
+      "aaaabaaaaaaaaaabaaaaaa",
+      "aaaabaaaaaaaaaabaaaaaa",
+      "aaaabaaaaaaaaaabaaaaaa",
+      "aaaabaaaaaaaaaabaaaaaa",
+      "bbbbbbbbbbbbbbbbbbbbbb"
+    ],
+    "right": [
+      "ccccccccccdccccccccccd",
+      "ccccccccccdccccccccccd",
+      "ccccccccccdccccccccccd",
+      "ccccccccccdccccccccccd",
+      "dddddddddddddddddddddd",
+      "ccccdccccccccccdcccccc",
+      "ccccdccccccccccdcccccc",
+      "ccccdccccccccccdcccccc",
+      "ccccdccccccccccdcccccc",
+      "ccccdccccccccccdcccccc",
+      "dddddddddddddddddddddd",
+      "ccccccccccdccccccccccd",
+      "ccccccccccdccccccccccd",
+      "ccccccccccdccccccccccd",
+      "ccccccccccdccccccccccd",
+      "dddddddddddddddddddddd",
+      "ccccdccccccccccdcccccc",
+      "ccccdccccccccccdcccccc",
+      "ccccdccccccccccdcccccc",
+      "ccccdccccccccccdcccccc",
+      "ccccdccccccccccdcccccc",
+      "dddddddddddddddddddddd"
+    ]
+  }
+}

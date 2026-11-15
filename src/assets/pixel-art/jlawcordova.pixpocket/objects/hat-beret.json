@@ -1,0 +1,14 @@
+{
+  "notes": [
+    "A beret worn over to one side. Worn in a head's hat socket. Red; looks: black, plum, navy."
+  ],
+  "category": [
+    "Cast",
+    "Hair"
+  ],
+  "kind": "sprite",
+  "parts": [
+    { "id": "band", "box": [10, 10, 10], "at": [0, 0, 0], "order": 3, "faces": { "top": "roof-1", "sides": { "keys": { "a": "roof-1" }, "shade": { "a": "roof-2" }, "map": ["aaaaaaaaaa", "..........", "..........", "..........", "..........", "..........", "..........", "..........", "..........", ".........."] } }, "looks": { "black": { "faces": { "top": "stone-4", "sides": { "keys": { "a": "stone-4" }, "shade": { "a": "ink" }, "map": ["aaaaaaaaaa", "..........", "..........", "..........", "..........", "..........", "..........", "..........", "..........", ".........."] } } }, "plum": { "faces": { "top": "plum-2", "sides": { "keys": { "a": "plum-2" }, "shade": { "a": "plum-3" }, "map": ["aaaaaaaaaa", "..........", "..........", "..........", "..........", "..........", "..........", "..........", "..........", ".........."] } } }, "navy": { "faces": { "top": "glass-3", "sides": { "keys": { "a": "glass-3" }, "shade": { "a": "glass-4" }, "map": ["aaaaaaaaaa", "..........", "..........", "..........", "..........", "..........", "..........", "..........", "..........", ".........."] } } } } },
+    { "id": "beret", "box": [10, 10, 2], "at": [1, -1, 10], "faces": { "top": "roof-1", "sides": ["roof-1", "roof-2"] }, "looks": { "black": { "faces": { "top": "stone-4", "sides": ["stone-4", "ink"] } }, "plum": { "faces": { "top": "plum-2", "sides": ["plum-2", "plum-3"] } }, "navy": { "faces": { "top": "glass-3", "sides": ["glass-3", "glass-4"] } } } }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "notes": [
+    "A traffic cone, orange with a white band, on its square base."
+  ],
+  "category": [
+    "Factory",
+    "Outdoors"
+  ],
+  "kind": "sprite",
+  "anchor": [9, 13],
+  "keys": {
+    "a": "clay-1",
+    "b": "clay-2",
+    "c": "clay-3",
+    "d": "cream",
+    "e": "path-2",
+    "f": "path-1"
+  },
+  "layers": [
+    {
+      "map": [
+        ".......abbc.......",
+        ".......abbc.......",
+        ".......abbc.......",
+        "......dabbce......",
+        "......dfffee......",
+        "......dfffee......",
+        "......abbbcc......",
+        ".....aabbbccc.....",
+        "....baabbbbccb....",
+        "..bbbaabbbbccbbb..",
+        "bbbbbaabbbbccbbbbb",
+        "bbbbbbabbbbcbbbbbb",
+        "bbbbbbbbbbbbbbbbcc",
+        "bbbbbbbbbbbbbbcccc",
+        "..bbbbbbbbbbcccc..",
+        "....bbbbbbcccc....",
+        "......bbbccc......",
+        "........bc........"
+      ]
+    }
+  ]
+}

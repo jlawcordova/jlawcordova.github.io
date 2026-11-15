@@ -1,0 +1,68 @@
+{
+  "notes": [
+    "A kitchen counter with a sink, facing the lower left.",
+    "Joins a run of pantry-counter."
+  ],
+  "category": [
+    "Office",
+    "Pantry"
+  ],
+  "kind": "sprite",
+  "anchor": [19, 32],
+  "keys": {
+    "a": "stone-1",
+    "b": "stone-2",
+    "c": "stone-3",
+    "d": "wood-2",
+    "e": "wood-3",
+    "f": "wood-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "........................aa..........",
+        "..............aa......aaaa..........",
+        "............aaaaaa..aaaabc..........",
+        "..........aaaaaaaaaabbccbc..........",
+        "........aaaaaaaaaaaabbccbc..........",
+        "......aaaaaaaaaaaaaaaaaabc..........",
+        "....aaaaaaaaaaaaaaaaaaaabc..........",
+        "..aaaaaaaaaaaaaaaaaaaaaabcaa........",
+        "aaaaaaaaaaccccccaaaaaaaaaaaaaa......",
+        "aaaaaaaaccccccccccaaaaaaaaaaaaaa....",
+        "bbaaaaacccccccccccccaaaaaaaaaaaaaa..",
+        "bbbbaaacccccccccccccccaaaaaaaaaaaaaa",
+        "ddbbbbaacccccccccccccccaaaaaaaaaaaaa",
+        "ddddbbbbaacccccccccccccaaaaaaaaaaacc",
+        "ddddddbbbbaaccccccccccaaaaaaaaaacccc",
+        "ddddddddbbbbaaccccccaaaaaaaaaacccc..",
+        "dddddddddebbbbaaaaaaaaaaaaaaccccee..",
+        "dddddddadeedbbbbaaaaaaaaaacccceeee..",
+        "dddddddadeedddbbbbaaaaaacccceeeeee..",
+        "dddddddadeedddddbbbbaacccceeeeeeee..",
+        "dddddddddeedadddddbbbccceeeeeeeeee..",
+        "dddddddddeedadddddddbceeeeeeeeeeee..",
+        "dddddddddeedaddddddddeeeeeeeeeeeee..",
+        "dddddddddeeddddddddddeeeeeeeeeeeee..",
+        "dddddddddeeddddddddddeeeeeeeeeeeee..",
+        "dddddddddeeddddddddddeeeeeeeeeeeee..",
+        "dddddddddeeddddddddddeeeeeeeeeeeee..",
+        "dddddddddeeddddddddddeeeeeeeeeeeee..",
+        "dddddddddeeddddddddddeeeeeeeeeeeee..",
+        "ffdddddddeeddddddddddeeeeeeeeeeeee..",
+        "ffffdddddeeddddddddddeeeeeeeeeeeee..",
+        "ffffffdddeeddddddddddeeeeeeeeeeeee..",
+        "..ffffffdeeddddddddddeeeeeeeeeeeee..",
+        "....ffffffeddddddddddeeeeeeeeeee....",
+        "......ffffffdddddddddeeeeeeeeeff....",
+        "........ffffffdddddddeeeeeeeffff....",
+        "..........ffffffdddddeeeeeffffff....",
+        "............ffffffdddeeeffffff......",
+        "..............ffffffdeffffff........",
+        "................ffffffffff..........",
+        "..................ffffff............",
+        "....................ff.............."
+      ]
+    }
+  ]
+}

@@ -1,9 +1,10 @@
-// The build-ups play from the SVGs (entrance in SVG spec R14). Pixel Lab v0.10.0
+// The build-ups play from the SVGs (entrance in SVG spec R14). Pixpocket
 // writes each scene's entrance into its compiled SVG, and a page plays it by
-// putting `enter` in a data-play list (the lab's docs/site-contract.md, "The
+// putting `enter` in a data-play list (Pixpocket's docs/site-contract.md, "The
 // entrance"). The site keeps no copy of the schedule, so this is what CI sees
-// of the build-up: both SVGs carry it, it plays only with motion allowed, the
-// hero asks for it, and each settles when the site's old schedule did.
+// of the build-up: both SVGs carry it, it plays only with motion allowed, and
+// the hero asks for it. Where Pixpocket is installed, it also checks when each
+// settles and that the document's pieces are the SVG's.
 
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
@@ -11,16 +12,19 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, it } from 'node:test';
 
-import { pixellab } from './pixellab.mjs';
+import { DOCUMENT as DOC, pixpocket } from './pixpocket.mjs';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
-const DOCUMENT = join(ROOT, 'src/assets/pixel-art/jlawcordova.pixellab');
+const DOCUMENT = join(ROOT, DOC);
 
-async function show(/** @type {string} */ scene) {
-  const { status, stdout, stderr } = await pixellab(['scene', 'entrance', 'show', scene, '--document', DOCUMENT, '--json']);
-  assert.equal(status, 0, stderr);
-  return JSON.parse(stdout);
+/** What `scene entrance show` says of a scene, or undefined where Pixpocket isn't installed. */
+function show(/** @type {string} */ scene) {
+  const run = pixpocket(['scene', 'entrance', 'show', scene, '--document', DOCUMENT, '--json']);
+  if (!run) return undefined;
+  assert.equal(run.status, 0, run.stderr);
+  return JSON.parse(run.stdout);
 }
+const NO_PROGRAM = "Pixpocket isn't installed here";
 
 /** The rules of a stylesheet at the top level, with the at-rule each sits in (or ''). */
 function rules(/** @type {string} */ css) {
@@ -41,25 +45,31 @@ function rules(/** @type {string} */ css) {
 }
 
 for (const [scene, settledBy] of /** @type {const} */ ([
-  ['hero-island', 2320],
+  ['hero-island', 2301],
   ['range-sprite', 1440],
 ])) {
-  describe(`${scene}.svg`, async () => {
-    const entrance = await show(scene);
-    const svg = await readFile(join(ROOT, 'src/assets/pixel-art', `${scene}.svg`), 'utf8');
+  describe(`${scene}.svg`, () => {
+    const entrance = show(scene);
+    const skip = entrance ? false : NO_PROGRAM;
 
-    it('has an entrance, and every data-enter group in the SVG is one of its pieces, with its wrapper inside', () => {
-      assert.ok(entrance.entrance, `${scene} has no entrance`);
+    it('carries an entrance: every data-enter group has the wrapper its drawing moves in', async () => {
+      const svg = await readFile(join(ROOT, 'src/assets/pixel-art', `${scene}.svg`), 'utf8');
       // Each piece's drawing moves into a group the compiler adds, its only child.
       const pieces = [...svg.matchAll(/<g\b[^>]*\sdata-enter="[^"]*"[^>]*>(<[^>]*>)/g)];
       assert.ok(pieces.length > 0, 'the SVG has data-enter groups');
       for (const [, child] of pieces) assert.match(child, /^<g\b(?![^>]*\sdata-enter=)/, `a piece starts with ${child.slice(0, 60)}`);
+    });
+
+    it("the document's pieces are the SVG's data-enter groups", { skip }, async () => {
+      const svg = await readFile(join(ROOT, 'src/assets/pixel-art', `${scene}.svg`), 'utf8');
+      assert.ok(entrance.entrance, `${scene} has no entrance`);
       // entrance show lists the scene's pieces, or a Range's first setting's (data-class="0").
       const first = svg.includes('data-class="0"') ? svg.slice(svg.indexOf('data-class="0"'), svg.indexOf('data-class="1"')) : svg;
       assert.equal((first.match(/<g\b[^>]*\sdata-enter="/g) ?? []).length, entrance.pieces.length, 'as many pieces as data-enter groups');
     });
 
-    it('plays enter from data-play, only when motion is allowed', () => {
+    it('plays enter from data-play, only when motion is allowed', async () => {
+      const svg = await readFile(join(ROOT, 'src/assets/pixel-art', `${scene}.svg`), 'utf8');
       const style = svg.match(/<style>([\s\S]*?)<\/style>/)?.[1] ?? '';
       const enter = rules(style).filter((r) => r.selector.includes('[data-play~="enter"]'));
       assert.ok(enter.length > 0, 'a rule plays enter');
@@ -68,7 +78,7 @@ for (const [scene, settledBy] of /** @type {const} */ ([
       }
     });
 
-    it(`settles at ${settledBy} ms, as the site's own schedule did`, () => {
+    it(`settles at ${settledBy} ms`, { skip }, () => {
       assert.equal(entrance.settledBy, settledBy);
     });
   });

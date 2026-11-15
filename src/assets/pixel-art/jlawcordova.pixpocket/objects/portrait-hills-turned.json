@@ -1,0 +1,55 @@
+{
+  "notes": [
+    "A framed print: a sun over two green hills.",
+    "Hangs on the wall behind its tile's back-left edge (a wall along the rows): place it on the floor tile in front of the wall, at depth Back."
+  ],
+  "category": [
+    "Office",
+    "Walls"
+  ],
+  "kind": "sprite",
+  "anchor": [17, 59],
+  "keys": {
+    "a": "wood-1",
+    "b": "wood-3",
+    "c": "path-1",
+    "d": "gold-2",
+    "e": "wood-2",
+    "f": "grass-2",
+    "g": "grass-3"
+  },
+  "layers": [
+    {
+      "map": [
+        "............aa",
+        "..........aaaa",
+        "........aaaabb",
+        "......aaaabbbb",
+        "....aaaabbbbcb",
+        "..aaaabbbbcccb",
+        "aaaabbbbcccccb",
+        "aabbbbccccddcb",
+        "ebbbccccddddcb",
+        "ebccccccddddcb",
+        "ecccccccddddcb",
+        "ecccccccddcccb",
+        "eccccccccccccb",
+        "eccccccccccccb",
+        "ecccccccccfccb",
+        "ecccccccccfffb",
+        "ecccgccccffffb",
+        "ecccgggcfffffb",
+        "eccggggggffffb",
+        "ecgggggggggffb",
+        "ecggggggggggbb",
+        "egggggggggbbbb",
+        "egggggggbbbb..",
+        "egggggbbbb....",
+        "egggbbbb......",
+        "egbbbb........",
+        "ebbb..........",
+        "eb............"
+      ]
+    }
+  ]
+}

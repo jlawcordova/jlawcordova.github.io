@@ -1,0 +1,15 @@
+{
+  "notes": [
+    "A knight's helm with a red plume, the face showing through its open front. Worn in a head's hat socket.",
+    "Look: closed (the visor down, a slit at the eyes)."
+  ],
+  "category": [
+    "Cast",
+    "Hair"
+  ],
+  "kind": "sprite",
+  "parts": [
+    { "id": "helm", "box": [10, 10, 10], "at": [0, 0, 0], "order": 3, "faces": { "top": "cream", "front": { "keys": { "a": "stone-1" }, "shade": { "a": "stone-2" }, "map": ["aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "a........a", "a........a", "a........a", "a........a", "a........a", "a........a", "aaaaaaaaaa"] }, "back": ["stone-1", "stone-2"], "left": ["stone-1", "stone-2"], "right": ["stone-1", "stone-2"] }, "looks": { "closed": { "faces": { "top": "cream", "front": { "keys": { "a": "stone-1", "b": "ink" }, "shade": { "a": "stone-2", "b": "ink" }, "map": ["aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "abbbbbbbba", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa"] }, "back": ["stone-1", "stone-2"], "left": ["stone-1", "stone-2"], "right": ["stone-1", "stone-2"] } } } },
+    { "id": "plume", "box": [2, 6, 4], "at": [4, 2, 10], "faces": { "top": "roof-1", "sides": ["roof-1", "roof-2"] } }
+  ]
+}

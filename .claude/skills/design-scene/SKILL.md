@@ -1,49 +1,49 @@
 ---
 name: design-scene
-description: Design a pixel-art scene for this site, the hero island included, with Pixel Lab open on the work and the site running, so the owner can see, edit and approve every object and scene as it lands. Use whenever the owner asks to design, prototype, extend or level up a scene or the island, or to make the art assets for one. Builds on the pixel-art skill, uses the pixellab MCP tools and CLI, and makes the art in the main session.
+description: Design a pixel-art scene for this site, the hero island and the Range's settings included, keeping the work visible so the owner can see and approve every step. Use whenever the owner asks to design, prototype, extend or rearrange a scene or the island, or to plan the objects one needs. Scenes are arranged here from the owner's art studio's objects with the `pixpocket` CLI; new objects are drawn in the studio repo. Builds on the pixel-art skill, and runs in the main session.
 ---
 # Design a scene
 
-The owner judges art by looking at it. When they ask for a scene or the island, keep the work visible from the first step: every object and scene you make is in the document the owner has open in **Pixel Lab** (the Mac app), and the site runs so the island can be judged where it lives. The art itself follows the `pixel-art` skill (the design language, formats and checks); this skill is how the work is run and shown.
+The owner judges art by looking at it. When they ask for a scene or the island, keep the work visible from the first step: review images of every stage, and the site running so the island can be judged where it lives. How the art is changed and checked is the `pixel-art` skill; this skill is how the work is run and shown.
+
+A scene on this site is arranged from objects that the owner's art studio (`jlawcordova-vlog`) draws. So a design has two parts: **which objects**, most of which the studio already has, and **where they stand**, which is this document's scene.
 
 ## 1. Where the work shows
 
-- **Pixel Lab** opens the site's document, `src/assets/pixel-art/jlawcordova.pixellab`, from the owner's checkout. If the app is installed (`ls "$HOME/Applications/Pixel Lab.app"`) and not running, open it with `open -a "Pixel Lab"`; if it isn't installed, say so once and hand over review PNGs instead.
-- **Over MCP** (`mcp__pixellab__*`), the way art changes in the owner's checkout: make the change with the MCP's tools. Each edit applies to the document as it's made and saves itself (there are no proposals since Pixel Lab v0.7.0). With Pixel Lab open, the owner watches it land on the stage, can open it from the sidebar and edit it by hand, and finds every change as a version in the Versions panel. `doc_undo` and `history_undo` take back an edit or a version of yours (the `pixel-art` skill, Pixel Lab). Don't write sources in the owner's checkout by hand. The MCP server runs on the owner's checkout, not a worktree.
-- **From a worktree,** the CLI writes the working tree directly (`npm run pixellab -- …`); the owner opens the worktree's document in Pixel Lab (File › Open Document…, or `PIXELLAB_DOC`) to see it, or you hand over PNGs.
-- **The site:** from the main checkout, start the dev server with the Browser pane's `preview_start` and `{ name: "dev" }` (`.claude/launch.json`, port 4321); it reuses a running server. From a worktree, give it its own port (4322 and up; check `lsof -i :<port>` and the main checkout's `.claude/launch.json`) and add an entry to the **main checkout's** `.claude/launch.json` that runs `npm run dev -- --port <port>` with `--prefix <worktree>`. Never start the server with Bash, and never a second one for the same checkout. After `npm run art`, the home page shows the new SVGs on its next reload.
+- **Review images.** `npm run pixpocket -- preview scene:<name> --scale 3 --out .art-preview/<name>@3x.png` after each step, and `render` for a window (`--view x,y,w,h`), a moment (`--time`), a Range class (`--show`) or the dark theme (`--theme dark`). Send the owner the image, not a description of it.
+- **Pixpocket's app.** If the owner has Pixpocket, `pixpocket app` opens the document in their browser, where they can look and edit by hand. What they save is the new baseline: diff the working tree before your next edit, and keep their changes. If this session has Pixpocket's MCP server (`pixpocket serve --mcp`), your edits land in the document they have open as you make them.
+- **The site.** From the main checkout, start the dev server with the Browser pane's `preview_start` and `{ name: "dev" }` (`.claude/launch.json`, port 4321); it reuses a running server. From a worktree, give it its own port (4322 and up) with an entry in the main checkout's `.claude/launch.json` that runs `npm run dev -- --port <port>` with `--prefix <worktree>`. Never start a second server for the same checkout. After `npm run art`, the home page shows the new SVGs on its next reload.
+- **Without Pixpocket** nothing here can be changed (the `pixel-art` skill, The program). Say so before planning anything.
 
-## 2. Hand over what to look at
+## 2. Start from what the studio has
 
-In every report, give the owner, as a list:
+1. **List the objects.** The studio's `README.md` and its art style (`studio/studio.pixpocket/art-style.md`) describe the libraries (Office, Agents, Cast, Range, Effects and more). In a studio checkout, `pixpocket object list` and its contact sheets show them. Here, `npm run pixpocket -- object list` shows what the document already has.
+2. **Propose the scene as a list:** each area, the objects in it, the people and robots with what each is doing (one state each), and anything the studio doesn't have yet. Give a rough byte estimate for the hero or the Range (about 5 KB a frame for a figure; `check <scene> --sizes` for what's there).
+3. **New objects are studio work.** Draw them in the studio repo with its skills (`pixel-art-style` first, then `art-library` or `art-generators`, and `art-review` for the owner's verdicts), one piece at a time, before the scene needs them. If this session has no studio checkout, hand the owner the list and stop there.
 
-- the name of each object and scene you made or changed (they open them in Pixel Lab from the sidebar; a double-click on a thumbnail opens an object);
-- a review image of each: `art_preview` over the MCP (an object on its tile, a scene at its viewBox);
-- what changed in each, and each new object's category.
+Pause for the owner at the reviews the plan names (for example the object list, then the layout, then the page), or when blocked.
 
-To show several new objects side by side, add a preview-only scene with no `output` (a review board, such as `scenes/<slug>-objects.json`) that places them on a few tiles, and name it. Remove it before the PR unless the spec keeps it.
+## 3. Build it in this session, one area at a time
 
-## 3. Make the art: in this session, one piece at a time
+Arrange the scene yourself, in this session, so what each area settled stays in front of you for the next, and the owner's feedback lands where the work was done.
 
-Make every approved object, then the scene, yourself, in this session, with the `pixel-art` skill and its reference files. One context keeps what each object settled (its colors per face, its texture, how it meets the ground) in front of you for the next one, and the owner's feedback lands where the work was done. Handing each piece to a subagent lost that at every hand-off (Anthropic's article on [when to fold subagents into the main agent loop](https://claude.com/resources/articles/building-agents-when-to-fold-subagents-into-your-main-agent-loop)).
-
-- **One object at a time,** in the order of the approved list. Small objects (a tile, a prop of a few pixels, a simple part) may go together, at most 3 at once, so each still gets full attention. The scene comes last, once every object it needs is in.
-- **Before each one,** open the skill's reference files it needs (`rules.md` for anything on the island or the Range, `blocks.md` for a block, `cost.md` for its bytes), save the before images, and look at the objects already made that it must match.
-- **After each one,** `check` each doc and `art_preview` it, run `npm run art` and `npm test`, and send the owner the names and the images to review in Pixel Lab (§2). Go on to the next once the owner is happy with it.
-  - An edit the MCP can't express: ask the owner before writing it (the `pixel-art` skill, Pixel Lab).
-- **Feedback** is applied here, as the skill's `review.md` (Feedback rounds) says. A source the owner saved from Pixel Lab is the new baseline.
-- **Keep the context light:** look at renders at the scale the question needs, and save only the review images. If a long run gets to where earlier decisions slip, write what's settled (each object's colors per face and texture) into the change's `notes.md`, and suggest the owner continue in a fresh session from it, rather than splitting the work across agents.
-- **The `pixel-artist` agent** (`.claude/agents/pixel-artist.md`) is for a fresh-eyes critique of a piece before the owner reviews it, where not sharing this session's context is the point. It doesn't edit; weigh what it finds yourself.
-
-Pause for the owner only at the reviews the plan names (for example, the object list, then the objects, then the scene) or when blocked.
+- **Save the before image first.**
+- **One area at a time** (the floor and walls, then one room, then the people). After each: `npm run pixpocket -- check <scene>`, a review image, and the owner's look where the plan names one.
+- **On the hero island every piece is its own `enter` group** with its role and foot, in the scene layer for its area. In a Range setting, pieces go in the class's `data-class` group, with one `character` (the `pixel-art` skill, Arranging a scene).
+- **Bring in studio objects with the export** (`python3 scripts/export-site-art.py <this checkout>` in the studio checkout), then `npm run art`.
+- **To try variants,** copy the document to a scratch folder outside the repo and point the commands at it with `--document <copy>`. Copy only the winner back.
+- **Feedback:** apply only what was asked, then re-run the checks and images for what it affects. Don't redo settled areas.
+- **Keep the context light:** look at renders at the scale the question needs. If a long run gets to where earlier decisions slip, write what's settled into the change's `notes.md` and suggest a fresh session from it, rather than splitting the work across agents.
+- **The `pixel-artist` agent** is for a fresh-eyes critique before the owner reviews, where not sharing this session's context is the point. It doesn't edit; weigh what it finds yourself.
 
 ## 4. Review the scene
 
-- For the hero island, the owner reviews the scene twice: in Pixel Lab (the stage, with the timeline for the motion), and on the home page at http://localhost:<port>/, where the entrance and loops run. Screenshot the home page at 1440px and 390px wide.
-- For a sequence (pieces that travel and hand things on), build it as the scene's `motion`: Pixel Lab's timeline plays and scrubs it, and `scene render --time <ms>` renders any moment headless. Entrances and frame loops follow the `pixel-art-motion` skill.
+- For the hero island and the Range, the owner reviews twice: the review images, and the home page at http://localhost:<port>/, where the build-up and the states run. Screenshot the home page at 1440px and 390px wide, in light and dark, and confirm there's no horizontal scroll.
+- A changed island changes its build-up: check `scene entrance show <scene>` and the settle time `scripts/entrance-svg.test.mjs` pins. Entrances and states follow the `pixel-art-motion` skill.
+- The Ask bubble sits over the founder in the `.ask-character` group. If he moves, check the bubble on the page and run `npm run e2e -- scripts/e2e/ask.e2e.mjs`.
 
 ## 5. Before the PR
 
-- The `pixel-art` skill's checklist passes: `npm run art` reports every file `lossless` (an over-budget line is a warning to report), `npm run pixellab -- check` shows no new warnings, and `npm test` shows `# fail 0`.
-- Review boards and scratch scenes are gone unless the spec keeps them.
+- The `pixel-art` skill's checks pass: `npm run pixpocket -- check` shows no problems and no new warnings, `npm run art` reports every file `lossless` (an over-budget line is a warning to report), and `npm test` shows `# fail 0`.
+- The sources, the SVGs and `published.json` are in the commit together. Scratch scenes and copies are gone.
 - Leave the dev server running and say how to stop it: `preview_stop`, or `npx astro dev stop` from the checkout.

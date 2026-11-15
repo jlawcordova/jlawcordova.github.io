@@ -1,0 +1,14 @@
+{
+  "notes": [
+    "A knight's shield, red with a gold cross in a steel rim, held on the outside of the far hand (its offhand socket).",
+    "Held in a hand's grip socket, or the far hand's offhand."
+  ],
+  "category": [
+    "Cast",
+    "Held"
+  ],
+  "kind": "sprite",
+  "parts": [
+    { "id": "shield", "box": [2, 8, 10], "at": [-2, -2, -3], "faces": { "top": "stone-2", "front": ["stone-2", "stone-3"], "back": ["stone-2", "stone-3"], "left": { "keys": { "a": "stone-2", "b": "roof-2", "c": "gold-2" }, "shade": { "a": "stone-3", "b": "roof-3", "c": "gold-3" }, "map": ["aaaaaaaa", "abbccbba", "abbccbba", "acccccca", "acccccca", "abbccbba", "abbccbba", "abbccbba", "abbccbba", "aaaaaaaa"] }, "right": { "keys": { "a": "stone-2", "b": "roof-2", "c": "gold-2" }, "shade": { "a": "stone-3", "b": "roof-3", "c": "gold-3" }, "map": ["aaaaaaaa", "abbccbba", "abbccbba", "acccccca", "acccccca", "abbccbba", "abbccbba", "abbccbba", "abbccbba", "aaaaaaaa"] } } }
+  ]
+}

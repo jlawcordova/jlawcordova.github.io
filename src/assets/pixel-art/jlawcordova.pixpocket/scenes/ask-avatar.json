@@ -1,0 +1,10 @@
+{
+  "notes": [
+    "The Ask panel's character on its own: the island's J. Law (staff-founder), for the glide to the bottom left. The foot is at 0, 0, and the box has the room over the head that its jump takes."
+  ],
+  "output": "ask-avatar.svg",
+  "viewBox": [-12, -42, 24, 47],
+  "items": [
+    { "object": "staff-founder", "class": "character", "at": { "px": [0, 0] } }
+  ]
+}

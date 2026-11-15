@@ -9,7 +9,7 @@ const bubble = root?.querySelector<HTMLButtonElement>('.ask-bubble');
 
 if (root && island && foot && bubble) {
   const load = () => import('./ask');
-  // The bubble sits above the head (29 art px over the foot), to the
+  // The bubble sits above the head (36 art px over the foot), to the
   // character's left, or its right where the left would leave the screen.
   const place = () => {
     const vb = island.viewBox.baseVal;
@@ -17,7 +17,7 @@ if (root && island && foot && bubble) {
     const box = root.getBoundingClientRect();
     const s = art.width / vb.width;
     const x = art.left + (Number(foot.dataset.x) - vb.x) * s;
-    const y = art.top + (Number(foot.dataset.y) - 29 - vb.y) * s;
+    const y = art.top + (Number(foot.dataset.y) - 36 - vb.y) * s;
     const w = bubble.offsetWidth;
     const left = x - w + 24 < 16 ? x - 24 : x - w + 24;
     bubble.style.left = `${left - box.left}px`;

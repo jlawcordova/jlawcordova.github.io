@@ -1,0 +1,1317 @@
+{
+  "notes": [
+    "The home page's hero: a start-up office on a floating island, a chunk of earth with its crust showing. The office is one floor against two walls: desks where a developer and an agent (the classic robot) type side by side, a coffee bar a blue agent runs, a meeting rug someone paces round on the phone, and a lounge where someone pets the cat; an agent walks its rounds down the aisle and someone fetches a coffee. Five people and three agents, with room to breathe. The garden is only the island's rim, where J. Law stands on the doorstep (the Ask bubble sits over him).",
+    "Every piece is a group with a data-enter role, which the entrance builds up: shadow, ground (a tile, with the earth under it and the wall on it), object and sky. The three walkers (coffee-run, pacer, rounds) walk closed loops of 12 tiles, so the scene loops every 26.4 s.",
+    "The objects are copies from the jlawcordova-vlog studio (studio-import.json): change them there."
+  ],
+  "output": "hero-island.svg",
+  "viewBox": [-256, -112, 514, 462],
+  "layers": [
+    { "id": "shadow", "name": "Shadow" },
+    { "id": "earth", "name": "Underside" },
+    { "id": "ground", "name": "Floor and garden" },
+    { "id": "walls", "name": "Walls" },
+    { "id": "studio", "name": "Desks" },
+    { "id": "coffee", "name": "Coffee bar" },
+    { "id": "meeting", "name": "Meeting rug" },
+    { "id": "lounge", "name": "Lounge" },
+    { "id": "garden", "name": "Garden" },
+    { "id": "sky", "name": "Sky" }
+  ],
+  "items": [
+    {
+      "group": { "class": "enter", "data-enter": "shadow" },
+      "depth": "back",
+      "items": [
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [-66, 245], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [-88, 256], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [-66, 267], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [-88, 278], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [-44, 278], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [-66, 289], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [-44, 300], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [-66, 311], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [-22, 311], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [-44, 322], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [110, 267], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [22, 311], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [0, 322], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [132, 278], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [110, 289], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [88, 300], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [66, 311], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [44, 322], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [22, 333], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [132, 300], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [110, 311], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [88, 322], "level": -40 } },
+        { "object": "island-shadow", "layer": "shadow", "at": { "px": [66, 333], "level": -40 } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "0", "data-row": "0", "data-x": "0", "data-y": "0" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [0, 0, 0] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [0, 0, 1] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [0, 0, 2] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [0, 0, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "1", "data-row": "0", "data-x": "22", "data-y": "11" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [1, 0, 0] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [1, 0, 1] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [1, 0, 2] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [1, 0, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "2", "data-row": "0", "data-x": "44", "data-y": "22" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [2, 0, 0] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [2, 0, 1] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [2, 0, 2] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [2, 0, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "3", "data-row": "0", "data-x": "66", "data-y": "33" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [3, 0, 0] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [3, 0, 1] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [3, 0, 2] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [3, 0, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "4", "data-row": "0", "data-x": "88", "data-y": "44" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [4, 0, 0] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [4, 0, 1] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [4, 0, 2] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [4, 0, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "5", "data-row": "0", "data-x": "110", "data-y": "55" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [5, 0, 0] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [5, 0, 1] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [5, 0, 2] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [5, 0, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "6", "data-row": "0", "data-x": "132", "data-y": "66" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [6, 0, 0] } },
+        { "object": "block-wall-gold", "layer": "walls", "depth": "back", "at": { "tile": [6, 0, 1] } },
+        { "object": "block-wall-gold", "layer": "walls", "depth": "back", "at": { "tile": [6, 0, 2] } },
+        { "object": "block-wall-gold", "layer": "walls", "depth": "back", "at": { "tile": [6, 0, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "7", "data-row": "0", "data-x": "154", "data-y": "77" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [7, 0, 0] } },
+        { "object": "block-wall-gold", "layer": "walls", "depth": "back", "at": { "tile": [7, 0, 1] } },
+        { "object": "block-wall-gold", "layer": "walls", "depth": "back", "at": { "tile": [7, 0, 2] } },
+        { "object": "block-wall-gold", "layer": "walls", "depth": "back", "at": { "tile": [7, 0, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "8", "data-row": "0", "data-x": "176", "data-y": "88" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [8, 0, 0] } },
+        { "object": "block-wall-gold", "layer": "walls", "depth": "back", "at": { "tile": [8, 0, 1] } },
+        { "object": "block-wall-gold", "layer": "walls", "depth": "back", "at": { "tile": [8, 0, 2] } },
+        { "object": "block-wall-gold", "layer": "walls", "depth": "back", "at": { "tile": [8, 0, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "9", "data-row": "0", "data-x": "198", "data-y": "99" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [9, 0, 0] } },
+        { "object": "block-wall-gold", "layer": "walls", "depth": "back", "at": { "tile": [9, 0, 1] } },
+        { "object": "block-wall-gold", "layer": "walls", "depth": "back", "at": { "tile": [9, 0, 2] } },
+        { "object": "block-wall-gold", "layer": "walls", "depth": "back", "at": { "tile": [9, 0, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "10", "data-row": "0", "data-x": "220", "data-y": "110" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [10, 0, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [10, 0, 0] } },
+        { "object": "block-wall-gold", "layer": "walls", "depth": "back", "at": { "tile": [10, 0, 1] } },
+        { "object": "block-wall-gold", "layer": "walls", "depth": "back", "at": { "tile": [10, 0, 2] } },
+        { "object": "block-wall-gold", "layer": "walls", "depth": "back", "at": { "tile": [10, 0, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "0", "data-row": "1", "data-x": "-22", "data-y": "11" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [0, 1, 0] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [0, 1, 1] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [0, 1, 2] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [0, 1, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "1", "data-row": "1", "data-x": "0", "data-y": "22" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [1, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "2", "data-row": "1", "data-x": "22", "data-y": "33" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [2, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "3", "data-row": "1", "data-x": "44", "data-y": "44" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [3, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "4", "data-row": "1", "data-x": "66", "data-y": "55" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [4, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "5", "data-row": "1", "data-x": "88", "data-y": "66" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [5, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "6", "data-row": "1", "data-x": "110", "data-y": "77" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [6, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "7", "data-row": "1", "data-x": "132", "data-y": "88" },
+      "depth": "back",
+      "items": [
+        { "object": "block-checker", "layer": "ground", "depth": "back", "at": { "tile": [7, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "8", "data-row": "1", "data-x": "154", "data-y": "99" },
+      "depth": "back",
+      "items": [
+        { "object": "block-checker", "layer": "ground", "depth": "back", "at": { "tile": [8, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "9", "data-row": "1", "data-x": "176", "data-y": "110" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [9, 1, -3] } },
+        { "object": "block-checker", "layer": "ground", "depth": "back", "at": { "tile": [9, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "10", "data-row": "1", "data-x": "198", "data-y": "121" },
+      "depth": "back",
+      "items": [
+        { "object": "block-checker", "layer": "ground", "depth": "back", "at": { "tile": [10, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "11", "data-row": "1", "data-x": "220", "data-y": "132" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [11, 1, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [11, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "0", "data-row": "2", "data-x": "-44", "data-y": "22" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [0, 2, 0] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [0, 2, 1] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [0, 2, 2] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [0, 2, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "1", "data-row": "2", "data-x": "-22", "data-y": "33" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [1, 2, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "2", "data-row": "2", "data-x": "0", "data-y": "44" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [2, 2, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "3", "data-row": "2", "data-x": "22", "data-y": "55" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [3, 2, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "4", "data-row": "2", "data-x": "44", "data-y": "66" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [4, 2, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "5", "data-row": "2", "data-x": "66", "data-y": "77" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [5, 2, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "6", "data-row": "2", "data-x": "88", "data-y": "88" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [6, 2, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "7", "data-row": "2", "data-x": "110", "data-y": "99" },
+      "depth": "back",
+      "items": [
+        { "object": "block-checker", "layer": "ground", "depth": "back", "at": { "tile": [7, 2, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "8", "data-row": "2", "data-x": "132", "data-y": "110" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [8, 2, -5] } },
+        { "object": "block-checker", "layer": "ground", "depth": "back", "at": { "tile": [8, 2, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "9", "data-row": "2", "data-x": "154", "data-y": "121" },
+      "depth": "back",
+      "items": [
+        { "object": "block-checker", "layer": "ground", "depth": "back", "at": { "tile": [9, 2, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "10", "data-row": "2", "data-x": "176", "data-y": "132" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [10, 2, -3] } },
+        { "object": "block-checker", "layer": "ground", "depth": "back", "at": { "tile": [10, 2, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "11", "data-row": "2", "data-x": "198", "data-y": "143" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [11, 2, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [11, 2, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "0", "data-row": "3", "data-x": "-66", "data-y": "33" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [0, 3, 0] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [0, 3, 1] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [0, 3, 2] } },
+        { "object": "block-wall-brick", "layer": "walls", "depth": "back", "at": { "tile": [0, 3, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "1", "data-row": "3", "data-x": "-44", "data-y": "44" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [1, 3, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "2", "data-row": "3", "data-x": "-22", "data-y": "55" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [2, 3, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "3", "data-row": "3", "data-x": "0", "data-y": "66" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [3, 3, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "4", "data-row": "3", "data-x": "22", "data-y": "77" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [4, 3, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "5", "data-row": "3", "data-x": "44", "data-y": "88" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [5, 3, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "6", "data-row": "3", "data-x": "66", "data-y": "99" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [6, 3, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "7", "data-row": "3", "data-x": "88", "data-y": "110" },
+      "depth": "back",
+      "items": [
+        { "object": "block-checker", "layer": "ground", "depth": "back", "at": { "tile": [7, 3, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "8", "data-row": "3", "data-x": "110", "data-y": "121" },
+      "depth": "back",
+      "items": [
+        { "object": "block-checker", "layer": "ground", "depth": "back", "at": { "tile": [8, 3, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "9", "data-row": "3", "data-x": "132", "data-y": "132" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [9, 3, -5] } },
+        { "object": "block-checker", "layer": "ground", "depth": "back", "at": { "tile": [9, 3, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "10", "data-row": "3", "data-x": "154", "data-y": "143" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [10, 3, -3] } },
+        { "object": "block-checker", "layer": "ground", "depth": "back", "at": { "tile": [10, 3, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "11", "data-row": "3", "data-x": "176", "data-y": "154" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [11, 3, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [11, 3, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "0", "data-row": "4", "data-x": "-88", "data-y": "44" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [0, 4, 0] } },
+        { "object": "block-wall-teal", "layer": "walls", "depth": "back", "at": { "tile": [0, 4, 1] } },
+        { "object": "block-wall-teal", "layer": "walls", "depth": "back", "at": { "tile": [0, 4, 2] } },
+        { "object": "block-wall-teal", "layer": "walls", "depth": "back", "at": { "tile": [0, 4, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "1", "data-row": "4", "data-x": "-66", "data-y": "55" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [1, 4, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "2", "data-row": "4", "data-x": "-44", "data-y": "66" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [2, 4, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "3", "data-row": "4", "data-x": "-22", "data-y": "77" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [3, 4, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "4", "data-row": "4", "data-x": "0", "data-y": "88" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [4, 4, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "5", "data-row": "4", "data-x": "22", "data-y": "99" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [5, 4, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "6", "data-row": "4", "data-x": "44", "data-y": "110" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [6, 4, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "7", "data-row": "4", "data-x": "66", "data-y": "121" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [7, 4, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "8", "data-row": "4", "data-x": "88", "data-y": "132" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [8, 4, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "9", "data-row": "4", "data-x": "110", "data-y": "143" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [9, 4, -5] } },
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [9, 4, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "10", "data-row": "4", "data-x": "132", "data-y": "154" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [10, 4, -3] } },
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [10, 4, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "11", "data-row": "4", "data-x": "154", "data-y": "165" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [11, 4, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [11, 4, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "0", "data-row": "5", "data-x": "-110", "data-y": "55" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [0, 5, 0] } },
+        { "object": "block-wall-teal", "layer": "walls", "depth": "back", "at": { "tile": [0, 5, 1] } },
+        { "object": "block-wall-teal", "layer": "walls", "depth": "back", "at": { "tile": [0, 5, 2] } },
+        { "object": "block-wall-teal", "layer": "walls", "depth": "back", "at": { "tile": [0, 5, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "1", "data-row": "5", "data-x": "-88", "data-y": "66" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [1, 5, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "2", "data-row": "5", "data-x": "-66", "data-y": "77" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [2, 5, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "3", "data-row": "5", "data-x": "-44", "data-y": "88" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [3, 5, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "4", "data-row": "5", "data-x": "-22", "data-y": "99" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [4, 5, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "5", "data-row": "5", "data-x": "0", "data-y": "110" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [5, 5, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "6", "data-row": "5", "data-x": "22", "data-y": "121" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [6, 5, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "7", "data-row": "5", "data-x": "44", "data-y": "132" },
+      "depth": "back",
+      "items": [
+        { "object": "block-carpet", "layer": "ground", "depth": "back", "at": { "tile": [7, 5, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "8", "data-row": "5", "data-x": "66", "data-y": "143" },
+      "depth": "back",
+      "items": [
+        { "object": "block-carpet", "layer": "ground", "depth": "back", "at": { "tile": [8, 5, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "9", "data-row": "5", "data-x": "88", "data-y": "154" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [9, 5, -5] } },
+        { "object": "block-carpet", "layer": "ground", "depth": "back", "at": { "tile": [9, 5, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "10", "data-row": "5", "data-x": "110", "data-y": "165" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [10, 5, -3] } },
+        { "object": "block-carpet", "layer": "ground", "depth": "back", "at": { "tile": [10, 5, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "11", "data-row": "5", "data-x": "132", "data-y": "176" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [11, 5, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [11, 5, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "0", "data-row": "6", "data-x": "-132", "data-y": "66" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [0, 6, 0] } },
+        { "object": "block-wall-teal", "layer": "walls", "depth": "back", "at": { "tile": [0, 6, 1] } },
+        { "object": "block-wall-teal", "layer": "walls", "depth": "back", "at": { "tile": [0, 6, 2] } },
+        { "object": "block-wall-teal", "layer": "walls", "depth": "back", "at": { "tile": [0, 6, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "1", "data-row": "6", "data-x": "-110", "data-y": "77" },
+      "depth": "back",
+      "items": [
+        { "object": "block-wood", "layer": "ground", "depth": "back", "at": { "tile": [1, 6, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "2", "data-row": "6", "data-x": "-88", "data-y": "88" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [2, 6, -5] } },
+        { "object": "block-wood", "layer": "ground", "depth": "back", "at": { "tile": [2, 6, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "3", "data-row": "6", "data-x": "-66", "data-y": "99" },
+      "depth": "back",
+      "items": [
+        { "object": "block-wood", "layer": "ground", "depth": "back", "at": { "tile": [3, 6, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "4", "data-row": "6", "data-x": "-44", "data-y": "110" },
+      "depth": "back",
+      "items": [
+        { "object": "block-wood", "layer": "ground", "depth": "back", "at": { "tile": [4, 6, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "5", "data-row": "6", "data-x": "-22", "data-y": "121" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [5, 6, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "6", "data-row": "6", "data-x": "0", "data-y": "132" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [6, 6, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "7", "data-row": "6", "data-x": "22", "data-y": "143" },
+      "depth": "back",
+      "items": [
+        { "object": "block-carpet", "layer": "ground", "depth": "back", "at": { "tile": [7, 6, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "8", "data-row": "6", "data-x": "44", "data-y": "154" },
+      "depth": "back",
+      "items": [
+        { "object": "block-carpet", "layer": "ground", "depth": "back", "at": { "tile": [8, 6, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "9", "data-row": "6", "data-x": "66", "data-y": "165" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [9, 6, -5] } },
+        { "object": "block-carpet", "layer": "ground", "depth": "back", "at": { "tile": [9, 6, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "10", "data-row": "6", "data-x": "88", "data-y": "176" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [10, 6, -3] } },
+        { "object": "block-carpet", "layer": "ground", "depth": "back", "at": { "tile": [10, 6, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "11", "data-row": "6", "data-x": "110", "data-y": "187" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [11, 6, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [11, 6, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "0", "data-row": "7", "data-x": "-154", "data-y": "77" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [0, 7, 0] } },
+        { "object": "block-wall-teal", "layer": "walls", "depth": "back", "at": { "tile": [0, 7, 1] } },
+        { "object": "block-wall-teal", "layer": "walls", "depth": "back", "at": { "tile": [0, 7, 2] } },
+        { "object": "block-wall-teal", "layer": "walls", "depth": "back", "at": { "tile": [0, 7, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "1", "data-row": "7", "data-x": "-132", "data-y": "88" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [1, 7, -3] } },
+        { "object": "block-wood", "layer": "ground", "depth": "back", "at": { "tile": [1, 7, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "2", "data-row": "7", "data-x": "-110", "data-y": "99" },
+      "depth": "back",
+      "items": [
+        { "object": "block-wood", "layer": "ground", "depth": "back", "at": { "tile": [2, 7, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "3", "data-row": "7", "data-x": "-88", "data-y": "110" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [3, 7, -5] } },
+        { "object": "block-wood", "layer": "ground", "depth": "back", "at": { "tile": [3, 7, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "4", "data-row": "7", "data-x": "-66", "data-y": "121" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [4, 7, -5] } },
+        { "object": "block-wood", "layer": "ground", "depth": "back", "at": { "tile": [4, 7, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "5", "data-row": "7", "data-x": "-44", "data-y": "132" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [5, 7, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "6", "data-row": "7", "data-x": "-22", "data-y": "143" },
+      "depth": "back",
+      "items": [
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [6, 7, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "7", "data-row": "7", "data-x": "0", "data-y": "154" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [7, 7, -5] } },
+        { "object": "block-carpet", "layer": "ground", "depth": "back", "at": { "tile": [7, 7, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "8", "data-row": "7", "data-x": "22", "data-y": "165" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [8, 7, -5] } },
+        { "object": "block-carpet", "layer": "ground", "depth": "back", "at": { "tile": [8, 7, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "9", "data-row": "7", "data-x": "44", "data-y": "176" },
+      "depth": "back",
+      "items": [
+        { "object": "block-carpet", "layer": "ground", "depth": "back", "at": { "tile": [9, 7, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "10", "data-row": "7", "data-x": "66", "data-y": "187" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [10, 7, -3] } },
+        { "object": "block-carpet", "layer": "ground", "depth": "back", "at": { "tile": [10, 7, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "11", "data-row": "7", "data-x": "88", "data-y": "198" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [11, 7, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [11, 7, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "0", "data-row": "8", "data-x": "-176", "data-y": "88" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [0, 8, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [0, 8, 0] } },
+        { "object": "block-wall-teal", "layer": "walls", "depth": "back", "at": { "tile": [0, 8, 1] } },
+        { "object": "block-wall-teal", "layer": "walls", "depth": "back", "at": { "tile": [0, 8, 2] } },
+        { "object": "block-wall-teal", "layer": "walls", "depth": "back", "at": { "tile": [0, 8, 3] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "1", "data-row": "8", "data-x": "-154", "data-y": "99" },
+      "depth": "back",
+      "items": [
+        { "object": "block-wood", "layer": "ground", "depth": "back", "at": { "tile": [1, 8, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "2", "data-row": "8", "data-x": "-132", "data-y": "110" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [2, 8, -3] } },
+        { "object": "block-wood", "layer": "ground", "depth": "back", "at": { "tile": [2, 8, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "3", "data-row": "8", "data-x": "-110", "data-y": "121" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [3, 8, -3] } },
+        { "object": "block-wood", "layer": "ground", "depth": "back", "at": { "tile": [3, 8, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "4", "data-row": "8", "data-x": "-88", "data-y": "132" },
+      "depth": "back",
+      "items": [
+        { "object": "block-wood", "layer": "ground", "depth": "back", "at": { "tile": [4, 8, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "5", "data-row": "8", "data-x": "-66", "data-y": "143" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [5, 8, -5] } },
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [5, 8, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "6", "data-row": "8", "data-x": "-44", "data-y": "154" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [6, 8, -5] } },
+        { "object": "block-oak", "layer": "ground", "depth": "back", "at": { "tile": [6, 8, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "7", "data-row": "8", "data-x": "-22", "data-y": "165" },
+      "depth": "back",
+      "items": [
+        { "object": "block-carpet", "layer": "ground", "depth": "back", "at": { "tile": [7, 8, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "8", "data-row": "8", "data-x": "0", "data-y": "176" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [8, 8, -3] } },
+        { "object": "block-carpet", "layer": "ground", "depth": "back", "at": { "tile": [8, 8, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "9", "data-row": "8", "data-x": "22", "data-y": "187" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [9, 8, -3] } },
+        { "object": "block-carpet", "layer": "ground", "depth": "back", "at": { "tile": [9, 8, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "10", "data-row": "8", "data-x": "44", "data-y": "198" },
+      "depth": "back",
+      "items": [
+        { "object": "block-carpet", "layer": "ground", "depth": "back", "at": { "tile": [10, 8, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "11", "data-row": "8", "data-x": "66", "data-y": "209" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [11, 8, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [11, 8, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "1", "data-row": "9", "data-x": "-176", "data-y": "110" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [1, 9, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [1, 9, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "2", "data-row": "9", "data-x": "-154", "data-y": "121" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [2, 9, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [2, 9, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "3", "data-row": "9", "data-x": "-132", "data-y": "132" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [3, 9, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "4", "data-row": "9", "data-x": "-110", "data-y": "143" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [4, 9, -3] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [4, 9, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "5", "data-row": "9", "data-x": "-88", "data-y": "154" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [5, 9, -3] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [5, 9, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "6", "data-row": "9", "data-x": "-66", "data-y": "165" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [6, 9, -3] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [6, 9, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "7", "data-row": "9", "data-x": "-44", "data-y": "176" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [7, 9, -3] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [7, 9, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "8", "data-row": "9", "data-x": "-22", "data-y": "187" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [8, 9, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "9", "data-row": "9", "data-x": "0", "data-y": "198" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [9, 9, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [9, 9, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "10", "data-row": "9", "data-x": "22", "data-y": "209" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [10, 9, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [10, 9, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "3", "data-row": "10", "data-x": "-154", "data-y": "143" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [3, 10, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [3, 10, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "4", "data-row": "10", "data-x": "-132", "data-y": "154" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [4, 10, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [4, 10, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "5", "data-row": "10", "data-x": "-110", "data-y": "165" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [5, 10, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [5, 10, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "6", "data-row": "10", "data-x": "-88", "data-y": "176" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [6, 10, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [6, 10, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "7", "data-row": "10", "data-x": "-66", "data-y": "187" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [7, 10, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [7, 10, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "ground", "data-col": "8", "data-row": "10", "data-x": "-44", "data-y": "198" },
+      "depth": "back",
+      "items": [
+        { "object": "block-island-earth", "layer": "earth", "depth": "back", "at": { "tile": [8, 10, -1] } },
+        { "object": "block-island-grass", "layer": "ground", "depth": "back", "at": { "tile": [8, 10, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "22", "data-y": "33" },
+      "depth": "back",
+      "items": [
+        { "object": "window", "layer": "walls", "depth": "back", "at": { "tile": [2, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "66", "data-y": "55" },
+      "depth": "back",
+      "items": [
+        { "object": "window", "layer": "walls", "depth": "back", "at": { "tile": [4, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "154", "data-y": "99" },
+      "depth": "back",
+      "items": [
+        { "object": "portrait-rocket", "layer": "walls", "depth": "back", "at": { "tile": [8, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "-22", "data-y": "33" },
+      "depth": "back",
+      "items": [
+        { "object": "portrait-founder-turned", "layer": "walls", "depth": "back", "at": { "tile": [1, 2, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "-88", "data-y": "66" },
+      "depth": "back",
+      "items": [
+        { "object": "window-turned", "layer": "walls", "depth": "back", "at": { "tile": [1, 5, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "-132", "data-y": "88" },
+      "depth": "back",
+      "items": [
+        { "object": "portrait-hills-turned", "layer": "walls", "depth": "back", "at": { "tile": [1, 7, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "0", "data-y": "22" },
+      "items": [
+        { "object": "plant-tall", "layer": "studio", "state": "sway", "at": { "tile": [1, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "88", "data-y": "66" },
+      "items": [
+        { "object": "bookshelf", "layer": "studio", "at": { "tile": [5, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "-22", "data-y": "55" },
+      "items": [
+        { "object": "desk-white-oak", "layer": "studio", "state": "face-away-right", "at": { "tile": [2, 3, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "0", "data-y": "66" },
+      "items": [
+        { "object": "desk-white-oak", "layer": "studio", "state": "face-away-right", "at": { "tile": [3, 3, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "-22", "data-y": "33" },
+      "items": [
+        { "object": "laptop", "layer": "studio", "state": "open-windows-away-right", "at": { "tile": [2, 3, 1] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "0", "data-y": "44" },
+      "items": [
+        { "object": "computer", "layer": "studio", "state": "on-away-right", "at": { "tile": [3, 3, 1] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "0", "data-y": "44" },
+      "items": [
+        { "object": "chair", "layer": "studio", "depth": "back", "state": "idle", "at": { "tile": [2, 2, 0] } },
+        { "object": "robot", "layer": "studio", "state": "type", "at": { "tile": [2, 2, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "22", "data-y": "55" },
+      "items": [
+        { "object": "chair-white", "layer": "studio", "depth": "back", "state": "idle", "at": { "tile": [3, 2, 0] } },
+        { "object": "staff-developer", "layer": "studio", "state": "type", "at": { "tile": [3, 2, 0] }, "holds": { "grip": null } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "-66", "data-y": "55" },
+      "items": [
+        { "object": "board-kanban", "layer": "studio", "state": "move-right", "at": { "tile": [1, 4, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "-88", "data-y": "66" },
+      "items": [
+        { "object": "robot", "id": "rounds", "layer": "studio", "at": { "tile": [1, 5, 0] }, "holds": { "grip": "held-checklist" } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "132", "data-y": "88" },
+      "items": [
+        { "object": "pantry-counter", "layer": "coffee", "at": { "tile": [7, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "154", "data-y": "99" },
+      "items": [
+        { "object": "pantry-counter-sink", "layer": "coffee", "at": { "tile": [8, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "132", "data-y": "66" },
+      "items": [
+        { "object": "coffee-machine", "layer": "coffee", "state": "brewing", "at": { "tile": [7, 1, 1] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "198", "data-y": "121" },
+      "items": [
+        { "object": "fridge-teal", "layer": "coffee", "at": { "tile": [10, 1, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "110", "data-y": "99" },
+      "items": [
+        { "object": "robot-blue", "layer": "coffee", "state": "operate", "at": { "tile": [7, 2, 0] }, "heading": "away-right" }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "154", "data-y": "121" },
+      "items": [
+        { "object": "bar-stool", "layer": "coffee", "at": { "tile": [9, 2, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "110", "data-y": "77" },
+      "items": [
+        { "object": "rider-college", "id": "coffee-run", "layer": "coffee", "at": { "tile": [6, 1, 0] }, "holds": { "back": null } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "110", "data-y": "143" },
+      "items": [
+        { "object": "monitor-wall", "layer": "meeting", "state": "live", "at": { "tile": [9, 4, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "44", "data-y": "154" },
+      "items": [
+        { "object": "table-long", "layer": "meeting", "at": { "tile": [8, 6, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "44", "data-y": "132" },
+      "items": [
+        { "object": "laptop", "layer": "meeting", "state": "on", "at": { "tile": [8, 6, 1] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "22", "data-y": "165" },
+      "items": [
+        { "object": "chair", "layer": "meeting", "state": "face-away-right", "at": { "tile": [8, 7, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "44", "data-y": "176" },
+      "items": [
+        { "object": "chair-white", "layer": "meeting", "state": "face-away-right", "at": { "tile": [9, 7, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "44", "data-y": "132" },
+      "items": [
+        { "object": "rider-exec", "id": "pacer", "layer": "meeting", "at": { "tile": [7, 5, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "-132", "data-y": "110" },
+      "items": [
+        { "object": "beanbag-teal", "layer": "lounge", "at": { "tile": [2, 8, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "-132", "data-y": "110" },
+      "items": [
+        { "object": "cat", "layer": "lounge", "state": "sleep", "at": { "px": [-132, 101], "level": 1 } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "-110", "data-y": "99" },
+      "items": [
+        { "object": "rider-teacher", "layer": "lounge", "state": "stir", "at": { "tile": [2, 7, 0] }, "heading": "left", "holds": { "grip": null } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "-88", "data-y": "110" },
+      "items": [
+        { "object": "beanbag-gold", "layer": "lounge", "at": { "tile": [3, 7, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "-110", "data-y": "77" },
+      "items": [
+        { "object": "plant-bush", "layer": "lounge", "state": "sway", "at": { "tile": [1, 6, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "154", "data-y": "165" },
+      "items": [
+        { "object": "forest-oak", "layer": "garden", "at": { "tile": [11, 4, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "110", "data-y": "187" },
+      "items": [
+        { "object": "forest-bush", "layer": "garden", "at": { "tile": [11, 6, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "-154", "data-y": "121" },
+      "items": [
+        { "object": "forest-birch", "layer": "garden", "at": { "tile": [2, 9, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "-154", "data-y": "143" },
+      "items": [
+        { "object": "forest-bush", "layer": "garden", "at": { "tile": [3, 10, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "0", "data-y": "198" },
+      "items": [
+        { "object": "forest-mushrooms", "layer": "garden", "at": { "tile": [9, 9, 0] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "object", "data-x": "-66", "data-y": "165" },
+      "items": [
+        {
+          "group": { "class": "ask-character" },
+          "items": [
+            { "object": "staff-founder", "layer": "garden", "at": { "tile": [6, 9, 0] } }
+          ]
+        }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "sky", "data-x": "-214", "data-y": "10" },
+      "depth": "front",
+      "items": [
+        { "object": "cloud-large", "layer": "sky", "state": "drift", "at": { "px": [-214, 10] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "sky", "data-x": "-96", "data-y": "-46" },
+      "depth": "front",
+      "items": [
+        { "object": "cloud-small", "layer": "sky", "state": "drift", "at": { "px": [-96, -46] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "sky", "data-x": "232", "data-y": "6" },
+      "depth": "front",
+      "items": [
+        { "object": "cloud", "layer": "sky", "state": "drift", "at": { "px": [232, 6] } }
+      ]
+    },
+    {
+      "group": { "class": "enter", "data-enter": "sky", "data-x": "-210", "data-y": "170" },
+      "depth": "front",
+      "items": [
+        { "object": "cloud-small", "layer": "sky", "state": "drift", "at": { "px": [-210, 170] } }
+      ]
+    }
+  ],
+  "motion": {
+    "duration": 26400,
+    "tracks": [
+      {
+        "item": "rounds",
+        "walk": { "start": 0, "corners": [[0, 0], [6, 0]], "closed": true }
+      },
+      {
+        "item": "coffee-run",
+        "walk": { "start": 0, "corners": [[0, 0], [0, 6]], "closed": true }
+      },
+      {
+        "item": "pacer",
+        "walk": { "start": 0, "corners": [[0, 0], [3, 0], [3, 3], [0, 3]], "closed": true }
+      }
+    ]
+  },
+  "entrance": {}
+}

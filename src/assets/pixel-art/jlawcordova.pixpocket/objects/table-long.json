@@ -1,0 +1,72 @@
+{
+  "notes": [
+    "A long table.",
+    "Two tiles along the column: place it on the back one."
+  ],
+  "category": [
+    "Office",
+    "Pantry"
+  ],
+  "kind": "sprite",
+  "anchor": [16, 29],
+  "footprint": [2, 1],
+  "keys": {
+    "a": "wood-1",
+    "b": "wood-2",
+    "c": "stone-2",
+    "d": "stone-3",
+    "e": "wood-3"
+  },
+  "layers": [
+    {
+      "map": [
+        "...........aaaaaa...................................",
+        ".........aaaaaaaaaa.................................",
+        ".......aaaaaaaaaaaaaa...............................",
+        ".....aaaaaaaaaaaaaaaaaa.............................",
+        "...aaaaaaaaaaaaaaaaaaaaaa...........................",
+        ".aaaaaaaaaaaaaaaaaaaaaaaaaa.........................",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaa.......................",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.....................",
+        "baaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...................",
+        "bbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.................",
+        "bbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...............",
+        ".bbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.............",
+        "...bbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...........",
+        ".....bbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.........",
+        ".....cdbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.......",
+        ".....cd..bbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.....",
+        ".....cd....bbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...",
+        ".....cd......bbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.",
+        ".....cd......cdbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        ".....cd......cd..bbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        ".....cd......cd....bbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaae",
+        ".....cd......cd......bbbbbbaaaaaaaaaaaaaaaaaaaaaaeee",
+        ".....cd......cd........bbbbbbaaaaaaaaaaaaaaaaaaeeeee",
+        ".....cd......cd..........bbbbbbaaaaaaaaaaaaaaeeeeee.",
+        ".....cd......cd............bbbbbbaaaaaaaaaaeeeeee...",
+        ".....cd......cd..............bbbbbbaaaaaaeeeeee.....",
+        ".....cd........................bbbbbbbeeeeeeecd.....",
+        ".....cd..........................bbbbbeeeee..cd.....",
+        ".....cd............................bbbeee....cd.....",
+        ".....cd..............................cd......cd.....",
+        ".....................................cd......cd.....",
+        ".....................................cd......cd.....",
+        ".....................................cd......cd.....",
+        ".....................................cd......cd.....",
+        ".....................................cd......cd.....",
+        ".....................................cd......cd.....",
+        ".....................................cd......cd.....",
+        ".....................................cd......cd.....",
+        ".....................................cd......cd.....",
+        ".....................................cd......cd.....",
+        ".....................................cd......cd.....",
+        ".....................................cd......cd.....",
+        ".....................................cd.............",
+        ".....................................cd.............",
+        ".....................................cd.............",
+        ".....................................cd............."
+      ]
+    }
+  ]
+}

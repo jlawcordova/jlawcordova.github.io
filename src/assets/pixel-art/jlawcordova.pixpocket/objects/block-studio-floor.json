@@ -1,0 +1,105 @@
+{
+  "notes": [
+    "An artist's studio floor: wooden floorboards, upright boards on its sides, paint run down over its edge.",
+    "A one-level floor block: lay it at level 0, where its top is, and stand things on it at level 0. Depth Back."
+  ],
+  "category": [
+    "Range",
+    "Floors"
+  ],
+  "kind": "block",
+  "size": [1, 1, 1],
+  "faces": {
+    "top": "wood-1",
+    "left": "wood-2",
+    "right": "wood-3"
+  },
+  "surface": {
+    "keys": {
+      "a": "wood-1",
+      "b": "wood-2"
+    },
+    "map": [
+      "....................abba....................",
+      "..................abbaabba..................",
+      "................abbaaaaaabba................",
+      "..............aabbaaaaaaaaabba..............",
+      "............aaaaaabbaaaaaaaaabba............",
+      "..........baaaaaaaaabbaaaaaaaaabba..........",
+      "........aaabbaaaaaaaaabbaaaaaaaaabba........",
+      "......aaaaaaabbaaaaaaaaabbaaaaaaaaabba......",
+      "....bbaaaaaaaaabbaaaaaaaaabbaaaaaaaaabba....",
+      "..aaaabbaaaaaaaaabbaaaaaabbabbaaaaaaaaabba..",
+      "aaaaaaaabbaaaaaaaaabbaabbaaaaabbaaaaaaaaabba",
+      "baaaaaaaaabbaaaaaaaaabbaaaaaaaaabbaaaaaaaaab",
+      "..baaaaabbaabbaaaaaaaaabbaaaaaaaaabbaaaaab..",
+      "....babbaaaaaabbaaaaaaaaabbaaaaaaaaabbab....",
+      "......baaaaaaaaabbaaaaaaaabbbaaaaaaaaa......",
+      "........baaaaaaaaabbaaaabbaaabbaaaaa........",
+      "..........baaaaaaaaabbbbaaaaaaabba..........",
+      "............baaaaaaaaabbaaaaaaaa............",
+      "..............baaaaaaaaabbaaaa..............",
+      "................baaaaaaaaabb................",
+      "..................baaaaaaa..................",
+      "....................baaa...................."
+    ]
+  },
+  "sides": {
+    "keys": {
+      "a": "wood-3",
+      "b": "wood-2",
+      "c": "roof-1",
+      "d": "teal-2",
+      "e": "wood-4",
+      "f": "gold-1"
+    },
+    "left": [
+      "abbccbbbbbbabbbddbbbbb",
+      "abbccbbbbbbabbbddbbbbb",
+      "abbccbbbbbbabbbddbbbbb",
+      "abbccbbbbbbabbbdbbbbbb",
+      "abbccbbbbbbabbbbbbbbbb",
+      "abbccbbbbbbabbbbbbbbbb",
+      "abbcbbbbbbbabbbbbbbbbb",
+      "abbbbbbbbbbabbbbbbbbbb",
+      "abbbbbbbbbbabbbbbbbbbb",
+      "abbbbbbbbbbabbbbbbbbbb",
+      "abbbbbbbbbbabbbbbbbbbb",
+      "abbbbbbbbbbabbbbbbbbbb",
+      "abbbbbbbbbbabbbbbbbbbb",
+      "abbbbbbbbbbabbbbbbbbbb",
+      "abbbbbbbbbbabbbbbbbbbb",
+      "abbbbbbbbbbabbbbbbbbbb",
+      "abbbbbbbbbbabbbbbbbbbb",
+      "abbbbbbbbbbabbbbbbbbbb",
+      "abbbbbbbbbbabbbbbbbbbb",
+      "abbbbbbbbbbabbbbbbbbbb",
+      "abbbbbbbbbbabbbbbbbbbb",
+      "abbbbbbbbbbabbbbbbbbbb"
+    ],
+    "right": [
+      "eaaaaaaffaaeaaaaaccaaa",
+      "eaaaaaaffaaeaaaaaccaaa",
+      "eaaaaaaffaaeaaaaacaaaa",
+      "eaaaaaaffaaeaaaaaaaaaa",
+      "eaaaaaafaaaeaaaaaaaaaa",
+      "eaaaaaaaaaaeaaaaaaaaaa",
+      "eaaaaaaaaaaeaaaaaaaaaa",
+      "eaaaaaaaaaaeaaaaaaaaaa",
+      "eaaaaaaaaaaeaaaaaaaaaa",
+      "eaaaaaaaaaaeaaaaaaaaaa",
+      "eaaaaaaaaaaeaaaaaaaaaa",
+      "eaaaaaaaaaaeaaaaaaaaaa",
+      "eaaaaaaaaaaeaaaaaaaaaa",
+      "eaaaaaaaaaaeaaaaaaaaaa",
+      "eaaaaaaaaaaeaaaaaaaaaa",
+      "eaaaaaaaaaaeaaaaaaaaaa",
+      "eaaaaaaaaaaeaaaaaaaaaa",
+      "eaaaaaaaaaaeaaaaaaaaaa",
+      "eaaaaaaaaaaeaaaaaaaaaa",
+      "eaaaaaaaaaaeaaaaaaaaaa",
+      "eaaaaaaaaaaeaaaaaaaaaa",
+      "eaaaaaaaaaaeaaaaaaaaaa"
+    ]
+  }
+}

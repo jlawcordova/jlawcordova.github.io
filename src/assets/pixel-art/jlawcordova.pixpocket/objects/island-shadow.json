@@ -1,0 +1,42 @@
+{
+  "notes": [
+    "The shadow of a floating island on the ground far below: one tile of it, every other row in a pale shade, so whatever is under the scene shows through.",
+    "Lay one under each ground tile of the island, some levels below it and a little to the side, at depth Back; neighbours join into one shadow. It is the only hatched art here: a shadow on a page, not on the grid's ground."
+  ],
+  "category": [
+    "Effects",
+    "Shadows"
+  ],
+  "kind": "sprite",
+  "anchor": [21, 10],
+  "keys": {
+    "a": "path-2"
+  },
+  "layers": [
+    {
+      "map": [
+        "..................aaaaaa..................",
+        "..........................................",
+        "..............aaaaaaaaaaaaaa..............",
+        "..........................................",
+        "..........aaaaaaaaaaaaaaaaaaaaaa..........",
+        "..........................................",
+        "......aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa......",
+        "..........................................",
+        "..aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa..",
+        "..........................................",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "..........................................",
+        "....aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa....",
+        "..........................................",
+        "........aaaaaaaaaaaaaaaaaaaaaaaaaa........",
+        "..........................................",
+        "............aaaaaaaaaaaaaaaaaa............",
+        "..........................................",
+        "................aaaaaaaaaa................",
+        "..........................................",
+        "....................aa...................."
+      ]
+    }
+  ]
+}

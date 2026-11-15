@@ -1,0 +1,47 @@
+{
+  "notes": [
+    "Carpet tiles, four to a tile, in a quiet checker.",
+    "A one-level floor block: lay it at level 0, where its top is, and stand things on it at level 0."
+  ],
+  "category": [
+    "Office",
+    "Floors"
+  ],
+  "kind": "block",
+  "size": [1, 1, 1],
+  "faces": {
+    "top": "teal-1",
+    "left": "teal-2",
+    "right": "teal-3"
+  },
+  "surface": {
+    "keys": {
+      "a": "teal-2",
+      "b": "teal-1"
+    },
+    "map": [
+      "....................abba....................",
+      "..................abbbbbba..................",
+      "................abbbbbbbbbba................",
+      "..............abbbbbbbbbbbbbba..............",
+      "............abbbbbbbbbbbbbbbbbba............",
+      "..........bbbbbbbbbbbbbbbbbbbbbbbb..........",
+      "........baaaabbbbbbbbbbbbbbbbbbaaaab........",
+      "......baaaaaaaabbbbbbbbbbbbbbaaaaaaaab......",
+      "....baaaaaaaaaaaabbbbbbbbbbaaaaaaaaaaaab....",
+      "..baaaaaaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaab..",
+      "baaaaaaaaaaaaaaaaaaaabbaaaaaaaaaaaaaaaaaaaab",
+      "baaaaaaaaaaaaaaaaaaaabbaaaaaaaaaaaaaaaaaaaab",
+      "..baaaaaaaaaaaaaaaabbbbbbaaaaaaaaaaaaaaaab..",
+      "....baaaaaaaaaaaabbbbbbbbbbaaaaaaaaaaaab....",
+      "......baaaaaaaabbbbbbbbbbbbbbaaaaaaaab......",
+      "........baaaabbbbbbbbbbbbbbbbbbaaaab........",
+      "..........bbbbbbbbbbbbbbbbbbbbbbbb..........",
+      "............abbbbbbbbbbbbbbbbbba............",
+      "..............abbbbbbbbbbbbbba..............",
+      "................abbbbbbbbbba................",
+      "..................abbbbbba..................",
+      "....................abba...................."
+    ]
+  }
+}

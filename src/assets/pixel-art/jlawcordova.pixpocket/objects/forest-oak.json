@@ -1,0 +1,98 @@
+{
+  "notes": [
+    "A broad oak: a thick trunk on its roots under a big round crown. It's round, so it has no heading.",
+    "States: idle, sway (its top sways)."
+  ],
+  "category": [
+    "Fantasy",
+    "Trees"
+  ],
+  "kind": "sprite",
+  "anchor": [22, 60],
+  "keys": {
+    "a": "grass-1",
+    "b": "grass-2",
+    "c": "grass-3",
+    "d": "wood-4",
+    "e": "wood-3",
+    "f": "wood-2"
+  },
+  "layers": [
+    {
+      "loop": "pose",
+      "prefix": "p",
+      "frames": [
+        [
+          "...................aaaaaa.....................",
+          ".................aaaaaaaaaa...................",
+          "................aaaaaaaaaaaa..................",
+          "................aaaaaaaaaaaa..................",
+          "................baaaaaaaaaac..................",
+          "...............abbbaaaaaaccca.................",
+          ".............aaabbbbbbccccccaaa...............",
+          "...........aaaaabbbbbbccccccaaaaa.............",
+          "..........aaaaaabbbbbbccccccaaaaaa............",
+          "..........aaaaaabbbbbbccccccaaaaaa............",
+          "..........aaaaaabbbbbbccccccaaaaaaaaaaa.......",
+          "..........aaaaaaabbbbbcccccaaaaaaaaaaaaaa.....",
+          "..........baaaaaaaabbbcccaaaaaaaacaaaaaaaaa...",
+          "..........bbbaaaaaaaaaaaaaaaaaacccaaaaaaaaaaa.",
+          ".........abbbbbaaaaaaaaaaaaaacccccaaaaaaaaaaaa",
+          ".......aaabbbbbbbaaaaaaaaaacccccccaaaaaaaaaaaa",
+          ".....aaaaabbbbbbbbbbbbccccccccccccaaaaaaaaaaac",
+          "...aaaaaaabbbbbbbbbbbbccccccccccccaaaaaaaaaccc",
+          "...aaaaaaabbbbbbbbbbbbccccccccccccaaaaaaaccccc",
+          "..aaaaaaaabbbbbbbbbbbbccccccccccccaaaaaccccccc",
+          ".aaaaaaaaabbbbbbbbbbbbccccccccccccbbcccccccccc",
+          "aaaaaaaaaabbbbbbbbbbbbccccccccccccbbcccccccccc",
+          "aaaaaaaaaabbbbbbbbbbbbccccccccccccbbcccccccccc",
+          "baaaaaaaaaabbbbbbbbbbbcccccccccccbbbcccccccccc",
+          "bbbaaaaaaaaaabbbbbbbbbcccccccccbbbbbcccccccccc",
+          "bbbbbaaaaaaaaaabbbbbbbcccccccbbbbbbbcccccccccc",
+          "bbbbbbbaaaaaaccccbbbbbcccccbbbbbbbbbccccccccc.",
+          "bbbbbbbbbbcccccaaaaaaaaaaaaaabbbbbbbccccccc...",
+          "bbbbbbbbbbcccaaaaaaaaaaaaaaaaccbbbbbccccc.....",
+          "bbbbbbbbbbcaaaaaaaaaaaaaaaaaaccccbbbcccc......",
+          "bbbbbbbbbbaaaaaaaaaaaaaaaaaaaacccccccccc......",
+          "bbbbbbbbbbaaaaaaaaaaaaaaaaaaaacccccccccc......",
+          "bbbbbbbbbbbaaaaaaaaaaaaaaaaaaccccccccccc......",
+          ".bbbbbbbbbbbbaaaaaaaaaaaaaaccccccccccccc......",
+          "..bbbbbbbbbbbbbaaaaaaaaaaccccccccccccccc......",
+          "...bbbbbbbbbbbbbbaaaaaaccccccccccccccccc......",
+          "...bbbbbbbbbbbbbbbbbccccccccccccccccccc.......",
+          ".....bbbbbbbbbbbbbbbccccccccccccccccccc.......",
+          ".......bbbbbbbbbbbbbccccccccccccccccc.........",
+          ".........bbbbbbbbbbbccccccccccccccc...........",
+          "..........bbbbbbbbbbccccccccccccc.............",
+          "...........bbbbbbbbbccccccccccc...............",
+          ".............bbbbbbbccccccccc.................",
+          "...............bbbbbccccccd...................",
+          ".................bbbcccdddd...................",
+          ".................eeeeeddddd...................",
+          ".................eeeeeddddd...................",
+          ".................eeeeeddddd...................",
+          ".................eeeeeddddd...................",
+          ".................eeeeeddddd...................",
+          ".................eeeeeddddd...................",
+          ".................eeeeeddddd...................",
+          ".................eeeeeddddd...................",
+          ".................eeeeeddddd...................",
+          ".................eeeeeddddd...................",
+          "...............ffeeeeeddddd...................",
+          ".............ffffffeeeddddd...................",
+          ".............ffffffeeedddff...................",
+          ".............eeffddeeedffffff.................",
+          ".............eeedddeeedffffff.................",
+          ".............eeedddeeedeeffdd.................",
+          "...............ed..eeedeeeddd.................",
+          ".....................edeeeddd.................",
+          ".........................ed..................."
+        ]
+      ]
+    }
+  ],
+  "start": "idle",
+  "states": {
+    "idle": { "frames": [0], "ms": 1000 }
+  }
+}

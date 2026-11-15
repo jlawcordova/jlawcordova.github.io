@@ -1,0 +1,107 @@
+{
+  "notes": [
+    "A construction site's packed dirt: clods and pebbles, a band of black and yellow hazard stripes along its sides.",
+    "A one-level floor block: lay it at level 0, where its top is, and stand things on it at level 0. Depth Back."
+  ],
+  "category": [
+    "Range",
+    "Floors"
+  ],
+  "kind": "block",
+  "size": [1, 1, 1],
+  "faces": {
+    "top": "soil-1",
+    "left": "soil-2",
+    "right": "soil-3"
+  },
+  "surface": {
+    "keys": {
+      "a": "soil-1",
+      "b": "soil-2",
+      "c": "wood-1",
+      "d": "path-3"
+    },
+    "map": [
+      "....................aaaa....................",
+      "..................aaaaaaaa..................",
+      "................aaaaaaaaaaaa................",
+      "..............aaaaaaaaaaaaaaaa..............",
+      "............aaaaaaaaabbaaaaaaaaa............",
+      "..........aaaaaaaaaaaaaaaaaaaaaaaa..........",
+      "........aaaaaaaaaaaaaaaaaaaaaaaaaaaa........",
+      "......aaaaaaaaaaaaaaaaaaaaaaaaacaaaaaa......",
+      "....aaaaaaaaacaaaaaaaaaaaaaaaaaaaaaaaaaa....",
+      "..aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa..",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaabbaaaaaaaaaaaaa",
+      "..aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa..",
+      "....aaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaa....",
+      "......aaadaaaaaaaaaaaaaaaaaaaaaaaaaaaa......",
+      "........aaaaaaaaaaaaaaaaaddaaaaaaaaa........",
+      "..........aaaaaaaaaaaaaaaaaaaaaaaa..........",
+      "............aaaaaaaaaaaaaaaaaaaa............",
+      "..............aaaaaaaaaaaaaaaa..............",
+      "................aaaaaaabaaaa................",
+      "..................aaaaaaaa..................",
+      "....................aaaa...................."
+    ]
+  },
+  "sides": {
+    "keys": {
+      "a": "ink",
+      "b": "gold-1",
+      "c": "soil-2",
+      "d": "soil-3",
+      "e": "gold-2",
+      "f": "soil-4"
+    },
+    "left": [
+      "aaaaabbbbbbaaaaabbbbbb",
+      "aaaabbbbbbaaaaabbbbbba",
+      "aaabbbbbbaaaaabbbbbbaa",
+      "aabbbbbbaaaaabbbbbbaaa",
+      "abbbbbbaaaaabbbbbbaaaa",
+      "bbbbbbaaaaabbbbbbaaaaa",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccdcc",
+      "cccccccccccccccccccccc",
+      "cccccddccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccddccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "ccccccccccdccccccccccc",
+      "cccccccccccccccccccccc"
+    ],
+    "right": [
+      "aaaaaeeeeeeaaaaaeeeeee",
+      "eaaaaaeeeeeeaaaaaeeeee",
+      "eeaaaaaeeeeeeaaaaaeeee",
+      "eeeaaaaaeeeeeeaaaaaeee",
+      "eeeeaaaaaeeeeeeaaaaaee",
+      "eeeeeaaaaaeeeeeeaaaaae",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddfdd",
+      "dddddddddddddddddddddd",
+      "dddddffddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddffddddd",
+      "dddddddddddddddddddddd",
+      "dddddddddddddddddddddd",
+      "ddddddddddfddddddddddd",
+      "dddddddddddddddddddddd"
+    ]
+  }
+}

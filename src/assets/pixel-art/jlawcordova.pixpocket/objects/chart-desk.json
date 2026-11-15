@@ -1,0 +1,69 @@
+{
+  "notes": [
+    "A small wooden desk facing the lower left: drawers down its right end, a sheet of paper, and a monitor at its back showing a bar chart.",
+    "Whoever works at it sits on the tile to its lower left, a swivel-chair there facing away to the right (face-away-right)."
+  ],
+  "category": [
+    "Range",
+    "Office"
+  ],
+  "kind": "sprite",
+  "anchor": [15, 33],
+  "keys": {
+    "a": "soil-4",
+    "b": "ink",
+    "c": "water-2",
+    "d": "cream",
+    "e": "roof-1",
+    "f": "wood-1",
+    "g": "wood-2",
+    "h": "wood-3",
+    "i": "wood-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "............aa................",
+        "............aaaa..............",
+        "............bbaaaa............",
+        "............aabbaaaa..........",
+        "............aaaabbaaaa........",
+        "............aaaaaabbaaaa......",
+        "............aaaaaaaabbaaaa....",
+        "............aaaaaaaaaabbaa....",
+        "............aaaaaaaaaaaabb....",
+        "............acaaadaaaeaabb....",
+        "............acccadddaeeebb....",
+        "..........ffacccadddaeeebb....",
+        "........ffffbbccadddaeeebb....",
+        "......ffffffffbbadddaeeebb....",
+        "....ffffffffffffbbddaeeebb....",
+        "..ffffffffffffffffbbaeeebb....",
+        "ffffffddffffffffffaabbeebb....",
+        "ffffddddddffffffffaaabbbbb....",
+        "ggffddddddddffffffffabffbb....",
+        "ggggffddddddffffffffffffffff..",
+        "..ggggffddffffffffffffffffffff",
+        "..higgggffffffffffffffffffffff",
+        "..hi..ggggffffffffffffffffffhh",
+        "..hi....ggggffffffffffffffhhhh",
+        "..hi......ggggffffffffffhhhh..",
+        "..hi......higgggffffffhhhhhh..",
+        "..hi......higgggggffhhhhhhhh..",
+        "..hi......higgggggghhhhhhhhh..",
+        "..hi........ggiiggghhhhhhhhh..",
+        "..hi........ggggggghhhhhhhhh..",
+        "..hi........hhggggghhhhhhhhh..",
+        "..hi........gghhggghhhhhhhhh..",
+        "............gggghhghhhhhhhhh..",
+        "............gggggghhhhhhhhhh..",
+        "............ggiiggghhhhhhhhh..",
+        "............ggggggghhhhhhhhh..",
+        "............hhggggghhhhhhh....",
+        "..............hhggghhhhh......",
+        "................hhghhh........",
+        "..................hh.........."
+      ]
+    }
+  ]
+}

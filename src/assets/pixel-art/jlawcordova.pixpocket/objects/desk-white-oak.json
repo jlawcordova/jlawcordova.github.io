@@ -1,0 +1,19 @@
+{
+  "notes": [
+    "The desk in white oak.",
+    "One tile, facing the lower left: whoever works at it sits on the tile in front. Desks side by side join into a run. Things on it stand at level 1.",
+    "States: idle, face-right, face-away-left and face-away-right (as the chairs face), and open, open-right, open-away-left and open-away-right (the top drawer pulled out)."
+  ],
+  "category": [
+    "Office",
+    "Desks"
+  ],
+  "kind": "sprite",
+  "extends": "desk",
+  "keys": {
+    "a": "cream",
+    "b": "path-1",
+    "e": "path-2",
+    "g": "path-3"
+  }
+}

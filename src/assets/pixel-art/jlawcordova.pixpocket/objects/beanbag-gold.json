@@ -1,0 +1,16 @@
+{
+  "notes": [
+    "The beanbag in gold."
+  ],
+  "category": [
+    "Office",
+    "Lounge"
+  ],
+  "kind": "sprite",
+  "extends": "beanbag",
+  "keys": {
+    "a": "gold-1",
+    "b": "gold-2",
+    "c": "gold-3"
+  }
+}

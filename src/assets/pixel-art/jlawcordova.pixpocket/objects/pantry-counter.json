@@ -1,0 +1,67 @@
+{
+  "notes": [
+    "A kitchen counter, facing the lower left.",
+    "Counters on neighbouring columns join into one run."
+  ],
+  "category": [
+    "Office",
+    "Pantry"
+  ],
+  "kind": "sprite",
+  "anchor": [19, 31],
+  "keys": {
+    "a": "stone-1",
+    "b": "stone-2",
+    "c": "wood-2",
+    "d": "stone-3",
+    "e": "wood-3",
+    "f": "wood-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "..............aa....................",
+        "............aaaaaa..................",
+        "..........aaaaaaaaaa................",
+        "........aaaaaaaaaaaaaa..............",
+        "......aaaaaaaaaaaaaaaaaa............",
+        "....aaaaaaaaaaaaaaaaaaaaaa..........",
+        "..aaaaaaaaaaaaaaaaaaaaaaaaaa........",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa......",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa....",
+        "bbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa..",
+        "bbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "ccbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "ccccbbbbaaaaaaaaaaaaaaaaaaaaaaaaaadd",
+        "ccccccbbbbaaaaaaaaaaaaaaaaaaaaaadddd",
+        "ccccccccbbbbaaaaaaaaaaaaaaaaaadddd..",
+        "cccccccccebbbbaaaaaaaaaaaaaaddddee..",
+        "cccccccaceecbbbbaaaaaaaaaaddddeeee..",
+        "cccccccaceecccbbbbaaaaaaddddeeeeee..",
+        "cccccccaceecccccbbbbaaddddeeeeeeee..",
+        "ccccccccceecacccccbbbdddeeeeeeeeee..",
+        "ccccccccceecacccccccbdeeeeeeeeeeee..",
+        "ccccccccceecacccccccceeeeeeeeeeeee..",
+        "ccccccccceecccccccccceeeeeeeeeeeee..",
+        "ccccccccceecccccccccceeeeeeeeeeeee..",
+        "ccccccccceecccccccccceeeeeeeeeeeee..",
+        "ccccccccceecccccccccceeeeeeeeeeeee..",
+        "ccccccccceecccccccccceeeeeeeeeeeee..",
+        "ccccccccceecccccccccceeeeeeeeeeeee..",
+        "ffccccccceecccccccccceeeeeeeeeeeee..",
+        "ffffccccceecccccccccceeeeeeeeeeeee..",
+        "ffffffccceecccccccccceeeeeeeeeeeee..",
+        "..ffffffceecccccccccceeeeeeeeeeeee..",
+        "....ffffffecccccccccceeeeeeeeeee....",
+        "......ffffffccccccccceeeeeeeeeff....",
+        "........ffffffccccccceeeeeeeffff....",
+        "..........ffffffccccceeeeeffffff....",
+        "............ffffffccceeeffffff......",
+        "..............ffffffceffffff........",
+        "................ffffffffff..........",
+        "..................ffffff............",
+        "....................ff.............."
+      ]
+    }
+  ]
+}

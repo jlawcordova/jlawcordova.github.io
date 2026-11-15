@@ -12,9 +12,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "fetch-accomplishments": "node scripts/fetch-accomplishments.mjs",
-    "art": "node scripts/pixellab.mjs art build --site .",
-    "pixellab": "node scripts/pixellab.mjs --site .",
-    "explainer-export": "node scripts/export-explainer-library.mjs",
+    "art": "node scripts/pixpocket.mjs publish",
+    "pixpocket": "node scripts/pixpocket.mjs",
     "diagrams": "node scripts/diagrams/render.mjs",
     "e2e": "node scripts/e2e/run.mjs",
     "test": "npm run art && node --test \"scripts/*.test.mjs\""

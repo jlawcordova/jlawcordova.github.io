@@ -1,0 +1,15 @@
+{
+  "notes": [
+    "A checklist on a board held up against the outside of the hand: two items ticked off in green.",
+    "Held in a hand's grip socket."
+  ],
+  "category": [
+    "Agents",
+    "Held"
+  ],
+  "kind": "sprite",
+  "handle": [0, 0, 2],
+  "parts": [
+    { "id": "board", "box": [1, 6, 8], "at": [3, 1, 0], "faces": { "top": "stone-3", "front": ["stone-3", "stone-4"], "back": ["stone-3", "stone-4"], "left": { "keys": { "a": "stone-3", "b": "cream", "c": "grass-3", "d": "stone-3" }, "shade": { "a": "stone-4", "b": "path-2", "c": "grass-3", "d": "stone-3" }, "map": ["aaaaaa", "aaaaaa", "abbbba", "acbdda", "abbbba", "acbdda", "abbbba", "abbbba"] }, "right": ["stone-3", "stone-4"] } }
+  ]
+}

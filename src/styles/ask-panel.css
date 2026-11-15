@@ -12,8 +12,8 @@
   display: flex;
   flex-direction: column;
   width: min(400px, calc(100vw - 2 * var(--gutter)));
-  /* Room above for the character, which stands 93px tall on the edge. */
-  max-height: min(600px, calc(100dvh - var(--ask-keyboard, 0px) - var(--gutter) - 120px));
+  /* Room above for the character, which stands 141px tall on the edge. */
+  max-height: min(600px, calc(100dvh - var(--ask-keyboard, 0px) - var(--gutter) - 141px));
   border: var(--border-thick);
   background: var(--color-page);
   color: var(--color-ink);
@@ -27,10 +27,10 @@
 .ask-avatar {
   position: fixed;
   z-index: 41;
-  width: 57px;
-  height: 93px;
+  width: 72px;
+  height: 141px;
   /* The foot, so the glide scales about where the character stands. */
-  transform-origin: 21px 87px;
+  transform-origin: 36px 126px;
   pointer-events: none;
 }
 

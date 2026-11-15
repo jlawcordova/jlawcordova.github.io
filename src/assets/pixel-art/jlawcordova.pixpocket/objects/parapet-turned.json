@@ -1,0 +1,53 @@
+{
+  "notes": [
+    "A tile of crenellated parapet along the tile's back-left edge: parapet turned. A run of them joins.",
+    "Depth Back, so what stands on its tile draws over it."
+  ],
+  "category": [
+    "Range",
+    "Rampart"
+  ],
+  "kind": "sprite",
+  "anchor": [21, 27],
+  "keys": {
+    "a": "path-3",
+    "b": "soil-3",
+    "c": "path-4"
+  },
+  "layers": [
+    {
+      "map": [
+        "................aa........",
+        "..............aaaaaa......",
+        "............aaaaaaaaaa....",
+        "..........aaaaaaaaaaaa....",
+        "........aaaaaaaaaaaabb....",
+        "......aaaaaaaaaaaabbbb....",
+        "......aaaaaaaaaabbbbbb....",
+        "......ccaaaaaabbbbbbbbaa..",
+        "......ccccaabbbbbbbbbbaaaa",
+        "......cccccbbbbbbbbbbbaaaa",
+        "......cccccbbbbbbbbbbbaabb",
+        "......cccccbbbbbbbbbbbbbbb",
+        "......cccccbbbbbbbbbbbbbbb",
+        "......cccccbbbbbbbbbbbbbbb",
+        "....aacccccbbbbbbbbbbbbbbb",
+        "..aaaaaacccbbbbbbbbbbbbbbb",
+        "aaaaaaaaaacbbbbbbbbbbbbbbb",
+        "aaaaaaaaaabbbbbbbbbbbbbbbb",
+        "ccaaaaaabbbbbbbbbbbbbbbbbb",
+        "ccccaabbbbbbbbbbbbbbbbbbbb",
+        "cccccbbbbbbbbbbbbbbbbbbb..",
+        "cccccbbbbbbbbbbbbbbbbb....",
+        "cccccbbbbbbbbbbbbbbb......",
+        "cccccbbbbbbbbbbbbb........",
+        "cccccbbbbbbbbbbb..........",
+        "cccccbbbbbbbbb............",
+        "cccccbbbbbbb..............",
+        "cccccbbbbb................",
+        "..cccbbb..................",
+        "....cb...................."
+      ]
+    }
+  ]
+}

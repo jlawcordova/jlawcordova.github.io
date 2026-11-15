@@ -1,0 +1,80 @@
+{
+  "notes": [
+    "A tall steel-framed window, six panes, a city skyline outside, on a cream sill.",
+    "Hangs on the wall behind its tile's back-right edge (a wall along the columns): place it on the floor tile in front of the wall, at depth Back."
+  ],
+  "category": [
+    "Office",
+    "Walls"
+  ],
+  "kind": "sprite",
+  "anchor": [1, 63],
+  "keys": {
+    "a": "stone-2",
+    "b": "stone-3",
+    "c": "glass-1",
+    "d": "stone-4",
+    "e": "glass-2",
+    "f": "glass-3",
+    "g": "cream",
+    "h": "path-1",
+    "i": "path-2"
+  },
+  "layers": [
+    {
+      "map": [
+        "....aa..............",
+        "....aaaa............",
+        "....bbaaaa..........",
+        "....bbbbaaaa........",
+        "....bcbbbbaaaa......",
+        "....bcccbbbbaaaa....",
+        "....bcccccbbbbaaaa..",
+        "....bcccccbbbbbbaa..",
+        "....bcccccbbccbbbd..",
+        "....bcccccbbccccbd..",
+        "....bcccccbbcccccd..",
+        "....bcccccbbcccccd..",
+        "....bcccccbbcccccd..",
+        "....bcccccbbcccccd..",
+        "....bcccccbbcccccd..",
+        "....bbccccbbcccccd..",
+        "....bcbbccbbcccccd..",
+        "....bcccbbbbcccccd..",
+        "....bcccccbbcccccd..",
+        "....bcccccbbbbcccd..",
+        "....bcccccbbccbbcd..",
+        "....bcccccbbccccbd..",
+        "....beccccbbcccccd..",
+        "....beeeccbbcccccd..",
+        "....beeeeebbcccccd..",
+        "....beeeeebbcccccd..",
+        "....beeeeebbeecccd..",
+        "....beeeeebbeeeecd..",
+        "....bbefeebbeeeeed..",
+        "....bebbffbbeeeeed..",
+        "....beefbbbbeeeeed..",
+        "....bfefffbbeeeeed..",
+        "....bfffffbbbbeeed..",
+        "....bfffffbbffbbed..",
+        "....bfffffbbfffebd..",
+        "....bfffffbbfffeed..",
+        "....bfffffbbfffeed..",
+        "....bfffffbbfffeed..",
+        "..ggbfffffbbffffed..",
+        "ggggggffffbbfffffd..",
+        "ggggggggffbbfffffd..",
+        "hhggggggggbbfffffd..",
+        "hhhhggggggggfffffd..",
+        "..hhhhggggggggfffd..",
+        "....hhhhggggggggfd..",
+        "......hhhhgggggggg..",
+        "........hhhhgggggggg",
+        "..........hhhhgggggg",
+        "............hhhhggii",
+        "..............hhhiii",
+        "................hi.."
+      ]
+    }
+  ]
+}

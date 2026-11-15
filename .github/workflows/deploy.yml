@@ -42,10 +42,10 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      # Downloads the pinned pixellab-linux-x64 (checked against its pinned hash
-      # and the release's SHA256SUMS) and compiles the SVGs and thumbnails, which
-      # aren't committed. npm test and npm run build rebuild them in under a second.
-      - name: Build the pixel art
+      # The SVGs are committed: Pixpocket's releases are private, so CI can't
+      # publish the art. Without the program this checks that the committed SVGs
+      # were published from the document as it is, and fails if it has changed.
+      - name: Check the pixel art is published
         run: npm run art
       - name: Test
         run: npm test

@@ -1,0 +1,100 @@
+{
+  "notes": [
+    "A slim silver birch: a tall white trunk marked dark, a light crown of golden leaves. It's round, so it has no heading.",
+    "States: idle, sway."
+  ],
+  "category": [
+    "Fantasy",
+    "Trees"
+  ],
+  "kind": "sprite",
+  "anchor": [14, 63],
+  "keys": {
+    "a": "gold-1",
+    "b": "gold-2",
+    "c": "gold-3",
+    "d": "path-2",
+    "e": "cream",
+    "f": "stone-3",
+    "g": "stone-4"
+  },
+  "layers": [
+    {
+      "loop": "pose",
+      "prefix": "p",
+      "frames": [
+        [
+          "...........aaaaaa...............",
+          ".........aaaaaaaaaa.............",
+          ".......aaaaaaaaaaaaaa...........",
+          "......aaaaaaaaaaaaaaaa..........",
+          "......aaaaaaaaaaaaaaaa..........",
+          "......baaaaaaaaaaaaaac..........",
+          "......bbbaaaaaaaaaaccc..........",
+          "......bbbbbaaaaaaccccc..........",
+          "......bbbbbbbbcccccccc..........",
+          "......bbbbbbbbcccccccc..........",
+          "......bbbbbbbbcccccccc..........",
+          "......bbbbbbbbccccccccaaa.......",
+          "......bbbbbbbbccccccccaaaaa.....",
+          "......bbbbbbbbccccccccaaaaaaa...",
+          "......bbbbbbbbccccccccaaaaaaaaa.",
+          ".......bbbbbbbcccccccaaaaaaaaaaa",
+          ".........bbbbbcccccaaaaaaaaaaaaa",
+          ".......aaaabbbcccaaaaaaaaaaaaaac",
+          ".....aaaaaaabbbaaaaaaaaaaaaaaccc",
+          "...aaaaaaaaabbbbbaaaaaaaaaaccccc",
+          ".aaaaaaaaaaabbbbbbbaaaaaaccccccc",
+          "aaaaaaaaaaaabbbbbbbbbbcccccccccc",
+          "aaaaaaaaaaaabbbbbbbbbbcccccccccc",
+          "baaaaaaaaaaabbbbbbbbbbcccccccccc",
+          "bbbaaaaaaaaabbbbbbbbbbcccccccccc",
+          "bbbbbaaaaaaaabbbbbbbbbcccccccccc",
+          "bbbbbaaaaaaaaaabbbbbbbcccccccccc",
+          "bbbaaaaaaaaaaaaaabbbbbcccccccccc",
+          "bbaaaaaaaaaaaaaaaabbbbccccccccc.",
+          "bbaaaaaaaaaaaaaaaabbbbccccccc...",
+          "bbbaaaaaaaaaaaaaacbbbbccccc.....",
+          "bbbbbaaaaaaaaaaccccbbbccc.......",
+          "bbbbbbbaaaaaaccccccc............",
+          ".bbbbbbbbbccccccccc.............",
+          "..bbbbbbbbcccccccc..............",
+          "..bbbbbbbbcccccccc..............",
+          "..bbbbbbbbcccccccc..............",
+          "..bbbbbbbbcccccccc..............",
+          "...bbbbbbbccccccc...............",
+          ".....bbbbbcccccdd...............",
+          ".......bbbccceddd...............",
+          "...........eeeddd...............",
+          "...........eeeddd...............",
+          "...........ffedgd...............",
+          "...........eeegdd...............",
+          "...........eeeddd...............",
+          "...........eeeddd...............",
+          "...........eeeddd...............",
+          "...........efedgg...............",
+          "...........eefddd...............",
+          "...........ffedgd...............",
+          "...........eeegdd...............",
+          "...........eeeddd...............",
+          "...........eeeddd...............",
+          "...........eeeddd...............",
+          "...........eeeddd...............",
+          "...........eeeddd...............",
+          "...........ffedgd...............",
+          "...........eeegdd...............",
+          "...........efedgg...............",
+          "...........eefddd...............",
+          "...........eeeddd...............",
+          "...........eeeddd...............",
+          "...........eeeddd...............",
+          ".............ed................."
+        ]
+      ]
+    }
+  ],
+  "start": "idle",
+  "states": {
+    "idle": { "frames": [0], "ms": 1000 }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "notes": [
+    "Two schoolbooks held against the outside of the hand.",
+    "Held in a hand's grip socket, or the far hand's offhand."
+  ],
+  "category": [
+    "Cast",
+    "Held"
+  ],
+  "kind": "sprite",
+  "handle": [0, 0, 2],
+  "parts": [
+    { "id": "book-1", "box": [1, 5, 6], "at": [3, 1, 0], "faces": { "top": "cream", "front": { "keys": { "a": "roof-2", "b": "cream" }, "shade": { "a": "roof-3", "b": "cream" }, "map": ["a", "b", "b", "b", "b", "a"] }, "back": ["roof-2", "roof-3"], "left": ["roof-2", "roof-3"], "right": ["roof-2", "roof-3"] } },
+    { "id": "book-2", "box": [1, 5, 5], "at": [4, 2, 0], "faces": { "top": "cream", "front": { "keys": { "a": "glass-2", "b": "cream" }, "shade": { "a": "glass-3", "b": "cream" }, "map": ["a", "b", "b", "b", "a"] }, "back": ["glass-2", "glass-3"], "left": ["glass-2", "glass-3"], "right": ["glass-2", "glass-3"] } }
+  ]
+}

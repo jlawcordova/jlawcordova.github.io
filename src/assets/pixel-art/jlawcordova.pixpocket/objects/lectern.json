@@ -1,0 +1,57 @@
+{
+  "notes": [
+    "A wooden lectern with a big red book open on it, about waist high. The reader stands on the tile to its lower left."
+  ],
+  "category": [
+    "Range",
+    "Tower"
+  ],
+  "kind": "sprite",
+  "anchor": [11, 26],
+  "keys": {
+    "a": "cream",
+    "b": "path-2",
+    "c": "roof-2",
+    "d": "wood-3",
+    "e": "roof-3",
+    "f": "wood-4",
+    "g": "wood-2"
+  },
+  "layers": [
+    {
+      "map": [
+        "........aa............",
+        "......aaaaaa..........",
+        "....aaaaaaaaaa........",
+        "..aaaaaaaaaaaabb......",
+        "aaaaaaaaaaaabbbbaa....",
+        "aaaaaaaaaabbbbaaaaaa..",
+        "ccaaaaaabbbbaaaaaaaaaa",
+        "ccccaabbbbaaaaaaaaaaaa",
+        "ddccccbbaaaaaaaaaaaaee",
+        "ddddccccaaaaaaaaaaeeee",
+        "..ddddccccaaaaaaeeeeff",
+        "....ddddccccaaeeeeffff",
+        "......ddddccceeeffff..",
+        "........ddddceffff....",
+        "........ggdddfff......",
+        "........gggddf........",
+        "........gggddd........",
+        "........gggddd........",
+        "........gggddd........",
+        "........gggddd........",
+        "........gggddd........",
+        "......gggggdddgg......",
+        "....gggggggdddgggg....",
+        "..gggggggggdddgggggg..",
+        "..gggggggggdddgggggg..",
+        "..ddgggggggdggggggff..",
+        "..ddddggggggggggffff..",
+        "....ddddggggggffff....",
+        "......ddddggffff......",
+        "........dddfff........",
+        "..........df.........."
+      ]
+    }
+  ]
+}

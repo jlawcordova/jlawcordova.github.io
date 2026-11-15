@@ -1,0 +1,95 @@
+{
+  "notes": [
+    "A rounded fridge, two levels tall, facing the lower left. States: idle, and open (its lower door swung out to the lower left)."
+  ],
+  "category": [
+    "Office",
+    "Pantry"
+  ],
+  "kind": "sprite",
+  "anchor": [31, 51],
+  "keys": {
+    "a": "cream",
+    "b": "path-1",
+    "c": "path-2",
+    "d": "stone-2",
+    "e": "roof-2",
+    "f": "glass-2",
+    "g": "gold-1",
+    "h": "grass-2"
+  },
+  "layers": [
+    {
+      "loop": "pose",
+      "prefix": "p",
+      "frames": [
+        [
+          "............................aaaaaa...........",
+          "..........................aaaaaaaaaa.........",
+          "........................aaaaaaaaaaaaaa.......",
+          "......................aaaaaaaaaaaaaaaaaa.....",
+          "....................aaaaaaaaaaaaaaaaaaaaaa...",
+          "..................aaaaaaaaaaaaaaaaaaaaaaaaaa.",
+          ".................aaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          ".................aaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          ".................baaaaaaaaaaaaaaaaaaaaaaaaaac",
+          ".................bbbaaaaaaaaaaaaaaaaaaaaaaccc",
+          ".................bbbbbaaaaaaaaaaaaaaaaaaccccc",
+          ".................bbbbbbbaaaaaaaaaaaaaaccccccc",
+          ".................bbbbbbbbbaaaaaaaaaaccccccccc",
+          ".................bbbbbbbbbbbaaaaaaccccccccccc",
+          ".................bbbbbbbbbbbbbbcccccccccccccc",
+          ".................bbbbbbbbbbbbbbcccccccccccccc",
+          ".................bbbbbbbbbbbbbbcccccccccccccc",
+          ".................bbbbbbbbbbbbbbcccccccccccccc",
+          ".................bbbbbbbbbbbdbbcccccccccccccc",
+          ".................bbbbbbbbbbbdbbcccccccccccccc",
+          ".................bbbbbbbbbbbdbbcccccccccccccc",
+          ".................bbbbbbbbbbbdbbcccccccccccccc",
+          ".................bbbbbbbbbbbdbbcccccccccccccc",
+          ".................cbbbbbbbbbbdbbcccccccccccccc",
+          ".................bccbbbbbbbbdbbcccccccccccccc",
+          ".................bbbccbbbbbbdbbcccccccccccccc",
+          ".................bbbbbccbbbbbbbcccccccccccccc",
+          ".................bbbbbbbccbbbbbcccccccccccccc",
+          ".................bbbbbbbbbccbbbcccccccccccccc",
+          ".................bbbbbbbbbbbccccccccccccccccc",
+          ".................bbbbbbbbbbbbbbcccccccccccccc",
+          ".................bbbbbbbbbbbbbbcccccccccccccc",
+          ".................bbbbbbbbbbbbbbcccccccccccccc",
+          ".................bbbbbbbbbbbdbbcccccccccccccc",
+          ".................bbbbbbbbbbbdbbcccccccccccccc",
+          ".................bbbbbbbbbbbdbbcccccccccccccc",
+          ".................bbbbbbbbbbbdbbcccccccccccccc",
+          ".................bbbbbbbbbbbdbbcccccccccccccc",
+          ".................bbbbbbbbbbbdbbcccccccccccccc",
+          ".................bbbbbbbbbbbdbbcccccccccccccc",
+          ".................bbbbbbbbbbbdbbcccccccccccccc",
+          ".................bbbbbbbbbbbdbbcccccccccccccc",
+          ".................bbbbbbbbbbbdbbcccccccccccccc",
+          ".................bbbbbbbbbbbdbbcccccccccccccc",
+          ".................bbbbbbbbbbbbbbcccccccccccccc",
+          ".................bbbbbbbbbbbbbbcccccccccccccc",
+          ".................bbbbbbbbbbbbbbcccccccccccccc",
+          ".................bbbbbbbbbbbbbbcccccccccccccc",
+          ".................bbbbbbbbbbbbbbcccccccccccccc",
+          ".................bbbbbbbbbbbbbbcccccccccccccc",
+          ".................bbbbbbbbbbbbbbcccccccccccccc",
+          ".................bbbbbbbbbbbbbbcccccccccccccc",
+          "..................bbbbbbbbbbbbbccccccccccccc.",
+          "....................bbbbbbbbbbbccccccccccc...",
+          "......................bbbbbbbbbccccccccc.....",
+          "........................bbbbbbbccccccc.......",
+          "..........................bbbbbccccc.........",
+          "............................bbbccc...........",
+          ".............................................",
+          "............................................."
+        ]
+      ]
+    }
+  ],
+  "start": "idle",
+  "states": {
+    "idle": { "frames": [0], "ms": 1000 }
+  }
+}

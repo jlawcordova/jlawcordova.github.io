@@ -1,0 +1,72 @@
+{
+  "notes": [
+    "Bare earth with a few stones in it, for a floating island's underside.",
+    "Stack them under the ground at levels -1, -2, …, each level further in from the edge, so the island tapers; depth Back."
+  ],
+  "category": [
+    "Island",
+    "Ground"
+  ],
+  "kind": "block",
+  "size": [1, 1, 1],
+  "faces": {
+    "top": "soil-2",
+    "left": "soil-3",
+    "right": "soil-4"
+  },
+  "sides": {
+    "keys": {
+      "a": "soil-3",
+      "b": "path-3",
+      "c": "soil-4"
+    },
+    "left": [
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaabbaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaabbaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaabaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa",
+      "aaaaaaaaaaaaaaaaaaaaaa"
+    ],
+    "right": [
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "ccccbbcccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "ccccccccccccccbbcccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccbcccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc",
+      "cccccccccccccccccccccc"
+    ]
+  }
+}

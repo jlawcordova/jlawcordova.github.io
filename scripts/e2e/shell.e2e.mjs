@@ -394,7 +394,7 @@ test('R12, entrance in SVG R15: under reduced motion the hero shows at once, wit
     `${HERO}, .hero__float`,
   );
   // The copy, the two wrappers, and the island's pieces and their wrappers (island build entrance spec R9).
-  assert.ok(els.length > 5 + 2 * 200, `${els.length} elements`);
+  assert.ok(els.length > 5 + 2 * 150, `${els.length} elements`);
   for (const el of els) {
     assert.equal(el.opacity, '1');
     assert.ok(untransformed(el.transform), el.transform);
