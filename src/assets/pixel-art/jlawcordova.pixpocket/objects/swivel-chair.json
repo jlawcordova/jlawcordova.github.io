@@ -8,59 +8,17 @@
     "Office"
   ],
   "kind": "sprite",
-  "anchor": [11, 28],
-  "keys": {
-    "a": "path-2",
-    "b": "path-3",
-    "c": "path-4",
-    "d": "soil-3",
-    "e": "soil-4",
-    "f": "ink"
-  },
-  "layers": [
-    {
-      "loop": "pose",
-      "prefix": "p",
-      "frames": [
-        [
-          "......................",
-          "......................",
-          "......................",
-          "......................",
-          "......................",
-          "......................",
-          "aa....................",
-          "aaaa..................",
-          "bbaaaa................",
-          "bbbbaaaa..............",
-          "bbbbbbaaaa............",
-          "bbbbbbbbaa............",
-          "bbbbbbbbbc............",
-          "bbbbbbbbbcaaaa........",
-          "bbbbbbbbbcaaaaaa......",
-          "bbbbbbbbbcaaaaaaaa....",
-          "bbbbbbbbbcaaaaaaaaaa..",
-          "bbbbbbbbbcaaaaaaaaaa..",
-          "bbbbbbbbbcaaaaaaaacc..",
-          "bbbbbbbbbcaaaaaacccc..",
-          "..bbbbbbbcaaaacccccc..",
-          "....bbbbbcbccccccc....",
-          "....ddbbbcbcccccdd....",
-          "....ddddbcbcccdddd....",
-          "....eeddddefddddff....",
-          "....eeeeddefddffff....",
-          "......eeddefffff......",
-          "......ddddffffdd......",
-          "....ddddffffeedddd....",
-          "....ddffff..eeeedd....",
-          "....efff......eeef....",
-          "....ef..........ef...."
-        ]
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "part-1", "box": [14, 2, 2], "at": [4, 10, 0], "faces": { "top": "soil-3", "sides": ["soil-4", "ink"] } },
+    { "id": "part-2", "box": [2, 14, 2], "at": [10, 4, 0], "faces": { "top": "soil-3", "sides": ["soil-4", "ink"] } },
+    { "id": "part-3", "box": [2, 2, 6], "at": [10, 10, 2], "faces": { "top": "soil-3", "sides": ["soil-4", "ink"] } },
+    { "id": "part-4", "box": [10, 2, 12], "at": [6, 4, 10], "faces": { "top": "path-2", "sides": ["path-3", "path-4"] } },
+    { "id": "part-5", "box": [10, 10, 3], "at": [6, 6, 8], "round": 2, "faces": { "top": "path-2", "sides": ["path-3", "path-4"] } }
   ],
+  "poses": {},
   "start": "face-away-right",
   "states": {
-    "face-away-right": { "frames": [0], "ms": 1000 }
+    "face-away-right": { "poses": ["rest"], "ms": 1000, "heading": "away-right" }
   }
 }

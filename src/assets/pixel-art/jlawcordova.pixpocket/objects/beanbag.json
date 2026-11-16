@@ -9,51 +9,21 @@
     "Lounge"
   ],
   "kind": "sprite",
-  "anchor": [19, 18],
-  "keys": {
-    "a": "roof-1",
-    "b": "roof-2",
-    "c": "roof-3"
-  },
-  "layers": [
-    {
-      "loop": "pose",
-      "prefix": "p",
-      "frames": [
-        [
-          "..............aaaaaaaaaa..............",
-          "...........aaaaaaaaaaaaaaaa...........",
-          ".........aaaaaaaaaaaaaaaaaaaa.........",
-          "........aaaaaabbbbbbbbbbaaaaaa........",
-          ".......aaaaaabbbaaaaaabbbaaaaaa.......",
-          "......aaaaaabbaaaaaaaaaabbaaaaab......",
-          ".....aaaaaaabaaaaaaaaaaaababbbbbb.....",
-          "....aaaaaaaaaaaaaaaaaaaaaabbbbbbbb....",
-          "....aaaaaaaaaaaaaaaaaaaaabbbbbbbbb....",
-          "....aaaaaaaaaaaaaaaaaaaaabbbbbbbbb....",
-          "....aaaaaaaaaaaaaaaaaaaaabbbbbbbbb....",
-          "....aaaaaaaaaaaaaaaaaaaabbbbbbbbbc....",
-          "....aaaaaaaaaaaaaaaaaaabbbbbbbbbcc....",
-          "....aaaaaaaaaaaaaaaabbbbbbbbbbbbcc....",
-          "....aaaaaaaaaaaaaaaabbbbbbbbbbbccc....",
-          "....aaaaaaaaaaaaaabbbbbbbbbbbccccc....",
-          "....bbaaaaaaaaabbbbbbbbbbbbbbccccc....",
-          ".....bbababbabbbbbbbbbbbbbbcccccc.....",
-          "......bbbbbbbbbbbbbbbbbbbbcccccc......",
-          ".......bbbbbbbbbbbbbbbbbccccccc.......",
-          "........bbbbbbbbbbbbbccccccccc........",
-          ".........bbbbbbbbbccccccccccc.........",
-          "...........cbcbbccccccccccc...........",
-          "..............cccccccccc..............",
-          "......................................",
-          "......................................",
-          "......................................"
-        ]
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "tier-1", "box": [18, 18, 2], "at": [2, 2, 0], "profile": "circle", "faces": { "top": "roof-1", "sides": ["roof-2", "roof-2", "roof-3"] }, "looks": { "squash-1": { "box": [22, 22, 2] }, "squash-2": { "box": [26, 26, 1] } } },
+    { "id": "tier-2", "box": [20, 20, 2], "at": [1, 1, 2], "profile": "circle", "faces": { "top": "roof-1", "sides": ["roof-2", "roof-2", "roof-3"] }, "looks": { "squash-1": { "box": [24, 24, 2] }, "squash-2": { "box": [26, 26, 1] } } },
+    { "id": "tier-3", "box": [20, 20, 2], "at": [1, 1, 4], "profile": "circle", "faces": { "top": "roof-1", "sides": ["roof-2", "roof-2", "roof-3"] }, "looks": { "squash-1": { "box": [24, 24, 2] }, "squash-2": { "box": [26, 26, 2] } } },
+    { "id": "tier-4", "box": [20, 20, 2], "at": [1, 1, 6], "profile": "circle", "faces": { "top": "roof-1", "sides": ["roof-2", "roof-2", "roof-3"] }, "looks": { "squash-1": { "box": [24, 24, 2] }, "squash-2": { "box": [26, 26, 1] } } },
+    { "id": "tier-5", "box": [20, 20, 2], "at": [1, 1, 8], "profile": "circle", "faces": { "top": "roof-1", "sides": ["roof-2", "roof-2", "roof-3"] }, "looks": { "squash-1": { "box": [22, 22, 1] }, "squash-2": { "box": [26, 26, 1] } } },
+    { "id": "tier-6", "box": [18, 18, 2], "at": [2, 2, 10], "profile": "circle", "faces": { "top": "roof-1", "sides": ["roof-1", "roof-1", "roof-2"] }, "looks": { "squash-1": { "box": [18, 18, 1] }, "squash-2": { "box": [24, 24, 1] } } },
+    { "id": "tier-7", "box": [14, 14, 2], "at": [4, 4, 12], "profile": "circle", "faces": { "top": "roof-1", "sides": ["roof-1", "roof-1", "roof-2"] }, "looks": { "squash-1": { "box": [12, 12, 1] }, "squash-2": { "box": [16, 16, 1] } } },
+    { "id": "dip", "box": [10, 10, 0], "at": [6, 6, 14], "profile": "circle", "faces": { "top": "roof-2", "sides": ["stone-2", "stone-3"] }, "looks": { "squash-1": { "box": [12, 12, 0] }, "squash-2": { "box": [12, 12, 0] } } },
+    { "id": "seat", "box": [8, 8, 0], "at": [8, 8, 14], "profile": "circle", "order": 1, "faces": { "top": "roof-1", "sides": ["stone-2", "stone-3"] }, "looks": { "squash-1": { "box": [10, 10, 0] }, "squash-2": { "box": [10, 10, 0] } } }
   ],
+  "poses": {},
   "start": "idle",
   "states": {
-    "idle": { "frames": [0], "ms": 1000 }
+    "idle": { "poses": ["rest"], "ms": 1000 }
   }
 }

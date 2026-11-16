@@ -8,9 +8,9 @@
   ],
   "kind": "sprite",
   "extends": "fridge",
-  "keys": {
-    "a": "teal-1",
-    "b": "teal-2",
-    "c": "teal-3"
+  "colors": {
+    "cream": "teal-1",
+    "path-1": "teal-2",
+    "path-2": "teal-3"
   }
 }

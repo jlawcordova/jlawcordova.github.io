@@ -8,54 +8,17 @@
     "Trees"
   ],
   "kind": "sprite",
-  "anchor": [16, 23],
-  "keys": {
-    "a": "grass-1",
-    "b": "roof-1",
-    "c": "grass-3",
-    "d": "grass-2"
-  },
-  "layers": [
-    {
-      "loop": "pose",
-      "prefix": "p",
-      "frames": [
-        [
-          "...............aaaaaa.......",
-          ".............aaaabbaaaa.....",
-          "............aaaaaaaaaaac....",
-          "...........aaaaaaaaaaccca...",
-          ".........aaadaaaabbcccccaaa.",
-          "........aaaadddaaaacccccaaac",
-          "........aaaaddddccccccccaccc",
-          ".....aaaaaaaddddcccccccccccc",
-          "...aaaaaaaaaddddcccccccccccc",
-          ".aaaaaaaaaaaadddcccccccccccc",
-          "aaaaaaabbaaaaaadcccccaaaaccc",
-          "aaaaaaaaaaaaaaaaaaaaaaaaaaac",
-          "daaaaaaaaaacaaaaaaaaaaabbaac",
-          "dddaaaaaacccaaaaaaaaaaaaaccc",
-          "dddddaaaacccdaaaaaaaaaaccccc",
-          "ddddddcaaaaaaddaaaaaaccccccc",
-          "dddddaaaaaaaaaaddaaaaccccccc",
-          "ddddaaaaabbaaaaaadcccccccccc",
-          "ddddaaaaaaaaaaaaaccccccccccc",
-          "dddddaaaaaaaaaaccccccccccccc",
-          "dddddddaaaabbccccccccccccccc",
-          "dddddddddaaaaccccccccccccccc",
-          ".dddddddddcccccccccccccccccc",
-          "...dddddddcccccccccccccccccc",
-          "....ddddddcccccccccccccccccc",
-          "....ddddddcccccccccccccccccc",
-          ".....dddddccccccccccccccccc.",
-          ".......dddcccccccdccccccc...",
-          ".........dccccc..dccccc....."
-        ]
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "part-1", "box": [12, 12, 11], "at": [4, 2, 4], "round": 3, "bevel": { "width": 2, "light": "grass-1", "middle": "grass-3" }, "faces": { "top": { "keys": { "a": "grass-1", "b": "roof-1" }, "map": ["...aaaaaa...", ".aaaaaaaaaa.", ".aaaaaaaaaa.", "aaabbaaaaaaa", "aaaaaaaaaaaa", "aaaaaaaaaaaa", "aaaaaaaabbaa", "aaaaaaaaaaaa", "aaaaaaaaaaaa", ".aaaaaaaaaa.", ".aaaaaaaaaa.", "...aaaaaa..."] }, "sides": ["grass-2", "grass-3"] } },
+    { "id": "part-2", "box": [10, 10, 10], "at": [1, 9, 1], "round": 3, "bevel": { "width": 2, "light": "grass-1", "middle": "grass-3" }, "order": 1, "faces": { "top": { "keys": { "a": "grass-1", "b": "roof-1" }, "map": ["...aaaa...", ".aaaaaaaa.", ".aaaaaaaa.", "aaaaaaaaaa", "aaabbaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", ".aaaaaaaa.", ".aaaaaaaa.", "...aaaa..."] }, "sides": ["grass-2", "grass-3"] } },
+    { "id": "part-3", "box": [10, 10, 12], "at": [11, 7, 1], "round": 3, "bevel": { "width": 2, "light": "grass-1", "middle": "grass-3" }, "order": 1, "faces": { "top": { "keys": { "a": "grass-1", "b": "roof-1" }, "map": ["...aaaa...", ".aaaaaaaa.", ".aaaabbaa.", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", "aaaaaaaaaa", ".aaaaaaaa.", ".aaaaaaaa.", "...aaaa..."] }, "sides": ["grass-2", "grass-3"] } },
+    { "id": "part-4", "box": [10, 8, 7], "at": [6, 12, 0], "round": 3, "bevel": { "width": 2, "light": "grass-1", "middle": "grass-3" }, "order": 2, "faces": { "top": { "keys": { "a": "grass-1", "b": "roof-1" }, "map": ["...aaaa...", ".aaaaaaaa.", ".aaaaaaaa.", "aabbaaaaaa", "aaaaaaaaaa", ".aaaaabba.", ".aaaaaaaa.", "...aaaa..."] }, "sides": ["grass-2", "grass-3"] } },
+    { "id": "part-5", "box": [8, 8, 5], "at": [7, 5, 14], "round": 3, "bevel": { "width": 2, "light": "grass-1", "middle": "grass-3" }, "order": 3, "faces": { "top": { "keys": { "a": "grass-1", "b": "roof-1" }, "map": ["...aa...", ".aaaaaa.", ".abbaaa.", "aaaaaaaa", "aaaaaaaa", ".aaaabb.", ".aaaaaa.", "...aa..."] }, "sides": ["grass-2", "grass-3"] } }
   ],
+  "poses": {},
   "start": "idle",
   "states": {
-    "idle": { "frames": [0], "ms": 1000 }
+    "idle": { "poses": ["rest"], "ms": 1000 }
   }
 }

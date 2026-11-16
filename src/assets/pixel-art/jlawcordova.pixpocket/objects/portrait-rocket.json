@@ -8,50 +8,8 @@
     "Walls"
   ],
   "kind": "sprite",
-  "anchor": [-3, 59],
-  "keys": {
-    "a": "stone-2",
-    "b": "stone-3",
-    "c": "glass-4",
-    "d": "glass-1",
-    "e": "stone-4",
-    "f": "cream",
-    "g": "glass-2",
-    "h": "roof-1",
-    "i": "clay-1"
-  },
-  "layers": [
-    {
-      "map": [
-        "aa............",
-        "aaaa..........",
-        "bbaaaa........",
-        "bbbbaaaa......",
-        "bcbbbbaaaa....",
-        "bcccbbbbaaaa..",
-        "bcccccbbbbaaaa",
-        "bcdcccccbbbbaa",
-        "bcccccccccbbbe",
-        "bccccfffcdccbe",
-        "bccccfffccccce",
-        "bccccffffcccce",
-        "bccccfggfcccce",
-        "bccccfggfcdcce",
-        "bccccffffcccce",
-        "bccdhffffcccce",
-        "bccchffffcccce",
-        "bccchcfffhccce",
-        "bccccciifhccce",
-        "bccccciichccce",
-        "bbcccciiccccce",
-        "bbbbcccccccdce",
-        "..bbbbccccccce",
-        "....bbbbccccce",
-        "......bbbbccce",
-        "........bbbbce",
-        "..........bbbe",
-        "............be"
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "part-1", "box": [14, 2, 20], "at": [4, 0, 30], "faces": { "top": "stone-2", "front": { "keys": { "a": "stone-3", "b": "glass-4", "c": "glass-1", "d": "cream", "e": "glass-2", "f": "roof-1", "g": "clay-1" }, "shade": { "a": "stone-3", "b": "glass-4", "c": "glass-1", "d": "cream", "e": "glass-2", "f": "roof-1", "g": "clay-1" }, "map": ["aaaaaaaaaaaaaa", "aaaaaaaaaaaaaa", "aabbbbbbbbbbbb", "aabbbbbbbbcbbb", "aabcbbbddbbbbb", "aabbbbddddbbbb", "aabbbbddddbcbb", "aabbbbdeedbbbb", "aabbbbdeedbbbb", "aabbbbddddbbbb", "aabbbbddddbbbb", "aabbbfddddfbbb", "aabbcfddddfbbb", "aabbbfbggbfbbb", "aabbbbbggbbbcb", "aabbbbbggbbbbb", "aabbbbbbbbbbbb", "aabbbbbbbbbbbb", "aaaaaaaaaaaaaa", "aaaaaaaaaaaaaa"] }, "back": ["stone-3", "stone-4"], "left": ["stone-3", "stone-4"], "right": ["stone-3", "stone-4"] } }
   ]
 }

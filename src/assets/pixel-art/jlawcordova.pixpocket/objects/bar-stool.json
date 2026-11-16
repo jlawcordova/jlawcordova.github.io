@@ -7,41 +7,11 @@
     "Pantry"
   ],
   "kind": "sprite",
-  "anchor": [6, 20],
-  "keys": {
-    "a": "teal-2",
-    "b": "teal-3",
-    "c": "teal-4",
-    "d": "stone-2",
-    "e": "stone-3",
-    "f": "stone-4"
-  },
-  "layers": [
-    {
-      "map": [
-        "...aaaaaa...",
-        ".aaaaaaaaaa.",
-        "aaaaaaaaaaaa",
-        "aaaaaaaaaaaa",
-        "baaaaaaaaaac",
-        "bbbaaaaaaccc",
-        ".bbbbbccccc.",
-        "...bbbccc...",
-        ".....de.....",
-        ".....de.....",
-        ".....de.....",
-        ".....de.....",
-        ".....de.....",
-        ".....de.....",
-        "...eeeeee...",
-        ".....de.....",
-        ".....de.....",
-        "...eedeee...",
-        "..eeedeeee..",
-        "..eeeeeeee..",
-        "..feeeeeef..",
-        "...ffffff..."
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "base", "box": [6, 6, 1], "at": [8, 8, 0], "profile": "circle", "faces": { "top": "stone-3", "sides": ["stone-4", "stone-4"] } },
+    { "id": "post", "box": [1, 1, 14], "at": [10, 10, 1], "faces": { "top": "stone-2", "sides": ["stone-2", "stone-3"] } },
+    { "id": "ring", "box": [4, 4, 1], "at": [9, 9, 5], "profile": "circle", "faces": { "top": "stone-3", "sides": ["stone-3", "stone-3"] } },
+    { "id": "seat", "box": [8, 8, 2], "at": [7, 7, 15], "profile": "circle", "faces": { "top": "teal-2", "sides": ["teal-3", "teal-4"] } }
   ]
 }

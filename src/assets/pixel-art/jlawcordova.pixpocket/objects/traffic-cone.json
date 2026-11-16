@@ -7,37 +7,13 @@
     "Outdoors"
   ],
   "kind": "sprite",
-  "anchor": [9, 13],
-  "keys": {
-    "a": "clay-1",
-    "b": "clay-2",
-    "c": "clay-3",
-    "d": "cream",
-    "e": "path-2",
-    "f": "path-1"
-  },
-  "layers": [
-    {
-      "map": [
-        ".......abbc.......",
-        ".......abbc.......",
-        ".......abbc.......",
-        "......dabbce......",
-        "......dfffee......",
-        "......dfffee......",
-        "......abbbcc......",
-        ".....aabbbccc.....",
-        "....baabbbbccb....",
-        "..bbbaabbbbccbbb..",
-        "bbbbbaabbbbccbbbbb",
-        "bbbbbbabbbbcbbbbbb",
-        "bbbbbbbbbbbbbbbbcc",
-        "bbbbbbbbbbbbbbcccc",
-        "..bbbbbbbbbbcccc..",
-        "....bbbbbbcccc....",
-        "......bbbccc......",
-        "........bc........"
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "base", "box": [10, 10, 2], "at": [6, 6, 0], "faces": { "top": "clay-2", "sides": ["clay-2", "clay-3"] } },
+    { "id": "low", "box": [6, 6, 3], "at": [8, 8, 2], "profile": "circle", "faces": { "top": "clay-1", "sides": ["clay-1", "clay-2", "clay-2", "clay-3"] } },
+    { "id": "mid", "box": [4, 4, 2], "at": [9, 9, 5], "profile": "circle", "faces": { "top": "clay-1", "sides": ["clay-1", "clay-2", "clay-2", "clay-3"] } },
+    { "id": "band", "box": [4, 4, 2], "at": [9, 9, 7], "profile": "circle", "faces": { "top": "cream", "sides": ["cream", "path-1", "path-1", "path-2"] } },
+    { "id": "upper", "box": [2, 2, 3], "at": [10, 10, 9], "faces": { "top": "clay-1", "sides": ["clay-2", "clay-3"] } },
+    { "id": "tip", "box": [1, 1, 2], "at": [10, 10, 12], "faces": { "top": "clay-1", "sides": ["clay-1", "clay-2"] } }
   ]
 }

@@ -7,47 +7,11 @@
     "Lab"
   ],
   "kind": "sprite",
-  "anchor": [13, 16],
-  "keys": {
-    "a": "plum-1",
-    "b": "gold-1",
-    "c": "plum-2",
-    "d": "plum-3",
-    "e": "cream",
-    "f": "teal-2",
-    "g": "roof-1",
-    "h": "teal-4",
-    "i": "teal-3",
-    "j": "roof-2",
-    "k": "roof-3"
-  },
-  "layers": [
-    {
-      "map": [
-        "..........aa............",
-        "........aaaaaa..........",
-        "......aaaaaaaaaa........",
-        "....aaaaaaaaaaaaaa......",
-        "..aaaaaaaabbaaaaaaaa....",
-        "..aaaaaaabbbbaaaaaaa....",
-        "..ccaaaaaabbaaaaaadd....",
-        "..eeccaaaaaaaaaaddddff..",
-        "..eeeeccaaaaaaddddddffff",
-        "..cceeeeccaaddddddddffff",
-        "..ggcceeeecdddddddffffhh",
-        "ggggeecceeedddddffffhhhh",
-        "ggggiieeccedddffffhhhhhh",
-        "jjggggiieecdiiffhhhhhhhh",
-        "eejjggggiieeeeihhhhhhhkk",
-        "eeeejjggggiieeehhhhhkkkk",
-        "jjeeeejjggggiiehhhkkkkkk",
-        "..jjeeeejjggggihkkkkkkkk",
-        "....jjeeeejjggkkkkkkkk..",
-        "......jjeeeejkkkkkkk....",
-        "........jjeeekkkkk......",
-        "..........jjekkk........",
-        "............jk.........."
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "part-1", "box": [14, 12, 4], "at": [4, 6, 0], "faces": { "top": "roof-1", "front": { "keys": { "a": "roof-2", "b": "cream" }, "shade": { "a": "roof-2", "b": "cream" }, "map": ["aaaaaaaaaaaaaa", "abbbbbbbbbbbbb", "abbbbbbbbbbbbb", "aaaaaaaaaaaaaa"] }, "back": ["roof-2", "roof-3"], "left": ["roof-2", "roof-3"], "right": ["roof-2", "roof-3"] } },
+    { "id": "part-2", "box": [12, 10, 4], "at": [6, 6, 4], "faces": { "top": "teal-2", "front": { "keys": { "a": "teal-3", "b": "cream" }, "shade": { "a": "teal-3", "b": "cream" }, "map": ["aaaaaaaaaaaa", "abbbbbbbbbbb", "abbbbbbbbbbb", "aaaaaaaaaaaa"] }, "back": ["teal-3", "teal-4"], "left": ["teal-3", "teal-4"], "right": ["teal-3", "teal-4"] } },
+    { "id": "part-3", "box": [10, 10, 4], "at": [6, 8, 8], "faces": { "top": "plum-1", "front": { "keys": { "a": "plum-2", "b": "cream" }, "shade": { "a": "plum-2", "b": "cream" }, "map": ["aaaaaaaaaa", "abbbbbbbbb", "abbbbbbbbb", "aaaaaaaaaa"] }, "back": ["plum-2", "plum-3"], "left": ["plum-2", "plum-3"], "right": ["plum-2", "plum-3"] } },
+    { "id": "drawing", "box": [1, 1, 1], "at": [21, 21, 0], "drawing": { "keys": { "a": "gold-1" }, "map": [".aa.", "aaaa", ".aa."], "anchor": [4, 22] } }
   ]
 }

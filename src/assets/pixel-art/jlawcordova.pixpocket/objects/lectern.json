@@ -7,51 +7,11 @@
     "Tower"
   ],
   "kind": "sprite",
-  "anchor": [11, 26],
-  "keys": {
-    "a": "cream",
-    "b": "path-2",
-    "c": "roof-2",
-    "d": "wood-3",
-    "e": "roof-3",
-    "f": "wood-4",
-    "g": "wood-2"
-  },
-  "layers": [
-    {
-      "map": [
-        "........aa............",
-        "......aaaaaa..........",
-        "....aaaaaaaaaa........",
-        "..aaaaaaaaaaaabb......",
-        "aaaaaaaaaaaabbbbaa....",
-        "aaaaaaaaaabbbbaaaaaa..",
-        "ccaaaaaabbbbaaaaaaaaaa",
-        "ccccaabbbbaaaaaaaaaaaa",
-        "ddccccbbaaaaaaaaaaaaee",
-        "ddddccccaaaaaaaaaaeeee",
-        "..ddddccccaaaaaaeeeeff",
-        "....ddddccccaaeeeeffff",
-        "......ddddccceeeffff..",
-        "........ddddceffff....",
-        "........ggdddfff......",
-        "........gggddf........",
-        "........gggddd........",
-        "........gggddd........",
-        "........gggddd........",
-        "........gggddd........",
-        "........gggddd........",
-        "......gggggdddgg......",
-        "....gggggggdddgggg....",
-        "..gggggggggdddgggggg..",
-        "..gggggggggdddgggggg..",
-        "..ddgggggggdggggggff..",
-        "..ddddggggggggggffff..",
-        "....ddddggggggffff....",
-        "......ddddggffff......",
-        "........dddfff........",
-        "..........df.........."
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "part-1", "box": [10, 10, 2], "at": [6, 6, 0], "faces": { "top": "wood-2", "sides": ["wood-3", "wood-4"] } },
+    { "id": "part-2", "box": [4, 4, 14], "at": [9, 9, 2], "faces": { "top": "wood-1", "sides": ["wood-2", "wood-3"] } },
+    { "id": "part-3", "box": [14, 10, 2], "at": [4, 6, 16], "faces": { "top": "wood-2", "sides": ["wood-3", "wood-4"] } },
+    { "id": "part-4", "box": [14, 10, 2], "at": [4, 6, 18], "faces": { "top": { "keys": { "a": "cream", "b": "path-2" }, "map": ["aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa"] }, "sides": ["roof-2", "roof-3"] } }
   ]
 }

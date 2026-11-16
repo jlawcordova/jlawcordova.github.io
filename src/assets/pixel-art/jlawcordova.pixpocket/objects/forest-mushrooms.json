@@ -8,50 +8,18 @@
     "Trees"
   ],
   "kind": "sprite",
-  "anchor": [15, 18],
-  "keys": {
-    "a": "roof-1",
-    "b": "cream",
-    "c": "roof-2",
-    "d": "roof-3",
-    "e": "path-1",
-    "f": "path-2"
-  },
-  "layers": [
-    {
-      "loop": "pose",
-      "prefix": "p",
-      "frames": [
-        [
-          ".........................",
-          "..............aaaaaa.....",
-          "............aaaaaaaaaa...",
-          "..........aaaaaabbaaaaaa.",
-          ".........aaaaaaaaaaabbaaa",
-          ".........aaabbaaaaaaaaaaa",
-          "..aaaaaa.caaaaaaaabbaaaad",
-          "aaaabbaaaaccaaaaaaaaaaddd",
-          "aaaaaaaaaaccccaaaaaaddddd",
-          "ccaaaaaaddcccccccdddddddd",
-          "cccccdddddcccccccddddddd.",
-          "cccccddddd..cccccddddd...",
-          "..cccddd......cccddd.....",
-          "....ef........eeefff.....",
-          "....ef........eeefff.....",
-          "....ef........eeaaff.....",
-          "....ef........aabbaa.....",
-          "..............aaaaaa.....",
-          "..............ccaadd.....",
-          "..............cccddd.....",
-          "................cd.......",
-          "................ef.......",
-          "................ef......."
-        ]
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "part-1", "box": [4, 4, 8], "at": [9, 7, 0], "faces": { "top": "cream", "sides": ["path-1", "path-2"] }, "looks": { "look-1": { "box": [4, 4, 9], "faces": { "top": "cream", "sides": ["path-1", "path-2"] } } } },
+    { "id": "part-2", "box": [10, 10, 4], "at": [6, 4, 8], "round": 4, "faces": { "top": { "keys": { "a": "roof-1", "b": "cream" }, "map": ["....aa....", "..aaaaaa..", ".aaaaabaa.", ".abbaaaaa.", "aaaaaaaaaa", "aaaaaaabaa", ".aaaaaaaa.", ".aabbaaaa.", "..aaaaab..", "....aa...."] }, "sides": ["roof-2", "roof-3"] } },
+    { "id": "part-3", "box": [2, 2, 5], "at": [3, 13, 0], "faces": { "top": "cream", "sides": ["path-1", "path-2"] } },
+    { "id": "part-4", "box": [6, 6, 3], "at": [1, 11, 5], "round": 2, "faces": { "top": { "keys": { "a": "roof-1", "b": "cream" }, "map": ["..aa..", ".aaaa.", "aabaaa", "aaaaaa", ".aaba.", "..aa.."] }, "sides": ["roof-2", "roof-3"] } },
+    { "id": "part-5", "box": [2, 2, 3], "at": [15, 13, 0], "faces": { "top": "cream", "sides": ["path-1", "path-2"] } },
+    { "id": "part-6", "box": [4, 4, 2], "at": [14, 12, 3], "round": 1, "faces": { "top": { "keys": { "a": "roof-1", "b": "cream" }, "map": [".aa.", "abaa", "aaaa", ".aa."] }, "sides": ["roof-2", "roof-3"] } }
   ],
+  "poses": {},
   "start": "idle",
   "states": {
-    "idle": { "frames": [0], "ms": 1000 }
+    "idle": { "poses": ["rest"], "ms": 1000 }
   }
 }

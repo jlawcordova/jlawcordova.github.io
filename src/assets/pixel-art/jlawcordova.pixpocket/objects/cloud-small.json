@@ -9,71 +9,15 @@
     "Clouds"
   ],
   "kind": "sprite",
-  "anchor": [13, 60],
-  "keys": {
-    "a": "cream",
-    "b": "stone-1",
-    "c": "glass-1",
-    "d": "glass-2"
-  },
-  "layers": [
-    {
-      "loop": "pose",
-      "prefix": "p",
-      "frames": [
-        [
-          "........................",
-          "..........aaaaaabbbb....",
-          ".........aaaaaaaaabbb...",
-          "........aaaaaaaaaaabbb..",
-          "....aaaaaaaaaaaaaaabbbb.",
-          "..aaaaaaaaaaaaaaaaabbbbc",
-          ".aaaaaaaaaaaaaaaaaabbbbc",
-          "aaaaaaaaaaaaaaaaaaabbbbc",
-          "aaaaaaaaaaaaaaaaaabbbbcc",
-          "aaaaaaaaaaaaaaaabbbbbccc",
-          "aaaaaaaaaaaaaaaabbbccccc",
-          "bbbbbbbaaaaaaaaabbbcccdd",
-          "cbbbbbaaaaaaaaaabbbcdddd",
-          ".cccccaaaaaaaaaabbbcddd.",
-          "..ccddaaaaaaaaabbbccdd..",
-          "..ccddaaaaaaabbbbccccc..",
-          "..ccbbbbbbbbbbbbcccccc..",
-          "..cccbbbbbbbcccccccccc..",
-          "..cccccccccccccddddccc..",
-          "...cccccccddddddddccc...",
-          ".....cccccddddddccc.....",
-          "........cccccccc........"
-        ],
-        [
-          "..........aaaaaabbbb....",
-          ".........aaaaaaaaabbb...",
-          "........aaaaaaaaaaabbb..",
-          "....aaaaaaaaaaaaaaabbbb.",
-          "..aaaaaaaaaaaaaaaaabbbbc",
-          ".aaaaaaaaaaaaaaaaaabbbbc",
-          "aaaaaaaaaaaaaaaaaaabbbbc",
-          "aaaaaaaaaaaaaaaaaabbbbcc",
-          "aaaaaaaaaaaaaaaabbbbbccc",
-          "aaaaaaaaaaaaaaaabbbccccc",
-          "bbbbbbbaaaaaaaaabbbcccdd",
-          "cbbbbbaaaaaaaaaabbbcdddd",
-          ".cccccaaaaaaaaaabbbcddd.",
-          "..ccddaaaaaaaaabbbccdd..",
-          "..ccddaaaaaaabbbbccccc..",
-          "..ccbbbbbbbbbbbbcccccc..",
-          "..cccbbbbbbbcccccccccc..",
-          "..cccccccccccccddddccc..",
-          "...cccccccddddddddccc...",
-          ".....cccccddddddccc.....",
-          "........cccccccc........",
-          "........................"
-        ]
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "cloud", "box": [1, 1, 1], "at": [21, 21, 0], "drawing": { "keys": { "a": "cream", "b": "stone-1", "c": "glass-1", "d": "glass-2" }, "map": ["..........aaaaaabbbb....", ".........aaaaaaaaabbb...", "........aaaaaaaaaaabbb..", "....aaaaaaaaaaaaaaabbbb.", "..aaaaaaaaaaaaaaaaabbbbc", ".aaaaaaaaaaaaaaaaaabbbbc", "aaaaaaaaaaaaaaaaaaabbbbc", "aaaaaaaaaaaaaaaaaabbbbcc", "aaaaaaaaaaaaaaaabbbbbccc", "aaaaaaaaaaaaaaaabbbccccc", "bbbbbbbaaaaaaaaabbbcccdd", "cbbbbbaaaaaaaaaabbbcdddd", ".cccccaaaaaaaaaabbbcddd.", "..ccddaaaaaaaaabbbccdd..", "..ccddaaaaaaabbbbccccc..", "..ccbbbbbbbbbbbbcccccc..", "..cccbbbbbbbcccccccccc..", "..cccccccccccccddddccc..", "...cccccccddddddddccc...", ".....cccccddddddccc.....", "........cccccccc........"], "anchor": [13, 69] }, "looks": { "look-1": { "drawing": { "keys": { "a": "cream", "b": "stone-1", "c": "glass-1", "d": "glass-2" }, "map": ["..........aaaaaabbbb....", ".........aaaaaaaaabbb...", "........aaaaaaaaaaabbb..", "....aaaaaaaaaaaaaaabbbb.", "..aaaaaaaaaaaaaaaaabbbbc", ".aaaaaaaaaaaaaaaaaabbbbc", "aaaaaaaaaaaaaaaaaaabbbbc", "aaaaaaaaaaaaaaaaaabbbbcc", "aaaaaaaaaaaaaaaabbbbbccc", "aaaaaaaaaaaaaaaabbbccccc", "bbbbbbbaaaaaaaaabbbcccdd", "cbbbbbaaaaaaaaaabbbcdddd", ".cccccaaaaaaaaaabbbcddd.", "..ccddaaaaaaaaabbbccdd..", "..ccddaaaaaaabbbbccccc..", "..ccbbbbbbbbbbbbcccccc..", "..cccbbbbbbbcccccccccc..", "..cccccccccccccddddccc..", "...cccccccddddddddccc...", ".....cccccddddddccc.....", "........cccccccc........"], "anchor": [13, 70] } } } }
   ],
+  "poses": {
+    "frame-1": { "cloud": { "look": "look-1" } }
+  },
   "start": "drift",
   "states": {
-    "drift": { "frames": [0, 1, 1, 0], "ms": 1000 }
+    "drift": { "poses": ["rest", "frame-1", "frame-1", "rest"], "ms": 1000 }
   }
 }

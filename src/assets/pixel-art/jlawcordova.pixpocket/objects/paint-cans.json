@@ -7,35 +7,8 @@
     "Studio"
   ],
   "kind": "sprite",
-  "anchor": [11, 12],
-  "keys": {
-    "a": "stone-1",
-    "b": "roof-1",
-    "c": "stone-3",
-    "d": "stone-2",
-    "e": "teal-2",
-    "f": "gold-1"
-  },
-  "layers": [
-    {
-      "map": [
-        ".......aaaaaaaa.......",
-        "......aabbbbbbaa......",
-        "......aabbbbbbaa......",
-        "......aaaaaaaaac......",
-        "......aabbdddaaaaaaaa.",
-        ".aaaaaaaabddaaeeeeeeaa",
-        "aaffffffaaddaaeeeeeeaa",
-        "aaffffffaaddaaaaaaaaac",
-        "aaaaaaaaacddaadddddccc",
-        "aadddddcccddaadddddccc",
-        "aadddddcccddaadddddccc",
-        "aadddddccc..aadddddccc",
-        "aadddddccc..aadddddccc",
-        "aadddddccc..aadddddccc",
-        "aadddddccc...adddddcc.",
-        ".adddddcc............."
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "drawing", "box": [1, 1, 1], "at": [21, 21, 0], "drawing": { "keys": { "a": "stone-1", "b": "roof-1", "c": "stone-3", "d": "stone-2", "e": "teal-2", "f": "gold-1" }, "map": [".......aaaaaaaa.......", "......aabbbbbbaa......", "......aabbbbbbaa......", "......aaaaaaaaac......", "......aabbdddaaaaaaaa.", ".aaaaaaaabddaaeeeeeeaa", "aaffffffaaddaaeeeeeeaa", "aaffffffaaddaaaaaaaaac", "aaaaaaaaacddaadddddccc", "aadddddcccddaadddddccc", "aadddddcccddaadddddccc", "aadddddccc..aadddddccc", "aadddddccc..aadddddccc", "aadddddccc..aadddddccc", "aadddddccc...adddddcc.", ".adddddcc............."], "anchor": [11, 22] } }
   ]
 }
