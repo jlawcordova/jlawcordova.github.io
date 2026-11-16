@@ -8,48 +8,8 @@
     "Walls"
   ],
   "kind": "sprite",
-  "anchor": [17, 59],
-  "keys": {
-    "a": "wood-1",
-    "b": "wood-3",
-    "c": "path-1",
-    "d": "gold-2",
-    "e": "wood-2",
-    "f": "grass-2",
-    "g": "grass-3"
-  },
-  "layers": [
-    {
-      "map": [
-        "............aa",
-        "..........aaaa",
-        "........aaaabb",
-        "......aaaabbbb",
-        "....aaaabbbbcb",
-        "..aaaabbbbcccb",
-        "aaaabbbbcccccb",
-        "aabbbbccccddcb",
-        "ebbbccccddddcb",
-        "ebccccccddddcb",
-        "ecccccccddddcb",
-        "ecccccccddcccb",
-        "eccccccccccccb",
-        "eccccccccccccb",
-        "ecccccccccfccb",
-        "ecccccccccfffb",
-        "ecccgccccffffb",
-        "ecccgggcfffffb",
-        "eccggggggffffb",
-        "ecgggggggggffb",
-        "ecggggggggggbb",
-        "egggggggggbbbb",
-        "egggggggbbbb..",
-        "egggggbbbb....",
-        "egggbbbb......",
-        "egbbbb........",
-        "ebbb..........",
-        "eb............"
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "part-1", "box": [2, 14, 20], "at": [0, 4, 30], "faces": { "top": "wood-1", "front": ["wood-2", "wood-3"], "back": ["wood-2", "wood-3"], "left": { "keys": { "a": "wood-3", "b": "path-1", "c": "gold-2", "d": "grass-3", "e": "grass-2" }, "shade": { "a": "wood-3", "b": "path-1", "c": "gold-2", "d": "grass-3", "e": "grass-2" }, "map": ["aaaaaaaaaaaaaa", "aaaaaaaaaaaaaa", "bbbbbbbbbbbbaa", "bbbbbbbbbbbbaa", "bbbbbbbccccbaa", "bbbbbbbccccbaa", "bbbbbbbccccbaa", "bbbbbbbccccbaa", "bbbbbbbbbbbbaa", "bbbbbbbbbbbbaa", "bbbdbbbbbbbbaa", "bbdddbbbbebbaa", "bdddddbbeeebaa", "dddddddeeeeeaa", "ddddddddeeeeaa", "dddddddddeeeaa", "ddddddddddeeaa", "dddddddddddeaa", "aaaaaaaaaaaaaa", "aaaaaaaaaaaaaa"] }, "right": ["wood-2", "wood-3"] } }
   ]
 }

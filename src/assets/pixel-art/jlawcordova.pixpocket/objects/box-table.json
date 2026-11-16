@@ -7,45 +7,10 @@
     "Server"
   ],
   "kind": "sprite",
-  "anchor": [13, 17],
-  "keys": {
-    "a": "wood-1",
-    "b": "soil-3",
-    "c": "path-1",
-    "d": "roof-1",
-    "e": "roof-2",
-    "f": "wood-2",
-    "g": "wood-3",
-    "h": "path-2"
-  },
-  "layers": [
-    {
-      "map": [
-        "............aa............",
-        "..........aabbaa..........",
-        "........aabbbbbbaa........",
-        "......aaaabbbbbbaacc......",
-        "....aaaaaaddbbeeccccaa....",
-        "..aaaaaaaadddeeeecaaaaaa..",
-        "aaaaaaaaaadddeeeeaaaaaaaaa",
-        "aaaaaaaaaadddeeeeaaaaaaaaa",
-        "ffaaaaaaccdddeeeaaaaaaaagg",
-        "ffffaaccccaadeaaaaaaaagggg",
-        "fffffhccaaaaaaaaaaaagggggg",
-        "fffffhhfaaaaaaaaaagggggggg",
-        "fffffhhfffaaaaaagggggggggg",
-        "ffffffhfffffaagggggggggggg",
-        "fffffffffffffggggggggggggg",
-        "fffffffffffffggggggggggggg",
-        "fffffffffffffggggggggggggg",
-        "fffffffffffffggggggggggggg",
-        "..fffffffffffggggggggggg..",
-        "....fffffffffggggggggg....",
-        "......fffffffggggggg......",
-        "........fffffggggg........",
-        "..........fffggg..........",
-        "............fg............"
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "part-1", "box": [14, 14, 10], "at": [4, 4, 0], "faces": { "top": { "keys": { "a": "wood-1", "b": "path-1" }, "map": ["aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa"] }, "front": { "keys": { "a": "wood-2", "b": "path-2" }, "shade": { "a": "wood-2", "b": "path-2" }, "map": ["aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaabbaaaaaa", "aaaaaaaaaaaaaa", "aaaaaaaaaaaaaa", "aaaaaaaaaaaaaa", "aaaaaaaaaaaaaa", "aaaaaaaaaaaaaa", "aaaaaaaaaaaaaa", "aaaaaaaaaaaaaa"] }, "back": ["wood-2", "wood-3"], "left": ["wood-2", "wood-3"], "right": ["wood-2", "wood-3"] } },
+    { "id": "part-2", "box": [4, 4, 5], "at": [10, 10, 10], "faces": { "top": "soil-3", "sides": ["roof-1", "roof-2"] } },
+    { "id": "drawing", "box": [1, 1, 1], "at": [21, 21, 0], "drawing": { "keys": { "a": "roof-2" }, "map": ["a", "a", "a"], "anchor": [-3, 22] } }
   ]
 }

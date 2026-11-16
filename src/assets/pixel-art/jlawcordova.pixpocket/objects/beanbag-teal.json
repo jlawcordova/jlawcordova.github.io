@@ -8,9 +8,9 @@
   ],
   "kind": "sprite",
   "extends": "beanbag",
-  "keys": {
-    "a": "teal-1",
-    "b": "teal-2",
-    "c": "teal-3"
+  "colors": {
+    "roof-1": "teal-1",
+    "roof-2": "teal-2",
+    "roof-3": "teal-3"
   }
 }

@@ -8,46 +8,9 @@
     "Rampart"
   ],
   "kind": "sprite",
-  "anchor": [21, 27],
-  "keys": {
-    "a": "path-3",
-    "b": "soil-3",
-    "c": "path-4"
-  },
-  "layers": [
-    {
-      "map": [
-        "................aa........",
-        "..............aaaaaa......",
-        "............aaaaaaaaaa....",
-        "..........aaaaaaaaaaaa....",
-        "........aaaaaaaaaaaabb....",
-        "......aaaaaaaaaaaabbbb....",
-        "......aaaaaaaaaabbbbbb....",
-        "......ccaaaaaabbbbbbbbaa..",
-        "......ccccaabbbbbbbbbbaaaa",
-        "......cccccbbbbbbbbbbbaaaa",
-        "......cccccbbbbbbbbbbbaabb",
-        "......cccccbbbbbbbbbbbbbbb",
-        "......cccccbbbbbbbbbbbbbbb",
-        "......cccccbbbbbbbbbbbbbbb",
-        "....aacccccbbbbbbbbbbbbbbb",
-        "..aaaaaacccbbbbbbbbbbbbbbb",
-        "aaaaaaaaaacbbbbbbbbbbbbbbb",
-        "aaaaaaaaaabbbbbbbbbbbbbbbb",
-        "ccaaaaaabbbbbbbbbbbbbbbbbb",
-        "ccccaabbbbbbbbbbbbbbbbbbbb",
-        "cccccbbbbbbbbbbbbbbbbbbb..",
-        "cccccbbbbbbbbbbbbbbbbb....",
-        "cccccbbbbbbbbbbbbbbb......",
-        "cccccbbbbbbbbbbbbb........",
-        "cccccbbbbbbbbbbb..........",
-        "cccccbbbbbbbbb............",
-        "cccccbbbbbbb..............",
-        "cccccbbbbb................",
-        "..cccbbb..................",
-        "....cb...................."
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "part-1", "box": [6, 22, 10], "at": [0, 0, 0], "faces": { "top": "path-3", "sides": ["path-4", "soil-3"] } },
+    { "id": "part-2", "box": [6, 12, 8], "at": [0, 4, 10], "faces": { "top": "path-3", "sides": ["path-4", "soil-3"] } }
   ]
 }

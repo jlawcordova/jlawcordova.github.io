@@ -8,61 +8,12 @@
     "Pantry"
   ],
   "kind": "sprite",
-  "anchor": [19, 32],
-  "keys": {
-    "a": "stone-1",
-    "b": "stone-2",
-    "c": "stone-3",
-    "d": "wood-2",
-    "e": "wood-3",
-    "f": "wood-4"
-  },
-  "layers": [
-    {
-      "map": [
-        "........................aa..........",
-        "..............aa......aaaa..........",
-        "............aaaaaa..aaaabc..........",
-        "..........aaaaaaaaaabbccbc..........",
-        "........aaaaaaaaaaaabbccbc..........",
-        "......aaaaaaaaaaaaaaaaaabc..........",
-        "....aaaaaaaaaaaaaaaaaaaabc..........",
-        "..aaaaaaaaaaaaaaaaaaaaaabcaa........",
-        "aaaaaaaaaaccccccaaaaaaaaaaaaaa......",
-        "aaaaaaaaccccccccccaaaaaaaaaaaaaa....",
-        "bbaaaaacccccccccccccaaaaaaaaaaaaaa..",
-        "bbbbaaacccccccccccccccaaaaaaaaaaaaaa",
-        "ddbbbbaacccccccccccccccaaaaaaaaaaaaa",
-        "ddddbbbbaacccccccccccccaaaaaaaaaaacc",
-        "ddddddbbbbaaccccccccccaaaaaaaaaacccc",
-        "ddddddddbbbbaaccccccaaaaaaaaaacccc..",
-        "dddddddddebbbbaaaaaaaaaaaaaaccccee..",
-        "dddddddadeedbbbbaaaaaaaaaacccceeee..",
-        "dddddddadeedddbbbbaaaaaacccceeeeee..",
-        "dddddddadeedddddbbbbaacccceeeeeeee..",
-        "dddddddddeedadddddbbbccceeeeeeeeee..",
-        "dddddddddeedadddddddbceeeeeeeeeeee..",
-        "dddddddddeedaddddddddeeeeeeeeeeeee..",
-        "dddddddddeeddddddddddeeeeeeeeeeeee..",
-        "dddddddddeeddddddddddeeeeeeeeeeeee..",
-        "dddddddddeeddddddddddeeeeeeeeeeeee..",
-        "dddddddddeeddddddddddeeeeeeeeeeeee..",
-        "dddddddddeeddddddddddeeeeeeeeeeeee..",
-        "dddddddddeeddddddddddeeeeeeeeeeeee..",
-        "ffdddddddeeddddddddddeeeeeeeeeeeee..",
-        "ffffdddddeeddddddddddeeeeeeeeeeeee..",
-        "ffffffdddeeddddddddddeeeeeeeeeeeee..",
-        "..ffffffdeeddddddddddeeeeeeeeeeeee..",
-        "....ffffffeddddddddddeeeeeeeeeee....",
-        "......ffffffdddddddddeeeeeeeeeff....",
-        "........ffffffdddddddeeeeeeeffff....",
-        "..........ffffffdddddeeeeeffffff....",
-        "............ffffffdddeeeffffff......",
-        "..............ffffffdeffffff........",
-        "................ffffffffff..........",
-        "..................ffffff............",
-        "....................ff.............."
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "part-1", "box": [22, 12, 3], "at": [0, 8, 0], "faces": { "top": "wood-4", "sides": ["wood-4", "wood-4"] } },
+    { "id": "part-2", "box": [22, 14, 17], "at": [0, 6, 3], "faces": { "top": "wood-2", "front": { "keys": { "a": "wood-2", "b": "wood-3", "c": "stone-1" }, "shade": { "a": "wood-2", "b": "wood-3", "c": "stone-1" }, "map": ["aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaacabbacaaaaaaaa", "aaaaaaaacabbacaaaaaaaa", "aaaaaaaacabbacaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa"] }, "back": ["wood-2", "wood-3"], "left": ["wood-2", "wood-3"], "right": ["wood-2", "wood-3"] } },
+    { "id": "part-3", "box": [22, 16, 2], "at": [0, 4, 20], "faces": { "top": { "keys": { "a": "stone-1", "b": "stone-3" }, "map": ["aaaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaa", "aaaaaabbbbbbbbbbaaaaaa", "aaaaabbbbbbbbbbbbaaaaa", "aaaaabbbbbbbbbbbbaaaaa", "aaaaabbbbbbbbbbbbaaaaa", "aaaaabbbbbbbbbbbbaaaaa", "aaaaabbbbbbbbbbbbaaaaa", "aaaaabbbbbbbbbbbbaaaaa", "aaaaaabbbbbbbbbbaaaaaa", "aaaaaaaaaaaaaaaaaaaaaa"] }, "sides": ["stone-2", "stone-3"] } },
+    { "id": "part-4", "box": [2, 2, 6], "at": [10, 4, 22], "faces": { "top": "stone-1", "sides": ["stone-2", "stone-3"] } },
+    { "id": "part-5", "box": [2, 3, 2], "at": [10, 6, 26], "faces": { "top": "stone-1", "sides": ["stone-2", "stone-3"] } }
   ]
 }

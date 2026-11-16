@@ -10,10 +10,10 @@
   ],
   "kind": "sprite",
   "extends": "desk",
-  "keys": {
-    "a": "cream",
-    "b": "path-1",
-    "e": "path-2",
-    "g": "path-3"
+  "colors": {
+    "wood-1": "cream",
+    "wood-2": "path-1",
+    "wood-3": "path-2",
+    "wood-4": "path-3"
   }
 }

@@ -7,53 +7,12 @@
     "Studio"
   ],
   "kind": "sprite",
-  "anchor": [15, 21],
-  "keys": {
-    "a": "gold-1",
-    "b": "water-2",
-    "c": "roof-1",
-    "d": "wood-1",
-    "e": "grass-2",
-    "f": "wood-3",
-    "g": "roof-2",
-    "h": "wood-2",
-    "i": "gold-2",
-    "j": "water-3",
-    "k": "water-4"
-  },
-  "layers": [
-    {
-      "map": [
-        ".....................a........",
-        "............bb.....c.a........",
-        "..........bbccbb...c.de.......",
-        "........bbbbccccbb.d.de.......",
-        "......bbbbbbccccbbbdfdd.......",
-        "....bbbbaabbcccgbbfdfddf......",
-        "..bbbbbbaaaabbcgbbffffff......",
-        "bbbbbbbbaaaabbbbbbhhffffbb....",
-        "bbbbbbbbaaaibbbbbbhhhfffbbbb..",
-        "jjbbbbbbbbaibbbbbbhhhfffbbbbbb",
-        "jjjjbbbbbbbbbbbbbbhhhfffbbbbbb",
-        "jjjjjjbbbbbbbbbbbbhhhfffbbbbkk",
-        "jjjjjjjjbbbbbbbbbbbbhfbbbbkkkk",
-        "kkjjjjjjjjbbbbbbbbbbbbbbkkkkkk",
-        "jjkkjjjajjjjbbbbbbbbbbkkkkkkkk",
-        "jjjjkkjjajjjjjbbbbbbkkkkkkkkkk",
-        "jjjjjjkkjjjjjjjjbbkkkkkkkkkkkk",
-        "kkjjjjjjkkjjjjjjjkkkkkkkkkkkkk",
-        "jjkkjjjajjkkjjjjjkkkkkkkkkkkkk",
-        "jjjjkkjjajjjkkjjjkkkkkkkkkkkkk",
-        "jjjjjjkkjjjjjjkkjkkkkkkkkkkkkk",
-        "..jjjjjjkkjjjjjjkkkkkkkkkkkkkk",
-        "....jjjajjkkjjjjjkkkkkkkkkkkkk",
-        "......jjajjjkkjjjkkkkkkkkkkk..",
-        "........jjjjjjkkjkkkkkkkkk....",
-        "..........jjjjjjkkkkkkkk......",
-        "............jjjjjkkkkk........",
-        "..............jjjkkk..........",
-        "................jk............"
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "part-1", "box": [18, 14, 12], "at": [2, 4, 0], "faces": { "top": "water-2", "front": { "keys": { "a": "water-3", "b": "gold-1", "c": "water-4" }, "shade": { "a": "water-3", "b": "gold-1", "c": "water-4" }, "map": ["aaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaa", "aaaaaaaabbaaaaaaaa", "aaaaaaaaaaaaaaaaaa", "cccccccccccccccccc", "aaaaaaaaaaaaaaaaaa", "aaaaaaaabbaaaaaaaa", "aaaaaaaaaaaaaaaaaa", "cccccccccccccccccc", "aaaaaaaaaaaaaaaaaa", "aaaaaaaabbaaaaaaaa", "aaaaaaaaaaaaaaaaaa"] }, "back": ["water-3", "water-4"], "left": ["water-3", "water-4"], "right": ["water-3", "water-4"] } },
+    { "id": "part-2", "box": [4, 2, 2], "at": [5, 7, 12], "faces": { "top": "roof-1", "sides": ["roof-1", "roof-2"] } },
+    { "id": "part-3", "box": [4, 2, 2], "at": [6, 12, 12], "faces": { "top": "gold-1", "sides": ["gold-1", "gold-2"] } },
+    { "id": "part-4", "box": [4, 4, 5], "at": [14, 8, 12], "faces": { "top": "wood-3", "sides": ["wood-2", "wood-3"] } },
+    { "id": "drawing", "box": [1, 1, 1], "at": [21, 21, 0], "drawing": { "keys": { "a": "gold-1", "b": "roof-1", "c": "wood-1", "d": "grass-2" }, "map": ["..a.", "b.a.", "b.cd", "c.cd", "c.cc", "c.cc"], "anchor": [-4, 31] } }
   ]
 }

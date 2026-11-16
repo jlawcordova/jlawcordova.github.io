@@ -7,89 +7,14 @@
     "Pantry"
   ],
   "kind": "sprite",
-  "anchor": [31, 51],
-  "keys": {
-    "a": "cream",
-    "b": "path-1",
-    "c": "path-2",
-    "d": "stone-2",
-    "e": "roof-2",
-    "f": "glass-2",
-    "g": "gold-1",
-    "h": "grass-2"
-  },
-  "layers": [
-    {
-      "loop": "pose",
-      "prefix": "p",
-      "frames": [
-        [
-          "............................aaaaaa...........",
-          "..........................aaaaaaaaaa.........",
-          "........................aaaaaaaaaaaaaa.......",
-          "......................aaaaaaaaaaaaaaaaaa.....",
-          "....................aaaaaaaaaaaaaaaaaaaaaa...",
-          "..................aaaaaaaaaaaaaaaaaaaaaaaaaa.",
-          ".................aaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          ".................aaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          ".................baaaaaaaaaaaaaaaaaaaaaaaaaac",
-          ".................bbbaaaaaaaaaaaaaaaaaaaaaaccc",
-          ".................bbbbbaaaaaaaaaaaaaaaaaaccccc",
-          ".................bbbbbbbaaaaaaaaaaaaaaccccccc",
-          ".................bbbbbbbbbaaaaaaaaaaccccccccc",
-          ".................bbbbbbbbbbbaaaaaaccccccccccc",
-          ".................bbbbbbbbbbbbbbcccccccccccccc",
-          ".................bbbbbbbbbbbbbbcccccccccccccc",
-          ".................bbbbbbbbbbbbbbcccccccccccccc",
-          ".................bbbbbbbbbbbbbbcccccccccccccc",
-          ".................bbbbbbbbbbbdbbcccccccccccccc",
-          ".................bbbbbbbbbbbdbbcccccccccccccc",
-          ".................bbbbbbbbbbbdbbcccccccccccccc",
-          ".................bbbbbbbbbbbdbbcccccccccccccc",
-          ".................bbbbbbbbbbbdbbcccccccccccccc",
-          ".................cbbbbbbbbbbdbbcccccccccccccc",
-          ".................bccbbbbbbbbdbbcccccccccccccc",
-          ".................bbbccbbbbbbdbbcccccccccccccc",
-          ".................bbbbbccbbbbbbbcccccccccccccc",
-          ".................bbbbbbbccbbbbbcccccccccccccc",
-          ".................bbbbbbbbbccbbbcccccccccccccc",
-          ".................bbbbbbbbbbbccccccccccccccccc",
-          ".................bbbbbbbbbbbbbbcccccccccccccc",
-          ".................bbbbbbbbbbbbbbcccccccccccccc",
-          ".................bbbbbbbbbbbbbbcccccccccccccc",
-          ".................bbbbbbbbbbbdbbcccccccccccccc",
-          ".................bbbbbbbbbbbdbbcccccccccccccc",
-          ".................bbbbbbbbbbbdbbcccccccccccccc",
-          ".................bbbbbbbbbbbdbbcccccccccccccc",
-          ".................bbbbbbbbbbbdbbcccccccccccccc",
-          ".................bbbbbbbbbbbdbbcccccccccccccc",
-          ".................bbbbbbbbbbbdbbcccccccccccccc",
-          ".................bbbbbbbbbbbdbbcccccccccccccc",
-          ".................bbbbbbbbbbbdbbcccccccccccccc",
-          ".................bbbbbbbbbbbdbbcccccccccccccc",
-          ".................bbbbbbbbbbbdbbcccccccccccccc",
-          ".................bbbbbbbbbbbbbbcccccccccccccc",
-          ".................bbbbbbbbbbbbbbcccccccccccccc",
-          ".................bbbbbbbbbbbbbbcccccccccccccc",
-          ".................bbbbbbbbbbbbbbcccccccccccccc",
-          ".................bbbbbbbbbbbbbbcccccccccccccc",
-          ".................bbbbbbbbbbbbbbcccccccccccccc",
-          ".................bbbbbbbbbbbbbbcccccccccccccc",
-          ".................bbbbbbbbbbbbbbcccccccccccccc",
-          "..................bbbbbbbbbbbbbccccccccccccc.",
-          "....................bbbbbbbbbbbccccccccccc...",
-          "......................bbbbbbbbbccccccccc.....",
-          "........................bbbbbbbccccccc.......",
-          "..........................bbbbbccccc.........",
-          "............................bbbccc...........",
-          ".............................................",
-          "............................................."
-        ]
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "part-1", "box": [16, 16, 44], "at": [3, 3, 0], "round": 3, "faces": { "top": "cream", "front": { "keys": { "a": "path-1", "b": "stone-2", "c": "path-2" }, "shade": { "a": "path-1", "b": "stone-2", "c": "path-2" }, "map": ["aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "cccccccccccccccc", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa"] }, "back": ["path-1", "path-2"], "left": ["path-1", "path-2"], "right": ["path-1", "path-2"] }, "looks": { "look-1": { "faces": { "top": "cream", "front": { "keys": { "a": "path-1", "b": "stone-2", "c": "path-2", "d": "cream", "e": "roof-2", "f": "gold-1", "g": "grass-2", "h": "glass-2" }, "shade": { "a": "path-1", "b": "stone-2", "c": "path-2", "d": "cream", "e": "roof-2", "f": "gold-1", "g": "grass-2", "h": "glass-2" }, "map": ["aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaabaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "cccccccccccccccc", "ccdddddddddddddc", "ccdddddddddddddc", "ccdddddddddddddc", "ccdddddddddddddc", "ccdddddddddddddc", "ccddeeeddfffdddc", "ccddeeeddfffdddc", "ccddeeeddfffdddc", "ccddeeeddfffdddc", "ccaaaaaaaaaaaaac", "ccdddddddddddddc", "ccdddddddddddddc", "ccdddddddddddddc", "ccdddddddddddddc", "ccdddddddddddddc", "ccddgggddhhhdddc", "ccddgggddhhhdddc", "ccddgggddhhhdddc", "ccddgggddhhhdddc", "ccaaaaaaaaaaaaac", "ccdddddddddddddc", "ccdddddddddddddc", "ccdddddddddddddc", "ccdddddddddddddc", "ccdddddddddddddc", "ccdddddddeeedddc", "cccccccccccccccc", "cccccccccccccccc"] }, "back": ["path-1", "path-2"], "left": ["path-1", "path-2"], "right": ["path-1", "path-2"] } } } },
+    { "id": "part-2", "box": [2, 16, 28], "at": [3, 19, 0], "faces": { "top": { "keys": {}, "map": ["..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", ".."] }, "front": { "keys": {}, "shade": {}, "map": ["..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", ".."] }, "back": { "keys": {}, "shade": {}, "map": ["..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", "..", ".."] }, "left": { "keys": {}, "shade": {}, "map": ["................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................"] }, "right": { "keys": {}, "shade": {}, "map": ["................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................", "................"] } }, "looks": { "look-1": { "faces": { "top": "cream", "front": ["path-1", "path-1"], "back": ["path-1", "path-1"], "left": { "keys": { "a": "path-1", "b": "grass-2", "c": "glass-2", "d": "cream", "e": "path-2", "f": "roof-2", "g": "gold-1" }, "shade": { "a": "path-1", "b": "grass-2", "c": "glass-2", "d": "cream", "e": "path-2", "f": "roof-2", "g": "gold-1" }, "map": ["aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aabbaaaaccaaaadd", "aabbaaaaccaaaadd", "aabbaaaaccaaaadd", "aabbaaaaccaaaadd", "eeeeeeeeeeeeeeee", "eeeeeeeeeeeeeeee", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaccaaaaddaaaaff", "aaccaaaaddaaaaff", "aaccaaaaddaaaaff", "aaccaaaaddaaaaff", "eeeeeeeeeeeeeeee", "eeeeeeeeeeeeeeee", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaa", "aaddaaaaffaaaagg", "aaddaaaaffaaaagg", "aaddaaaaffaaaagg", "aaddaaaaffaaaagg"] }, "right": ["path-1", "path-1"] } } } }
   ],
+  "poses": {},
   "start": "idle",
   "states": {
-    "idle": { "frames": [0], "ms": 1000 }
+    "idle": { "poses": ["rest"], "ms": 1000 }
   }
 }

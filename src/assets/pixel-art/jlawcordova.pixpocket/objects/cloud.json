@@ -9,93 +9,15 @@
     "Clouds"
   ],
   "kind": "sprite",
-  "anchor": [20, 67],
-  "keys": {
-    "a": "cream",
-    "b": "stone-1",
-    "c": "glass-1",
-    "d": "glass-2"
-  },
-  "layers": [
-    {
-      "loop": "pose",
-      "prefix": "p",
-      "frames": [
-        [
-          "........................................",
-          "...............aaaabbbbbb...............",
-          "............aaaaaaaaaabbbbbb............",
-          "..........aaaaaaaaaaaaaabbbbbb..........",
-          ".........aaaaaaaaaaaaaaaabbbbbb.........",
-          "........aaaaaaaaaaaaaaaaaabbbbbc........",
-          "........aaaaaaaaaaaaaaaaaabbbbbb........",
-          ".......aaaaaaaaaaaaaaaaaaabbbbbbbbb.....",
-          ".......aaaaaaaaaaaaaaaaaaabbbbbbbbbbb...",
-          ".......aaaaaaaaaaaaaaaaaaabbbbbccaabbb..",
-          "...aaaaaaaaaaaaaaaaaaaaaaabbbbbccaabbbb.",
-          "..aaaaaaaaaaaaaaaaaaaaaaabbbbbcccaabbbbc",
-          ".aaaaaaaaaaaaaaaaaaaaaabbbbbbbcccaabbbbc",
-          "aaaaaaaaaaaaaaaaaaaaaabbbbaaaaaaaabbbbbc",
-          "aaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaabbbbcc",
-          "aaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaabbbcc",
-          "aaaaaaaaaaaaaaaaaaaaaaaaabbaaaaaaaabbbbc",
-          "aaaaaaaaaaaaaaaaaaaaaaaaabbbaaaaaaabbbbc",
-          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbaaaaaabbbbc",
-          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbaaaabbbbcc",
-          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbcaabbbbbcc",
-          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbcbbbbbcccc",
-          "bbaaaaaaaaaaaaaaaaaaaaaaabbbbccbbbcccccd",
-          "bbbbbbbaaaaaaaaaaaaaaaaabbbbccccccccccdd",
-          ".ccccccbbbbbbbaaaaaaabbbbbbcccccccccddd.",
-          "..ccccccbbbbbbbbbbbbbbbbbccccccddddddd..",
-          "....dcccccccccbbbbbbbcccccccddddddddd...",
-          ".....ccccddddddcccccccccccddddddddd.....",
-          "......cccbbdddddcccccdddddddbbbccc......",
-          ".......ccccbbbbbbddddddddddbbcccc.......",
-          "........cccccccbbbbbbbbbbccccccc........",
-          "...........cccccccccccccccccc...........",
-          "..............cccccccccccc.............."
-        ],
-        [
-          "...............aaaabbbbbb...............",
-          "............aaaaaaaaaabbbbbb............",
-          "..........aaaaaaaaaaaaaabbbbbb..........",
-          ".........aaaaaaaaaaaaaaaabbbbbb.........",
-          "........aaaaaaaaaaaaaaaaaabbbbbc........",
-          "........aaaaaaaaaaaaaaaaaabbbbbb........",
-          ".......aaaaaaaaaaaaaaaaaaabbbbbbbbb.....",
-          ".......aaaaaaaaaaaaaaaaaaabbbbbbbbbbb...",
-          ".......aaaaaaaaaaaaaaaaaaabbbbbccaabbb..",
-          "...aaaaaaaaaaaaaaaaaaaaaaabbbbbccaabbbb.",
-          "..aaaaaaaaaaaaaaaaaaaaaaabbbbbcccaabbbbc",
-          ".aaaaaaaaaaaaaaaaaaaaaabbbbbbbcccaabbbbc",
-          "aaaaaaaaaaaaaaaaaaaaaabbbbaaaaaaaabbbbbc",
-          "aaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaabbbbcc",
-          "aaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaabbbcc",
-          "aaaaaaaaaaaaaaaaaaaaaaaaabbaaaaaaaabbbbc",
-          "aaaaaaaaaaaaaaaaaaaaaaaaabbbaaaaaaabbbbc",
-          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbaaaaaabbbbc",
-          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbaaaabbbbcc",
-          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbcaabbbbbcc",
-          "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbcbbbbbcccc",
-          "bbaaaaaaaaaaaaaaaaaaaaaaabbbbccbbbcccccd",
-          "bbbbbbbaaaaaaaaaaaaaaaaabbbbccccccccccdd",
-          ".ccccccbbbbbbbaaaaaaabbbbbbcccccccccddd.",
-          "..ccccccbbbbbbbbbbbbbbbbbccccccddddddd..",
-          "....dcccccccccbbbbbbbcccccccddddddddd...",
-          ".....ccccddddddcccccccccccddddddddd.....",
-          "......cccbbdddddcccccdddddddbbbccc......",
-          ".......ccccbbbbbbddddddddddbbcccc.......",
-          "........cccccccbbbbbbbbbbccccccc........",
-          "...........cccccccccccccccccc...........",
-          "..............cccccccccccc..............",
-          "........................................"
-        ]
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "cloud", "box": [1, 1, 1], "at": [21, 21, 0], "drawing": { "keys": { "a": "cream", "b": "stone-1", "c": "glass-1", "d": "glass-2" }, "map": ["...............aaaabbbbbb...............", "............aaaaaaaaaabbbbbb............", "..........aaaaaaaaaaaaaabbbbbb..........", ".........aaaaaaaaaaaaaaaabbbbbb.........", "........aaaaaaaaaaaaaaaaaabbbbbc........", "........aaaaaaaaaaaaaaaaaabbbbbb........", ".......aaaaaaaaaaaaaaaaaaabbbbbbbbb.....", ".......aaaaaaaaaaaaaaaaaaabbbbbbbbbbb...", ".......aaaaaaaaaaaaaaaaaaabbbbbccaabbb..", "...aaaaaaaaaaaaaaaaaaaaaaabbbbbccaabbbb.", "..aaaaaaaaaaaaaaaaaaaaaaabbbbbcccaabbbbc", ".aaaaaaaaaaaaaaaaaaaaaabbbbbbbcccaabbbbc", "aaaaaaaaaaaaaaaaaaaaaabbbbaaaaaaaabbbbbc", "aaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaabbbbcc", "aaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaabbbcc", "aaaaaaaaaaaaaaaaaaaaaaaaabbaaaaaaaabbbbc", "aaaaaaaaaaaaaaaaaaaaaaaaabbbaaaaaaabbbbc", "aaaaaaaaaaaaaaaaaaaaaaaaaabbbaaaaaabbbbc", "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbaaaabbbbcc", "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbcaabbbbbcc", "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbcbbbbbcccc", "bbaaaaaaaaaaaaaaaaaaaaaaabbbbccbbbcccccd", "bbbbbbbaaaaaaaaaaaaaaaaabbbbccccccccccdd", ".ccccccbbbbbbbaaaaaaabbbbbbcccccccccddd.", "..ccccccbbbbbbbbbbbbbbbbbccccccddddddd..", "....dcccccccccbbbbbbbcccccccddddddddd...", ".....ccccddddddcccccccccccddddddddd.....", "......cccbbdddddcccccdddddddbbbccc......", ".......ccccbbbbbbddddddddddbbcccc.......", "........cccccccbbbbbbbbbbccccccc........", "...........cccccccccccccccccc...........", "..............cccccccccccc.............."], "anchor": [20, 76] }, "looks": { "look-1": { "drawing": { "keys": { "a": "cream", "b": "stone-1", "c": "glass-1", "d": "glass-2" }, "map": ["...............aaaabbbbbb...............", "............aaaaaaaaaabbbbbb............", "..........aaaaaaaaaaaaaabbbbbb..........", ".........aaaaaaaaaaaaaaaabbbbbb.........", "........aaaaaaaaaaaaaaaaaabbbbbc........", "........aaaaaaaaaaaaaaaaaabbbbbb........", ".......aaaaaaaaaaaaaaaaaaabbbbbbbbb.....", ".......aaaaaaaaaaaaaaaaaaabbbbbbbbbbb...", ".......aaaaaaaaaaaaaaaaaaabbbbbccaabbb..", "...aaaaaaaaaaaaaaaaaaaaaaabbbbbccaabbbb.", "..aaaaaaaaaaaaaaaaaaaaaaabbbbbcccaabbbbc", ".aaaaaaaaaaaaaaaaaaaaaabbbbbbbcccaabbbbc", "aaaaaaaaaaaaaaaaaaaaaabbbbaaaaaaaabbbbbc", "aaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaabbbbcc", "aaaaaaaaaaaaaaaaaabbbbbbbaaaaaaaaaabbbcc", "aaaaaaaaaaaaaaaaaaaaaaaaabbaaaaaaaabbbbc", "aaaaaaaaaaaaaaaaaaaaaaaaabbbaaaaaaabbbbc", "aaaaaaaaaaaaaaaaaaaaaaaaaabbbaaaaaabbbbc", "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbaaaabbbbcc", "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbcaabbbbbcc", "aaaaaaaaaaaaaaaaaaaaaaaaaabbbbcbbbbbcccc", "bbaaaaaaaaaaaaaaaaaaaaaaabbbbccbbbcccccd", "bbbbbbbaaaaaaaaaaaaaaaaabbbbccccccccccdd", ".ccccccbbbbbbbaaaaaaabbbbbbcccccccccddd.", "..ccccccbbbbbbbbbbbbbbbbbccccccddddddd..", "....dcccccccccbbbbbbbcccccccddddddddd...", ".....ccccddddddcccccccccccddddddddd.....", "......cccbbdddddcccccdddddddbbbccc......", ".......ccccbbbbbbddddddddddbbcccc.......", "........cccccccbbbbbbbbbbccccccc........", "...........cccccccccccccccccc...........", "..............cccccccccccc.............."], "anchor": [20, 77] } } } }
   ],
+  "poses": {
+    "frame-1": { "cloud": { "look": "look-1" } }
+  },
   "start": "drift",
   "states": {
-    "drift": { "frames": [0, 1, 1, 0], "ms": 1000 }
+    "drift": { "poses": ["rest", "frame-1", "frame-1", "rest"], "ms": 1000 }
   }
 }

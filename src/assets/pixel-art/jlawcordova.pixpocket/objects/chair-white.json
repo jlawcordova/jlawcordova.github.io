@@ -9,9 +9,9 @@
   ],
   "kind": "sprite",
   "extends": "chair",
-  "keys": {
-    "a": "cream",
-    "b": "path-1",
-    "c": "path-2"
+  "colors": {
+    "teal-2": "cream",
+    "teal-3": "path-1",
+    "teal-4": "path-2"
   }
 }

@@ -7,70 +7,8 @@
     "Lab"
   ],
   "kind": "sprite",
-  "anchor": [13, 40],
-  "keys": {
-    "a": "wood-2",
-    "b": "wood-3",
-    "c": "soil-4",
-    "d": "roof-2",
-    "e": "wood-4",
-    "f": "grass-3",
-    "g": "water-3",
-    "h": "gold-3",
-    "i": "water-1",
-    "j": "water-2"
-  },
-  "layers": [
-    {
-      "map": [
-        "......aa................",
-        "....aaaaaa..............",
-        "..aaaaaaaaaa............",
-        "aaaaaaaaaaaaaa..........",
-        "aaaaaaaaaaaaaaaa........",
-        "bbaaaaaaaaaaaaaaaa......",
-        "bbbbaaaaaaaaaaaaaaaa....",
-        "bcbbbbaaaaaaaaaaaaaaaa..",
-        "bcccbbbbaaaaaaaaaaaaaaaa",
-        "bdccccbbbbaaaaaaaaaaaaaa",
-        "bddcccccbbbbaaaaaaaaaaee",
-        "bddfggccccbbbbaaaaaaeeee",
-        "bddfggccccccbbbbaaeeeeee",
-        "bddfggcdccccccbbbeeeeeee",
-        "bddfgghddccccccbbeeeeeee",
-        "bddfgghddccccccbbeeeeeee",
-        "badfgghddccchccbbeeeeeee",
-        "bcaagghddcciiccbbeeeeeee",
-        "bcccaahddccijjcbbeeeeeee",
-        "bcccccaadccijjcbbeeeeeee",
-        "bchcccccaacijjcbbeeeeeee",
-        "biicccccccaajjcbbeeeeeee",
-        "bijjcgcdccccaacbbeeeeeee",
-        "bijjcggddcccccabbeeeeeee",
-        "bijjcggddhcccccbbeeeeeee",
-        "bijjcggddhhccccbbeeeeeee",
-        "bajjcggddhhccccbbeeeeeee",
-        "bcaacggddhhcchcbbeeeeeee",
-        "bcccaagddhhccicbbeeeeeee",
-        "bhcdccaadhhcijcbbeeeeeee",
-        "bhhddcccaahcijjbbeeeeeee",
-        "bhhddgccccaaijjbbeeeeeee",
-        "bhhddggcccccaajbbeeeeeee",
-        "bhhddggfccccccabbeeeeeee",
-        "bhhddggfcccccccbbeeeeeee",
-        "bhhddggfccchcccbbeeeeeee",
-        "bhhddggfcccicccbbeeeeeee",
-        "bbhddggfccijcccbbeeeeeee",
-        "bbbbdggfccijjccbbeeeeeee",
-        "..bbbbgfccijjccbbeeeeeee",
-        "....bbbbccijjccbbeeeeeee",
-        "......bbbbijjccbbeeeeeee",
-        "........bbbbjccbbeeeeeee",
-        "..........bbbbcbbeeeeeee",
-        "............bbbbbeeeee..",
-        "..............bbbeee....",
-        "................be......"
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "part-1", "box": [18, 8, 34], "at": [2, 8, 0], "faces": { "top": "wood-2", "front": { "keys": { "a": "wood-3", "b": "soil-4", "c": "roof-2", "d": "water-3", "e": "grass-3", "f": "gold-3", "g": "water-1", "h": "water-2", "i": "wood-2" }, "shade": { "a": "wood-3", "b": "soil-4", "c": "roof-2", "d": "water-3", "e": "grass-3", "f": "gold-3", "g": "water-1", "h": "water-2", "i": "wood-2" }, "map": ["aaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaa", "aabbbbbbbbbbbbbbaa", "aabbbbbbbbbbbbbbaa", "aaccbddbbbbbbbbbaa", "aacceddbccbbbfbbaa", "aacceddfccbbbgbbaa", "aacceddfccbbghhbaa", "aacceddfccbbghhbaa", "aacceddfccbbghhbaa", "aacceddfccbbghhbaa", "aaiiiiiiiiiiiiiiaa", "aabbbbbbbbbbbbbbaa", "aabbbbbbbbbbbbbbaa", "aabfbbbbccbbbbbbaa", "aabgbbddccffbbbbaa", "aaghhbddccffbbfbaa", "aaghhbddccffbbgbaa", "aaghhbddccffbghhaa", "aaghhbddccffbghhaa", "aaghhbddccffbghhaa", "aaiiiiiiiiiiiiiiaa", "aabbbbbbbbbbbbbbaa", "aabbccbbbbbbbbbbaa", "aaffccddbbbbbbbbaa", "aaffccddebbbfbbbaa", "aaffccddebbbgbbbaa", "aaffccddebbghhbbaa", "aaffccddebbghhbbaa", "aaffccddebbghhbbaa", "aaffccddebbghhbbaa", "aaffccddebbghhbbaa", "aaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaa"] }, "back": ["wood-3", "wood-4"], "left": ["wood-3", "wood-4"], "right": ["wood-3", "wood-4"] } }
   ]
 }

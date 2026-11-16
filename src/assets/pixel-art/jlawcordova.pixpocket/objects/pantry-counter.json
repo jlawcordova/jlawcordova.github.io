@@ -8,60 +8,10 @@
     "Pantry"
   ],
   "kind": "sprite",
-  "anchor": [19, 31],
-  "keys": {
-    "a": "stone-1",
-    "b": "stone-2",
-    "c": "wood-2",
-    "d": "stone-3",
-    "e": "wood-3",
-    "f": "wood-4"
-  },
-  "layers": [
-    {
-      "map": [
-        "..............aa....................",
-        "............aaaaaa..................",
-        "..........aaaaaaaaaa................",
-        "........aaaaaaaaaaaaaa..............",
-        "......aaaaaaaaaaaaaaaaaa............",
-        "....aaaaaaaaaaaaaaaaaaaaaa..........",
-        "..aaaaaaaaaaaaaaaaaaaaaaaaaa........",
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa......",
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa....",
-        "bbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa..",
-        "bbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "ccbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "ccccbbbbaaaaaaaaaaaaaaaaaaaaaaaaaadd",
-        "ccccccbbbbaaaaaaaaaaaaaaaaaaaaaadddd",
-        "ccccccccbbbbaaaaaaaaaaaaaaaaaadddd..",
-        "cccccccccebbbbaaaaaaaaaaaaaaddddee..",
-        "cccccccaceecbbbbaaaaaaaaaaddddeeee..",
-        "cccccccaceecccbbbbaaaaaaddddeeeeee..",
-        "cccccccaceecccccbbbbaaddddeeeeeeee..",
-        "ccccccccceecacccccbbbdddeeeeeeeeee..",
-        "ccccccccceecacccccccbdeeeeeeeeeeee..",
-        "ccccccccceecacccccccceeeeeeeeeeeee..",
-        "ccccccccceecccccccccceeeeeeeeeeeee..",
-        "ccccccccceecccccccccceeeeeeeeeeeee..",
-        "ccccccccceecccccccccceeeeeeeeeeeee..",
-        "ccccccccceecccccccccceeeeeeeeeeeee..",
-        "ccccccccceecccccccccceeeeeeeeeeeee..",
-        "ccccccccceecccccccccceeeeeeeeeeeee..",
-        "ffccccccceecccccccccceeeeeeeeeeeee..",
-        "ffffccccceecccccccccceeeeeeeeeeeee..",
-        "ffffffccceecccccccccceeeeeeeeeeeee..",
-        "..ffffffceecccccccccceeeeeeeeeeeee..",
-        "....ffffffecccccccccceeeeeeeeeee....",
-        "......ffffffccccccccceeeeeeeeeff....",
-        "........ffffffccccccceeeeeeeffff....",
-        "..........ffffffccccceeeeeffffff....",
-        "............ffffffccceeeffffff......",
-        "..............ffffffceffffff........",
-        "................ffffffffff..........",
-        "..................ffffff............",
-        "....................ff.............."
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "part-1", "box": [22, 12, 3], "at": [0, 8, 0], "faces": { "top": "wood-4", "sides": ["wood-4", "wood-4"] } },
+    { "id": "part-2", "box": [22, 14, 17], "at": [0, 6, 3], "faces": { "top": "wood-2", "front": { "keys": { "a": "wood-2", "b": "wood-3", "c": "stone-1" }, "shade": { "a": "wood-2", "b": "wood-3", "c": "stone-1" }, "map": ["aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaacabbacaaaaaaaa", "aaaaaaaacabbacaaaaaaaa", "aaaaaaaacabbacaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa", "aaaaaaaaaabbaaaaaaaaaa"] }, "back": ["wood-2", "wood-3"], "left": ["wood-2", "wood-3"], "right": ["wood-2", "wood-3"] } },
+    { "id": "part-3", "box": [22, 16, 2], "at": [0, 4, 20], "faces": { "top": "stone-1", "sides": ["stone-2", "stone-3"] } }
   ]
 }

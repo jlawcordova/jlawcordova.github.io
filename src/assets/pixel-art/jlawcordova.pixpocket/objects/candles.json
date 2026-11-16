@@ -8,107 +8,20 @@
     "Tower"
   ],
   "kind": "sprite",
-  "anchor": [5, 19],
-  "keys": {
-    "a": "clay-2",
-    "b": "clay-1",
-    "c": "gold-1",
-    "d": "roof-1",
-    "e": "roof-2",
-    "f": "roof-3",
-    "g": "ink"
-  },
-  "layers": [
-    {
-      "loop": "pose",
-      "prefix": "p",
-      "frames": [
-        [
-          "..aa..........",
-          "..bb..........",
-          ".acba.........",
-          "ddccdd........",
-          "dddddd........",
-          "eeddff........",
-          "eeefff........",
-          "eeefff....a...",
-          "eeefff....ba..",
-          "eeefff..aacba.",
-          "eeefff..bbccdd",
-          "eeefff.acbaddd",
-          "eeeaffddccddff",
-          "eeabffddddddff",
-          "eabcafeeddffff",
-          "ddccddeeefffff",
-          "ddddddeeefffff",
-          "eeddffeeefffff",
-          "eeefffeeefffff",
-          "eeefffeeefffff",
-          "eeefffeeefff..",
-          "eeefffeeefff..",
-          "eeefffeeefff..",
-          "..ef..eeefff..",
-          "........ef...."
-        ],
-        [
-          "..a...........",
-          "..ba..........",
-          ".acba.........",
-          "ddccdd........",
-          "dddddd........",
-          "eeddff........",
-          "eeefff........",
-          "eeefff.....a..",
-          "eeefff....ab..",
-          "eeefff..aabca.",
-          "eeefff..baccdd",
-          "eeefff.acbaddd",
-          "eeaaffddccddff",
-          "eebbffddddddff",
-          "eacbafeeddffff",
-          "ddccddeeefffff",
-          "ddddddeeefffff",
-          "eeddffeeefffff",
-          "eeefffeeefffff",
-          "eeefffeeefffff",
-          "eeefffeeefff..",
-          "eeefffeeefff..",
-          "eeefffeeefff..",
-          "..ef..eeefff..",
-          "........ef...."
-        ],
-        [
-          "...a..........",
-          "..ab..........",
-          ".abca.........",
-          "ddccdd........",
-          "dddddd........",
-          "eeddff........",
-          "eeefff........",
-          "eeefff....aa..",
-          "eeefff....bb..",
-          "eeefff...acba.",
-          "eeefff..abccdd",
-          "eeefff.abcaddd",
-          "eeafffddccddff",
-          "eebaffddddddff",
-          "eacbafeeddffff",
-          "ddccddeeefffff",
-          "ddddddeeefffff",
-          "eeddffeeefffff",
-          "eeefffeeefffff",
-          "eeefffeeefffff",
-          "eeefffeeefff..",
-          "eeefffeeefff..",
-          "eeefffeeefff..",
-          "..ef..eeefff..",
-          "........ef...."
-        ]
-      ]
-    }
+  "footprint": [1, 1],
+  "parts": [
+    { "id": "part-1", "box": [4, 4, 13], "at": [6, 8, 0], "faces": { "top": "roof-1", "sides": ["roof-2", "roof-3"] } },
+    { "id": "part-2", "box": [4, 4, 8], "at": [12, 6, 0], "faces": { "top": "roof-1", "sides": ["roof-2", "roof-3"] } },
+    { "id": "part-3", "box": [4, 4, 6], "at": [11, 13, 0], "faces": { "top": "roof-1", "sides": ["roof-2", "roof-3"] } },
+    { "id": "part-4", "box": [4, 4, 10], "at": [15, 11, 0], "faces": { "top": "roof-1", "sides": ["roof-2", "roof-3"] } },
+    { "id": "drawing", "box": [1, 1, 1], "at": [21, 21, 0], "drawing": { "keys": { "a": "clay-2", "b": "clay-1", "c": "gold-1" }, "map": [".aa.........", ".bb.........", "acba........", ".cc.........", "............", "............", "............", ".........a..", ".........ba.", ".......aacba", ".......bbcc.", "......acba..", "..a....cc...", ".ab.........", "abca........", ".cc........."], "anchor": [4, 29] }, "looks": { "look-1": { "drawing": { "keys": { "a": "clay-2", "b": "clay-1", "c": "gold-1" }, "map": [".a..........", ".ba.........", "acba........", ".cc.........", "............", "............", "............", "..........a.", ".........ab.", ".......aabca", ".......bacc.", "......acba..", ".aa....cc...", ".bb.........", "acba........", ".cc........."], "anchor": [4, 29] } }, "look-2": { "drawing": { "keys": { "a": "clay-2", "b": "clay-1", "c": "gold-1" }, "map": ["..a.........", ".ab.........", "abca........", ".cc.........", "............", "............", "............", ".........aa.", ".........bb.", "........acba", ".......abcc.", "......abca..", ".a.....cc...", ".ba.........", "acba........", ".cc........."], "anchor": [4, 29] } }, "look-3": { "drawing": { "keys": { "a": "ink" }, "map": ["aa........", "..........", "..........", "..........", "..........", "..........", "..........", "........aa", "..........", "......aa..", "..........", "..........", "aa........"], "anchor": [3, 26] } } } }
   ],
+  "poses": {
+    "frame-1": { "drawing": { "look": "look-1" } },
+    "frame-2": { "drawing": { "look": "look-2" } }
+  },
   "start": "idle",
   "states": {
-    "idle": { "frames": [0, 1, 2, 1], "ms": 200 }
+    "idle": { "poses": ["rest", "frame-1", "frame-2", "frame-1"], "ms": 200 }
   }
 }
